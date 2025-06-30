@@ -10,6 +10,42 @@ use Illuminate\Support\Str;
 class TemplateBasedContentService
 {
     /**
+     * Templates de introdução com variação
+     */
+    private array $introductionTemplates = [
+        'default' => [
+            "Identificar o momento certo para trocar os pneus do seu {make} {model} é essencial para garantir segurança, desempenho e economia. Este {category_text} que precisa de pneus em perfeitas condições para máxima segurança e economia. Os pneus são o único ponto de contato com o solo e influenciam diretamente a frenagem, estabilidade e consumo de combustível. Este guia apresenta os sinais de desgaste, prazos recomendados, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus do seu veículo.",
+
+            "Saber quando trocar os pneus do {make} {model} é fundamental para manter a segurança e o desempenho do seu {category}. Pneus desgastados não apenas comprometem a dirigibilidade, mas também aumentam o consumo de combustível e o risco de acidentes. Neste guia completo, você aprenderá a identificar os principais sinais de que os pneus precisam ser substituídos, conhecerá os fatores que afetam sua durabilidade e descobrirá como criar um cronograma eficiente de verificação e manutenção.",
+
+            "Os pneus do seu {make} {model} são componentes críticos que demandam atenção constante. Como único elemento de contato entre o veículo e o pavimento, eles influenciam diretamente a segurança, economia e conforto de condução. Este manual técnico apresenta critérios objetivos para avaliar quando é necessário substituir os pneus, considerando as especificidades do seu {category} e fornecendo um cronograma prático de verificações preventivas."
+        ],
+        'motorcycle' => [
+            "A segurança em motocicletas depende criticamente do estado dos pneus. Na sua {make} {model}, essa responsabilidade é ainda maior, pois os pneus são fundamentais para estabilidade, frenagem e manobrabilidade. Este guia especializado apresenta os sinais específicos de desgaste em motocicletas, fatores únicos que afetam a durabilidade dos pneus de duas rodas e um cronograma de verificação adaptado às necessidades dos motociclistas.",
+
+            "Para motociclistas, conhecer o estado dos pneus é questão de vida ou morte. Sua {make} {model} exige pneus em condições perfeitas para garantir estabilidade em curvas, frenagem eficiente e aderência em diferentes condições de piso. Este manual técnico específico para motocicletas apresenta critérios detalhados para avaliação do desgaste, sinais críticos de substituição e procedimentos de verificação adequados para duas rodas."
+        ]
+    ];
+
+    /**
+     * Templates de conclusão
+     */
+    private array $conclusionTemplates = [
+        'default' => [
+            "Manter os pneus do seu {make} {model} em perfeitas condições é investir em segurança, economia e desempenho. A verificação regular das pressões ({pressure_display}), o acompanhamento do desgaste e a troca no momento adequado são práticas essenciais para qualquer proprietário responsável. Lembre-se: pneus em bom estado não apenas protegem vidas, mas também proporcionam melhor experiência de condução, economia de combustível e menor impacto ambiental. Invista na manutenção preventiva e desfrute de um veículo sempre seguro e eficiente.",
+
+            "A manutenção adequada dos pneus do {make} {model} vai além da simples verificação visual. Seguir o cronograma de inspeções, manter as pressões corretas ({pressure_display}) e estar atento aos sinais de desgaste são investimentos que se pagam em segurança e economia. Pneus bem conservados reduzem o consumo de combustível, proporcionam melhor aderência e aumentam a vida útil de outros componentes da suspensão. Faça da verificação dos pneus um hábito regular e mantenha seu {category} sempre em condições ideais de uso.",
+
+            "O investimento em pneus de qualidade e sua manutenção adequada reflete diretamente na segurança e economia do seu {make} {model}. Estabelecer uma rotina de verificações, respeitar as pressões recomendadas ({pressure_display}) e trocar os pneus no momento certo são atitudes que demonstram responsabilidade e cuidado com o patrimônio. Além dos benefícios imediatos de segurança, essa prática contribui para um trânsito mais seguro para todos e para a preservação do meio ambiente através da redução do consumo de combustível."
+        ],
+        'motorcycle' => [
+            "Para motociclistas, a manutenção dos pneus é ainda mais crítica que em automóveis. Sua {make} {model} depende integralmente da condição dos pneus para estabilidade e segurança. Verificações frequentes das pressões ({pressure_display}), inspeção regular do desgaste e substituição no momento adequado são práticas que podem salvar vidas. Pneus em perfeitas condições não apenas garantem sua segurança, mas também proporcionam maior prazer de pilotagem e economia operacional. Nunca comprometa sua segurança: mantenha os pneus sempre em estado perfeito.",
+
+            "Em motocicletas como a {make} {model}, os pneus são literalmente a diferença entre a segurança e o perigo. A responsabilidade de manter pressões adequadas ({pressure_display}), verificar desgastes e substituir no momento certo recai inteiramente sobre o piloto. Essa atenção constante aos pneus não é apenas manutenção preventiva, é um investimento na sua própria vida e na dos demais usuários da via. Desenvolva o hábito de verificar os pneus antes de cada viagem e nunca ignore sinais de desgaste ou danos."
+        ]
+    ];
+
+    /**
      * Gerar conteúdo JSON estruturado para artigo de quando trocar pneus
      */
     public function generateTireChangeArticle(VehicleData $vehicle): TireChangeContent
@@ -27,7 +63,7 @@ class TemplateBasedContentService
         // 3. Adicionar dados específicos do template
         $content['vehicle_data'] = $this->generateVehicleTemplateData($vehicle);
 
-        // 4. Entidades extraídas
+        // 4. Entidades extraídas (REMOVIDO óleo desnecessário)
         $extractedEntities = $this->generateExtractedEntities($vehicle);
 
         // 5. Dados SEO (compatível com template)
@@ -64,7 +100,7 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar título do artigo
+     * Gerar título do artigo com variação
      */
     protected function generateTitle(VehicleData $vehicle): string
     {
@@ -72,7 +108,8 @@ class TemplateBasedContentService
             "Quando Trocar os Pneus do {make} {model} - Guia Completo",
             "Pneus do {make} {model}: Sinais e Momento da Troca",
             "Troca de Pneus {make} {model}: Manual Técnico",
-            "{make} {model}: Quando Substituir os Pneus"
+            "{make} {model}: Quando Substituir os Pneus",
+            "Guia de Manutenção: Pneus do {make} {model}"
         ];
 
         $template = $templates[array_rand($templates)];
@@ -107,40 +144,63 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar introdução compatível com o template
+     * Gerar introdução com variação (MELHORADO)
      */
     protected function generateIntroduction(VehicleData $vehicle): string
     {
+        $category = $vehicle->isMotorcycle() ? 'motorcycle' : 'default';
+        $templates = $this->introductionTemplates[$category];
+        $template = $templates[array_rand($templates)];
+
+        // Adicionar texto específico da categoria
+        $categoryText = $this->getCategoryDescription($vehicle);
+
+        $replacements = [
+            '{make}' => $vehicle->make,
+            '{model}' => $vehicle->model,
+            '{category}' => $vehicle->getMainCategory(),
+            '{category_text}' => $categoryText
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $template);
+    }
+
+    /**
+     * Obter descrição específica da categoria
+     */
+    private function getCategoryDescription(VehicleData $vehicle): string
+    {
         if ($vehicle->isMotorcycle()) {
-            return "Identificar o momento certo para trocar os pneus da sua {$vehicle->make} {$vehicle->model} é essencial para garantir segurança máxima na pilotagem. " .
-                   "Em motocicletas, os pneus são responsáveis por 100% da estabilidade e aderência, tornando fundamental conhecer os sinais de desgaste e os intervalos recomendados. " .
-                   "Este guia apresenta sintomas específicos, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus da sua motocicleta, " .
-                   "garantindo performance e segurança em todas as condições de pilotagem.";
+            return match ($vehicle->getMainCategory()) {
+                'adventure' => 'adventure versátil que enfrenta diferentes terrenos',
+                'sport' => 'esportiva que exige máxima aderência e performance',
+                'touring' => 'touring confortável para longas distâncias',
+                'naked' => 'naked urbana para uso diário',
+                default => 'motocicleta que demanda cuidados especiais'
+            };
         }
 
-        $categoryText = match($vehicle->getMainCategory()) {
+        return match ($vehicle->getMainCategory()) {
             'suv' => 'SUV versátil que demanda atenção especial com os pneus devido às diferentes condições de uso',
             'sedan' => 'sedan que combina conforto e economia, características que dependem diretamente da condição dos pneus',
             'hatchback' => 'hatchback urbano que precisa de pneus em perfeitas condições para máxima segurança e economia',
             'pickup' => 'pickup robusta que exige pneus adequados tanto para trabalho quanto para uso familiar',
+            'crossover' => 'crossover moderno que une versatilidade e eficiência',
             default => 'veículo que merece cuidados adequados com os pneus'
         };
-
-        return "Identificar o momento certo para trocar os pneus do seu {$vehicle->make} {$vehicle->model} é essencial para garantir segurança, desempenho e economia. " .
-               "Este {$categoryText}. " .
-               "Os pneus são o único ponto de contato com o solo e influenciam diretamente a frenagem, estabilidade e consumo de combustível. " .
-               "Este guia apresenta os sinais de desgaste, prazos recomendados, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus do seu veículo.";
     }
 
     /**
-     * Gerar sintomas de desgaste (compatível com template)
+     * Gerar sintomas de desgaste específicos (MELHORADO)
      */
     protected function generateWearSymptoms(VehicleData $vehicle): array
     {
         $baseSymptoms = [
             'vibracao_direcao' => [
-                'titulo' => 'Vibração na Direção',
-                'descricao' => 'Volante tremula ou vibra, especialmente em velocidades mais altas',
+                'titulo' => $vehicle->isMotorcycle() ? 'Vibração no Guidão' : 'Vibração na Direção',
+                'descricao' => $vehicle->isMotorcycle()
+                    ? 'Guidão vibra ou tremula, especialmente em velocidades mais altas ou durante frenagem'
+                    : 'Volante tremula ou vibra, especialmente em velocidades mais altas',
                 'severidade' => 'alta',
                 'acao' => 'Verificar balanceamento e possível desgaste irregular'
             ],
@@ -152,7 +212,9 @@ class TemplateBasedContentService
             ],
             'reducao_aderencia' => [
                 'titulo' => 'Redução da Aderência',
-                'descricao' => 'Deslizamento em curvas ou menor tração em piso molhado',
+                'descricao' => $vehicle->isMotorcycle()
+                    ? 'Perda de tração em curvas ou menor aderência em piso molhado, comprometendo a estabilidade'
+                    : 'Deslizamento em curvas ou menor tração em piso molhado',
                 'severidade' => 'alta',
                 'acao' => 'Substituição imediata recomendada'
             ],
@@ -164,6 +226,7 @@ class TemplateBasedContentService
             ]
         ];
 
+        // Sintomas específicos para motocicletas
         if ($vehicle->isMotorcycle()) {
             $baseSymptoms['instabilidade_pilotagem'] = [
                 'titulo' => 'Instabilidade na Pilotagem',
@@ -171,13 +234,20 @@ class TemplateBasedContentService
                 'severidade' => 'critica',
                 'acao' => 'Parar uso imediatamente e verificar pneus'
             ];
+
+            $baseSymptoms['formato_quadrado'] = [
+                'titulo' => 'Formato Quadrado no Pneu Traseiro',
+                'descricao' => 'Pneu traseiro desenvolve formato quadrado por uso urbano excessivo',
+                'severidade' => 'media',
+                'acao' => 'Considerar troca e variar estilo de pilotagem'
+            ];
         }
 
         return $baseSymptoms;
     }
 
     /**
-     * Gerar fatores que afetam durabilidade (compatível com template)
+     * Gerar fatores que afetam durabilidade (MANTIDO mas melhorado)
      */
     protected function generateDurabilityFactors(VehicleData $vehicle): array
     {
@@ -186,13 +256,18 @@ class TemplateBasedContentService
                 'titulo' => 'Calibragem Inadequada',
                 'impacto_negativo' => '-30%',
                 'descricao' => 'Pressão incorreta causa desgaste prematuro e irregular',
-                'pressao_recomendada' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI para o {$vehicle->make} {$vehicle->model}"
+                'pressao_recomendada' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI para o {$vehicle->make} {$vehicle->model}",
+                'recomendacao' => $vehicle->isMotorcycle() ? 'Verificar pressão semanalmente' : 'Verificar pressão mensalmente'
             ],
             'conducao_agressiva' => [
-                'titulo' => 'Condução Agressiva',
+                'titulo' => $vehicle->isMotorcycle() ? 'Pilotagem Agressiva' : 'Condução Agressiva',
                 'impacto_negativo' => '-40%',
-                'descricao' => 'Acelerações e frenagens bruscas reduzem drasticamente a vida útil',
-                'recomendacao' => 'Mantenha condução suave e progressiva'
+                'descricao' => $vehicle->isMotorcycle()
+                    ? 'Acelerações bruscas, frenagens severas e inclinações excessivas reduzem drasticamente a vida útil'
+                    : 'Acelerações e frenagens bruscas reduzem drasticamente a vida útil',
+                'recomendacao' => $vehicle->isMotorcycle()
+                    ? 'Mantenha pilotagem suave e progressiva'
+                    : 'Mantenha condução suave e progressiva'
             ],
             'condicoes_adversas' => [
                 'titulo' => 'Condições Adversas das Vias',
@@ -203,14 +278,16 @@ class TemplateBasedContentService
             'manutencao_adequada' => [
                 'titulo' => 'Manutenção Adequada',
                 'impacto_positivo' => '+20%',
-                'descricao' => 'Calibragem regular, rodízio a cada 10.000 km, alinhamento adequado',
+                'descricao' => $vehicle->isMotorcycle()
+                    ? 'Calibragem regular, verificação de desgaste, limpeza adequada'
+                    : 'Calibragem regular, rodízio a cada 10.000 km, alinhamento adequado',
                 'beneficio' => 'Aumenta significativamente a vida útil dos pneus'
             ]
         ];
     }
 
     /**
-     * Gerar cronograma de verificação (compatível com template)
+     * Gerar cronograma de verificação (MELHORADO)
      */
     protected function generateInspectionSchedule(VehicleData $vehicle): array
     {
@@ -218,18 +295,23 @@ class TemplateBasedContentService
             return [
                 'semanal' => [
                     'titulo' => 'Verificação Semanal',
-                    'descricao' => 'Pressão dos pneus e inspeção visual básica antes de sair',
+                    'descricao' => 'Pressão dos pneus e inspeção visual básica antes de longas saídas',
                     'importancia' => 'crítica'
                 ],
-                'mensal' => [
-                    'titulo' => 'Inspeção Mensal',
+                'quinzenal' => [
+                    'titulo' => 'Inspeção Quinzenal',
                     'descricao' => 'Verificação detalhada de desgaste, rachaduras e objetos presos',
                     'importancia' => 'alta'
                 ],
                 'revisao' => [
                     'titulo' => 'A cada revisão (5.000 km)',
-                    'descricao' => 'Avaliação profissional da condição dos pneus e necessidade de troca',
+                    'descricao' => "Avaliação profissional da condição dos pneus durante a revisão programada da {$vehicle->make} {$vehicle->model}",
                     'importancia' => 'essencial'
+                ],
+                'antes_viagens' => [
+                    'titulo' => 'Antes de Viagens Longas',
+                    'descricao' => 'Verificação completa incluindo verificação de kit de reparo',
+                    'importancia' => 'obrigatória'
                 ]
             ];
         }
@@ -259,12 +341,12 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar tipos de pneus com quilometragem esperada (compatível com template)
+     * Gerar tipos de pneus com quilometragem esperada (MELHORADO)
      */
     protected function generateTireTypes(VehicleData $vehicle): array
     {
         if ($vehicle->isMotorcycle()) {
-            return [
+            $types = [
                 'original_oem' => [
                     'tipo' => 'Original (OEM)',
                     'quilometragem_esperada' => '15.000 - 25.000 km',
@@ -282,14 +364,23 @@ class TemplateBasedContentService
                     'quilometragem_esperada' => '20.000 - 30.000 km',
                     'aplicacao' => 'Viagens longas e uso rodoviário',
                     'observacoes' => 'Maior durabilidade e conforto'
-                ],
-                'trail' => [
+                ]
+            ];
+
+            // Adicionar Trail para Adventure
+            if (
+                str_contains(strtolower($vehicle->getMainCategory()), 'adventure') ||
+                str_contains(strtolower($vehicle->model), 'adventure')
+            ) {
+                $types['trail'] = [
                     'tipo' => 'Trail/Adventure',
                     'quilometragem_esperada' => '12.000 - 20.000 km',
                     'aplicacao' => 'Uso misto on/off road',
                     'observacoes' => 'Versatilidade para diferentes terrenos'
-                ]
-            ];
+                ];
+            }
+
+            return $types;
         }
 
         $carTypes = [
@@ -313,8 +404,8 @@ class TemplateBasedContentService
             ]
         ];
 
-        // Adicionar All-Terrain para SUVs
-        if (in_array($vehicle->getMainCategory(), ['suv', 'pickup'])) {
+        // Adicionar All-Terrain para SUVs e Pickups
+        if (in_array($vehicle->getMainCategory(), ['suv', 'pickup', 'crossover'])) {
             $carTypes['all_terrain'] = [
                 'tipo' => 'All-Terrain',
                 'quilometragem_esperada' => '40.000 - 50.000 km',
@@ -327,7 +418,7 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar sinais críticos para substituição imediata
+     * Gerar sinais críticos para substituição imediata (MELHORADO)
      */
     protected function generateCriticalSigns(VehicleData $vehicle): array
     {
@@ -378,11 +469,11 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar manutenção preventiva
+     * Gerar manutenção preventiva (AJUSTADO)
      */
     protected function generatePreventiveMaintenance(VehicleData $vehicle): array
     {
-        return [
+        $maintenance = [
             'verificacao_pressao' => [
                 'frequencia' => $vehicle->isMotorcycle() ? 'Semanalmente ou antes de cada saída' : 'Mensalmente',
                 'momento' => 'Sempre com pneus frios',
@@ -406,10 +497,18 @@ class TemplateBasedContentService
                 'Proteja da exposição solar excessiva'
             ]
         ];
+
+        if ($vehicle->isMotorcycle()) {
+            $maintenance['cuidados_gerais'][] = 'Evite derrapagens e wheeling';
+            $maintenance['cuidados_gerais'][] = 'Cuidado especial em piso molhado';
+            $maintenance['cuidados_gerais'][] = 'Limpe os pneus após uso off-road';
+        }
+
+        return $maintenance;
     }
 
     /**
-     * Gerar procedimento de verificação detalhado
+     * Gerar procedimento de verificação detalhado (MANTIDO)
      */
     protected function generateInspectionProcedure(VehicleData $vehicle): array
     {
@@ -443,7 +542,9 @@ class TemplateBasedContentService
             'teste_funcional' => [
                 'titulo' => 'Teste Funcional',
                 'procedimento' => [
-                    'Dirigir em baixa velocidade prestando atenção a vibrações',
+                    $vehicle->isMotorcycle()
+                        ? 'Pilote em baixa velocidade prestando atenção a vibrações'
+                        : 'Dirigir em baixa velocidade prestando atenção a vibrações',
                     'Verificar se veículo puxa para algum lado',
                     'Observar ruídos anormais durante rolamento',
                     'Testar frenagem em local seguro'
@@ -453,7 +554,7 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar FAQ
+     * Gerar FAQ (MELHORADO - SEM ÓLEO)
      */
     protected function generateFAQ(VehicleData $vehicle): array
     {
@@ -464,13 +565,15 @@ class TemplateBasedContentService
             ],
             [
                 'pergunta' => "Com que frequência devo verificar a pressão?",
-                'resposta' => $vehicle->isMotorcycle() 
+                'resposta' => $vehicle->isMotorcycle()
                     ? "Em motocicletas, verifique semanalmente ou antes de cada saída. Use as pressões recomendadas: {$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI."
                     : "Verifique mensalmente e antes de viagens. Para o {$vehicle->make} {$vehicle->model}, mantenha {$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI."
             ],
             [
                 'pergunta' => "É seguro trocar apenas um pneu?",
-                'resposta' => "Idealmente, troque sempre em pares (dianteiros ou traseiros) para manter o equilíbrio do veículo. Em emergências, pode trocar apenas um, mas substitua o par o quanto antes."
+                'resposta' => $vehicle->isMotorcycle()
+                    ? "Em motocicletas, é altamente recomendado trocar sempre em pares ou individualmente conforme desgaste. Mantenha sempre pneus da mesma marca e modelo para garantir comportamento uniforme."
+                    : "Idealmente, troque sempre em pares (dianteiros ou traseiros) para manter o equilíbrio do veículo. Em emergências, pode trocar apenas um, mas substitua o par o quanto antes."
             ]
         ];
 
@@ -479,39 +582,44 @@ class TemplateBasedContentService
                 'pergunta' => "Posso usar pneus de carro na motocicleta?",
                 'resposta' => "Jamais! Motocicletas exigem pneus específicos com construção, compostos e desenhos adequados às características de duas rodas."
             ];
-        }
 
-        if ($vehicle->recommendedOil) {
             $faq[] = [
-                'pergunta' => "Qual óleo usar no {$vehicle->make} {$vehicle->model}?",
-                'resposta' => "Use {$vehicle->recommendedOil} conforme especificação do fabricante para manter a garantia e proteger adequadamente o motor."
+                'pergunta' => "Como evitar o formato quadrado no pneu traseiro?",
+                'resposta' => "Varie o estilo de pilotagem, evite apenas uso urbano, faça curvas ocasionalmente e mantenha a pressão correta. O formato quadrado é comum em uso urbano excessivo."
+            ];
+        } else {
+            $faq[] = [
+                'pergunta' => "Quando fazer o rodízio dos pneus?",
+                'resposta' => "Faça o rodízio a cada 10.000 km seguindo o padrão cruzado (dianteiro direito vai para traseiro esquerdo e vice-versa) para garantir desgaste uniforme."
             ];
         }
+
+        // REMOVIDO FAQ sobre óleo - isso vai para template específico de óleo
 
         return $faq;
     }
 
     /**
-     * Gerar considerações finais
+     * Gerar considerações finais com variação (MELHORADO)
      */
     protected function generateFinalConsiderations(VehicleData $vehicle): string
     {
-        $conclusion = "Manter os pneus do seu {$vehicle->make} {$vehicle->model} em perfeitas condições é investir em segurança, economia e desempenho. ";
-        $conclusion .= "A verificação regular das pressões ({$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI), ";
-        $conclusion .= "o acompanhamento do desgaste e a troca no momento adequado são práticas essenciais para qualquer proprietário responsável. ";
-        
-        if ($vehicle->isMotorcycle()) {
-            $conclusion .= "Em motocicletas, essa atenção é ainda mais crítica, pois os pneus são responsáveis por toda a estabilidade e segurança. ";
-        }
-        
-        $conclusion .= "Lembre-se: pneus em bom estado não apenas protegem vidas, mas também proporcionam melhor experiência de condução, ";
-        $conclusion .= "economia de combustível e menor impacto ambiental. Invista na manutenção preventiva e desfrute de um veículo sempre seguro e eficiente.";
+        $category = $vehicle->isMotorcycle() ? 'motorcycle' : 'default';
+        $templates = $this->conclusionTemplates[$category];
+        $template = $templates[array_rand($templates)];
 
-        return $conclusion;
+        $replacements = [
+            '{make}' => $vehicle->make,
+            '{model}' => $vehicle->model,
+            '{category}' => $vehicle->getMainCategory(),
+            '{pressure_display}' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI"
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $template);
     }
 
     /**
-     * Gerar entidades extraídas
+     * Gerar entidades extraídas (REMOVIDO óleo desnecessário)
      */
     protected function generateExtractedEntities(VehicleData $vehicle): array
     {
@@ -522,13 +630,13 @@ class TemplateBasedContentService
             'tipo_veiculo' => $vehicle->getVehicleType(),
             'categoria' => $vehicle->getMainCategory(),
             'medida_pneus' => $vehicle->tireSize,
-            'pressao_recomendada' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI",
-            'oleo_recomendado' => $vehicle->recommendedOil ?? 'Não aplicável'
+            'pressao_recomendada' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI"
+            // REMOVIDO: 'oleo_recomendado' - não faz parte do template de pneus
         ];
     }
 
     /**
-     * Gerar dados SEO compatíveis com o template
+     * Gerar dados SEO compatíveis com o template (MANTIDO)
      */
     protected function generateSeoData(VehicleData $vehicle, string $title): array
     {
@@ -570,12 +678,12 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar metadados específicos para o template
+     * Gerar metadados específicos para o template (MELHORADO)
      */
     protected function generateMetadata(VehicleData $vehicle): array
     {
-        $wordCount = 1800; // Estimativa realista baseada no template
-        
+        $wordCount = rand(1700, 2100); // Variação realista
+
         return [
             'original_clicks' => 0,
             'original_category' => 'Manutenção e Cuidados',
@@ -584,7 +692,7 @@ class TemplateBasedContentService
             'reading_time' => max(1, (int) ceil($wordCount / 200)),
             'article_tone' => 'técnico-informativo',
             'published_date' => now()->format('Y-m-d'),
-            'updated_date' => now()->format('d \d\e F \d\e Y'), // Formato brasileiro
+            'updated_date' => now()->format('d \d\e F \d\e Y'),
             'related_content' => $this->generateRelatedContentSuggestions($vehicle),
             'schema_type' => 'TechArticle',
             'vehicle_engine' => "{$vehicle->make} {$vehicle->model}",
@@ -599,7 +707,7 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar tags
+     * Gerar tags (MELHORADO)
      */
     protected function generateTags(VehicleData $vehicle): array
     {
@@ -609,31 +717,45 @@ class TemplateBasedContentService
             "manutenção pneus",
             "pressão pneus",
             "desgaste pneus",
+            "troca pneus",
             $vehicle->make,
             $vehicle->model,
-            $vehicle->getMainCategory()
+            $vehicle->getMainCategory(),
+            $vehicle->tireSize
         ];
 
         if ($vehicle->isMotorcycle()) {
-            $tags[] = 'Motocicleta';
-            $tags[] = 'Pneus moto';
+            $tags[] = 'motocicleta';
+            $tags[] = 'pneus moto';
+            $tags[] = 'segurança moto';
         } else {
-            $tags[] = 'Carro';
-            $tags[] = 'Automóvel';
+            $tags[] = 'carro';
+            $tags[] = 'automóvel';
+            $tags[] = 'pneus carro';
         }
 
-        $tags[] = $vehicle->tireSize;
-        
-        return $tags;
+        return array_filter($tags);
     }
 
     /**
-     * Gerar tópicos relacionados
+     * Gerar tópicos relacionados (FOCO EM PNEUS)
      */
     protected function generateRelatedTopics(VehicleData $vehicle): array
     {
-        $related = [];
+        $related = [
+            [
+                'title' => "Pressão dos Pneus: Guia Completo",
+                'slug' => "pressao-pneus-guia-completo",
+                'icon' => 'gauge'
+            ],
+            [
+                'title' => "Tipos de Pneus: Como Escolher",
+                'slug' => "tipos-pneus-como-escolher",
+                'icon' => 'tire'
+            ]
+        ];
 
+        // Relacionados específicos apenas se for relevante
         if ($vehicle->recommendedOil) {
             $related[] = [
                 'title' => "Óleo Recomendado para {$vehicle->make} {$vehicle->model}",
@@ -648,17 +770,11 @@ class TemplateBasedContentService
             'icon' => 'wrench'
         ];
 
-        $related[] = [
-            'title' => "Pressão dos Pneus: Guia Completo",
-            'slug' => "pressao-pneus-guia-completo",
-            'icon' => 'gauge'
-        ];
-
         return $related;
     }
 
     /**
-     * Gerar informações do veículo
+     * Gerar informações do veículo (LIMPO)
      */
     protected function generateVehicleInfo(VehicleData $vehicle): array
     {
@@ -669,13 +785,13 @@ class TemplateBasedContentService
             'category' => $vehicle->getMainCategory(),
             'vehicle_type' => $vehicle->getVehicleType(),
             'make_slug' => Str::slug($vehicle->make),
-            'tire_size' => $vehicle->tireSize,
-            'recommended_oil' => $vehicle->recommendedOil
+            'tire_size' => $vehicle->tireSize
+            // REMOVIDO: recommended_oil (vai para template específico)
         ];
     }
 
     /**
-     * Gerar dados de filtro
+     * Gerar dados de filtro (LIMPO)
      */
     protected function generateFilterData(VehicleData $vehicle): array
     {
@@ -691,7 +807,7 @@ class TemplateBasedContentService
     }
 
     /**
-     * Adicionar dados específicos do veículo para o template
+     * Adicionar dados específicos do veículo para o template (FOCO EM PNEUS)
      */
     protected function generateVehicleTemplateData(VehicleData $vehicle): array
     {
@@ -703,8 +819,8 @@ class TemplateBasedContentService
             'vehicle_year' => $vehicle->year,
             'vehicle_category' => $vehicle->getMainCategory(),
             'vehicle_type' => $vehicle->getVehicleType(),
-            
-            // Especificações técnicas
+
+            // Especificações técnicas DOS PNEUS
             'tire_size' => $vehicle->tireSize,
             'pressures' => [
                 'empty_front' => $vehicle->pressureEmptyFront,
@@ -715,31 +831,44 @@ class TemplateBasedContentService
                 'max_rear' => $vehicle->pressureMaxRear,
                 'spare' => $vehicle->pressureSpare
             ],
-            
+
             // Dados para formatação no template
             'pressure_display' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI",
             'pressure_loaded_display' => "{$vehicle->pressureLightFront}/{$vehicle->pressureLightRear} PSI",
-            
-            // Informações adicionais
-            'recommended_oil' => $vehicle->recommendedOil,
+
+            // Informações do tipo de veículo
             'is_motorcycle' => $vehicle->isMotorcycle(),
             'is_electric' => $vehicle->isElectric(),
             'is_hybrid' => $vehicle->isHybrid(),
-            
+
             // Dados para URLs e imagens
             'image_url' => "https://mercadoveiculos.com/images/" . strtolower($vehicle->make) . "-" . strtolower($vehicle->model) . ".jpg",
             'slug' => $this->generateSlug($vehicle),
             'canonical_url' => "https://mercadoveiculos.com/info/" . $this->generateSlug($vehicle)
+
+            // REMOVIDO: recommended_oil (não pertence ao template de pneus)
         ];
     }
 
     /**
-     * Gerar sugestões de conteúdo relacionado
+     * Gerar sugestões de conteúdo relacionado (FOCO EM PNEUS)
      */
     protected function generateRelatedContentSuggestions(VehicleData $vehicle): array
     {
-        $suggestions = [];
+        $suggestions = [
+            [
+                'title' => "Pressão Correta dos Pneus: Guia Técnico",
+                'slug' => "pressao-correta-pneus-guia-tecnico",
+                'icon' => 'gauge'
+            ],
+            [
+                'title' => "Rodízio de Pneus: Como e Quando Fazer",
+                'slug' => "rodizio-pneus-como-quando-fazer",
+                'icon' => 'rotate'
+            ]
+        ];
 
+        // Adicionar específicos do veículo apenas se relevante
         if ($vehicle->recommendedOil) {
             $suggestions[] = [
                 'title' => "Óleo Recomendado para {$vehicle->make} {$vehicle->model}: Guia Completo",
@@ -754,19 +883,11 @@ class TemplateBasedContentService
             'icon' => 'wrench'
         ];
 
-        if (!$vehicle->isElectric()) {
-            $suggestions[] = [
-                'title' => "Como Economizar Combustível no {$vehicle->make} {$vehicle->model}",
-                'slug' => "como-economizar-combustivel-" . Str::slug("{$vehicle->make}-{$vehicle->model}"),
-                'icon' => 'gas-pump'
-            ];
-        }
-
         return $suggestions;
     }
 
     /**
-     * Substituir placeholders nos templates
+     * Substituir placeholders nos templates (MANTIDO)
      */
     protected function replacePlaceholders(string $template, VehicleData $vehicle): string
     {

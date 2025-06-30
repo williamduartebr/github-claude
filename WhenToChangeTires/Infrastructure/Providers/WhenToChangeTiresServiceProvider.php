@@ -14,6 +14,7 @@ use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\Proc
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ImportVehiclesFromCsvCommand;
 use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\DebugContentGenerationCommand;
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\InstallWhenToChangeTiresCommand;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\SyncBlogWhenToChangeTiresCommand;
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\GenerateInitialTireArticlesCommand;
 
 class WhenToChangeTiresServiceProvider extends ServiceProvider
@@ -27,6 +28,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
         ImportVehiclesFromCsvCommand::class,
         InstallWhenToChangeTiresCommand::class,
         DebugContentGenerationCommand::class,
+        SyncBlogWhenToChangeTiresCommand::class,
     ];
 
     /**

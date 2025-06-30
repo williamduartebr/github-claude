@@ -23,9 +23,14 @@ class TireChangeArticle extends Model
         'pressure_light_rear' => 'decimal:1',
         'pressure_spare' => 'decimal:1',
         'content_score' => 'decimal:2',
+        'blog_published_time' => 'datetime',
+        'blog_modified_time' => 'datetime',
+        'blog_synced' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    
 
     protected $fillable = [
         // Dados do veículo
@@ -77,6 +82,13 @@ class TireChangeArticle extends Model
         // Controle de lotes
         'batch_id',
         'processed_at',
+
+         // Campos do blog
+        'blog_id',
+        'blog_status',
+        'blog_published_time',
+        'blog_modified_time',
+        'blog_synced',
         
         // Timestamps
         'created_at',
