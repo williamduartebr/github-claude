@@ -21,11 +21,6 @@ interface TireChangeArticleRepositoryInterface
     public function existsForVehicle(string $make, string $model, int $year): bool;
 
     /**
-     * 🎯 NOVO: Verificar se existe artigo para o modelo (sem year)
-     */
-    public function existsForVehicleModel(string $make, string $model): bool;
-
-    /**
      * Buscar artigo por slug
      */
     public function findBySlug(string $slug): ?TireChangeArticle;
@@ -34,11 +29,6 @@ interface TireChangeArticleRepositoryInterface
      * Buscar artigo por veículo (com year)
      */
     public function findByVehicle(string $make, string $model, int $year): ?TireChangeArticle;
-
-    /**
-     * 🎯 NOVO: Buscar artigo por modelo (sem year)
-     */
-    public function findByVehicleModel(string $make, string $model): ?TireChangeArticle;
 
     /**
      * Buscar artigos por lote

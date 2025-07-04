@@ -11,6 +11,7 @@ use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositor
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\TireChangeArticleRepository;
 use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ProcessVehicleBatchCommand;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\PublishTireArticlesCommand;
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ImportVehiclesFromCsvCommand;
 use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\DebugContentGenerationCommand;
 use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\InstallWhenToChangeTiresCommand;
@@ -29,6 +30,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
         InstallWhenToChangeTiresCommand::class,
         DebugContentGenerationCommand::class,
         SyncBlogWhenToChangeTiresCommand::class,
+        PublishTireArticlesCommand::class,        
     ];
 
     /**
