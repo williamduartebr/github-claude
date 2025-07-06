@@ -5,16 +5,16 @@ namespace Src\ContentGeneration\TireSchedule\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Src\ContentGeneration\TireSchedule\Infrastructure\Eloquent\TireArticleCorrection as ArticleCorrection;
-use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionService;
+use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TitleYearCorrectionService;
 
-class TireCorrectionsCommand extends Command
+class TitleYearCorrectionsCommand extends Command
 {
     /**
      * Nome e assinatura do comando.
      *
      * @var string
      */
-    protected $signature = 'tire-pressure-corrections 
+    protected $signature = 'tire-title-year-corrections 
                            {--all : Criar correções para todos os artigos de pneus não corrigidos}
                            {--process : Processar correções pendentes}
                            {--slug= : Processar apenas um artigo específico por slug}
@@ -29,14 +29,14 @@ class TireCorrectionsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Corrige conteúdo e pressões de artigos sobre pneus usando Claude API';
+    protected $description = 'Corrige títulos, meta descriptions e perguntas frequentes com ano do veículo usando Claude API';
 
-    protected $tireCorrectionService;
+    protected $titleYearService;
 
-    public function __construct(TireCorrectionService $tireCorrectionService)
+    public function __construct(TitleYearCorrectionService $titleYearService)
     {
         parent::__construct();
-        $this->tireCorrectionService = $tireCorrectionService;
+        $this->titleYearService = $titleYearService;
     }
 
     /**
@@ -84,10 +84,10 @@ class TireCorrectionsCommand extends Command
      */
     protected function showStats()
     {
-        $this->info('📊 Estatísticas de Correções de Pneus');
+        $this->info('📊 Estatísticas de Correções de Títulos e Ano');
         $this->line('');
 
-        $stats = $this->tireCorrectionService->getStats();
+        $stats = $this->titleYearService->getStats();
 
         $this->table(['Categoria', 'Quantidade'], [
             ['⏳ Pendentes', $stats['pending']],
@@ -111,6 +111,31 @@ class TireCorrectionsCommand extends Command
             $this->info("✅ Taxa de sucesso: {$successRate}%");
         }
 
+        // Mostrar estatísticas específicas de título/ano
+        $this->line('');
+        $this->info('🎯 Estatísticas Específicas:');
+        
+        $titleUpdates = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+            ->where('status', ArticleCorrection::STATUS_COMPLETED)
+            ->where('correction_data.title_updated', true)
+            ->count();
+
+        $metaUpdates = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+            ->where('status', ArticleCorrection::STATUS_COMPLETED)
+            ->where('correction_data.meta_updated', true)
+            ->count();
+
+        $faqUpdates = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+            ->where('status', ArticleCorrection::STATUS_COMPLETED)
+            ->where('correction_data.faq_updated', true)
+            ->count();
+
+        $this->table(['Tipo de Atualização', 'Quantidade'], [
+            ['📝 Títulos atualizados', $titleUpdates],
+            ['🔍 Meta descriptions atualizadas', $metaUpdates],
+            ['❓ FAQs atualizadas', $faqUpdates]
+        ]);
+
         return Command::SUCCESS;
     }
 
@@ -119,13 +144,13 @@ class TireCorrectionsCommand extends Command
      */
     protected function cleanDuplicates()
     {
-        $this->info('🧹 Limpando correções de pneus duplicadas...');
+        $this->info('🧹 Limpando correções de título/ano duplicadas...');
 
         if ($this->option('dry-run')) {
             $this->warn('🔍 [DRY RUN] Apenas listando duplicatas...');
         }
 
-        $results = $this->tireCorrectionService->cleanAllDuplicates();
+        $results = $this->titleYearService->cleanAllDuplicates();
 
         $this->table(['Métrica', 'Valor'], [
             ['Artigos analisados', $results['articles_analyzed']],
@@ -151,10 +176,10 @@ class TireCorrectionsCommand extends Command
     {
         $limit = (int) $this->option('limit');
 
-        $this->info("⚙️ Processando correções de pneus pendentes (limite: {$limit})...");
+        $this->info("⚙️ Processando correções de título/ano pendentes (limite: {$limit})...");
 
         if ($this->option('dry-run')) {
-            $corrections = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+            $corrections = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
                 ->where('status', ArticleCorrection::STATUS_PENDING)
                 ->limit($limit)
                 ->get();
@@ -162,23 +187,36 @@ class TireCorrectionsCommand extends Command
             $this->info("🔍 [DRY RUN] {$corrections->count()} correções seriam processadas:");
             $tableData = [];
             foreach ($corrections as $correction) {
+                $vehicleName = $correction->original_data['vehicle_data']['vehicle_name'] ?? 'N/A';
+                $year = $correction->original_data['vehicle_data']['vehicle_year'] ?? 'N/A';
+                
                 $tableData[] = [
                     $correction->article_slug,
+                    "{$vehicleName} {$year}",
                     $correction->created_at->format('d/m H:i'),
                     $correction->status
                 ];
             }
-            $this->table(['Slug', 'Criado em', 'Status'], $tableData);
+            $this->table(['Slug', 'Veículo', 'Criado em', 'Status'], $tableData);
             return Command::SUCCESS;
         }
 
-        $results = $this->tireCorrectionService->processAllPendingCorrections($limit);
+        $results = $this->titleYearService->processAllPendingCorrections($limit);
 
         $this->newLine();
         $this->info('📊 Resultado do processamento:');
         $this->info("⚙️ Processadas: {$results['processed']}");
         $this->info("✅ Sucessos: {$results['successful']}");
         $this->info("❌ Falhas: {$results['failed']}");
+
+        // Detalhes dos tipos de atualização
+        if ($results['successful'] > 0) {
+            $this->line('');
+            $this->info('📋 Detalhes das atualizações:');
+            $this->info("📝 Títulos: {$results['details']['titles_updated']}");
+            $this->info("🔍 Meta descriptions: {$results['details']['metas_updated']}");
+            $this->info("❓ FAQs: {$results['details']['faqs_updated']}");
+        }
 
         return Command::SUCCESS;
     }
@@ -194,30 +232,34 @@ class TireCorrectionsCommand extends Command
 
         // Verificar se existe correção pendente
         $correction = ArticleCorrection::where('article_slug', $slug)
-            ->where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+            ->where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
             ->where('status', ArticleCorrection::STATUS_PENDING)
             ->first();
 
         if (!$correction) {
-            $this->warn("⚠️ Nenhuma correção pendente encontrada para: {$slug}");
+            $this->warn("⚠️ Nenhuma correção de título/ano pendente encontrada para: {$slug}");
             
             if ($this->confirm('Deseja criar uma nova correção para este artigo?')) {
-                $result = $this->tireCorrectionService->createCorrectionsForSlugs([$slug]);
+                $result = $this->titleYearService->createCorrectionsForSlugs([$slug]);
                 
                 if ($result['created'] > 0) {
                     $this->info("✅ Correção criada para: {$slug}");
                     
                     if ($this->confirm('Deseja processar a correção agora?')) {
                         $correction = ArticleCorrection::where('article_slug', $slug)
-                            ->where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+                            ->where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
                             ->where('status', ArticleCorrection::STATUS_PENDING)
                             ->first();
                             
                         if ($correction) {
-                            $success = $this->tireCorrectionService->processTireCorrection($correction);
+                            $success = $this->titleYearService->processTitleYearCorrection($correction);
                             
                             if ($success) {
                                 $this->info('✅ Correção processada com sucesso!');
+                                
+                                // Mostrar detalhes do que foi atualizado
+                                $fresh = $correction->fresh();
+                                $this->showCorrectionDetails($fresh);
                             } else {
                                 $this->error('❌ Falha ao processar a correção.');
                             }
@@ -232,18 +274,28 @@ class TireCorrectionsCommand extends Command
         }
 
         if ($this->option('dry-run')) {
+            $vehicleName = $correction->original_data['vehicle_data']['vehicle_name'] ?? 'N/A';
+            $year = $correction->original_data['vehicle_data']['vehicle_year'] ?? 'N/A';
+            
             $this->info("🔍 [DRY RUN] Seria processada:");
-            $this->table(['ID', 'Slug', 'Status', 'Criado em'], [
-                [$correction->_id, $correction->article_slug, $correction->status, $correction->created_at->format('d/m H:i')]
+            $this->table(['ID', 'Slug', 'Veículo', 'Status', 'Criado em'], [
+                [
+                    $correction->_id, 
+                    $correction->article_slug, 
+                    "{$vehicleName} {$year}",
+                    $correction->status, 
+                    $correction->created_at->format('d/m H:i')
+                ]
             ]);
             return Command::SUCCESS;
         }
 
         $this->info("⚙️ Processando correção...");
-        $success = $this->tireCorrectionService->processTireCorrection($correction);
+        $success = $this->titleYearService->processTitleYearCorrection($correction);
 
         if ($success) {
             $this->info("✅ Correção processada com sucesso para: {$slug}");
+            $this->showCorrectionDetails($correction->fresh());
         } else {
             $this->error("❌ Falha ao processar correção para: {$slug}");
         }
@@ -258,12 +310,12 @@ class TireCorrectionsCommand extends Command
     {
         $limit = (int) $this->option('limit');
 
-        $this->info("📝 Criando correções para artigos de pneus (limite: {$limit})...");
+        $this->info("📝 Criando correções de título/ano para artigos de pneus (limite: {$limit})...");
 
-        $slugs = $this->tireCorrectionService->getAllTireArticleSlugs($limit);
+        $slugs = $this->titleYearService->getAllTireArticleSlugs($limit);
 
         if (empty($slugs)) {
-            $this->info('ℹ️ Nenhum artigo de pneu encontrado para correção.');
+            $this->info('ℹ️ Nenhum artigo de pneu encontrado para correção de título/ano.');
             return Command::SUCCESS;
         }
 
@@ -296,7 +348,7 @@ class TireCorrectionsCommand extends Command
         $chunks = array_chunk($slugs, 50);
 
         foreach ($chunks as $chunk) {
-            $chunkResults = $this->tireCorrectionService->createCorrectionsForSlugs($chunk);
+            $chunkResults = $this->titleYearService->createCorrectionsForSlugs($chunk);
             
             $results['created'] += $chunkResults['created'];
             $results['skipped'] += $chunkResults['skipped'];
@@ -318,5 +370,46 @@ class TireCorrectionsCommand extends Command
         $this->info("📊 Total processado: " . array_sum($results));
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * 📋 Mostra detalhes do que foi corrigido
+     */
+    protected function showCorrectionDetails($correction)
+    {
+        if (!$correction || !isset($correction->correction_data)) {
+            return;
+        }
+
+        $data = $correction->correction_data;
+
+        $this->line('');
+        $this->info('📋 Detalhes da correção aplicada:');
+
+        if ($data['title_updated'] ?? false) {
+            $this->info("📝 Título atualizado");
+            if (isset($data['corrected_seo']['page_title'])) {
+                $this->line("   Novo: " . $data['corrected_seo']['page_title']);
+            }
+        }
+
+        if ($data['meta_updated'] ?? false) {
+            $this->info("🔍 Meta description atualizada");
+            if (isset($data['corrected_seo']['meta_description'])) {
+                $preview = substr($data['corrected_seo']['meta_description'], 0, 100) . '...';
+                $this->line("   Novo: " . $preview);
+            }
+        }
+
+        if ($data['faq_updated'] ?? false) {
+            $this->info("❓ Perguntas frequentes atualizadas");
+            $faqCount = count($data['corrected_content']['perguntas_frequentes'] ?? []);
+            $this->line("   {$faqCount} perguntas processadas");
+        }
+
+        if (isset($data['reason'])) {
+            $this->line('');
+            $this->comment("💡 Motivo: " . $data['reason']);
+        }
     }
 }

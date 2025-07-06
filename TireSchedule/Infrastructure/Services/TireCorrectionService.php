@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Src\ArticleGenerator\Infrastructure\Eloquent\TempArticle;
-use Src\ArticleGenerator\Infrastructure\Eloquent\ArticleCorrection;
+use Src\ContentGeneration\TireSchedule\Infrastructure\Eloquent\TireArticleCorrection as ArticleCorrection;
 
 class TireCorrectionService
 {

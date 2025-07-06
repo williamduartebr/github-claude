@@ -5,271 +5,240 @@ namespace Src\ContentGeneration\TireSchedule\Console\Schedules;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Console\Scheduling\Schedule;
-use Src\ArticleGenerator\Infrastructure\Eloquent\ArticleCorrection;
-use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionService;
+use Src\ContentGeneration\TireSchedule\Infrastructure\Eloquent\TireArticleCorrection as ArticleCorrection;
 
 class TireCorrectionSchedule
 {
     /**
      * 🚗 Schedules para correção de artigos sobre pneus
-     * TESTE: A cada 15 minutos
-     * PRODUÇÃO: De hora em hora das 8h às 20h
-     * Segunda a Sexta + Sábado até meio-dia
+     * Sistema simplificado 24h para TempArticles
+     * Processamento contínuo de correções de pneus E título/ano
      */
     public static function register(Schedule $schedule): void
     {
-        // Só executa em produção e staging
-        if (app()->environment(['local', 'testing'])) {
-            return;
-        }
-
-        static::registerCreation($schedule);
-        static::registerProcessing($schedule);
-        static::registerMonitoring($schedule);
-        static::registerAnalytics($schedule);
-        static::registerMaintenance($schedule);
-    }
-
-    /**
-     * 🆕 Criação de correções - TESTE: a cada 15 minutos
-     */
-    private static function registerCreation(Schedule $schedule): void
-    {
-        // TESTE: A cada 15 minutos das 8h às 20h (horário de São Paulo)
+        // ========================================
+        // 🚗 CORREÇÕES DE PRESSÃO DE PNEUS
+        // ========================================
+        
+        // Criar correções de pneus a cada 30 minutos
         $schedule->call(function () {
             $pendingCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
                 ->where('status', ArticleCorrection::STATUS_PENDING)
                 ->count();
 
-            // Só cria se há menos de 25 pendentes
-            if ($pendingCount < 25) {
+            // Só cria se há menos de 30 pendentes
+            if ($pendingCount < 30) {
                 Artisan::call('tire-pressure-corrections', [
                     '--all' => true,
-                    '--limit' => 3000,
+                    '--limit' => 1000,
                     '--force' => true
                 ]);
+                
+                Log::info("🚗 Correções de pneus criadas: pendentes antes = {$pendingCount}");
             }
         })
-            ->cron('*/15 8-21 * * 1-5') // Segunda a Sexta, 8h-21h, a cada 15min
-            ->name('tire-creation-weekdays')
-            ->withoutOverlapping(30);
+            ->everyThirtyMinutes()
+            ->name('tire-pressure-creation-24h')
+            ->withoutOverlapping(20);
 
-        // Sábados até meio-dia (12h)
-        $schedule->call(function () {
-            $pendingCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-                ->where('status', ArticleCorrection::STATUS_PENDING)
-                ->count();
-
-            if ($pendingCount < 25) {
-                Artisan::call('tire-pressure-corrections', [
-                    '--all' => true,
-                    '--limit' => 3000,
-                    '--force' => true
-                ]);
-            }
-        })
-            ->cron('*/15 8-12 * * 6') // Sábado, 8h-12h, a cada 15min
-            ->name('tire-creation-saturday')
-            ->withoutOverlapping(30);
-    }
-
-    /**
-     * ⚡ Processamento via Claude API - TESTE: a cada 15 minutos
-     */
-    private static function registerProcessing(Schedule $schedule): void
-    {
-        // Processamento 24h - limite de 1 por vez para não sobrecarregar
+        // Processar correções de pneus a cada 3 minutos
         $schedule->command('tire-pressure-corrections --process --limit=1 --force')
-            ->cron('*/3 * * * *') // A cada 3 minutos, 24 horas
-            ->name('tire-processing-24h')
-            ->withoutOverlapping(10)
+            ->everyThreeMinutes()
+            ->name('tire-pressure-processing-24h')
+            ->withoutOverlapping(2)
             ->runInBackground()
             ->appendOutputTo(storage_path('logs/tire-processing.log'));
-    }
 
-    /**
-     * 📊 Monitoramento em horário comercial
-     */
-    private static function registerMonitoring(Schedule $schedule): void
-    {
-        // Stats a cada 2 horas no horário comercial
-        $schedule->command('tire-pressure-corrections --stats')
-            ->cron('0 8-21/2 * * 1-5') // A cada 2 horas, 8h-21h, Seg-Sex
-            ->appendOutputTo(storage_path('logs/tire-stats.log'))
-            ->name('tire-monitoring-weekdays');
-
-        // Stats sábado a cada 2 horas até meio-dia
-        $schedule->command('tire-pressure-corrections --stats')
-            ->cron('0 8-12/2 * * 6') // A cada 2 horas, 8h-12h, Sábado
-            ->appendOutputTo(storage_path('logs/tire-stats.log'))
-            ->name('tire-monitoring-saturday');
-
-        // Alerta no final do expediente (20h)
+        // ========================================
+        // 📝 CORREÇÕES DE TÍTULO/ANO
+        // ========================================
+        
+        // Criar correções de título/ano a cada 45 minutos (offset para não conflitar)
         $schedule->call(function () {
-            $pendingCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+            $pendingCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
                 ->where('status', ArticleCorrection::STATUS_PENDING)
                 ->count();
 
-            $processingCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-                ->where('status', ArticleCorrection::STATUS_PROCESSING)
-                ->count();
-
-            if ($pendingCount > 50) {
-                Log::warning("🚗 Muitas correções de pneus pendentes: {$pendingCount}");
-            }
-
-            if ($processingCount > 10) {
-                Log::warning("🚗 Muitas correções de pneus em processamento: {$processingCount} (possível travamento)");
+            // Só cria se há menos de 40 pendentes
+            if ($pendingCount < 40) {
+                Artisan::call('tire-title-year-corrections', [
+                    '--all' => true,
+                    '--limit' => 800,
+                    '--force' => true
+                ]);
+                
+                Log::info("📝 Correções de título/ano criadas: pendentes antes = {$pendingCount}");
             }
         })
-            ->cron('0 20 * * 1-5') // 20h, Segunda a Sexta
-            ->name('tire-alerts-end-of-day');
-    }
+            ->cron('15,45 * * * *') // A cada 30min com offset de 15min
+            ->name('title-year-creation-24h')
+            ->withoutOverlapping(20);
 
-    /**
-     * 📈 Schedule para análise de performance - final do dia
-     */
-    private static function registerAnalytics(Schedule $schedule): void
-    {
-        // Relatório diário - final do expediente (19h)
+        // Processar correções de título/ano a cada 4 minutos (offset para não conflitar)
+        $schedule->command('tire-title-year-corrections --process --limit=1 --force')
+            ->cron('1,5,9,13,17,21,25,29,33,37,41,45,49,53,57 * * * *') // A cada 4min
+            ->name('title-year-processing-24h')
+            ->withoutOverlapping(2)
+            ->runInBackground()
+            ->appendOutputTo(storage_path('logs/title-year-processing.log'));
+
+        // ========================================
+        // 📊 MONITORAMENTO E ESTATÍSTICAS
+        // ========================================
+
+        // Stats consolidadas a cada 2 horas
         $schedule->call(function () {
-            $service = app(TireCorrectionService::class);
-            $stats = $service->getStats();
-
-            // Estatísticas adicionais específicas para pneus
-            $totalTireArticles = \Src\ArticleGenerator\Infrastructure\Eloquent\TempArticle::where('domain', 'when_to_change_tires')
-                ->where('status', 'draft')
-                ->count();
-
-            $correctionRate = $totalTireArticles > 0 ? round(($stats['total'] / $totalTireArticles) * 100, 2) : 0;
-            $successRate = ($stats['completed'] + $stats['failed']) > 0 ?
-                round(($stats['completed'] / ($stats['completed'] + $stats['failed'])) * 100, 2) : 0;
-
-            Log::info('🚗 Relatório diário de correções de pneus', [
-                'date' => now()->format('Y-m-d'),
-                'stats' => $stats,
-                'total_tire_articles' => $totalTireArticles,
-                'correction_rate' => $correctionRate . '%',
-                'success_rate' => $successRate . '%',
-                'timestamp' => now()->format('Y-m-d H:i:s.u')
+            Artisan::call('tire-pressure-corrections', ['--stats' => true]);
+            Artisan::call('tire-title-year-corrections', ['--stats' => true]);
+            
+            // Log consolidado
+            $tireStats = ArticleCorrection::getTireStats();
+            $titleYearStats = ArticleCorrection::getTitleYearStats();
+            
+            Log::info('📊 Stats consolidadas', [
+                'tire' => $tireStats,
+                'title_year' => $titleYearStats,
+                'total_pending' => $tireStats['pending'] + $titleYearStats['pending'],
+                'total_processing' => $tireStats['processing'] + $titleYearStats['processing']
             ]);
         })
-            ->cron('0 19 * * 1-5') // 19h, Segunda a Sexta
-            ->name('tire-daily-report-end-of-day');
+            ->everyTwoHours()
+            ->name('tire-stats-consolidated');
 
-        // Relatório semanal - sexta às 18h
+        // ========================================
+        // 🧹 MANUTENÇÃO AUTOMÁTICA
+        // ========================================
+
+        // Reset de correções travadas - a cada 6 horas
         $schedule->call(function () {
-            $service = app(TireCorrectionService::class);
-
-            // Estatísticas da semana
-            $weeklyStats = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-                ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
-                ->selectRaw('status, count(*) as count')
-                ->groupBy('status')
-                ->get()
-                ->pluck('count', 'status')
-                ->toArray();
-
-            Log::info('🚗 Relatório semanal de correções de pneus', [
-                'week_start' => now()->startOfWeek()->format('Y-m-d'),
-                'week_end' => now()->endOfWeek()->format('Y-m-d'),
-                'weekly_stats' => $weeklyStats,
-                'timestamp' => now()->format('Y-m-d H:i:s.u')
-            ]);
-        })
-            ->cron('0 18 * * 5') // 18h, Sexta-feira
-            ->name('tire-weekly-report-friday');
-    }
-
-    /**
-     * 🧹 Manutenção fora do horário comercial
-     */
-    private static function registerMaintenance(Schedule $schedule): void
-    {
-        // Limpeza de correções falhadas - após expediente (21h)
-        $schedule->call(function () {
-            $deletedCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-                ->where('status', ArticleCorrection::STATUS_FAILED)
-                ->where('created_at', '<', now()->subHours(24)) // Só remove falhas antigas
-                ->delete();
-
-            if ($deletedCount > 0) {
-                Log::info("🚗 Limpeza de correções de pneus falhadas: {$deletedCount} registros removidos");
-            }
-        })
-            ->cron('0 21 * * 1-6') // 21h, Segunda a Sábado
-            ->name('tire-failed-cleanup-after-hours')
-            ->withoutOverlapping(10);
-
-        // Limpeza de duplicatas - madrugada de terça (4h)
-        $schedule->call(function () {
-            $service = app(TireCorrectionService::class);
-            $results = $service->cleanAllDuplicates();
-
-            if ($results['corrections_removed'] > 0) {
-                Log::info("🚗 Limpeza de duplicatas de pneus", $results);
-            }
-        })
-            ->cron('0 4 * * 2') // 4h terça-feira
-            ->name('tire-duplicates-cleanup-tuesday');
-
-        // Reset de correções travadas em processamento - madrugada (3h)
-        $schedule->call(function () {
-            $resetCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+            $tireReset = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
                 ->where('status', ArticleCorrection::STATUS_PROCESSING)
-                ->where('updated_at', '<', now()->subHours(6)) // Travadas há mais de 6 horas
+                ->where('updated_at', '<', now()->subHours(4)) // Travadas há mais de 4 horas
                 ->update([
                     'status' => ArticleCorrection::STATUS_PENDING,
                     'updated_at' => now()
                 ]);
 
-            if ($resetCount > 0) {
-                Log::info("🚗 Reset de correções de pneus travadas: {$resetCount} registros");
+            $titleYearReset = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+                ->where('status', ArticleCorrection::STATUS_PROCESSING)
+                ->where('updated_at', '<', now()->subHours(4))
+                ->update([
+                    'status' => ArticleCorrection::STATUS_PENDING,
+                    'updated_at' => now()
+                ]);
+
+            if ($tireReset > 0 || $titleYearReset > 0) {
+                Log::info("🔄 Reset de correções travadas", [
+                    'tire_reset' => $tireReset,
+                    'title_year_reset' => $titleYearReset,
+                    'total_reset' => $tireReset + $titleYearReset
+                ]);
             }
         })
-            ->cron('0 3 * * *') // 3h todos os dias
-            ->name('tire-reset-stuck-processing-daily');
+            ->everySixHours()
+            ->name('tire-reset-stuck-processing')
+            ->withoutOverlapping(10);
 
-        // Limpeza semanal - madrugada de domingo (6h)
+        // Limpeza de falhas antigas - diário às 3h
         $schedule->call(function () {
-            // Remove concluídas com mais de 24 meses (pneus são mais estáveis)
-            $completedDeleted = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-                ->where('status', ArticleCorrection::STATUS_COMPLETED)
-                ->where('created_at', '<', now()->subMonths(24))
+            $tireFailures = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+                ->where('status', ArticleCorrection::STATUS_FAILED)
+                ->where('created_at', '<', now()->subHours(48))
                 ->delete();
 
-            Log::info("🚗 Limpeza semanal de correções de pneus: {$completedDeleted} registros removidos");
-        })
-            ->cron('0 6 * * 0') // 6h domingo
-            ->name('tire-weekly-cleanup-sunday');
+            $titleYearFailures = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+                ->where('status', ArticleCorrection::STATUS_FAILED)
+                ->where('created_at', '<', now()->subHours(48))
+                ->delete();
 
-        // Rotação de logs - madrugada (5h)
-        $schedule->call(function () {
-            static::rotateLogs('tire-processing.log');
-            static::rotateLogs('tire-stats.log');
-        })
-            ->cron('0 5 * * *') // 5h todos os dias
-            ->name('tire-log-rotation-daily');
-    }
-
-    /**
-     * 🗂️ Rotaciona logs quando ficam grandes
-     */
-    private static function rotateLogs(string $logName): void
-    {
-        $logFile = storage_path("logs/{$logName}");
-
-        if (file_exists($logFile) && filesize($logFile) > 20 * 1024 * 1024) { // 20MB
-            $backup = $logFile . '.' . date('Y-m-d-His');
-            rename($logFile, $backup);
-
-            // Remove backups antigos (mais de 30 dias)
-            foreach (glob($logFile . '.*') as $oldLog) {
-                if (filemtime($oldLog) < strtotime('-30 days')) {
-                    unlink($oldLog);
-                }
+            if ($tireFailures > 0 || $titleYearFailures > 0) {
+                Log::info("🧹 Limpeza de falhas antigas", [
+                    'tire_failures_removed' => $tireFailures,
+                    'title_year_failures_removed' => $titleYearFailures,
+                    'total_removed' => $tireFailures + $titleYearFailures
+                ]);
             }
-        }
+        })
+            ->dailyAt('03:00')
+            ->name('tire-cleanup-old-failures')
+            ->withoutOverlapping(30);
+
+        // Limpeza de duplicatas - semanal aos domingos às 4h
+        $schedule->call(function () {
+            // Limpeza de pneus
+            Artisan::call('tire-pressure-corrections', [
+                '--clean-duplicates' => true,
+                '--force' => true
+            ]);
+
+            // Limpeza de título/ano
+            Artisan::call('tire-title-year-corrections', [
+                '--clean-duplicates' => true,
+                '--force' => true
+            ]);
+
+            Log::info("🧹 Limpeza semanal de duplicatas executada");
+        })
+            ->weeklyOn(0, '04:00') // Domingo às 4h
+            ->name('tire-weekly-duplicates-cleanup')
+            ->withoutOverlapping(60);
+
+        // ========================================
+        // 🚨 ALERTAS E MONITORAMENTO
+        // ========================================
+
+        // Verificação de saúde do sistema - a cada hora
+        $schedule->call(function () {
+            $alerts = [];
+
+            // Verificar correções travadas há muito tempo
+            $stuckTire = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+                ->where('status', ArticleCorrection::STATUS_PROCESSING)
+                ->where('updated_at', '<', now()->subHours(6))
+                ->count();
+
+            $stuckTitleYear = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+                ->where('status', ArticleCorrection::STATUS_PROCESSING)
+                ->where('updated_at', '<', now()->subHours(6))
+                ->count();
+
+            if ($stuckTire > 0) {
+                $alerts[] = "🚨 {$stuckTire} correções de pneus travadas há mais de 6 horas";
+            }
+
+            if ($stuckTitleYear > 0) {
+                $alerts[] = "🚨 {$stuckTitleYear} correções de título/ano travadas há mais de 6 horas";
+            }
+
+            // Verificar alta taxa de falhas
+            $tireFailures = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+                ->where('status', ArticleCorrection::STATUS_FAILED)
+                ->where('created_at', '>', now()->subHours(6))
+                ->count();
+
+            $titleYearFailures = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+                ->where('status', ArticleCorrection::STATUS_FAILED)
+                ->where('created_at', '>', now()->subHours(6))
+                ->count();
+
+            if ($tireFailures > 15) {
+                $alerts[] = "⚠️ Alta taxa de falhas de pneus: {$tireFailures} nas últimas 6 horas";
+            }
+
+            if ($titleYearFailures > 20) {
+                $alerts[] = "⚠️ Alta taxa de falhas de título/ano: {$titleYearFailures} nas últimas 6 horas";
+            }
+
+            // Log apenas se houver alertas
+            if (!empty($alerts)) {
+                Log::warning('🚨 Alertas do sistema de correções', [
+                    'alerts' => $alerts,
+                    'timestamp' => now()->format('Y-m-d H:i:s')
+                ]);
+            }
+        })
+            ->hourly()
+            ->name('tire-health-check');
     }
 
     /**
@@ -278,20 +247,32 @@ class TireCorrectionSchedule
     public static function getScheduleHealth(): array
     {
         return [
-            'creation_schedules' => 2, // Seg-Sex + Sábado
-            'processing_schedules' => 2, // Seg-Sex + Sábado  
-            'monitoring_schedules' => 3, // Stats + Alertas
-            'analytics_schedules' => 2, // Relatório diário + semanal
-            'maintenance_schedules' => 5, // Limpeza + Reset + Rotação
-            'total_schedules' => 14,
-            'test_frequency' => 'A cada 15 minutos',
-            'production_frequency' => 'De hora em hora',
-            'business_hours' => '8h-21h (Seg-Sex) + 8h-12h (Sáb)',
-            'timezone' => 'America/Sao_Paulo',
-            'weekends' => 'Domingo: Apenas manutenção / Sábado: Até 12h',
-            'overlapping_protection' => true,
-            'domain_focus' => 'when_to_change_tires',
-            'correction_type' => 'TYPE_TIRE_PRESSURE_FIX'
+            'schedule_name' => 'TireCorrectionSchedule',
+            'version' => '2.1_simplified_24h',
+            'creation_schedules' => [
+                'tire_pressure' => 'A cada 30 minutos',
+                'title_year' => 'A cada 30 minutos (offset +15min)'
+            ],
+            'processing_schedules' => [
+                'tire_pressure' => 'A cada 3 minutos',
+                'title_year' => 'A cada 4 minutos (offset +1min)'
+            ],
+            'maintenance_schedules' => [
+                'reset_stuck' => 'A cada 6 horas',
+                'cleanup_failures' => 'Diário às 3h',
+                'cleanup_duplicates' => 'Semanal domingo às 4h'
+            ],
+            'monitoring_schedules' => [
+                'stats' => 'A cada 2 horas',
+                'health_check' => 'A cada hora'
+            ],
+            'total_schedules' => 8,
+            'runtime' => '24 horas por dia',
+            'domain_focus' => 'when_to_change_tires (TempArticles)',
+            'correction_types' => [
+                'TYPE_TIRE_PRESSURE_FIX',
+                'TYPE_TITLE_YEAR_FIX'
+            ]
         ];
     }
 
@@ -302,33 +283,49 @@ class TireCorrectionSchedule
     {
         $issues = [];
 
-        // Verificar correções travadas
-        $stuckProcessing = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-            ->where('status', ArticleCorrection::STATUS_PROCESSING)
-            ->where('updated_at', '<', now()->subHours(2))
+        // Verificar se há TempArticles disponíveis
+        $availableArticles = \Src\ArticleGenerator\Infrastructure\Eloquent\TempArticle::where('domain', 'when_to_change_tires')
+            ->where('status', 'draft')
             ->count();
 
-        if ($stuckProcessing > 0) {
-            $issues[] = "🚫 {$stuckProcessing} correções travadas em processamento";
+        if ($availableArticles === 0) {
+            $issues[] = "⚠️ Nenhum TempArticle disponível para correção (domain: when_to_change_tires)";
         }
 
-        // Verificar muitas falhas
-        $recentFailed = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
-            ->where('status', ArticleCorrection::STATUS_FAILED)
-            ->where('created_at', '>', now()->subHours(24))
-            ->count();
-
-        if ($recentFailed > 20) {
-            $issues[] = "⚠️ Muitas falhas recentes: {$recentFailed} nas últimas 24h";
-        }
-
-        // Verificar backlog
-        $pendingCount = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+        // Verificar backlog excessivo
+        $tirePending = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
             ->where('status', ArticleCorrection::STATUS_PENDING)
             ->count();
 
-        if ($pendingCount > 100) {
-            $issues[] = "📈 Backlog alto: {$pendingCount} correções pendentes";
+        $titleYearPending = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+            ->where('status', ArticleCorrection::STATUS_PENDING)
+            ->count();
+
+        if ($tirePending > 100) {
+            $issues[] = "📈 Backlog alto de correções de pneus: {$tirePending}";
+        }
+
+        if ($titleYearPending > 150) {
+            $issues[] = "📈 Backlog alto de correções de título/ano: {$titleYearPending}";
+        }
+
+        // Verificar se há processamento recente
+        $recentTireProcessing = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TIRE_PRESSURE_FIX)
+            ->where('status', ArticleCorrection::STATUS_COMPLETED)
+            ->where('processed_at', '>', now()->subHours(2))
+            ->exists();
+
+        $recentTitleYearProcessing = ArticleCorrection::where('correction_type', ArticleCorrection::TYPE_TITLE_YEAR_FIX)
+            ->where('status', ArticleCorrection::STATUS_COMPLETED)
+            ->where('processed_at', '>', now()->subHours(2))
+            ->exists();
+
+        if (!$recentTireProcessing && $tirePending > 0) {
+            $issues[] = "🚫 Nenhum processamento de pneus nas últimas 2 horas";
+        }
+
+        if (!$recentTitleYearProcessing && $titleYearPending > 0) {
+            $issues[] = "🚫 Nenhum processamento de título/ano nas últimas 2 horas";
         }
 
         return $issues;
