@@ -9,7 +9,7 @@ use Src\ContentGeneration\TireSchedule\Infrastructure\Services\MicroServices\Tir
 use Src\ContentGeneration\TireSchedule\Infrastructure\Services\MicroServices\ClaudeApiService;
 
 /**
- * 🔧 TireCorrectionOrchestrator - CORRIGIDO para MongoDB
+ * 🔧 TireCorrectionOrchestrator - CORRIGIDO
  */
 class TireCorrectionOrchestrator
 {
@@ -310,13 +310,43 @@ class TireCorrectionOrchestrator
     }
 
     /**
-     * 📊 Obter estatísticas consolidadas - SIMPLIFICADO
+     * 📊 Obter estatísticas consolidadas - CORRIGIDO
      */
     public function getConsolidatedStats(): array
     {
         try {
             // Estatísticas da API
             $apiStats = $this->claudeApiService->getApiStats();
+
+            // ✅ CORRIGIDO: Criar validation_stats com estrutura correta
+            $totalTireArticles = TempArticle::where('domain', 'when_to_change_tires')
+                ->where('status', 'draft')
+                ->count();
+
+            // Pegar uma amostra para validação
+            $sampleArticles = TempArticle::where('domain', 'when_to_change_tires')
+                ->where('status', 'draft')
+                ->limit(100)
+                ->get();
+
+            $validationResults = $this->validationService->validateBatch($sampleArticles->toArray(), 100);
+
+            // ✅ CORRIGIDO: Garantir que validation_stats tenha todas as chaves esperadas
+            $validationStats = [
+                'total_articles' => $totalTireArticles,
+                'analyzed' => $validationResults['analyzed'] ?? 0,
+                'needs_pressure_correction' => $validationResults['needs_pressure_correction'] ?? 0,
+                'needs_title_correction' => $validationResults['needs_title_correction'] ?? 0,
+                'high_priority' => $validationResults['high_priority'] ?? 0,
+                'medium_priority' => $validationResults['medium_priority'] ?? 0,
+                'low_priority' => $validationResults['low_priority'] ?? 0,
+                'correction_rate' => $validationResults['correction_rate'] ?? 0,
+                'correction_coverage' => $totalTireArticles > 0 ? 
+                    round(((ArticleCorrection::whereIn('correction_type', [
+                        ArticleCorrection::TYPE_TIRE_PRESSURE_FIX,
+                        ArticleCorrection::TYPE_TITLE_YEAR_FIX
+                    ])->distinct('article_slug')->count()) / $totalTireArticles) * 100, 2) : 0
+            ];
 
             // Estatísticas das correções - SIMPLIFICADO para MongoDB
             $correctionStats = [
@@ -327,20 +357,9 @@ class TireCorrectionOrchestrator
                 'completed_total' => ArticleCorrection::where('status', ArticleCorrection::STATUS_COMPLETED)->count()
             ];
 
-            // Estatísticas de validação - SIMPLIFICADO
-            $totalTireArticles = TempArticle::where('domain', 'when_to_change_tires')
-                ->where('status', 'draft')
-                ->count();
-
-            $validationStats = [
-                'total_articles' => $totalTireArticles,
-                'correction_coverage' => $totalTireArticles > 0 ? 
-                    round((($correctionStats['pressure_corrections'] + $correctionStats['title_corrections']) / $totalTireArticles) * 100, 2) : 0
-            ];
-
             return [
                 'orchestrator_version' => '1.0_microservices_mongodb_fixed',
-                'validation_stats' => $validationStats,
+                'validation_stats' => $validationStats, // ✅ CORRIGIDO: Estrutura completa
                 'api_stats' => $apiStats,
                 'correction_stats' => $correctionStats,
                 'system_health' => [
@@ -357,6 +376,17 @@ class TireCorrectionOrchestrator
 
             return [
                 'orchestrator_version' => '1.0_microservices_mongodb_fixed',
+                'validation_stats' => [
+                    'total_articles' => 0,
+                    'analyzed' => 0,
+                    'needs_pressure_correction' => 0,
+                    'needs_title_correction' => 0,
+                    'high_priority' => 0,
+                    'medium_priority' => 0,
+                    'low_priority' => 0,
+                    'correction_rate' => 0,
+                    'correction_coverage' => 0
+                ], // ✅ CORRIGIDO: Fallback com estrutura correta
                 'error' => $e->getMessage(),
                 'generated_at' => now()->toISOString()
             ];
@@ -407,7 +437,7 @@ class TireCorrectionOrchestrator
         }
     }
 
-    // ✅ Métodos privados auxiliares (sem mudanças - já funcionam)
+    // ✅ Métodos privados auxiliares (corrigidos)
     
     private function createPressureCorrection(TempArticle $article, array $validationDetails): void
     {
@@ -500,10 +530,19 @@ class TireCorrectionOrchestrator
                 return false;
             }
 
+            // ✅ CORRIGIDO: Passar FAQs como array, não como string
+            $faqs = $tempArticle->content['perguntas_frequentes'] ?? [];
+            
+            // ✅ Garantir que FAQs é um array
+            if (!is_array($faqs)) {
+                Log::warning("⚠️ FAQs não é array para {$correction->article_slug}, convertendo");
+                $faqs = [];
+            }
+
             $correctedData = $this->claudeApiService->processTitleSeoCorrection(
                 $tempArticle->vehicle_data ?? [],
                 $tempArticle->seo_data ?? [],
-                $tempArticle->content['perguntas_frequentes'] ?? []
+                $faqs // ✅ CORRIGIDO: Passar como array
             );
 
             if ($correctedData && ($correctedData['needs_update'] ?? false)) {
@@ -523,7 +562,8 @@ class TireCorrectionOrchestrator
             $correction->markAsFailed($e->getMessage());
             Log::error("❌ Erro ao processar correção de título", [
                 'slug' => $correction->article_slug,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString() // ✅ Adicionar trace para debug
             ]);
             return false;
         }

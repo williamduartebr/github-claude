@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 /**
- * 🤖 Micro-Service: Comunicação com Claude API
+ * 🤖 Micro-Service: Comunicação com Claude API - CORRIGIDO
  * 
  * Responsabilidade única: Gerenciar calls para Claude API
  * Rate limiting inteligente sem bloquear aplicação
@@ -65,7 +65,7 @@ class ClaudeApiService
     }
 
     /**
-     * 🤖 Processar correção de títulos e SEO
+     * 🤖 Processar correção de títulos e SEO - CORRIGIDO
      */
     public function processTitleSeoCorrection(array $vehicleData, array $seoData, array $faqs): ?array
     {
@@ -197,7 +197,7 @@ EOT;
     }
 
     /**
-     * 📝 Prompt otimizado para correção de títulos/SEO
+     * 📝 Prompt otimizado para correção de títulos/SEO - CORRIGIDO
      */
     private function createTitleSeoPrompt(array $vehicleData, array $seoData, array $faqs): string
     {
@@ -207,13 +207,26 @@ EOT;
         $currentTitle = $seoData['page_title'] ?? '';
         $currentMeta = $seoData['meta_description'] ?? '';
 
+        // ✅ CORRIGIDO: Tratar FAQs como array corretamente
+        $faqsText = '';
+        if (is_array($faqs) && !empty($faqs)) {
+            try {
+                $faqsText = json_encode($faqs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            } catch (\Exception $e) {
+                Log::warning("Erro ao converter FAQs para JSON: " . $e->getMessage());
+                $faqsText = "FAQs não disponíveis";
+            }
+        } else {
+            $faqsText = "FAQs não disponíveis ou vazias";
+        }
+
         return <<<EOT
 Corrija SEO e FAQs para {$vehicleName} {$vehicleYear}.
 
 **ATUAL:**
 Título: "{$currentTitle}"
 Meta: "{$currentMeta}"
-FAQs: " . json_encode($faqs, JSON_UNESCAPED_UNICODE) . "
+FAQs: {$faqsText}
 
 **TAREFAS:**
 1. Substitua "N/A N/A N/A" por nome real do veículo
