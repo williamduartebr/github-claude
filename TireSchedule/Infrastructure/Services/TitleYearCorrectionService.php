@@ -192,11 +192,13 @@ class TitleYearCorrectionService
         $vehicleBrand = $vehicleData['vehicle_brand'] ?? 'N/A';
         $vehicleModel = $vehicleData['vehicle_model'] ?? 'N/A';
         $vehicleYear = $vehicleData['vehicle_year'] ?? 'N/A';
-        $vehicleCategory = $vehicleData['vehicle_category'] ?? 'veículo';
 
         $currentPageTitle = $seoData['page_title'] ?? '';
         $currentMetaDescription = $seoData['meta_description'] ?? '';
         $currentFaqs = $content['perguntas_frequentes'] ?? [];
+
+        // ✅ MELHORADO: Dados do veículo mais claros
+        $fullVehicleName = "{$vehicleBrand} {$vehicleModel} {$vehicleYear}";
 
         // Converter FAQs para texto mais legível
         $faqsText = '';
@@ -205,82 +207,58 @@ class TitleYearCorrectionService
         }
 
         return <<<EOT
-Atualize o título da página, meta description e perguntas frequentes para incluir o ano do veículo de forma natural e otimizada para SEO.
+CRITICAL: Substitua TODOS os "N/A N/A N/A" por "{$fullVehicleName}".
 
-**VEÍCULO:**
-- Nome: {$vehicleName}
+**VEÍCULO REAL:**
+- Nome completo: {$fullVehicleName}
 - Marca: {$vehicleBrand}
-- Modelo: {$vehicleModel}
+- Modelo: {$vehicleModel}  
 - Ano: {$vehicleYear}
-- Categoria: {$vehicleCategory}
 
-**CONTEÚDO ATUAL:**
+**CONTEÚDO COM PROBLEMAS:**
 
-**Título da página atual:**
+**Título atual (CORRIGIR N/A):**
 "{$currentPageTitle}"
 
-**Meta description atual:**
+**Meta description atual (CORRIGIR N/A):**
 "{$currentMetaDescription}"
 
-**Perguntas frequentes atuais:**
+**FAQs atuais (CORRIGIR TODOS os N/A):**
 {$faqsText}
 
-**DIRETRIZES PARA ATUALIZAÇÃO:**
+**TAREFAS OBRIGATÓRIAS:**
+1. ✅ SUBSTITUIR TODOS "N/A N/A N/A" por "{$fullVehicleName}"
+2. ✅ Incluir ano {$vehicleYear} no título se não estiver
+3. ✅ Corrigir TODAS as FAQs que tenham "N/A N/A N/A"
+4. ✅ Otimizar meta description (150-160 chars) SEM placeholders
 
-**Para o Título da Página (page_title):**
-- SEMPRE incluir o ano {$vehicleYear} se fornecido
-- Manter foco na palavra-chave principal "quando trocar pneus"
-- Incluir marca e modelo: {$vehicleBrand} {$vehicleModel}
-- Máximo 60 caracteres para SEO
-- Formato sugerido: "Quando Trocar Pneus {$vehicleBrand} {$vehicleModel} {$vehicleYear}: Guia Completo"
+**EXEMPLO DO QUE FAZER:**
+❌ ERRADO: "Posso usar medida diferente no N/A N/A N/A?"
+✅ CORRETO: "Posso usar medida diferente no {$fullVehicleName}?"
 
-**Para a Meta Description:**
-- SEMPRE incluir o ano {$vehicleYear} se fornecido
-- Incluir pressões recomendadas se disponíveis
-- Mencionar "sinais de desgaste", "manutenção" e "segurança"
-- Entre 150-160 caracteres
-- Call-to-action natural sobre manutenção
-- Foco em benefícios: economia, segurança, durabilidade
-
-**Para as Perguntas Frequentes:**
-- Atualizar referências genéricas para incluir "{$vehicleBrand} {$vehicleModel} {$vehicleYear}"
-- Manter o conteúdo técnico mas personalizar para o veículo específico
-- Se houver pergunta sobre frequência de verificação, mencionar o modelo e ano
-- Se houver pergunta sobre medida de pneu, especificar para o {$vehicleYear}
-- Manter estrutura pergunta/resposta
-
-**CRITÉRIOS DE QUALIDADE:**
-- Ano OBRIGATÓRIO nos títulos e meta description
-- Linguagem natural, não robotizada
-- Foco em SEO local brasileiro
-- Evitar repetições excessivas do ano
-- Manter tom informativo e confiável
-
-**RETORNE APENAS ESTE JSON:**
+**RETORNE JSON:**
 ```json
 {
-  "needs_update": true|false,
-  "reason": "explicação breve se precisa atualizar",
-  "title_updated": true|false,
-  "meta_updated": true|false,
-  "faq_updated": true|false,
+  "needs_update": true,
+  "title_updated": true,
+  "meta_updated": true, 
+  "faq_updated": true,
   "corrected_seo": {
-    "page_title": "novo título com ano",
-    "meta_description": "nova meta description com ano"
+    "page_title": "Quando Trocar Pneus {$fullVehicleName}: Guia Completo",
+    "meta_description": "Guia completo sobre quando trocar os pneus do {$fullVehicleName}. Sinais de desgaste, pressões recomendadas e dicas de manutenção."
   },
   "corrected_content": {
     "perguntas_frequentes": [
       {
-        "pergunta": "pergunta atualizada com referência ao veículo específico",
-        "resposta": "resposta atualizada com {$vehicleBrand} {$vehicleModel} {$vehicleYear}"
+        "pergunta": "pergunta SEM placeholders N/A",
+        "resposta": "resposta SEM placeholders N/A"
       }
     ]
   }
 }
 ```
 
-Se o conteúdo já está perfeito com o ano incluído, retorne "needs_update": false.
-Se apenas alguns campos precisam de atualização, marque apenas os campos específicos como true.
+IMPORTANTE: NÃO retorne nenhum "N/A N/A N/A" na resposta!
 EOT;
     }
 
@@ -506,7 +484,9 @@ EOT;
             // Se Claude determina que não precisa atualizar
             if (!($correctedData['needs_update'] ?? true)) {
                 Log::info("Claude determinou que {$tempArticle->slug} não precisa de atualização de título/ano: " . ($correctedData['reason'] ?? ''));
-                return true;
+                
+                // ✅ NOVO: Mesmo que Claude diga que não precisa, verificar se há N/A e corrigir localmente
+                return $this->applyLocalPlaceholderFix($tempArticle);
             }
 
             $updated = false;
@@ -532,8 +512,13 @@ EOT;
                 $updated = true;
             }
 
+            // ✅ NOVO: Se Claude não corrigiu tudo, aplicar correção local de fallback
+            if (!$updated || $this->stillHasPlaceholders($seoData, $content)) {
+                Log::info("Aplicando correção local de fallback para {$tempArticle->slug}");
+                return $this->applyLocalPlaceholderFix($tempArticle);
+            }
+
             if ($updated) {
-                // ⏰ Timestamp humanizado
                 $humanizedTimestamp = $this->generateHumanizedTimestamp();
 
                 $tempArticle->update([
@@ -549,8 +534,141 @@ EOT;
             return false;
         } catch (\Exception $e) {
             Log::error("Erro ao aplicar correções de título/ano em {$tempArticle->slug}: " . $e->getMessage());
+            
+            // ✅ NOVO: Em caso de erro, tentar correção local
+            return $this->applyLocalPlaceholderFix($tempArticle);
+        }
+    }
+
+    /**
+     * 🔧 NOVO: Correção local de placeholders (sem API)
+     */
+    private function applyLocalPlaceholderFix(TempArticle $tempArticle): bool
+    {
+        try {
+            $vehicleData = $tempArticle->vehicle_data ?? [];
+            $content = $tempArticle->content ?? [];
+            $seoData = $tempArticle->seo_data ?? [];
+            
+            $vehicleName = $vehicleData['vehicle_name'] ?? 'N/A';
+            $vehicleBrand = $vehicleData['vehicle_brand'] ?? 'N/A';
+            $vehicleModel = $vehicleData['vehicle_model'] ?? 'N/A';
+            $vehicleYear = $vehicleData['vehicle_year'] ?? date('Y');
+            
+            // Se não temos dados do veículo, não podemos corrigir
+            if ($vehicleName === 'N/A' || $vehicleBrand === 'N/A' || $vehicleModel === 'N/A') {
+                Log::warning("Dados de veículo insuficientes para {$tempArticle->slug}");
+                return false;
+            }
+            
+            $fullVehicleName = "{$vehicleBrand} {$vehicleModel} {$vehicleYear}";
+            $updated = false;
+
+            // ✅ Corrigir page_title
+            if (isset($seoData['page_title']) && strpos($seoData['page_title'], 'N/A N/A N/A') !== false) {
+                $seoData['page_title'] = str_replace(
+                    'N/A N/A N/A', 
+                    $fullVehicleName, 
+                    $seoData['page_title']
+                );
+                $updated = true;
+                Log::info("Corrigido page_title localmente para {$tempArticle->slug}");
+            }
+
+            // ✅ Corrigir meta_description
+            if (isset($seoData['meta_description']) && strpos($seoData['meta_description'], 'N/A N/A N/A') !== false) {
+                $seoData['meta_description'] = str_replace(
+                    'N/A N/A N/A', 
+                    $fullVehicleName, 
+                    $seoData['meta_description']
+                );
+                $updated = true;
+                Log::info("Corrigido meta_description localmente para {$tempArticle->slug}");
+            }
+
+            // ✅ Corrigir FAQs
+            if (isset($content['perguntas_frequentes']) && is_array($content['perguntas_frequentes'])) {
+                foreach ($content['perguntas_frequentes'] as $index => $faq) {
+                    $faqUpdated = false;
+                    
+                    if (isset($faq['pergunta']) && strpos($faq['pergunta'], 'N/A N/A N/A') !== false) {
+                        $content['perguntas_frequentes'][$index]['pergunta'] = str_replace(
+                            'N/A N/A N/A', 
+                            $fullVehicleName, 
+                            $faq['pergunta']
+                        );
+                        $faqUpdated = true;
+                    }
+                    
+                    if (isset($faq['resposta']) && strpos($faq['resposta'], 'N/A N/A N/A') !== false) {
+                        $content['perguntas_frequentes'][$index]['resposta'] = str_replace(
+                            'N/A N/A N/A', 
+                            $fullVehicleName, 
+                            $faq['resposta']
+                        );
+                        $faqUpdated = true;
+                    }
+                    
+                    if ($faqUpdated) {
+                        $updated = true;
+                    }
+                }
+                
+                if ($updated) {
+                    Log::info("Corrigido FAQs localmente para {$tempArticle->slug}");
+                }
+            }
+
+            // ✅ Aplicar correções se houve mudanças
+            if ($updated) {
+                $humanizedTimestamp = $this->generateHumanizedTimestamp();
+
+                $tempArticle->update([
+                    'content' => $content,
+                    'seo_data' => $seoData,
+                    'updated_at' => $humanizedTimestamp
+                ]);
+
+                Log::info("✅ Correção local de placeholders aplicada com sucesso para {$tempArticle->slug}");
+                return true;
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            Log::error("❌ Erro na correção local de placeholders para {$tempArticle->slug}: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * 🔍 NOVO: Verificar se ainda há placeholders
+     */
+    private function stillHasPlaceholders(array $seoData, array $content): bool
+    {
+        // Verificar SEO data
+        $pageTitle = $seoData['page_title'] ?? '';
+        $metaDescription = $seoData['meta_description'] ?? '';
+        
+        if (strpos($pageTitle, 'N/A N/A N/A') !== false || 
+            strpos($metaDescription, 'N/A N/A N/A') !== false) {
+            return true;
+        }
+
+        // Verificar FAQs
+        $faqs = $content['perguntas_frequentes'] ?? [];
+        if (is_array($faqs)) {
+            foreach ($faqs as $faq) {
+                $pergunta = $faq['pergunta'] ?? '';
+                $resposta = $faq['resposta'] ?? '';
+                
+                if (strpos($pergunta, 'N/A N/A N/A') !== false || 
+                    strpos($resposta, 'N/A N/A N/A') !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
