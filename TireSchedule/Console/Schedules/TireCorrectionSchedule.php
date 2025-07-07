@@ -16,6 +16,12 @@ class TireCorrectionSchedule
      */
     public static function register(Schedule $schedule): void
     {
+
+        // Só executa em produção e staging
+        if (app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         // ========================================
         // 🚗 CORREÇÕES DE PRESSÃO DE PNEUS
         // ========================================
