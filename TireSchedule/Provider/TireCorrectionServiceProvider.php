@@ -6,18 +6,19 @@ use Illuminate\Support\ServiceProvider;
 
 // Commands
 use Src\ContentGeneration\TireSchedule\Console\TireCorrectionsCommand;
-use Src\ContentGeneration\TireSchedule\Console\TitleYearCorrectionsCommand;
 use Src\ContentGeneration\TireSchedule\Console\CleanupTireScheduleTicker;
-use Src\ContentGeneration\TireSchedule\Console\CleanupArticleTemplateTireTicker;
+use Src\ContentGeneration\TireSchedule\Console\FixSpecificArticleCommand;
+use Src\ContentGeneration\TireSchedule\Console\TitleYearCorrectionsCommand;
 
 // Micro-Services
+use Src\ContentGeneration\TireSchedule\Console\CleanupArticleTemplateTireTicker;
+use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionService;
 use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionOrchestrator;
-use Src\ContentGeneration\TireSchedule\Infrastructure\Services\MicroServices\TireDataValidationService;
-use Src\ContentGeneration\TireSchedule\Infrastructure\Services\MicroServices\ClaudeApiService;
 
 // Legacy Services (compatibilidade)
-use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionService;
 use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TitleYearCorrectionService;
+use Src\ContentGeneration\TireSchedule\Infrastructure\Services\MicroServices\ClaudeApiService;
+use Src\ContentGeneration\TireSchedule\Infrastructure\Services\MicroServices\TireDataValidationService;
 
 class TireCorrectionServiceProvider extends ServiceProvider
 {
@@ -45,6 +46,7 @@ class TireCorrectionServiceProvider extends ServiceProvider
         $this->commands([
             TireCorrectionsCommand::class,
             TitleYearCorrectionsCommand::class,
+            FixSpecificArticleCommand::class,
             CleanupArticleTemplateTireTicker::class,
             CleanupTireScheduleTicker::class,
         ]);
@@ -75,6 +77,7 @@ class TireCorrectionServiceProvider extends ServiceProvider
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
 
             // 🎯 Workflow principal - a cada 10 minutos
+            // FIXED: Removed runInBackground() from closure
             $schedule->call(function () {
                 $orchestrator = app(TireCorrectionOrchestrator::class);
                 $results = $orchestrator->runOptimizedWorkflow(30, 2);
@@ -87,8 +90,8 @@ class TireCorrectionServiceProvider extends ServiceProvider
             })
                 ->everyTenMinutes()
                 ->name('tire-workflow')
-                ->withoutOverlapping(8)
-                ->runInBackground();
+                ->withoutOverlapping(8);
+                // Removed ->runInBackground() as it's not supported for closures
 
             // 🧹 Limpeza - a cada 30 minutos
             $schedule->call(function () {
@@ -104,10 +107,12 @@ class TireCorrectionServiceProvider extends ServiceProvider
                 ->withoutOverlapping(25);
 
             // 🔄 Fallback legado - apenas se micro-services falharem
+            // This can use runInBackground() because it's an Artisan command
             $schedule->command('tire-pressure-corrections --process --limit=1 --force')
                 ->everyThirtyMinutes()
                 ->name('tire-fallback')
                 ->withoutOverlapping(5)
+                ->runInBackground()
                 ->when(function () {
                     $lastSuccess = \Illuminate\Support\Facades\Cache::get('tire_microservices_last_success', 0);
                     return (time() - $lastSuccess) > 3600; // 1 hora sem sucesso
