@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -53,7 +53,6 @@ class InstallWhenToChangeTiresCommand extends Command
             $this->line('4. Execute: php artisan when-to-change-tires:generate-initial-articles --dry-run');
 
             return 0;
-
         } catch (\Exception $e) {
             $this->error('❌ Erro durante instalação: ' . $e->getMessage());
             return 1;
@@ -82,7 +81,7 @@ class InstallWhenToChangeTiresCommand extends Command
     protected function checkCsvFile(): void
     {
         $csvPath = storage_path('app/todos_veiculos.csv');
-        
+
         if (file_exists($csvPath)) {
             $lines = count(file($csvPath));
             $this->line("   ✅ CSV encontrado: {$lines} linhas");

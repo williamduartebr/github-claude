@@ -1,11 +1,11 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
 
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -31,20 +31,20 @@ class ProcessVehicleBatchCommand extends Command
     {
         $batchId = $this->argument('batch-id');
         $csvPath = $this->option('csv-path');
-        
+
         $this->info("🔄 Processando lote: {$batchId}");
 
         try {
             // 1. Carregar todos os veículos
             $allVehicles = $this->vehicleProcessor->importFromCsv($csvPath);
-            
+
             // 2. Filtrar veículos do lote específico (simulado por índice)
             $batchSize = 50; // Tamanho padrão do lote
             $batchNumber = (int) str_replace(['batch_', '_'], '', $batchId);
             $startIndex = ($batchNumber - 1) * $batchSize;
-            
+
             $batchVehicles = $allVehicles->slice($startIndex, $batchSize);
-            
+
             if ($batchVehicles->isEmpty()) {
                 $this->error("❌ Lote {$batchId} não encontrado ou vazio");
                 return 1;
@@ -74,22 +74,21 @@ class ProcessVehicleBatchCommand extends Command
                 try {
                     // Gerar conteúdo
                     $content = $this->contentService->generateTireChangeArticle($vehicle);
-                    
+
                     // Salvar JSON
                     $this->jsonStorage->saveArticleJson($content);
-                    
+
                     // Salvar na model se não for only-json
                     if (!$this->option('only-json')) {
                         $this->saveTireChangeArticle($vehicle, $content, $batchId);
                     }
-                    
+
                     $successful++;
-                    
                 } catch (\Exception $e) {
                     $failed++;
                     Log::error("Erro processando {$vehicle->getVehicleIdentifier()}: " . $e->getMessage());
                 }
-                
+
                 $progressBar->advance();
             }
 
@@ -102,7 +101,6 @@ class ProcessVehicleBatchCommand extends Command
             $this->line("   Falhas: {$failed}");
 
             return $failed > 0 ? 1 : 0;
-
         } catch (\Exception $e) {
             $this->error("❌ Erro processando lote: " . $e->getMessage());
             return 1;

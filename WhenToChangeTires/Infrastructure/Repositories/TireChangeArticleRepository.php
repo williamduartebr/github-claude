@@ -1,11 +1,11 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -54,7 +54,7 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
             ];
 
             $article = TireChangeArticle::create($articleData);
-            
+
             // Marcar como gerado
             $article->markAsGenerated();
 
@@ -68,7 +68,6 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
             ]);
 
             return $article;
-
         } catch (\Exception $e) {
             Log::error("Erro criando TireChangeArticle: " . $e->getMessage(), [
                 'vehicle' => $vehicle->getVehicleIdentifier(),
@@ -94,7 +93,7 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
         // Score por estrutura do conteúdo
         $contentSections = $jsonData['content'] ?? [];
         $requiredSections = ['introducao', 'sintomas_desgaste', 'fatores_durabilidade', 'cronograma_verificacao'];
-        
+
         $sectionScore = 0;
         foreach ($requiredSections as $section) {
             if (isset($contentSections[$section]) && !empty($contentSections[$section])) {
@@ -117,7 +116,7 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
     public function existsForVehicle(string $make, string $model, int $year): bool
     {
         $cacheKey = "tire_article_exists_{$make}_{$model}_{$year}";
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($make, $model, $year) {
             return TireChangeArticle::where('make', $make)
                 ->where('model', $model)
@@ -220,8 +219,8 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'LIKE', "%{$search}%")
-                  ->orWhere('make', 'LIKE', "%{$search}%")
-                  ->orWhere('model', 'LIKE', "%{$search}%");
+                    ->orWhere('make', 'LIKE', "%{$search}%")
+                    ->orWhere('model', 'LIKE', "%{$search}%");
             });
         }
 
@@ -342,7 +341,7 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
     public function findByCriteria(array $criteria): Collection
     {
         $query = TireChangeArticle::query();
-        
+
         foreach ($criteria as $field => $value) {
             if (is_array($value)) {
                 $query->whereIn($field, $value);
@@ -362,10 +361,10 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
         try {
             $article = TireChangeArticle::findOrFail($id);
             $article->update(['generation_status' => $status]);
-            
+
             // Limpar cache
             $this->clearRelatedCache($article);
-            
+
             Log::info("Status atualizado", [
                 'article_id' => $id,
                 'new_status' => $status
@@ -386,10 +385,10 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
         try {
             $article = TireChangeArticle::findOrFail($id);
             $article->markAsClaudeEnhanced($enhancementData);
-            
+
             // Limpar cache
             $this->clearRelatedCache($article);
-            
+
             Log::info("Artigo marcado como refinado pelo Claude", [
                 'article_id' => $id,
                 'enhancement_count' => $article->claude_enhancement_count
@@ -408,10 +407,10 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
     public function getWithQualityIssues(): Collection
     {
         return TireChangeArticle::where(function ($query) {
-                $query->where('content_score', '<', 6.0)
-                      ->orWhere('quality_checked', false)
-                      ->orWhereNotNull('quality_issues');
-            })
+            $query->where('content_score', '<', 6.0)
+                ->orWhere('quality_checked', false)
+                ->orWhereNotNull('quality_issues');
+        })
             ->orderBy('content_score')
             ->get();
     }
@@ -434,13 +433,13 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
     public function deleteOlderThan(\DateTimeInterface $date): int
     {
         $count = TireChangeArticle::where('created_at', '<', $date)->count();
-        
+
         if ($count > 0) {
             TireChangeArticle::where('created_at', '<', $date)->delete();
-            
+
             // Limpar todo o cache
             Cache::tags(['tire_articles'])->flush();
-            
+
             Log::info("Artigos antigos deletados", [
                 'count' => $count,
                 'before_date' => $date->format('Y-m-d')
@@ -463,5 +462,15 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
         Cache::forget('tire_articles_total_count');
         Cache::forget('tire_articles_status_distribution');
         Cache::forget('tire_articles_statistics');
+    }
+
+    /**
+     * Método que verifica apenas make+model
+     */
+    public function existsForVehicleModel(string $make, string $model): bool
+    {
+        return TireChangeArticle::where('make', $make)
+            ->where('model', $model)
+            ->exists();
     }
 }

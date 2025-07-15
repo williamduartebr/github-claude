@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects;
 
 class TireChangeContent
 {
@@ -71,7 +71,7 @@ class TireChangeContent
         // Verificar se tem pelo menos 3 seções principais
         $requiredSections = ['introducao', 'sintomas_desgaste', 'fatores_durabilidade'];
         $sectionsFound = 0;
-        
+
         foreach ($requiredSections as $section) {
             if (isset($this->content[$section]) && !empty($this->content[$section])) {
                 $sectionsFound++;
@@ -131,7 +131,7 @@ class TireChangeContent
         ];
 
         $details['is_valid'] = $this->isValid();
-        
+
         return $details;
     }
 }

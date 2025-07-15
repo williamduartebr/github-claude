@@ -3,9 +3,9 @@
 namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
 
 
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
 use Illuminate\Console\Command;
 
 class DebugContentGenerationCommand extends Command
@@ -27,13 +27,13 @@ class DebugContentGenerationCommand extends Command
         try {
             // 1. Carregar veículos e encontrar o específico
             $vehicles = $this->vehicleProcessor->importFromCsv('todos_veiculos.csv');
-            
+
             $make = $this->option('vehicle-make');
             $model = $this->option('vehicle-model');
             $year = (int) $this->option('vehicle-year');
-            
+
             $vehicle = $vehicles->first(function (VehicleData $v) use ($make, $model, $year) {
-                return strtolower($v->make) === strtolower($make) 
+                return strtolower($v->make) === strtolower($make)
                     && strtolower($v->model) === strtolower($model)
                     && $v->year === $year;
             });
@@ -70,7 +70,7 @@ class DebugContentGenerationCommand extends Command
             // 4. Mostrar detalhes de validação
             $this->info("✅ Conteúdo gerado! Validando...");
             $validationDetails = $content->getValidationDetails();
-            
+
             $this->table(
                 ['Validação', 'Status'],
                 [
@@ -102,7 +102,7 @@ class DebugContentGenerationCommand extends Command
             if (!$content->isValid()) {
                 $this->line("");
                 $this->error("❌ CONTEÚDO INVÁLIDO - DETALHES:");
-                
+
                 // Verificar o que está faltando
                 if (empty($content->title)) {
                     $this->line("  • Título vazio");
@@ -125,7 +125,7 @@ class DebugContentGenerationCommand extends Command
             } else {
                 $this->line("");
                 $this->info("✅ CONTEÚDO VÁLIDO!");
-                
+
                 // Mostrar preview da introdução
                 if (isset($content->content['introducao'])) {
                     $intro = $content->content['introducao'];
@@ -137,7 +137,6 @@ class DebugContentGenerationCommand extends Command
             }
 
             return 0;
-
         } catch (\Exception $e) {
             $this->error("❌ Erro durante debug: " . $e->getMessage());
             $this->line("Stack trace:");

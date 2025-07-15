@@ -1,9 +1,9 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -113,12 +113,12 @@ class TemplateBasedContentServiceWithYear
     {
         if ($vehicle->isMotorcycle()) {
             return "Identificar o momento certo para trocar os pneus da sua {$vehicle->make} {$vehicle->model} {$vehicle->year} é essencial para garantir segurança máxima na pilotagem. " .
-                   "Em motocicletas, os pneus são responsáveis por 100% da estabilidade e aderência, tornando fundamental conhecer os sinais de desgaste e os intervalos recomendados. " .
-                   "Este guia apresenta sintomas específicos, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus da sua motocicleta, " .
-                   "garantindo performance e segurança em todas as condições de pilotagem.";
+                "Em motocicletas, os pneus são responsáveis por 100% da estabilidade e aderência, tornando fundamental conhecer os sinais de desgaste e os intervalos recomendados. " .
+                "Este guia apresenta sintomas específicos, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus da sua motocicleta, " .
+                "garantindo performance e segurança em todas as condições de pilotagem.";
         }
 
-        $categoryText = match($vehicle->getMainCategory()) {
+        $categoryText = match ($vehicle->getMainCategory()) {
             'suv' => 'SUV versátil que demanda atenção especial com os pneus devido às diferentes condições de uso',
             'sedan' => 'sedan que combina conforto e economia, características que dependem diretamente da condição dos pneus',
             'hatchback' => 'hatchback urbano que precisa de pneus em perfeitas condições para máxima segurança e economia',
@@ -127,9 +127,9 @@ class TemplateBasedContentServiceWithYear
         };
 
         return "Identificar o momento certo para trocar os pneus do seu {$vehicle->make} {$vehicle->model} {$vehicle->year} é essencial para garantir segurança, desempenho e economia. " .
-               "Este {$categoryText}. " .
-               "Os pneus são o único ponto de contato com o solo e influenciam diretamente a frenagem, estabilidade e consumo de combustível. " .
-               "Este guia apresenta os sinais de desgaste, prazos recomendados, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus do seu veículo.";
+            "Este {$categoryText}. " .
+            "Os pneus são o único ponto de contato com o solo e influenciam diretamente a frenagem, estabilidade e consumo de combustível. " .
+            "Este guia apresenta os sinais de desgaste, prazos recomendados, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus do seu veículo.";
     }
 
     /**
@@ -464,7 +464,7 @@ class TemplateBasedContentServiceWithYear
             ],
             [
                 'pergunta' => "Com que frequência devo verificar a pressão?",
-                'resposta' => $vehicle->isMotorcycle() 
+                'resposta' => $vehicle->isMotorcycle()
                     ? "Em motocicletas, verifique semanalmente ou antes de cada saída. Use as pressões recomendadas: {$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI."
                     : "Verifique mensalmente e antes de viagens. Para o {$vehicle->make} {$vehicle->model}, mantenha {$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI."
             ],
@@ -499,11 +499,11 @@ class TemplateBasedContentServiceWithYear
         $conclusion = "Manter os pneus do seu {$vehicle->make} {$vehicle->model} {$vehicle->year} em perfeitas condições é investir em segurança, economia e desempenho. ";
         $conclusion .= "A verificação regular das pressões ({$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI), ";
         $conclusion .= "o acompanhamento do desgaste e a troca no momento adequado são práticas essenciais para qualquer proprietário responsável. ";
-        
+
         if ($vehicle->isMotorcycle()) {
             $conclusion .= "Em motocicletas, essa atenção é ainda mais crítica, pois os pneus são responsáveis por toda a estabilidade e segurança. ";
         }
-        
+
         $conclusion .= "Lembre-se: pneus em bom estado não apenas protegem vidas, mas também proporcionam melhor experiência de condução, ";
         $conclusion .= "economia de combustível e menor impacto ambiental. Invista na manutenção preventiva e desfrute de um veículo sempre seguro e eficiente.";
 
@@ -575,7 +575,7 @@ class TemplateBasedContentServiceWithYear
     protected function generateMetadata(VehicleData $vehicle): array
     {
         $wordCount = 1800; // Estimativa realista baseada no template
-        
+
         return [
             'original_clicks' => 0,
             'original_category' => 'Manutenção e Cuidados',
@@ -623,7 +623,7 @@ class TemplateBasedContentServiceWithYear
         }
 
         $tags[] = $vehicle->tireSize;
-        
+
         return $tags;
     }
 
@@ -703,7 +703,7 @@ class TemplateBasedContentServiceWithYear
             'vehicle_year' => $vehicle->year,
             'vehicle_category' => $vehicle->getMainCategory(),
             'vehicle_type' => $vehicle->getVehicleType(),
-            
+
             // Especificações técnicas
             'tire_size' => $vehicle->tireSize,
             'pressures' => [
@@ -715,17 +715,17 @@ class TemplateBasedContentServiceWithYear
                 'max_rear' => $vehicle->pressureMaxRear,
                 'spare' => $vehicle->pressureSpare
             ],
-            
+
             // Dados para formatação no template
             'pressure_display' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI",
             'pressure_loaded_display' => "{$vehicle->pressureLightFront}/{$vehicle->pressureLightRear} PSI",
-            
+
             // Informações adicionais
             'recommended_oil' => $vehicle->recommendedOil,
             'is_motorcycle' => $vehicle->isMotorcycle(),
             'is_electric' => $vehicle->isElectric(),
             'is_hybrid' => $vehicle->isHybrid(),
-            
+
             // Dados para URLs e imagens
             'image_url' => "https://mercadoveiculos.com/images/" . strtolower($vehicle->make) . "-" . strtolower($vehicle->model) . "-{$vehicle->year}.jpg",
             'slug' => $this->generateSlug($vehicle),

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Application\UseCases;
+namespace Src\ContentGeneration\WhenToChangeTires\Application\UseCases;
 
-use App\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationRequestDTO;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationRequestDTO;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
 use Illuminate\Support\Facades\Log;
 
 class ValidateVehiclesForGenerationUseCase
@@ -24,7 +24,7 @@ class ValidateVehiclesForGenerationUseCase
         try {
             // 1. Carregar veículos
             $allVehicles = $this->vehicleRepository->importVehicles($request->csvPath);
-            
+
             // 2. Aplicar filtros
             $filters = $request->getFilters();
             if (!empty($filters)) {
@@ -45,7 +45,7 @@ class ValidateVehiclesForGenerationUseCase
 
             foreach ($filteredVehicles as $vehicle) {
                 $issues = $this->vehicleProcessor->validateVehicleData($vehicle);
-                
+
                 if (empty($issues)) {
                     $validationResults['valid_vehicles']++;
                     $validationResults['ready_for_generation']++;
@@ -67,10 +67,9 @@ class ValidateVehiclesForGenerationUseCase
             ]);
 
             return $validationResults;
-
         } catch (\Exception $e) {
             Log::error("Erro na validação: " . $e->getMessage());
-            
+
             return [
                 'total_vehicles' => 0,
                 'valid_vehicles' => 0,
@@ -88,7 +87,7 @@ class ValidateVehiclesForGenerationUseCase
     protected function checkExistingArticles($vehicles): array
     {
         $existing = [];
-        
+
         foreach ($vehicles as $vehicle) {
             if ($this->vehicleRepository->exists($vehicle->make, $vehicle->model, $vehicle->year)) {
                 $existing[] = $vehicle->getVehicleIdentifier();

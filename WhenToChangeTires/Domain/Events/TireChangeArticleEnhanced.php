@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\Events;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\Events;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -47,11 +47,11 @@ class TireChangeArticleEnhanced
     {
         $previousScore = $this->enhancementData['previous_score'] ?? null;
         $newScore = $this->article->content_score;
-        
+
         if ($previousScore && $newScore) {
             return round($newScore - $previousScore, 2);
         }
-        
+
         return null;
     }
 

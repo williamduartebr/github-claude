@@ -8,13 +8,15 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Repositories\VehicleRepository;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Domain\Repositories\VehicleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\DebugCategoriesCommand;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Repositories\TireChangeArticleRepository;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Domain\Repositories\TireChangeArticleRepositoryInterface;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\ProcessVehicleBatchCommand;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\PublishTireArticlesCommand;
+use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\DebugExistingArticlesCommand;
+
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\ImportVehiclesFromCsvCommand;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\DebugContentGenerationCommand;
-
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\InstallWhenToChangeTiresCommand;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\SyncBlogWhenToChangeTiresCommand;
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Console\Commands\GenerateInitialTireArticlesCommand;
@@ -32,6 +34,8 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
         DebugContentGenerationCommand::class,
         SyncBlogWhenToChangeTiresCommand::class,
         PublishTireArticlesCommand::class,
+        DebugCategoriesCommand::class,
+        DebugExistingArticlesCommand::class,
     ];
 
     /**

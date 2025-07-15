@@ -115,13 +115,13 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
      */
     public function existsForVehicle(string $make, string $model, int $year): bool
     {
-        $cacheKey = "tire_article_exists_{$make}_{$model}_{$year}";
+        // ✅ NOVA ABORDAGEM: Gerar slug esperado e verificar se existe
+        $expectedSlug = \Illuminate\Support\Str::slug("quando-trocar-pneus-{$make}-{$model}-{$year}");
 
-        return Cache::remember($cacheKey, 3600, function () use ($make, $model, $year) {
-            return TireChangeArticle::where('make', $make)
-                ->where('model', $model)
-                ->where('year', $year)
-                ->exists();
+        $cacheKey = "tire_article_exists_slug_{$expectedSlug}";
+
+        return Cache::remember($cacheKey, 3600, function () use ($expectedSlug) {
+            return TireChangeArticle::where('slug', $expectedSlug)->exists();
         });
     }
 
@@ -134,14 +134,14 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
     }
 
     /**
-     * Buscar artigo por veículo
+     * Buscar artigo por veículo (CORRIGIDO - por SLUG)
      */
     public function findByVehicle(string $make, string $model, int $year): ?TireChangeArticle
     {
-        return TireChangeArticle::where('make', $make)
-            ->where('model', $model)
-            ->where('year', $year)
-            ->first();
+        // ✅ NOVA ABORDAGEM: Buscar por slug gerado
+        $expectedSlug = \Illuminate\Support\Str::slug("quando-trocar-pneus-{$make}-{$model}-{$year}");
+
+        return TireChangeArticle::where('slug', $expectedSlug)->first();
     }
 
     /**
@@ -455,8 +455,15 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
     protected function clearRelatedCache($article): void
     {
         if (is_object($article)) {
+            // Limpar cache antigo (make+model+year)
             $cacheKey = "tire_article_exists_{$article->make}_{$article->model}_{$article->year}";
             Cache::forget($cacheKey);
+
+            // Limpar cache novo (slug)
+            if (isset($article->slug)) {
+                $slugCacheKey = "tire_article_exists_slug_{$article->slug}";
+                Cache::forget($slugCacheKey);
+            }
         }
 
         Cache::forget('tire_articles_total_count');
@@ -469,9 +476,66 @@ class TireChangeArticleRepository implements TireChangeArticleRepositoryInterfac
      */
     public function existsForVehicleModel(string $make, string $model, int $year): bool
     {
-        return TireChangeArticle::where('make', $make)
-            ->where('model', $model)
-            ->where('year', $year)
-            ->exists();
+        $cacheKey = "tire_article_exists_model_{$make}_{$model}_{$year}";
+
+        return Cache::remember($cacheKey, 3600, function () use ($make, $model, $year) {
+            return TireChangeArticle::where('make', $make)
+                ->where('model', $model)
+                ->where('year', $year)
+                ->exists();
+        });
+    }
+
+    /**
+     * 🆕 NOVO: Debug para verificar discrepâncias
+     */
+    public function debugExistingArticles(): array
+    {
+        // Buscar todos os artigos existentes
+        $existingArticles = TireChangeArticle::select('make', 'model', 'year', 'slug', 'title')
+            ->orderBy('make')
+            ->orderBy('model')
+            ->orderBy('year')
+            ->get();
+
+        $analysis = [
+            'total_existing' => $existingArticles->count(),
+            'by_year' => $existingArticles->groupBy('year')->map->count()->toArray(),
+            'slug_patterns' => [],
+            'potential_duplicates' => []
+        ];
+
+        // Analisar padrões de slug
+        foreach ($existingArticles as $article) {
+            $expectedSlug = \Illuminate\Support\Str::slug("quando-trocar-pneus-{$article->make}-{$article->model}-{$article->year}");
+
+            if ($article->slug !== $expectedSlug) {
+                $analysis['slug_patterns'][] = [
+                    'vehicle' => "{$article->make} {$article->model} {$article->year}",
+                    'current_slug' => $article->slug,
+                    'expected_slug' => $expectedSlug,
+                    'match' => $article->slug === $expectedSlug ? 'YES' : 'NO'
+                ];
+            }
+        }
+
+        // Verificar duplicatas potenciais por make+model sem year
+        $groupedByModel = $existingArticles->groupBy(function ($article) {
+            return strtolower($article->make) . '_' . strtolower($article->model);
+        });
+
+        foreach ($groupedByModel as $key => $group) {
+            if ($group->count() > 1) {
+                $analysis['potential_duplicates'][$key] = $group->map(function ($article) {
+                    return [
+                        'year' => $article->year,
+                        'slug' => $article->slug,
+                        'title' => $article->title
+                    ];
+                })->toArray();
+            }
+        }
+
+        return $analysis;
     }
 }

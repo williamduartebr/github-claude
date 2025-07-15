@@ -17,7 +17,7 @@ class ClaudeApiService
     private $apiKey;
     private $apiUrl = 'https://api.anthropic.com/v1/messages';
     private $rateLimitKey = 'claude_api_rate_limit';
-    
+
     public function __construct()
     {
         $this->apiKey = config('services.claude.api_key');
@@ -30,7 +30,7 @@ class ClaudeApiService
     {
         $lastRequest = Cache::get($this->rateLimitKey, 0);
         $timeSinceLastRequest = time() - $lastRequest;
-        
+
         return $timeSinceLastRequest >= 60; // 1 minuto entre requests
     }
 
@@ -41,11 +41,11 @@ class ClaudeApiService
     {
         $lastRequest = Cache::get($this->rateLimitKey, 0);
         $timeSinceLastRequest = time() - $lastRequest;
-        
+
         if ($timeSinceLastRequest >= 60) {
             return 0; // Disponível agora
         }
-        
+
         return 60 - $timeSinceLastRequest; // Segundos para aguardar
     }
 
@@ -60,7 +60,7 @@ class ClaudeApiService
         }
 
         $prompt = $this->createTirePressurePrompt($vehicleData, $currentContent);
-        
+
         return $this->makeClaudeRequest($prompt, 'tire_pressure');
     }
 
@@ -75,7 +75,7 @@ class ClaudeApiService
         }
 
         $prompt = $this->createTitleSeoPrompt($vehicleData, $seoData, $faqs);
-        
+
         return $this->makeClaudeRequest($prompt, 'title_seo');
     }
 
@@ -87,7 +87,7 @@ class ClaudeApiService
         try {
             // ✅ Marcar rate limit ANTES do request
             Cache::put($this->rateLimitKey, time(), 300);
-            
+
             $response = Http::retry(2, 3000) // ✅ Apenas 2 tentativas, 3s entre cada
                 ->timeout(45) // ✅ Timeout mais agressivo: 45s
                 ->withHeaders([
@@ -111,7 +111,7 @@ class ClaudeApiService
             if ($response->successful()) {
                 $content = $response->json('content.0.text');
                 $correctedData = $this->extractJsonFromResponse($content);
-                
+
                 if ($correctedData) {
                     Log::info("✅ Claude API sucesso para tipo: {$type}");
                     return $correctedData;
@@ -122,13 +122,13 @@ class ClaudeApiService
             } else {
                 $statusCode = $response->status();
                 $errorBody = $response->body();
-                
+
                 Log::error("❌ Claude API falhou", [
                     'type' => $type,
                     'status' => $statusCode,
                     'error' => $errorBody
                 ]);
-                
+
                 return null;
             }
         } catch (\Exception $e) {
@@ -137,7 +137,7 @@ class ClaudeApiService
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return null;
         }
     }
@@ -150,7 +150,7 @@ class ClaudeApiService
         $vehicleName = $vehicleData['vehicle_name'] ?? 'N/A';
         $vehicleYear = $vehicleData['vehicle_year'] ?? 'N/A';
         $isMotorcycle = $vehicleData['is_motorcycle'] ?? false;
-        
+
         $pressures = $vehicleData['pressures'] ?? [];
         $currentIntro = $currentContent['introducao'] ?? '';
         $currentConclusion = $currentContent['consideracoes_finais'] ?? '';
@@ -203,7 +203,7 @@ EOT;
     {
         $vehicleName = $vehicleData['vehicle_name'] ?? 'N/A';
         $vehicleYear = $vehicleData['vehicle_year'] ?? 'N/A';
-        
+
         $currentTitle = $seoData['page_title'] ?? '';
         $currentMeta = $seoData['meta_description'] ?? '';
 
@@ -266,7 +266,7 @@ EOT;
         if ($type === 'tire_pressure') {
             return "Você é um especialista automotivo brasileiro. Corrija pressões irreais e crie conteúdo envolvente sobre segurança de pneus. Sempre retorne JSON válido.";
         }
-        
+
         return "Você é um especialista em SEO automotivo brasileiro. Inclua anos dos veículos naturalmente e otimize para conversão. Sempre retorne JSON válido.";
     }
 
@@ -304,7 +304,7 @@ EOT;
     {
         $lastRequest = Cache::get($this->rateLimitKey, 0);
         $timeSinceLastRequest = time() - $lastRequest;
-        
+
         return [
             'api_available' => $this->canMakeRequest(),
             'seconds_since_last_request' => $timeSinceLastRequest,
@@ -329,9 +329,9 @@ EOT;
 
         try {
             $testPrompt = "Responda apenas: 'Conexão OK'";
-            
+
             Cache::put($this->rateLimitKey, time(), 300);
-            
+
             $response = Http::timeout(10)
                 ->withHeaders([
                     'x-api-key' => $this->apiKey,
@@ -339,8 +339,9 @@ EOT;
                     'content-type' => 'application/json',
                 ])
                 ->post($this->apiUrl, [
-                    'model' => 'claude-3-haiku-20240307',
-                    'max_tokens' => 50,
+                    // 'model' => 'claude-3-haiku-20240307',
+                    'model' => 'claude-3-5-sonnet-20240620',
+                    'max_tokens' => 100,
                     'messages' => [
                         [
                             'role' => 'user',

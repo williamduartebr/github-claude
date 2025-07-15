@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Listeners;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Listeners;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleEnhanced;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleEnhanced;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
@@ -14,21 +14,21 @@ class LogArticleEnhanced
     public function handle(TireChangeArticleEnhanced $event): void
     {
         $eventData = $event->getEventData();
-        
+
         // Log principal
         Log::info('Artigo de pneus refinado pelo Claude', $eventData);
-        
+
         // Log específico para canal Claude
         if (config('when-to-change-tires.logging.separate_file')) {
             Log::channel('claude-enhancements')->info('Article Enhanced', $eventData);
         }
-        
+
         // Atualizar métricas de refinamento
         $this->updateEnhancementMetrics($event);
-        
+
         // Log de performance
         $this->logPerformanceMetrics($eventData);
-        
+
         // Alertas se necessário
         $this->checkQualityAlerts($event);
     }
@@ -43,27 +43,26 @@ class LogArticleEnhanced
             $todayKey = 'tire_articles_enhanced_today_' . now()->format('Y-m-d');
             Cache::increment($todayKey, 1);
             Cache::put($todayKey, Cache::get($todayKey, 0), now()->endOfDay());
-            
+
             // Métricas por tipo de enhancement
             $enhancementType = $event->enhancementData['type'] ?? 'unknown';
             $typeKey = 'tire_articles_enhanced_' . $enhancementType;
             Cache::increment($typeKey, 1);
-            
+
             // Tracking de melhorias de score
             $improvement = $event->calculateImprovement();
             if ($improvement !== null) {
                 $improvementKey = 'tire_articles_score_improvements';
                 $improvements = Cache::get($improvementKey, []);
                 $improvements[] = $improvement;
-                
+
                 // Manter apenas últimos 50 valores
                 if (count($improvements) > 50) {
                     $improvements = array_slice($improvements, -50);
                 }
-                
+
                 Cache::put($improvementKey, $improvements, 86400);
             }
-            
         } catch (\Exception $e) {
             Log::warning('Erro atualizando métricas de refinamento: ' . $e->getMessage());
         }
@@ -95,7 +94,7 @@ class LogArticleEnhanced
     {
         try {
             $improvement = $event->calculateImprovement();
-            
+
             // Alerta se houve piora significativa
             if ($improvement !== null && $improvement < -0.5) {
                 Log::warning('Refinamento Claude resultou em piora de qualidade', [
@@ -105,7 +104,7 @@ class LogArticleEnhanced
                     'enhancement_type' => $event->enhancementData['type'] ?? 'unknown'
                 ]);
             }
-            
+
             // Alerta se melhoria foi muito pequena
             if ($improvement !== null && $improvement > 0 && $improvement < 0.1) {
                 Log::notice('Refinamento Claude teve impacto mínimo', [
@@ -113,7 +112,6 @@ class LogArticleEnhanced
                     'minimal_improvement' => $improvement
                 ]);
             }
-            
         } catch (\Exception $e) {
             Log::warning('Erro verificando alertas de qualidade: ' . $e->getMessage());
         }

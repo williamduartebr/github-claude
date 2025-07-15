@@ -5,7 +5,7 @@ namespace Src\ContentGeneration\WhenToChangeTires\Application\Services;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Src\ArticleGenerator\Infrastructure\Eloquent\TempArticle;
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 
 class WhenToChangeTiresApplicationService
 {
@@ -131,8 +131,8 @@ class WhenToChangeTiresApplicationService
      */
     private function convertToTempArticleFormat($article): array
     {
-        $articleContent = is_string($article->article_content) 
-            ? json_decode($article->article_content, true) 
+        $articleContent = is_string($article->article_content)
+            ? json_decode($article->article_content, true)
             : $article->article_content;
 
         // Extrair entidades do veículo baseado na estrutura tire_change_articles

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -24,7 +24,7 @@ class ArticleJsonStorageService
 
         // Salvar arquivo
         $jsonString = json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        
+
         Storage::put($fullPath, $jsonString);
 
         Log::info("Artigo JSON salvo: {$fullPath}");
@@ -39,7 +39,7 @@ class ArticleJsonStorageService
     {
         $filename = $slug . '.json';
         $fullPath = $this->storagePath . '/' . $filename;
-        
+
         return Storage::exists($fullPath);
     }
 
@@ -71,7 +71,7 @@ class ArticleJsonStorageService
             if (str_ends_with($file, '.json')) {
                 $content = Storage::get($file);
                 $data = json_decode($content, true);
-                
+
                 if ($data) {
                     $articles[] = [
                         'slug' => basename($file, '.json'),
@@ -106,7 +106,7 @@ class ArticleJsonStorageService
     public function getStorageStatistics(): array
     {
         $articles = $this->listArticles();
-        
+
         $stats = [
             'total_articles' => count($articles),
             'by_make' => [],
@@ -156,7 +156,7 @@ class ArticleJsonStorageService
     {
         $units = ['B', 'KB', 'MB', 'GB'];
         $power = $size > 0 ? floor(log($size, 1024)) : 0;
-        
+
         return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
     }
 
@@ -166,7 +166,7 @@ class ArticleJsonStorageService
     public function exportBatch(array $slugs, string $exportPath = 'exports/tire-articles'): string
     {
         $this->ensureDirectoryExists();
-        
+
         $exportData = [
             'exported_at' => now()->toISOString(),
             'total_articles' => count($slugs),

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\Repositories;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\Repositories;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
 use Illuminate\Support\Collection;
 
 interface VehicleRepositoryInterface

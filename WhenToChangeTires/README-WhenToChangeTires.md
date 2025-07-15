@@ -4,16 +4,16 @@
 
 ## 📋 Índice
 
-- [Visão Geral](#-visão-geral)
-- [Arquitetura](#-arquitetura)
-- [Instalação](#-instalação)
-- [Configuração](#-configuração)
-- [Comandos Disponíveis](#-comandos-disponíveis)
-- [Estrutura de Dados](#-estrutura-de-dados)
-- [Fluxo de Funcionamento](#-fluxo-de-funcionamento)
-- [Exemplos de Uso](#-exemplos-de-uso)
-- [Solução de Problemas](#-solução-de-problemas)
-- [Desenvolvimento](#-desenvolvimento)
+-   [Visão Geral](#-visão-geral)
+-   [Arquitetura](#-arquitetura)
+-   [Instalação](#-instalação)
+-   [Configuração](#-configuração)
+-   [Comandos Disponíveis](#-comandos-disponíveis)
+-   [Estrutura de Dados](#-estrutura-de-dados)
+-   [Fluxo de Funcionamento](#-fluxo-de-funcionamento)
+-   [Exemplos de Uso](#-exemplos-de-uso)
+-   [Solução de Problemas](#-solução-de-problemas)
+-   [Desenvolvimento](#-desenvolvimento)
 
 ## 🎯 Visão Geral
 
@@ -21,21 +21,21 @@ O **Sistema Quando Trocar Pneus** é um módulo Laravel DDD que automatiza a ger
 
 ### Características Principais
 
-- ✅ **965 veículos reais** (carros e motocicletas)
-- ✅ **Dados técnicos precisos** (pressões, medidas, óleos)
-- ✅ **Compatibilidade total** com Template_Quando_Trocar_os_Pneus.blade.php
-- ✅ **Arquitetura DDD** robusta e escalável
-- ✅ **Geração em duas etapas** (inicial + refinamento Claude)
-- ✅ **Sistema de qualidade** automático
-- ✅ **Cache inteligente** e performance otimizada
+-   ✅ **965 veículos reais** (carros e motocicletas)
+-   ✅ **Dados técnicos precisos** (pressões, medidas, óleos)
+-   ✅ **Compatibilidade total** com Template_Quando_Trocar_os_Pneus.blade.php
+-   ✅ **Arquitetura DDD** robusta e escalável
+-   ✅ **Geração em duas etapas** (inicial + refinamento Claude)
+-   ✅ **Sistema de qualidade** automático
+-   ✅ **Cache inteligente** e performance otimizada
 
 ### Tecnologias
 
-- **Laravel** 10+ (PHP 8.1+)
-- **Arquitetura DDD** (Domain Driven Design)
-- **MySQL** para persistência
-- **JSON** para estrutura de conteúdo
-- **Scheduled Tasks** para automação
+-   **Laravel** 10+ (PHP 8.1+)
+-   **Arquitetura DDD** (Domain Driven Design)
+-   **MySQL** para persistência
+-   **JSON** para estrutura de conteúdo
+-   **Scheduled Tasks** para automação
 
 ---
 
@@ -63,13 +63,13 @@ src/ContentGeneration/WhenToChangeTires/
 
 ### Componentes Principais
 
-| Componente | Responsabilidade |
-|------------|------------------|
-| **TireChangeArticle** | Model principal para artigos |
-| **VehicleDataProcessorService** | Importação e processamento CSV |
+| Componente                      | Responsabilidade                |
+| ------------------------------- | ------------------------------- |
+| **TireChangeArticle**           | Model principal para artigos    |
+| **VehicleDataProcessorService** | Importação e processamento CSV  |
 | **TemplateBasedContentService** | Geração de conteúdo estruturado |
-| **TireChangeArticleRepository** | Persistência com cache |
-| **ArticleJsonStorageService** | Gerenciamento de JSONs |
+| **TireChangeArticleRepository** | Persistência com cache          |
+| **ArticleJsonStorageService**   | Gerenciamento de JSONs          |
 
 ---
 
@@ -292,47 +292,47 @@ Honda,Bros 160,2022,90/90-19 (dianteiro) 110/90-17 (traseiro),29,33,31,35,35,37,
 
 ```json
 {
-  "title": "Quando Trocar os Pneus do Honda Civic 2022 - Guia Completo",
-  "slug": "quando-trocar-pneus-honda-civic-2022",
-  "template": "when_to_change_tires",
-  "content": {
-    "introducao": "Identificar o momento certo para trocar...",
-    "sintomas_desgaste": {
-      "vibracao_direcao": {
-        "titulo": "Vibração na Direção",
-        "severidade": "alta"
-      }
+    "title": "Quando Trocar os Pneus do Honda Civic 2022 - Guia Completo",
+    "slug": "quando-trocar-pneus-honda-civic-2022",
+    "template": "when_to_change_tires",
+    "content": {
+        "introducao": "Identificar o momento certo para trocar...",
+        "sintomas_desgaste": {
+            "vibracao_direcao": {
+                "titulo": "Vibração na Direção",
+                "severidade": "alta"
+            }
+        },
+        "fatores_durabilidade": {
+            "calibragem_inadequada": {
+                "impacto_negativo": "-30%"
+            }
+        },
+        "cronograma_verificacao": {
+            "quinzenal": {
+                "titulo": "Verificação Quinzenal"
+            }
+        },
+        "tipos_pneus": {
+            "original_oem": {
+                "quilometragem_esperada": "50.000 - 60.000 km"
+            }
+        },
+        "vehicle_data": {
+            "pressure_display": "32/32 PSI",
+            "tire_size": "215/55 R17"
+        }
     },
-    "fatores_durabilidade": {
-      "calibragem_inadequada": {
-        "impacto_negativo": "-30%"
-      }
+    "seo_data": {
+        "page_title": "Quando Trocar os Pneus do Honda Civic 2022",
+        "meta_description": "Guia completo sobre quando trocar...",
+        "h2_tags": ["Sintomas de Pneus", "Fatores de Durabilidade"]
     },
-    "cronograma_verificacao": {
-      "quinzenal": {
-        "titulo": "Verificação Quinzenal"
-      }
-    },
-    "tipos_pneus": {
-      "original_oem": {
-        "quilometragem_esperada": "50.000 - 60.000 km"
-      }
-    },
-    "vehicle_data": {
-      "pressure_display": "32/32 PSI",
-      "tire_size": "215/55 R17"
+    "vehicle_info": {
+        "make": "Honda",
+        "model": "Civic",
+        "year": "2022"
     }
-  },
-  "seo_data": {
-    "page_title": "Quando Trocar os Pneus do Honda Civic 2022",
-    "meta_description": "Guia completo sobre quando trocar...",
-    "h2_tags": ["Sintomas de Pneus", "Fatores de Durabilidade"]
-  },
-  "vehicle_info": {
-    "make": "Honda",
-    "model": "Civic",
-    "year": "2022"
-  }
 }
 ```
 
@@ -366,15 +366,15 @@ graph TD
 
 ### Status de Artigos
 
-| Status | Descrição |
-|--------|-----------|
-| `pending` | Aguardando processamento |
-| `generated` | Artigo inicial criado |
-| `claude_enhanced` | Refinado pela IA (Etapa 2) |
-| `ready_for_transfer` | Pronto para WordPress |
-| `transferred` | Enviado para sistema final |
-| `published` | Publicado no site |
-| `error` | Erro durante processamento |
+| Status               | Descrição                  |
+| -------------------- | -------------------------- |
+| `pending`            | Aguardando processamento   |
+| `generated`          | Artigo inicial criado      |
+| `claude_enhanced`    | Refinado pela IA (Etapa 2) |
+| `ready_for_transfer` | Pronto para WordPress      |
+| `transferred`        | Enviado para sistema final |
+| `published`          | Publicado no site          |
+| `error`              | Erro durante processamento |
 
 ---
 
@@ -585,32 +585,32 @@ php artisan test tests/Unit/WhenToChangeTires/VehicleDataProcessorServiceTest.ph
 ```bash
 # Dashboard completo
 php artisan tinker
->>> app(\App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class)->getDashboardStats()
+>>> app(\Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class)->getDashboardStats()
 
 # Estatísticas específicas
->>> app(\App\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\TireChangeArticleRepository::class)->getStatistics()
+>>> app(\Src\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\TireChangeArticleRepository::class)->getStatistics()
 ```
 
 ### Dados Esperados
 
-| Métrica | Valor Esperado |
-|---------|----------------|
-| **Total de Veículos** | 965 |
-| **Carros** | 391 |
-| **Motocicletas** | 410 |
-| **Elétricos/Híbridos** | 164 |
-| **Marcas** | 25+ |
-| **Anos** | 2019-2025 |
+| Métrica                | Valor Esperado |
+| ---------------------- | -------------- |
+| **Total de Veículos**  | 965            |
+| **Carros**             | 391            |
+| **Motocicletas**       | 410            |
+| **Elétricos/Híbridos** | 164            |
+| **Marcas**             | 25+            |
+| **Anos**               | 2019-2025      |
 
 ### Qualidade dos Artigos
 
-| Score | Descrição |
-|-------|-----------|
+| Score    | Descrição                                      |
+| -------- | ---------------------------------------------- |
 | 9.0-10.0 | Excelente (>2000 palavras, estrutura completa) |
-| 8.0-8.9 | Muito Bom (1500-2000 palavras) |
-| 7.0-7.9 | Bom (1000-1500 palavras) |
-| 6.0-6.9 | Adequado (800-1000 palavras) |
-| <6.0 | Precisa melhorar |
+| 8.0-8.9  | Muito Bom (1500-2000 palavras)                 |
+| 7.0-7.9  | Bom (1000-1500 palavras)                       |
+| 6.0-6.9  | Adequado (800-1000 palavras)                   |
+| <6.0     | Precisa melhorar                               |
 
 ---
 
@@ -618,18 +618,18 @@ php artisan tinker
 
 ### Claude API Integration
 
-- ✅ **Infraestrutura preparada** (campos na model, configurações)
-- 🔄 **Em desenvolvimento**: Services de refinamento
-- 📋 **Planejado**: Commands de enhancement
-- 🎯 **Futuro**: Automação completa
+-   ✅ **Infraestrutura preparada** (campos na model, configurações)
+-   🔄 **Em desenvolvimento**: Services de refinamento
+-   📋 **Planejado**: Commands de enhancement
+-   🎯 **Futuro**: Automação completa
 
 ### Features Futuras
 
-- 📊 **Dashboard Web** para monitoramento
-- 🔄 **API REST** para integração externa
-- 📱 **Notificações** por email/Slack
-- 🔍 **Busca avançada** de artigos
-- 📈 **Analytics** de performance
+-   📊 **Dashboard Web** para monitoramento
+-   🔄 **API REST** para integração externa
+-   📱 **Notificações** por email/Slack
+-   🔍 **Busca avançada** de artigos
+-   📈 **Analytics** de performance
 
 ---
 
@@ -637,9 +637,9 @@ php artisan tinker
 
 ### Documentação
 
-- **README**: Este arquivo
-- **Config**: `config/when-to-change-tires.php`
-- **Commands**: `php artisan list when-to-change-tires`
+-   **README**: Este arquivo
+-   **Config**: `config/when-to-change-tires.php`
+-   **Commands**: `php artisan list when-to-change-tires`
 
 ### Logs
 
@@ -653,9 +653,9 @@ tail -f storage/logs/tire-articles.log
 
 ### Contato
 
-- **Issues**: Criar issue no repositório
-- **Features**: Pull request com documentação
-- **Dúvidas**: Verificar logs e documentação primeiro
+-   **Issues**: Criar issue no repositório
+-   **Features**: Pull request com documentação
+-   **Dúvidas**: Verificar logs e documentação primeiro
 
 ---
 
@@ -667,9 +667,9 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 ## 🙏 Agradecimentos
 
-- **Laravel Framework** pela base sólida
-- **DDD Architecture** pelos padrões de organização
-- **Claude AI** pela futura integração de refinamento
+-   **Laravel Framework** pela base sólida
+-   **DDD Architecture** pelos padrões de organização
+-   **Claude AI** pela futura integração de refinamento
 
 ---
 

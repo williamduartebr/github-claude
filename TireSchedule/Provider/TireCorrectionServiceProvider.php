@@ -3,15 +3,19 @@
 namespace Src\ContentGeneration\TireSchedule\Provider;
 
 use Illuminate\Support\ServiceProvider;
-
-// Commands
 use Src\ContentGeneration\TireSchedule\Console\TireCorrectionsCommand;
+use Src\ContentGeneration\TireSchedule\Console\FindTireArticlesCommand;
 use Src\ContentGeneration\TireSchedule\Console\CleanupTireScheduleTicker;
 use Src\ContentGeneration\TireSchedule\Console\FixSpecificArticleCommand;
+
+// Commands
 use Src\ContentGeneration\TireSchedule\Console\TitleYearCorrectionsCommand;
+use Src\ContentGeneration\TireSchedule\Console\ForceCompleteCorrectionsCommand;
+use Src\ContentGeneration\TireSchedule\Console\VerifyCorrectionCreationCommand;
+use Src\ContentGeneration\TireSchedule\Console\CleanupArticleTemplateTireTicker;
 
 // Micro-Services
-use Src\ContentGeneration\TireSchedule\Console\CleanupArticleTemplateTireTicker;
+use Src\ContentGeneration\TireSchedule\Console\EmergencyTitleCorrectionsCommand;
 use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionService;
 use Src\ContentGeneration\TireSchedule\Infrastructure\Services\TireCorrectionOrchestrator;
 
@@ -49,6 +53,10 @@ class TireCorrectionServiceProvider extends ServiceProvider
             FixSpecificArticleCommand::class,
             CleanupArticleTemplateTireTicker::class,
             CleanupTireScheduleTicker::class,
+            ForceCompleteCorrectionsCommand::class,
+            VerifyCorrectionCreationCommand::class,
+            EmergencyTitleCorrectionsCommand::class,
+            FindTireArticlesCommand::class,
         ]);
     }
 

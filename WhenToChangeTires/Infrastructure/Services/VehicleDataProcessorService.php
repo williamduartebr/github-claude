@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -19,17 +19,17 @@ class VehicleDataProcessorService
 
         // Usar método mais robusto para encontrar o arquivo
         $fullPath = $this->findCsvFile($csvPath);
-        
+
         if (!$fullPath) {
             throw new \Exception("Arquivo CSV não encontrado: {$csvPath}. Verifique se o arquivo existe em storage/app/");
         }
 
         Log::info("CSV encontrado em: {$fullPath}");
-        
+
         // Ler o arquivo diretamente usando File facade
         $csvContent = File::get($fullPath);
         $vehicles = collect();
-        
+
         $lines = explode("\n", $csvContent);
         $headers = null;
         $processedCount = 0;
@@ -37,7 +37,7 @@ class VehicleDataProcessorService
 
         foreach ($lines as $lineNumber => $line) {
             $line = trim($line);
-            
+
             if (empty($line)) {
                 continue;
             }
@@ -51,7 +51,7 @@ class VehicleDataProcessorService
 
             try {
                 $data = str_getcsv($line);
-                
+
                 // Verificar se tem o número correto de colunas
                 if (count($data) !== count($headers)) {
                     Log::warning("Linha {$lineNumber}: número incorreto de colunas - " . count($data) . " encontradas, " . count($headers) . " esperadas");
@@ -61,14 +61,13 @@ class VehicleDataProcessorService
 
                 $vehicleData = array_combine($headers, $data);
                 $vehicle = $this->createVehicleFromCsvData($vehicleData);
-                
+
                 if ($vehicle) {
                     $vehicles->push($vehicle);
                     $processedCount++;
                 } else {
                     $errorCount++;
                 }
-
             } catch (\Exception $e) {
                 Log::error("Erro processando linha {$lineNumber}: " . $e->getMessage());
                 $errorCount++;
@@ -76,7 +75,7 @@ class VehicleDataProcessorService
         }
 
         Log::info("Importação concluída: {$processedCount} veículos processados, {$errorCount} erros");
-        
+
         return $vehicles;
     }
 
@@ -102,19 +101,19 @@ class VehicleDataProcessorService
                 // 3. Tem pressão spare (peso 5)
                 // 4. Dados mais completos
                 $score = $vehicle->year * 100;
-                
+
                 if ($vehicle->recommendedOil && $vehicle->recommendedOil !== 'NA') {
                     $score += 10;
                 }
-                
+
                 if ($vehicle->pressureSpare && $vehicle->pressureSpare > 0) {
                     $score += 5;
                 }
-                
+
                 if (!empty($vehicle->tireSize)) {
                     $score += 3;
                 }
-                
+
                 return $score;
             })->first();
         })->values();
@@ -249,8 +248,8 @@ class VehicleDataProcessorService
             'by_make' => $vehicles->groupBy('make')->map->count()->sortDesc()->toArray(),
             'by_category' => $vehicles->groupBy('category')->map->count()->toArray(),
             'by_year' => $vehicles->groupBy('year')->map->count()->sortDesc()->toArray(),
-            'by_vehicle_type' => $vehicles->groupBy(function($v) { 
-                return $v->getVehicleType(); 
+            'by_vehicle_type' => $vehicles->groupBy(function ($v) {
+                return $v->getVehicleType();
             })->map->count()->toArray()
         ];
 
@@ -281,18 +280,18 @@ class VehicleDataProcessorService
             // Caminho direto baseado em storage_path
             storage_path("app/{$csvPath}"),
             storage_path($csvPath),
-            
+
             // Caminho baseado em base_path
             base_path("storage/app/{$csvPath}"),
             base_path($csvPath),
-            
+
             // Caminho absoluto se fornecido
             $csvPath,
-            
+
             // Caminho relativo ao diretório atual
             getcwd() . "/{$csvPath}",
             getcwd() . "/storage/app/{$csvPath}",
-            
+
             // Apenas o nome do arquivo no storage/app
             storage_path("app/" . basename($csvPath)),
         ];
@@ -323,7 +322,7 @@ class VehicleDataProcessorService
             $make = trim($csvData['make']);
             $model = trim($csvData['model']);
             $year = (int) $csvData['year'];
-            
+
             // Validar ano
             if ($year < 1990 || $year > 2030) {
                 Log::warning("Ano inválido: {$year} para {$make} {$model}");
@@ -343,11 +342,10 @@ class VehicleDataProcessorService
                 pressureMaxRear: (int) ($csvData['pressure_max_rear'] ?? 36),
                 pressureSpare: !empty($csvData['pressure_spare']) ? (float) $csvData['pressure_spare'] : null,
                 category: trim($csvData['category'] ?? 'car'),
-                recommendedOil: !empty($csvData['recommended_oil']) && $csvData['recommended_oil'] !== 'NA' 
-                    ? trim($csvData['recommended_oil']) 
+                recommendedOil: !empty($csvData['recommended_oil']) && $csvData['recommended_oil'] !== 'NA'
+                    ? trim($csvData['recommended_oil'])
                     : null
             );
-
         } catch (\Exception $e) {
             Log::error("Erro criando VehicleData: " . $e->getMessage() . " - Dados: " . json_encode($csvData));
             return null;

@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 
 class SyncBlogWhenToChangeTiresCommand extends Command
 {

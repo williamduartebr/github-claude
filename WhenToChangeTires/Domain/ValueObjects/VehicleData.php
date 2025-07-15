@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects;
 
 class VehicleData
 {
@@ -38,9 +38,19 @@ class VehicleData
     public function isCar(): bool
     {
         return in_array($this->category, [
-            'hatch', 'sedan', 'suv', 'pickup', 'van', 'minivan',
-            'car_sedan', 'car_hatchback', 'car_suv', 'car_pickup', 
-            'car_sports', 'car_hybrid', 'car_electric'
+            'hatch',
+            'sedan',
+            'suv',
+            'pickup',
+            'van',
+            'minivan',
+            'car_sedan',
+            'car_hatchback',
+            'car_suv',
+            'car_pickup',
+            'car_sports',
+            'car_hybrid',
+            'car_electric'
         ]);
     }
 
@@ -59,15 +69,15 @@ class VehicleData
         if ($this->isMotorcycle()) {
             return 'motorcycle';
         }
-        
+
         if ($this->isElectric()) {
             return 'electric';
         }
-        
+
         if ($this->isHybrid()) {
             return 'hybrid';
         }
-        
+
         return 'car';
     }
 

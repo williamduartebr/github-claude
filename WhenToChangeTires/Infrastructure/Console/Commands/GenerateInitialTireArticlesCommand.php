@@ -1,11 +1,11 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
 
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +47,7 @@ class GenerateInitialTireArticlesCommand extends Command
 
             // 2. Importar e filtrar veículos
             $vehicles = $this->loadAndFilterVehicles($config);
-            
+
             if ($vehicles->isEmpty()) {
                 $this->error("❌ Nenhum veículo encontrado com os filtros aplicados");
                 return 1;
@@ -64,7 +64,6 @@ class GenerateInitialTireArticlesCommand extends Command
 
             $this->info("✅ Geração de artigos concluída com sucesso!");
             return 0;
-
         } catch (\Exception $e) {
             $this->error("❌ Erro durante geração: " . $e->getMessage());
             Log::error("GenerateInitialTireArticlesCommand falhou: " . $e->getMessage(), [
@@ -105,7 +104,7 @@ class GenerateInitialTireArticlesCommand extends Command
         $this->info("📋 CONFIGURAÇÃO:");
         $this->line("   📂 CSV: {$config['csv_path']}");
         $this->line("   📦 Lote: {$config['batch_size']} artigos");
-        
+
         if (!empty(array_filter($config['filters']))) {
             $this->line("   🔍 Filtros ativos:");
             foreach ($config['filters'] as $key => $value) {
@@ -119,11 +118,11 @@ class GenerateInitialTireArticlesCommand extends Command
         if ($config['only_json']) $options[] = 'Apenas JSON';
         if ($config['overwrite']) $options[] = 'Sobrescrever';
         if ($config['dry_run']) $options[] = 'Simulação';
-        
+
         if (!empty($options)) {
             $this->line("   ⚙️ Opções: " . implode(', ', $options));
         }
-        
+
         $this->line("");
     }
 
@@ -133,12 +132,12 @@ class GenerateInitialTireArticlesCommand extends Command
     protected function loadAndFilterVehicles(array $config)
     {
         $this->info("📥 Carregando veículos do CSV...");
-        
+
         $allVehicles = $this->vehicleProcessor->importFromCsv($config['csv_path']);
         $this->line("   Total importados: {$allVehicles->count()}");
 
         // Aplicar filtros
-        $filters = array_filter($config['filters'], function($value) {
+        $filters = array_filter($config['filters'], function ($value) {
             return $value !== null;
         });
 
@@ -190,15 +189,15 @@ class GenerateInitialTireArticlesCommand extends Command
     protected function prepareEnvironment(): void
     {
         $this->info("🔧 Preparando ambiente...");
-        
+
         // Garantir que diretório de JSONs existe
         $this->jsonStorage->ensureDirectoryExists();
-        
+
         // Iniciar transação para rollback em caso de erro (se não for dry-run)
         if (!$this->option('dry-run') && !$this->option('only-json')) {
             DB::beginTransaction();
         }
-        
+
         $this->line("   ✅ Ambiente preparado");
         $this->line("");
     }
@@ -210,7 +209,7 @@ class GenerateInitialTireArticlesCommand extends Command
     {
         $batches = $this->vehicleProcessor->createBatches($vehicles, $config['batch_size']);
         $totalBatches = $batches->count();
-        
+
         $this->info("📦 Processando {$totalBatches} lotes:");
         $this->line("");
 
@@ -227,7 +226,7 @@ class GenerateInitialTireArticlesCommand extends Command
             $this->info("📦 Lote {$batchNumber}/{$totalBatches} - {$batch['count']} veículos");
 
             $batchResults = $this->processBatch($batch, $config);
-            
+
             // Agregar resultados
             $results['total_processed'] += $batchResults['processed'];
             $results['successful'] += $batchResults['successful'];
@@ -257,7 +256,7 @@ class GenerateInitialTireArticlesCommand extends Command
         ];
 
         $vehicles = collect($batch['vehicles']);
-        
+
         // Barra de progresso se solicitada
         if ($config['show_progress']) {
             $progressBar = $this->output->createProgressBar($vehicles->count());
@@ -266,14 +265,14 @@ class GenerateInitialTireArticlesCommand extends Command
 
         foreach ($vehicles as $vehicle) {
             $results['processed']++;
-            
+
             try {
                 if ($config['dry_run']) {
                     $this->line("   🔍 [DRY RUN] Processaria: {$vehicle->getVehicleIdentifier()}");
                     $results['successful']++;
                 } else {
                     $result = $this->processVehicle($vehicle, $config);
-                    
+
                     if ($result['success']) {
                         $results['successful']++;
                         if ($this->option('verbose')) {
@@ -285,20 +284,19 @@ class GenerateInitialTireArticlesCommand extends Command
                             'vehicle' => $vehicle->getVehicleIdentifier(),
                             'error' => $result['error']
                         ];
-                        
+
                         if ($this->option('verbose')) {
                             $this->line("   ❌ {$vehicle->getVehicleIdentifier()}: {$result['error']}");
                         }
                     }
                 }
-
             } catch (\Exception $e) {
                 $results['failed']++;
                 $results['errors'][] = [
                     'vehicle' => $vehicle->getVehicleIdentifier(),
                     'error' => $e->getMessage()
                 ];
-                
+
                 Log::error("Erro processando veículo {$vehicle->getVehicleIdentifier()}: " . $e->getMessage());
             }
 
@@ -323,7 +321,7 @@ class GenerateInitialTireArticlesCommand extends Command
         try {
             // 1. Gerar conteúdo do artigo
             $content = $this->contentService->generateTireChangeArticle($vehicle);
-            
+
             if (!$content->isValid()) {
                 return [
                     'success' => false,
@@ -337,7 +335,7 @@ class GenerateInitialTireArticlesCommand extends Command
             // 3. Salvar na model se não for only-json
             if (!$config['only_json']) {
                 $article = $this->saveToTireChangeArticleModel($vehicle, $content, $jsonPath);
-                
+
                 if (!$article) {
                     return [
                         'success' => false,
@@ -351,7 +349,6 @@ class GenerateInitialTireArticlesCommand extends Command
                 'content' => $content,
                 'json_path' => $jsonPath
             ];
-
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -400,9 +397,8 @@ class GenerateInitialTireArticlesCommand extends Command
             ]);
 
             $article->markAsGenerated();
-            
-            return $article;
 
+            return $article;
         } catch (\Exception $e) {
             Log::error("Erro salvando TireChangeArticle: " . $e->getMessage(), [
                 'vehicle' => $vehicle->getVehicleIdentifier()
@@ -435,7 +431,7 @@ class GenerateInitialTireArticlesCommand extends Command
             foreach (array_slice($results['errors'], 0, 10) as $error) {
                 $this->line("   • {$error['vehicle']}: {$error['error']}");
             }
-            
+
             if (count($results['errors']) > 10) {
                 $remaining = count($results['errors']) - 10;
                 $this->line("   ... e mais {$remaining} erros");
@@ -474,7 +470,6 @@ class GenerateInitialTireArticlesCommand extends Command
                 $dbCount = TireChangeArticle::count();
                 $this->line("   🗄️ Artigos no banco: {$dbCount}");
             }
-
         } catch (\Exception $e) {
             $this->warn("Não foi possível obter estatísticas de armazenamento");
         }

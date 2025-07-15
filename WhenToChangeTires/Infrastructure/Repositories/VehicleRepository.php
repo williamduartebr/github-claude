@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -17,7 +17,7 @@ class VehicleRepository implements VehicleRepositoryInterface
     public function importVehicles(string $source): Collection
     {
         $cacheKey = "vehicles_import_" . md5($source);
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($source) {
             return $this->processor->importFromCsv($source);
         });

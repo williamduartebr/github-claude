@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\Events;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\Events;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -45,10 +45,10 @@ class TireChangeArticleCreated
             return 0;
         }
 
-        $content = is_string($this->article->article_content) 
-            ? $this->article->article_content 
+        $content = is_string($this->article->article_content)
+            ? $this->article->article_content
             : json_encode($this->article->article_content);
-            
+
         return str_word_count(strip_tags($content));
     }
 
@@ -60,15 +60,15 @@ class TireChangeArticleCreated
         if (str_contains($this->article->category, 'motorcycle')) {
             return 'motorcycle';
         }
-        
+
         if (str_contains($this->article->category, 'electric')) {
             return 'electric';
         }
-        
+
         if (str_contains($this->article->category, 'hybrid')) {
             return 'hybrid';
         }
-        
+
         return 'car';
     }
 }

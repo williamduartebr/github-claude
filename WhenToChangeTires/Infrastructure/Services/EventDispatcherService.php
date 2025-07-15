@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
-use App\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleCreated;
-use App\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleEnhanced;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleCreated;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleEnhanced;
 use Illuminate\Support\Facades\Event;
 
 class EventDispatcherService
@@ -13,7 +13,7 @@ class EventDispatcherService
      * Disparar evento de artigo criado
      */
     public function dispatchArticleCreated(
-        TireChangeArticle $article, 
+        TireChangeArticle $article,
         array $generationMetrics = []
     ): void {
         Event::dispatch(new TireChangeArticleCreated($article, $generationMetrics));
@@ -60,11 +60,11 @@ class EventDispatcherService
     protected function getAverageImprovements(): ?float
     {
         $improvements = \Cache::get('tire_articles_score_improvements', []);
-        
+
         if (empty($improvements)) {
             return null;
         }
-        
+
         return round(array_sum($improvements) / count($improvements), 2);
     }
 }

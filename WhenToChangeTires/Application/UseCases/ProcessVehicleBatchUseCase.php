@@ -1,14 +1,14 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Application\UseCases;
+namespace Src\ContentGeneration\WhenToChangeTires\Application\UseCases;
 
-use App\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationRequestDTO;
-use App\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationResultDTO;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
+use Src\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationRequestDTO;
+use Src\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationResultDTO;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
 use Illuminate\Support\Facades\Log;
 
 class ProcessVehicleBatchUseCase
@@ -27,7 +27,7 @@ class ProcessVehicleBatchUseCase
     public function execute(string $batchId, ArticleGenerationRequestDTO $request): ArticleGenerationResultDTO
     {
         $startTime = microtime(true);
-        
+
         Log::info("Iniciando processamento de lote específico", [
             'batch_id' => $batchId,
             'request' => $request->toArray()
@@ -36,7 +36,7 @@ class ProcessVehicleBatchUseCase
         try {
             // 1. Carregar veículos do lote
             $batchVehicles = $this->loadBatchVehicles($batchId, $request);
-            
+
             if ($batchVehicles->isEmpty()) {
                 return new ArticleGenerationResultDTO(
                     totalProcessed: 0,
@@ -83,7 +83,6 @@ class ProcessVehicleBatchUseCase
                 executionTime: $executionTime,
                 batchId: $batchId
             );
-
         } catch (\Exception $e) {
             Log::error("Erro no processamento de lote: " . $e->getMessage(), [
                 'batch_id' => $batchId,
@@ -109,18 +108,18 @@ class ProcessVehicleBatchUseCase
     {
         // Carregar todos os veículos
         $allVehicles = $this->vehicleRepository->importVehicles($request->csvPath);
-        
+
         // Simular lote baseado no ID (pode ser melhorado com persistência real)
         $batchSize = $request->batchSize;
         $batchNumber = $this->extractBatchNumber($batchId);
-        
+
         if ($batchNumber === null) {
             return collect();
         }
-        
+
         $startIndex = ($batchNumber - 1) * $batchSize;
         $batchVehicles = $allVehicles->slice($startIndex, $batchSize);
-        
+
         // Filtrar apenas veículos válidos
         return $this->vehicleProcessor->getVehiclesReadyForGeneration($batchVehicles);
     }
@@ -134,7 +133,7 @@ class ProcessVehicleBatchUseCase
         if (preg_match('/batch_\d{8}_(\d+)/', $batchId, $matches)) {
             return (int) $matches[1];
         }
-        
+
         return null;
     }
 
@@ -158,7 +157,7 @@ class ProcessVehicleBatchUseCase
             try {
                 // Gerar conteúdo
                 $content = $this->contentService->generateTireChangeArticle($vehicle);
-                
+
                 if (!$content->isValid()) {
                     $results['failed']++;
                     $results['errors'][] = [
@@ -180,14 +179,13 @@ class ProcessVehicleBatchUseCase
 
                 $results['successful']++;
                 $results['created_slugs'][] = $content->slug;
-                
             } catch (\Exception $e) {
                 $results['failed']++;
                 $results['errors'][] = [
                     'vehicle' => $vehicle->getVehicleIdentifier(),
                     'error' => $e->getMessage()
                 ];
-                
+
                 Log::error("Erro processando veículo no lote", [
                     'vehicle' => $vehicle->getVehicleIdentifier(),
                     'batch_id' => $batchId,

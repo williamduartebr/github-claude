@@ -1,14 +1,14 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Application\UseCases;
+namespace Src\ContentGeneration\WhenToChangeTires\Application\UseCases;
 
-use App\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationRequestDTO;
-use App\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationResultDTO;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
+use Src\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationRequestDTO;
+use Src\ContentGeneration\WhenToChangeTires\Application\DTOs\ArticleGenerationResultDTO;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +28,7 @@ class GenerateInitialArticlesUseCase
     public function execute(ArticleGenerationRequestDTO $request): ArticleGenerationResultDTO
     {
         $startTime = microtime(true);
-        
+
         Log::info("Iniciando geração de artigos", $request->toArray());
 
         try {
@@ -45,7 +45,7 @@ class GenerateInitialArticlesUseCase
             $this->finalizeGeneration($request, $result);
 
             $executionTime = microtime(true) - $startTime;
-            
+
             Log::info("Geração de artigos concluída", [
                 'total_processed' => $result->totalProcessed,
                 'successful' => $result->successful,
@@ -64,7 +64,6 @@ class GenerateInitialArticlesUseCase
                 executionTime: $executionTime,
                 batchId: $request->batchId ?? 'initial_' . date('Ymd_His')
             );
-
         } catch (\Exception $e) {
             Log::error("Erro na geração de artigos: " . $e->getMessage(), [
                 'request' => $request->toArray(),
@@ -89,7 +88,7 @@ class GenerateInitialArticlesUseCase
     {
         // Importar veículos do CSV
         $allVehicles = $this->vehicleRepository->importVehicles($request->csvPath);
-        
+
         // Aplicar filtros
         $filters = $request->getFilters();
         if (!empty($filters)) {
@@ -156,7 +155,7 @@ class GenerateInitialArticlesUseCase
     {
         // Criar lotes
         $batches = $this->vehicleProcessor->createBatches($vehicles, $request->batchSize);
-        
+
         $totalProcessed = 0;
         $successful = 0;
         $failed = 0;
@@ -166,7 +165,7 @@ class GenerateInitialArticlesUseCase
 
         foreach ($batches as $batchIndex => $batch) {
             $batchNumber = $batchIndex + 1;
-            
+
             Log::info("Processando lote", [
                 'batch_number' => $batchNumber,
                 'total_batches' => $batches->count(),
@@ -174,7 +173,7 @@ class GenerateInitialArticlesUseCase
             ]);
 
             $batchResult = $this->processBatch($batch, $request);
-            
+
             $totalProcessed += $batchResult['processed'];
             $successful += $batchResult['successful'];
             $failed += $batchResult['failed'];
@@ -221,7 +220,7 @@ class GenerateInitialArticlesUseCase
                     $results['successful']++;
                 } else {
                     $result = $this->processVehicle($vehicle, $request);
-                    
+
                     if ($result['success']) {
                         $results['successful']++;
                         $results['created_slugs'][] = $result['slug'];
@@ -233,14 +232,13 @@ class GenerateInitialArticlesUseCase
                         ];
                     }
                 }
-
             } catch (\Exception $e) {
                 $results['failed']++;
                 $results['errors'][] = [
                     'vehicle' => $vehicle->getVehicleIdentifier(),
                     'error' => $e->getMessage()
                 ];
-                
+
                 Log::error("Erro processando veículo", [
                     'vehicle' => $vehicle->getVehicleIdentifier(),
                     'error' => $e->getMessage()
@@ -259,7 +257,7 @@ class GenerateInitialArticlesUseCase
         try {
             // 1. Gerar conteúdo
             $content = $this->contentService->generateTireChangeArticle($vehicle);
-            
+
             if (!$content->isValid()) {
                 return [
                     'success' => false,
@@ -295,7 +293,6 @@ class GenerateInitialArticlesUseCase
                 'slug' => $content->slug,
                 'json_path' => $jsonPath
             ];
-
         } catch (\Exception $e) {
             Log::error("Erro processando veículo individual", [
                 'vehicle' => $vehicle->getVehicleIdentifier(),

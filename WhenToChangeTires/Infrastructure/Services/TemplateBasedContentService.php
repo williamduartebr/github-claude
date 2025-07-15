@@ -1,9 +1,9 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -19,7 +19,7 @@ class TireChangeArticleService
     public function getDashboardStats(): array
     {
         $stats = $this->repository->getStatistics();
-        
+
         return [
             'overview' => [
                 'total_articles' => $stats['total_articles'],
@@ -44,11 +44,11 @@ class TireChangeArticleService
     protected function getRecentTrends(): array
     {
         $lastSevenDays = [];
-        
+
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i);
             $count = TireChangeArticle::whereDate('created_at', $date)->count();
-            
+
             $lastSevenDays[] = [
                 'date' => $date->format('Y-m-d'),
                 'count' => $count
@@ -81,7 +81,6 @@ class TireChangeArticleService
 
                 $article->markAsReadyForTransfer();
                 $prepared[] = $article->id;
-
             } catch (\Exception $e) {
                 $errors[] = "Erro preparando artigo {$article->id}: " . $e->getMessage();
             }
@@ -104,7 +103,7 @@ class TireChangeArticleService
     public function cleanupOldArticles(int $daysOld = 90): array
     {
         $cutoffDate = now()->subDays($daysOld);
-        
+
         // Contar artigos que serão deletados
         $toDelete = TireChangeArticle::where('created_at', '<', $cutoffDate)
             ->where('generation_status', 'error')
@@ -139,12 +138,12 @@ class TireChangeArticleService
     public function validateArticleIntegrity(): array
     {
         $issues = [];
-        
+
         // Verificar artigos sem conteúdo
         $emptyContent = TireChangeArticle::whereNull('article_content')
             ->orWhere('article_content', '')
             ->count();
-        
+
         if ($emptyContent > 0) {
             $issues[] = "{$emptyContent} artigos sem conteúdo";
         }
@@ -161,7 +160,7 @@ class TireChangeArticleService
 
         // Verificar artigos com score muito baixo
         $lowScore = TireChangeArticle::where('content_score', '<', 4.0)->count();
-        
+
         if ($lowScore > 0) {
             $issues[] = "{$lowScore} artigos com score muito baixo";
         }
@@ -179,7 +178,7 @@ class TireChangeArticleService
     public function getProductionReport(\DateTimeInterface $startDate, \DateTimeInterface $endDate): array
     {
         $articles = TireChangeArticle::whereBetween('created_at', [$startDate, $endDate])->get();
-        
+
         return [
             'period' => [
                 'start' => $startDate->format('Y-m-d'),
@@ -205,7 +204,7 @@ class TireChangeArticleService
     {
         $dailyStats = [];
         $current = $startDate->copy();
-        
+
         while ($current <= $endDate) {
             $dayArticles = $articles->filter(function ($article) use ($current) {
                 return $article->created_at->format('Y-m-d') === $current->format('Y-m-d');

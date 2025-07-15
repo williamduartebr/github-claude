@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Application\DTOs;
+namespace Src\ContentGeneration\WhenToChangeTires\Application\DTOs;
 
 class ArticleGenerationResultDTO
 {
@@ -21,7 +21,7 @@ class ArticleGenerationResultDTO
         if ($this->totalProcessed === 0) {
             return 0.0;
         }
-        
+
         return round(($this->successful / $this->totalProcessed) * 100, 2);
     }
 

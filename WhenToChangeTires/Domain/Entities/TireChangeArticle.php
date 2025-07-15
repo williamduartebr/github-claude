@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\Entities;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\Entities;
 
 use MongoDB\Laravel\Eloquent\Model;
 
@@ -30,7 +30,7 @@ class TireChangeArticle extends Model
         'updated_at' => 'datetime'
     ];
 
-    
+
 
     protected $fillable = [
         // Dados do veículo
@@ -39,28 +39,28 @@ class TireChangeArticle extends Model
         'year',
         'tire_size',
         'vehicle_data',
-        
+
         // Conteúdo do artigo
         'title',
         'slug',
         'article_content',
         'template_used',
-        
+
         // SEO
         'meta_description',
         'seo_keywords',
         'wordpress_url',
         'amp_url',
         'canonical_url',
-        
+
         // Status e controle
         'generation_status',
-        
+
         // Claude API (Etapa 2)
         'claude_enhancements',
         'claude_last_enhanced_at',
         'claude_enhancement_count',
-        
+
         // Dados técnicos dos pneus
         'pressure_empty_front',
         'pressure_empty_rear',
@@ -69,27 +69,27 @@ class TireChangeArticle extends Model
         'pressure_max_front',
         'pressure_max_rear',
         'pressure_spare',
-        
+
         // Classificações
         'category',
         'recommended_oil',
-        
+
         // Qualidade
         'quality_checked',
         'quality_issues',
         'content_score',
-        
+
         // Controle de lotes
         'batch_id',
         'processed_at',
 
-         // Campos do blog
+        // Campos do blog
         'blog_id',
         'blog_status',
         'blog_published_time',
         'blog_modified_time',
         'blog_synced',
-        
+
         // Timestamps
         'created_at',
         'updated_at'
@@ -124,8 +124,8 @@ class TireChangeArticle extends Model
     public function scopeByVehicle($query, string $make, string $model, int $year)
     {
         return $query->where('make', $make)
-                    ->where('model', $model)
-                    ->where('year', $year);
+            ->where('model', $model)
+            ->where('year', $year);
     }
 
     public function scopeByMake($query, string $make)
@@ -228,15 +228,15 @@ class TireChangeArticle extends Model
 
     public function canBeEnhancedByClaude(): bool
     {
-        return in_array($this->generation_status, ['generated', 'claude_enhanced']) 
-               && ($this->claude_enhancement_count ?? 0) < 5; // Máximo 5 refinamentos
+        return in_array($this->generation_status, ['generated', 'claude_enhanced'])
+            && ($this->claude_enhancement_count ?? 0) < 5; // Máximo 5 refinamentos
     }
 
     public function hasValidContent(): bool
     {
-        return !empty($this->article_content) 
-               && !empty($this->title) 
-               && !empty($this->wordpress_url);
+        return !empty($this->article_content)
+            && !empty($this->title)
+            && !empty($this->wordpress_url);
     }
 
     public function getContentWordCount(): int
@@ -247,7 +247,7 @@ class TireChangeArticle extends Model
 
         $content = $this->article_content;
         $wordCount = 0;
-        
+
         if (is_array($content)) {
             $wordCount = $this->countWordsInArray($content);
         } else {
@@ -310,7 +310,7 @@ class TireChangeArticle extends Model
     private function countWordsInArray(array $data): int
     {
         $wordCount = 0;
-        
+
         foreach ($data as $item) {
             if (is_string($item)) {
                 $wordCount += str_word_count(strip_tags($item));
@@ -318,14 +318,14 @@ class TireChangeArticle extends Model
                 $wordCount += $this->countWordsInArray($item);
             }
         }
-        
+
         return $wordCount;
     }
 
     // Métodos para compatibilidade com estatísticas
     public static function getStatusDistribution(): array
     {
-        $result = self::raw(function($collection) {
+        $result = self::raw(function ($collection) {
             return $collection->aggregate([
                 [
                     '$group' => [
@@ -346,7 +346,7 @@ class TireChangeArticle extends Model
 
     public static function getStatsByMake(): array
     {
-        return self::raw(function($collection) {
+        return self::raw(function ($collection) {
             return $collection->aggregate([
                 [
                     '$group' => [
@@ -366,7 +366,7 @@ class TireChangeArticle extends Model
 
     public static function getStatsByCategory(): array
     {
-        return self::raw(function($collection) {
+        return self::raw(function ($collection) {
             return $collection->aggregate([
                 [
                     '$group' => [
@@ -383,7 +383,7 @@ class TireChangeArticle extends Model
 
     public static function getAverageContentScore(): float
     {
-        $result = self::raw(function($collection) {
+        $result = self::raw(function ($collection) {
             return $collection->aggregate([
                 [
                     '$group' => [

@@ -86,19 +86,30 @@ class VehicleData
     {
         // Mapear categorias específicas para principais
         $categoryMapping = [
+            // Carros padrão
             'hatch' => 'hatchback',
             'sedan' => 'sedan',
             'suv' => 'suv',
             'pickup' => 'pickup',
             'van' => 'van',
             'minivan' => 'minivan',
+            'crossover' => 'crossover',
+            'coupe' => 'coupe',
+            'conversivel' => 'convertible',
+
+            // Carros com prefixo car_
             'car_sedan' => 'sedan',
             'car_hatchback' => 'hatchback',
+            'car_hatch' => 'hatchback',
             'car_suv' => 'suv',
             'car_pickup' => 'pickup',
             'car_sports' => 'sports',
+            'car_sport' => 'sports',
             'car_hybrid' => 'hybrid',
             'car_electric' => 'electric',
+            'car_crossover' => 'crossover',
+
+            // Motocicletas
             'motorcycle_street' => 'street',
             'motorcycle_sport' => 'sport',
             'motorcycle_trail' => 'trail',
@@ -107,10 +118,43 @@ class VehicleData
             'motorcycle_cruiser' => 'cruiser',
             'motorcycle_touring' => 'touring',
             'motorcycle_custom' => 'custom',
-            'motorcycle_electric' => 'electric'
+            'motorcycle_naked' => 'naked',
+            'motorcycle_electric' => 'electric',
+            'motorcycle' => 'motorcycle',
+
+            // Elétricos e híbridos
+            'electric' => 'electric',
+            'hybrid' => 'hybrid',
+            'eletrico' => 'electric',
+            'hibrido' => 'hybrid',
+
+            // Casos especiais
+            'moto' => 'motorcycle',
+            'motocicleta' => 'motorcycle',
+            'carro' => 'car',
+            'auto' => 'car'
         ];
 
-        return $categoryMapping[$this->category] ?? $this->category;
+        // Normalizar categoria (lowercase e trim)
+        $normalizedCategory = strtolower(trim($this->category));
+
+        // Retornar mapeamento ou categoria original se não encontrado
+        return $categoryMapping[$normalizedCategory] ?? $normalizedCategory;
+    }
+
+    // CORREÇÃO ADICIONAL: Método para debug de categorias
+    public function debugCategory(): array
+    {
+        return [
+            'original_category' => $this->category,
+            'normalized_category' => strtolower(trim($this->category)),
+            'main_category' => $this->getMainCategory(),
+            'vehicle_type' => $this->getVehicleType(),
+            'is_motorcycle' => $this->isMotorcycle(),
+            'is_car' => $this->isCar(),
+            'is_electric' => $this->isElectric(),
+            'is_hybrid' => $this->isHybrid()
+        ];
     }
 
     public function toArray(): array

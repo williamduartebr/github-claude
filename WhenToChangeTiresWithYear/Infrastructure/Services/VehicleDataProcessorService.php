@@ -2,7 +2,6 @@
 
 namespace Src\ContentGeneration\WhenToChangeTiresWithYear\Infrastructure\Services;
 
-
 use Src\ContentGeneration\WhenToChangeTiresWithYear\Domain\ValueObjects\VehicleData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -80,7 +79,6 @@ class VehicleDataProcessorService
         return $vehicles;
     }
 
-
     /**
      * Agrupar por make+model+year (cada ano como grupo separado)
      */
@@ -91,7 +89,7 @@ class VehicleDataProcessorService
         ]);
 
         $uniqueCombinations = $vehicles->groupBy(function (VehicleData $vehicle) {
-            // ✅ NOVA CHAVE: Inclui o ano
+            // ✅ CHAVE COM ANO: Inclui o ano para diferenciar artigos
             return strtolower(trim($vehicle->make)) . '_' .
                 strtolower(trim($vehicle->model)) . '_' .
                 $vehicle->year;
@@ -127,7 +125,7 @@ class VehicleDataProcessorService
     }
 
     /**
-     * 🔥 ATUALIZADA: Obter veículos prontos para geração (COM combinações únicas)
+     * 🔥 CORRIGIDO: Obter veículos prontos para geração (COM combinações únicas)
      */
     public function getVehiclesReadyForGeneration(Collection $vehicles): Collection
     {
@@ -137,7 +135,7 @@ class VehicleDataProcessorService
             return empty($issues);
         });
 
-        // 2. Aplicar combinações únicas (289 únicos)
+        // 2. Aplicar combinações únicas (agora deve dar ~965 únicos)
         $uniqueVehicles = $this->getUniqueVehicleCombinations($validVehicles);
 
         Log::info("Veículos prontos para geração", [
@@ -150,7 +148,7 @@ class VehicleDataProcessorService
     }
 
     /**
-     * Filtrar veículos por critérios
+     * 🔧 CORRIGIDO: Filtrar veículos por critérios (filtros mais flexíveis)
      */
     public function filterVehicles(Collection $vehicles, array $criteria): Collection
     {
@@ -182,16 +180,55 @@ class VehicleDataProcessorService
                 }
             }
 
-            // Filtro por categoria
+            // 🔧 CORRIGIDO: Filtro por categoria (mais flexível)
             if (!empty($criteria['category'])) {
-                if ($vehicle->category !== $criteria['category']) {
+                $filterCategory = strtolower(trim($criteria['category']));
+                $vehicleCategory = strtolower(trim($vehicle->category));
+                $vehicleMainCategory = strtolower(trim($vehicle->getMainCategory()));
+                
+                // Verificar se bate com categoria original, principal ou contém
+                if ($vehicleCategory !== $filterCategory && 
+                    $vehicleMainCategory !== $filterCategory &&
+                    !str_contains($vehicleCategory, $filterCategory) &&
+                    !str_contains($vehicleMainCategory, $filterCategory)) {
                     return false;
                 }
             }
 
-            // Filtro por tipo de veículo
+            // 🔧 CORRIGIDO: Filtro por tipo de veículo (mais robusto)
             if (!empty($criteria['vehicle_type'])) {
-                if ($vehicle->getVehicleType() !== $criteria['vehicle_type']) {
+                $filterType = strtolower(trim($criteria['vehicle_type']));
+                $vehicleType = strtolower(trim($vehicle->getVehicleType()));
+                
+                // Mapeamento flexível para tipos
+                $typeMapping = [
+                    'motorcycle' => ['motorcycle', 'moto', 'motocicleta'],
+                    'car' => ['car', 'carro', 'hatch', 'sedan', 'suv', 'pickup', 'hatchback'],
+                    'electric' => ['electric', 'elétrico', 'eletrico'],
+                    'hybrid' => ['hybrid', 'híbrido', 'hibrido']
+                ];
+                
+                $matches = false;
+                
+                // Verificação direta
+                if ($vehicleType === $filterType) {
+                    $matches = true;
+                } else {
+                    // Verificação por mapeamento
+                    foreach ($typeMapping as $mappedType => $variants) {
+                        if ($filterType === $mappedType && in_array($vehicleType, $variants)) {
+                            $matches = true;
+                            break;
+                        }
+                        // Verificação inversa
+                        if (in_array($filterType, $variants) && $vehicleType === $mappedType) {
+                            $matches = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!$matches) {
                     return false;
                 }
             }
@@ -233,6 +270,126 @@ class VehicleDataProcessorService
     }
 
     /**
+     * 🆕 NOVO: Debug de filtros aplicados
+     */
+    public function debugFilterResults(Collection $vehicles, array $criteria): array
+    {
+        Log::info("🔍 DEBUG: Aplicando filtros", [
+            'total_vehicles' => $vehicles->count(),
+            'criteria' => $criteria
+        ]);
+        
+        $beforeFilter = $vehicles->count();
+        $afterFilter = $this->filterVehicles($vehicles, $criteria)->count();
+        
+        // Analisar por que veículos foram filtrados
+        $sampleFiltered = $vehicles->filter(function (VehicleData $vehicle) use ($criteria) {
+            return !$this->vehicleMatchesCriteria($vehicle, $criteria);
+        })->take(5);
+        
+        Log::info("🔍 DEBUG: Resultados do filtro", [
+            'before_filter' => $beforeFilter,
+            'after_filter' => $afterFilter,
+            'filtered_out' => $beforeFilter - $afterFilter,
+            'sample_filtered_vehicles' => $sampleFiltered->map(function($v) {
+                return [
+                    'vehicle' => "{$v->make} {$v->model} {$v->year}",
+                    'category' => $v->category,
+                    'main_category' => $v->getMainCategory(),
+                    'vehicle_type' => $v->getVehicleType()
+                ];
+            })->toArray()
+        ]);
+        
+        return [
+            'before' => $beforeFilter,
+            'after' => $afterFilter,
+            'removed' => $beforeFilter - $afterFilter
+        ];
+    }
+
+    /**
+     * 🆕 NOVO: Verificar se veículo atende critérios (para debug)
+     */
+    private function vehicleMatchesCriteria(VehicleData $vehicle, array $criteria): bool
+    {
+        // Reimplementar a lógica de filtro para debug
+        if (!empty($criteria['make'])) {
+            if (strtolower($vehicle->make) !== strtolower($criteria['make'])) {
+                return false;
+            }
+        }
+
+        if (!empty($criteria['model'])) {
+            if (stripos($vehicle->model, $criteria['model']) === false) {
+                return false;
+            }
+        }
+
+        if (!empty($criteria['year_from'])) {
+            if ($vehicle->year < $criteria['year_from']) {
+                return false;
+            }
+        }
+
+        if (!empty($criteria['year_to'])) {
+            if ($vehicle->year > $criteria['year_to']) {
+                return false;
+            }
+        }
+
+        // Filtro de categoria corrigido
+        if (!empty($criteria['category'])) {
+            $filterCategory = strtolower(trim($criteria['category']));
+            $vehicleCategory = strtolower(trim($vehicle->category));
+            $vehicleMainCategory = strtolower(trim($vehicle->getMainCategory()));
+            
+            if ($vehicleCategory !== $filterCategory && 
+                $vehicleMainCategory !== $filterCategory &&
+                !str_contains($vehicleCategory, $filterCategory) &&
+                !str_contains($vehicleMainCategory, $filterCategory)) {
+                return false;
+            }
+        }
+
+        // Filtro de tipo corrigido
+        if (!empty($criteria['vehicle_type'])) {
+            $filterType = strtolower(trim($criteria['vehicle_type']));
+            $vehicleType = strtolower(trim($vehicle->getVehicleType()));
+            
+            $typeMapping = [
+                'motorcycle' => ['motorcycle', 'moto', 'motocicleta'],
+                'car' => ['car', 'carro', 'hatch', 'sedan', 'suv', 'pickup', 'hatchback'],
+                'electric' => ['electric', 'elétrico', 'eletrico'],
+                'hybrid' => ['hybrid', 'híbrido', 'hibrido']
+            ];
+            
+            $matches = false;
+            
+            if ($vehicleType === $filterType) {
+                $matches = true;
+            } else {
+                foreach ($typeMapping as $mappedType => $variants) {
+                    if ($filterType === $mappedType && in_array($vehicleType, $variants)) {
+                        $matches = true;
+                        break;
+                    }
+                    if (in_array($filterType, $variants) && $vehicleType === $mappedType) {
+                        $matches = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!$matches) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Obter estatísticas dos veículos
      */
     public function getStatistics(Collection $vehicles): array
@@ -245,6 +402,9 @@ class VehicleDataProcessorService
             'by_year' => $vehicles->groupBy('year')->map->count()->sortDesc()->toArray(),
             'by_vehicle_type' => $vehicles->groupBy(function ($v) {
                 return $v->getVehicleType();
+            })->map->count()->toArray(),
+            'by_main_category' => $vehicles->groupBy(function ($v) {
+                return $v->getMainCategory();
             })->map->count()->toArray()
         ];
 
@@ -345,5 +505,62 @@ class VehicleDataProcessorService
             Log::error("Erro criando VehicleData: " . $e->getMessage() . " - Dados: " . json_encode($csvData));
             return null;
         }
+    }
+
+    /**
+     * 🆕 NOVO: Analisar distribuição de combinações
+     */
+    public function analyzeCombinationDistribution(Collection $vehicles): array
+    {
+        $analysis = [
+            'total_vehicles' => $vehicles->count(),
+            'unique_combinations' => 0,
+            'by_year_distribution' => [],
+            'duplicates_analysis' => [],
+            'sample_combinations' => []
+        ];
+
+        // Agrupar por make+model+year
+        $combinations = $vehicles->groupBy(function (VehicleData $vehicle) {
+            return strtolower(trim($vehicle->make)) . '_' . 
+                   strtolower(trim($vehicle->model)) . '_' . 
+                   $vehicle->year;
+        });
+
+        $analysis['unique_combinations'] = $combinations->count();
+
+        // Analisar distribuição por ano
+        $analysis['by_year_distribution'] = $vehicles->groupBy('year')
+            ->map->count()
+            ->sortDesc()
+            ->toArray();
+
+        // Analisar duplicatas
+        $duplicates = $combinations->filter(function ($group) {
+            return $group->count() > 1;
+        });
+
+        $analysis['duplicates_analysis'] = [
+            'total_duplicate_groups' => $duplicates->count(),
+            'total_duplicate_vehicles' => $duplicates->sum(function ($group) {
+                return $group->count() - 1; // -1 porque manteremos 1 de cada
+            })
+        ];
+
+        // Amostras de combinações
+        $analysis['sample_combinations'] = $combinations->take(10)
+            ->map(function ($group, $key) {
+                $first = $group->first();
+                return [
+                    'combination_key' => $key,
+                    'vehicle' => "{$first->make} {$first->model} {$first->year}",
+                    'count_in_group' => $group->count(),
+                    'category' => $first->category,
+                    'main_category' => $first->getMainCategory(),
+                    'vehicle_type' => $first->getVehicleType()
+                ];
+            })->toArray();
+
+        return $analysis;
     }
 }

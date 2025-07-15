@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Domain\Repositories;
+namespace Src\ContentGeneration\WhenToChangeTires\Domain\Repositories;
 
-use App\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
-use App\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Entities\TireChangeArticle;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\VehicleData;
+use Src\ContentGeneration\WhenToChangeTires\Domain\ValueObjects\TireChangeContent;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -104,4 +104,10 @@ interface TireChangeArticleRepositoryInterface
      * Deletar artigos antigos
      */
     public function deleteOlderThan(\DateTimeInterface $date): int;
+
+    /**
+     * Método que verifica apenas make+model
+     */
+    public function existsForVehicleModel(string $make, string $model): bool;
+    
 }

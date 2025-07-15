@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands;
 
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -30,14 +30,14 @@ class ImportVehiclesFromCsvCommand extends Command
     public function handle(): int
     {
         $csvPath = $this->argument('csv_path');
-        
+
         $this->info("🚀 Iniciando importação de veículos do CSV: {$csvPath}");
 
         try {
             // Importar veículos do CSV
             $this->info("📥 Importando dados do CSV...");
             $vehicles = $this->vehicleProcessor->importFromCsv($csvPath);
-            
+
             if ($vehicles->isEmpty()) {
                 $this->error("❌ Nenhum veículo encontrado no CSV");
                 return 1;
@@ -77,7 +77,7 @@ class ImportVehiclesFromCsvCommand extends Command
             // Criar lotes para processamento
             $batchSize = (int) $this->option('batch-size');
             $batches = $this->vehicleProcessor->createBatches($readyVehicles, $batchSize);
-            
+
             $this->info("📦 Criados {$batches->count()} lotes para processamento");
 
             // Mostrar resumo dos lotes
@@ -87,7 +87,7 @@ class ImportVehiclesFromCsvCommand extends Command
                     $vehicles = collect($batch['vehicles']);
                     $first = $vehicles->first();
                     $last = $vehicles->last();
-                    
+
                     return [
                         $batch['batch_id'],
                         $batch['count'],
@@ -101,7 +101,6 @@ class ImportVehiclesFromCsvCommand extends Command
             $this->line("php artisan when-to-change-tires:generate-initial-articles");
 
             return 0;
-
         } catch (\Exception $e) {
             $this->error("❌ Erro durante importação: " . $e->getMessage());
             Log::error("Erro ImportVehiclesFromCsvCommand: " . $e->getMessage(), [
@@ -143,7 +142,7 @@ class ImportVehiclesFromCsvCommand extends Command
     protected function showStatistics($vehicles): void
     {
         $this->info("📊 ESTATÍSTICAS DOS VEÍCULOS IMPORTADOS");
-        
+
         $stats = $this->vehicleProcessor->getStatistics($vehicles);
 
         // Total
@@ -192,14 +191,14 @@ class ImportVehiclesFromCsvCommand extends Command
     protected function validateVehicles($vehicles): void
     {
         $this->info("🔍 VALIDANDO DADOS DOS VEÍCULOS");
-        
+
         $validCount = 0;
         $issueCount = 0;
         $allIssues = [];
 
         foreach ($vehicles as $vehicle) {
             $issues = $this->vehicleProcessor->validateVehicleData($vehicle);
-            
+
             if (empty($issues)) {
                 $validCount++;
             } else {
@@ -214,7 +213,7 @@ class ImportVehiclesFromCsvCommand extends Command
         if (!empty($allIssues) && $this->option('verbose')) {
             $this->line("");
             $this->warn("PROBLEMAS ENCONTRADOS:");
-            
+
             foreach ($allIssues as $vehicleId => $issues) {
                 $this->line("• {$vehicleId}:");
                 foreach ($issues as $issue) {

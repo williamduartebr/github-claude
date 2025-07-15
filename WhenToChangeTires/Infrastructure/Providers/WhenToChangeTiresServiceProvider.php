@@ -1,22 +1,22 @@
 <?php
 
-namespace App\ContentGeneration\WhenToChangeTires\Infrastructure\Providers;
+namespace Src\ContentGeneration\WhenToChangeTires\Infrastructure\Providers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\VehicleRepository;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\TireChangeArticleRepository;
-use App\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ProcessVehicleBatchCommand;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\VehicleRepository;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\VehicleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Repositories\TireChangeArticleRepository;
+use Src\ContentGeneration\WhenToChangeTires\Domain\Repositories\TireChangeArticleRepositoryInterface;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ProcessVehicleBatchCommand;
 use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\PublishTireArticlesCommand;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ImportVehiclesFromCsvCommand;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\ImportVehiclesFromCsvCommand;
 use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\DebugContentGenerationCommand;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\InstallWhenToChangeTiresCommand;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\InstallWhenToChangeTiresCommand;
 use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\SyncBlogWhenToChangeTiresCommand;
-use App\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\GenerateInitialTireArticlesCommand;
+use Src\ContentGeneration\WhenToChangeTires\Infrastructure\Console\Commands\GenerateInitialTireArticlesCommand;
 
 class WhenToChangeTiresServiceProvider extends ServiceProvider
 {
@@ -30,7 +30,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
         InstallWhenToChangeTiresCommand::class,
         DebugContentGenerationCommand::class,
         SyncBlogWhenToChangeTiresCommand::class,
-        PublishTireArticlesCommand::class,        
+        PublishTireArticlesCommand::class,
     ];
 
     /**
@@ -82,40 +82,40 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
     {
         // VehicleDataProcessorService
         $this->app->singleton(
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService::class
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\VehicleDataProcessorService::class
         );
 
         // TemplateBasedContentService
         $this->app->singleton(
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService::class
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TemplateBasedContentService::class
         );
 
         // ArticleJsonStorageService
         $this->app->singleton(
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService::class
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\ArticleJsonStorageService::class
         );
 
         // TireChangeArticleService
         $this->app->singleton(
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class
         );
 
         // EventDispatcherService
         $this->app->singleton(
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\EventDispatcherService::class
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\EventDispatcherService::class
         );
 
         // Use Cases
         $this->app->bind(
-            \App\ContentGeneration\WhenToChangeTires\Application\UseCases\GenerateInitialArticlesUseCase::class
+            \Src\ContentGeneration\WhenToChangeTires\Application\UseCases\GenerateInitialArticlesUseCase::class
         );
 
         $this->app->bind(
-            \App\ContentGeneration\WhenToChangeTires\Application\UseCases\ProcessVehicleBatchUseCase::class
+            \Src\ContentGeneration\WhenToChangeTires\Application\UseCases\ProcessVehicleBatchUseCase::class
         );
 
         $this->app->bind(
-            \App\ContentGeneration\WhenToChangeTires\Application\UseCases\ValidateVehiclesForGenerationUseCase::class
+            \Src\ContentGeneration\WhenToChangeTires\Application\UseCases\ValidateVehiclesForGenerationUseCase::class
         );
     }
 
@@ -136,7 +136,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
     {
         // Configurações do módulo
         $configPath = base_path('src/ContentGeneration/WhenToChangeTires/config/when-to-change-tires.php');
-        
+
         if (file_exists($configPath)) {
             $this->mergeConfigFrom($configPath, 'when-to-change-tires');
         }
@@ -149,7 +149,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $configPath = base_path('src/ContentGeneration/WhenToChangeTires/config/when-to-change-tires.php');
-            
+
             if (file_exists($configPath)) {
                 $this->publishes([
                     $configPath => config_path('when-to-change-tires.php'),
@@ -165,7 +165,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $migrationsPath = base_path('src/ContentGeneration/WhenToChangeTires/database/migrations');
-            
+
             if (is_dir($migrationsPath)) {
                 $this->publishes([
                     $migrationsPath => database_path('migrations'),
@@ -197,7 +197,7 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
 
             // Limpeza semanal às 3:00 AM no domingo
             $schedule->call(function () {
-                $service = app(\App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class);
+                $service = app(\Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class);
                 $result = $service->cleanupOldArticles(90);
                 Log::info('Limpeza automática executada', $result);
             })
@@ -207,9 +207,9 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
 
             // Validação de integridade semanal
             $schedule->call(function () {
-                $service = app(\App\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class);
+                $service = app(\Src\ContentGeneration\WhenToChangeTires\Infrastructure\Services\TireChangeArticleService::class);
                 $result = $service->validateArticleIntegrity();
-                
+
                 if ($result['has_issues']) {
                     Log::warning('Problemas de integridade encontrados', $result);
                 }
@@ -227,14 +227,14 @@ class WhenToChangeTiresServiceProvider extends ServiceProvider
     {
         // Event listener para quando um artigo é criado
         Event::listen(
-            \App\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleCreated::class,
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Listeners\LogArticleCreated::class
+            \Src\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleCreated::class,
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Listeners\LogArticleCreated::class
         );
 
         // Event listener para quando um artigo é refinado pelo Claude
         Event::listen(
-            \App\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleEnhanced::class,
-            \App\ContentGeneration\WhenToChangeTires\Infrastructure\Listeners\LogArticleEnhanced::class
+            \Src\ContentGeneration\WhenToChangeTires\Domain\Events\TireChangeArticleEnhanced::class,
+            \Src\ContentGeneration\WhenToChangeTires\Infrastructure\Listeners\LogArticleEnhanced::class
         );
     }
 

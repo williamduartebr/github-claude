@@ -112,13 +112,13 @@ class TireCorrectionService
             // ⏱️ Rate limiting - máximo 1 request por minuto
             $lastRequest = Cache::get('claude_last_request', 0);
             $timeSinceLastRequest = time() - $lastRequest;
-            
+
             if ($timeSinceLastRequest < 60) {
                 $waitTime = 60 - $timeSinceLastRequest;
                 Log::info("⏸️ Aguardando {$waitTime}s para respeitar rate limit da Claude API");
                 sleep($waitTime);
             }
-            
+
             Cache::put('claude_last_request', time(), 300);
 
             $correction->markAsProcessing();
@@ -142,8 +142,9 @@ class TireCorrectionService
                     'anthropic-version' => '2023-06-01',
                     'content-type' => 'application/json',
                 ])->post($this->apiUrl, [
-                    'model' => 'claude-3-haiku-20240307',
-                    'max_tokens' => 3000,
+                    // 'model' => 'claude-3-haiku-20240307',
+                    'model' => 'claude-3-5-sonnet-20240620',
+                    'max_tokens' => 4000,
                     'temperature' => 0.3,
                     'messages' => [
                         [
@@ -167,13 +168,13 @@ class TireCorrectionService
             } else {
                 $statusCode = $response->status();
                 $errorBody = $response->body();
-                
+
                 // Se for rate limit (429), aguardar mais tempo
                 if ($statusCode === 429) {
                     Log::warning("⚠️ Rate limit atingido na Claude API, aguardando 5 minutos");
                     sleep(300); // 5 minutos
                 }
-                
+
                 $correction->markAsFailed("Falha na API ({$statusCode}): " . $errorBody);
                 return false;
             }
@@ -556,7 +557,7 @@ EOT;
                     if (!isset($content['vehicle_data']['pressures'])) {
                         $content['vehicle_data']['pressures'] = [];
                     }
-                    
+
                     foreach ($correctedData['corrected_pressures'] as $key => $value) {
                         if (!in_array($key, ['pressure_display', 'pressure_loaded_display'])) {
                             $content['vehicle_data']['pressures'][$key] = $value;
@@ -568,10 +569,10 @@ EOT;
                 if (isset($correctedData['corrected_pressures']['pressure_display'])) {
                     $newPressureDisplay = $correctedData['corrected_pressures']['pressure_display'];
                     $vehicleName = $vehicleData['vehicle_name'] ?? 'veículo';
-                    
+
                     // Atualizar referências de pressão no texto de fatores_durabilidade
                     if (isset($content['fatores_durabilidade']['calibragem_inadequada']['pressao_recomendada'])) {
-                        $content['fatores_durabilidade']['calibragem_inadequada']['pressao_recomendada'] = 
+                        $content['fatores_durabilidade']['calibragem_inadequada']['pressao_recomendada'] =
                             "{$newPressureDisplay} para o {$vehicleName}";
                     }
 
@@ -593,7 +594,7 @@ EOT;
                     if (isset($content['procedimento_verificacao']['verificacao_pressao']['pressoes_recomendadas']['vazio'])) {
                         $pressureParts = explode('/', str_replace(' PSI', '', $newPressureDisplay));
                         if (count($pressureParts) === 2) {
-                            $content['procedimento_verificacao']['verificacao_pressao']['pressoes_recomendadas']['vazio'] = 
+                            $content['procedimento_verificacao']['verificacao_pressao']['pressoes_recomendadas']['vazio'] =
                                 "{$pressureParts[0]} PSI (dianteiro) / {$pressureParts[1]} PSI (traseiro)";
                         }
                     }

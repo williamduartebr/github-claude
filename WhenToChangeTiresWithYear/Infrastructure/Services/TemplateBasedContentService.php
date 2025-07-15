@@ -12,18 +12,21 @@ class TemplateBasedContentService
     /**
      * Templates de introdução com variação
      */
+    /**
+     * Templates de introdução com variação (CORRIGIDO - COM YEAR)
+     */
     private array $introductionTemplates = [
         'default' => [
-            "Identificar o momento certo para trocar os pneus do seu {make} {model} é essencial para garantir segurança, desempenho e economia. Este {category_text} que precisa de pneus em perfeitas condições para máxima segurança e economia. Os pneus são o único ponto de contato com o solo e influenciam diretamente a frenagem, estabilidade e consumo de combustível. Este guia apresenta os sinais de desgaste, prazos recomendados, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus do seu veículo.",
+            "Identificar o momento certo para trocar os pneus do seu {make} {model} {year} é essencial para garantir segurança, desempenho e economia. Este {category_text} precisa de pneus em perfeitas condições para máxima segurança e economia. Os pneus são o único ponto de contato com o solo e influenciam diretamente a frenagem, estabilidade e consumo de combustível. Este guia apresenta os sinais de desgaste, prazos recomendados, cronograma de verificação e dicas práticas para que você saiba exatamente quando substituir os pneus do seu veículo.",
 
-            "Saber quando trocar os pneus do {make} {model} é fundamental para manter a segurança e o desempenho do seu {category}. Pneus desgastados não apenas comprometem a dirigibilidade, mas também aumentam o consumo de combustível e o risco de acidentes. Neste guia completo, você aprenderá a identificar os principais sinais de que os pneus precisam ser substituídos, conhecerá os fatores que afetam sua durabilidade e descobrirá como criar um cronograma eficiente de verificação e manutenção.",
+            "Saber quando trocar os pneus do {make} {model} {year} é fundamental para manter a segurança e o desempenho do seu {category}. Pneus desgastados não apenas comprometem a dirigibilidade, mas também aumentam o consumo de combustível e o risco de acidentes. Neste guia completo, você aprenderá a identificar os principais sinais de que os pneus precisam ser substituídos, conhecerá os fatores que afetam sua durabilidade e descobrirá como criar um cronograma eficiente de verificação e manutenção.",
 
-            "Os pneus do seu {make} {model} são componentes críticos que demandam atenção constante. Como único elemento de contato entre o veículo e o pavimento, eles influenciam diretamente a segurança, economia e conforto de condução. Este manual técnico apresenta critérios objetivos para avaliar quando é necessário substituir os pneus, considerando as especificidades do seu {category} e fornecendo um cronograma prático de verificações preventivas."
+            "Os pneus do seu {make} {model} {year} são componentes críticos que demandam atenção constante. Como único elemento de contato entre o veículo e o pavimento, eles influenciam diretamente a segurança, economia e conforto de condução. Este manual técnico apresenta critérios objetivos para avaliar quando é necessário substituir os pneus, considerando as especificidades do seu {category} e fornecendo um cronograma prático de verificações preventivas."
         ],
         'motorcycle' => [
-            "A segurança em motocicletas depende criticamente do estado dos pneus. Na sua {make} {model}, essa responsabilidade é ainda maior, pois os pneus são fundamentais para estabilidade, frenagem e manobrabilidade. Este guia especializado apresenta os sinais específicos de desgaste em motocicletas, fatores únicos que afetam a durabilidade dos pneus de duas rodas e um cronograma de verificação adaptado às necessidades dos motociclistas.",
+            "A segurança em motocicletas depende criticamente do estado dos pneus. Na sua {make} {model} {year}, essa responsabilidade é ainda maior, pois os pneus são fundamentais para estabilidade, frenagem e manobrabilidade. Este guia especializado apresenta os sinais específicos de desgaste em motocicletas, fatores únicos que afetam a durabilidade dos pneus de duas rodas e um cronograma de verificação adaptado às necessidades dos motociclistas.",
 
-            "Para motociclistas, conhecer o estado dos pneus é questão de vida ou morte. Sua {make} {model} exige pneus em condições perfeitas para garantir estabilidade em curvas, frenagem eficiente e aderência em diferentes condições de piso. Este manual técnico específico para motocicletas apresenta critérios detalhados para avaliação do desgaste, sinais críticos de substituição e procedimentos de verificação adequados para duas rodas."
+            "Para motociclistas, conhecer o estado dos pneus é questão de vida ou morte. Sua {make} {model} {year} exige pneus em condições perfeitas para garantir estabilidade em curvas, frenagem eficiente e aderência em diferentes condições de piso. Este manual técnico específico para motocicletas apresenta critérios detalhados para avaliação do desgaste, sinais críticos de substituição e procedimentos de verificação adequados para duas rodas."
         ]
     ];
 
@@ -100,16 +103,16 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar título do artigo com variação
+     * Gerar título do artigo com variação (CORRIGIDO - SEMPRE COM YEAR)
      */
     protected function generateTitle(VehicleData $vehicle): string
     {
         $templates = [
-            "Quando Trocar os Pneus do {make} {model} - Guia Completo",
-            "Pneus do {make} {model}: Sinais e Momento da Troca",
-            "Troca de Pneus {make} {model}: Manual Técnico",
-            "{make} {model}: Quando Substituir os Pneus",
-            "Guia de Manutenção: Pneus do {make} {model}"
+            "Quando Trocar os Pneus do {make} {model} {year} - Guia Completo",
+            "Pneus do {make} {model} {year}: Sinais e Momento da Troca",
+            "Troca de Pneus {make} {model} {year}: Manual Técnico",
+            "{make} {model} {year}: Quando Substituir os Pneus",
+            "Guia de Manutenção: Pneus do {make} {model} {year}"
         ];
 
         $template = $templates[array_rand($templates)];
@@ -738,41 +741,34 @@ class TemplateBasedContentService
     }
 
     /**
-     * Gerar tópicos relacionados (FOCO EM PNEUS)
+     * Gerar tópicos relacionados (CORRIGIDO - COM YEAR)
      */
     protected function generateRelatedTopics(VehicleData $vehicle): array
     {
-        $related = [
-            [
-                'title' => "Pressão dos Pneus: Guia Completo",
-                'slug' => "pressao-pneus-guia-completo",
-                'icon' => 'gauge'
-            ],
-            [
-                'title' => "Tipos de Pneus: Como Escolher",
-                'slug' => "tipos-pneus-como-escolher",
-                'icon' => 'tire'
-            ]
-        ];
+        $related = [];
 
-        // Relacionados específicos apenas se for relevante
         if ($vehicle->recommendedOil) {
             $related[] = [
-                'title' => "Óleo Recomendado para {$vehicle->make} {$vehicle->model}",
-                'slug' => "oleo-recomendado-para-" . Str::slug("{$vehicle->make}-{$vehicle->model}"),
+                'title' => "Óleo Recomendado para {$vehicle->make} {$vehicle->model} {$vehicle->year}",
+                'slug' => "oleo-recomendado-para-" . Str::slug("{$vehicle->make}-{$vehicle->model}-{$vehicle->year}"),
                 'icon' => 'oil-can'
             ];
         }
 
         $related[] = [
-            'title' => "Manutenção Preventiva do {$vehicle->make} {$vehicle->model}",
-            'slug' => "manutencao-preventiva-" . Str::slug("{$vehicle->make}-{$vehicle->model}"),
+            'title' => "Manutenção Preventiva do {$vehicle->make} {$vehicle->model} {$vehicle->year}",
+            'slug' => "manutencao-preventiva-" . Str::slug("{$vehicle->make}-{$vehicle->model}-{$vehicle->year}"),
             'icon' => 'wrench'
+        ];
+
+        $related[] = [
+            'title' => "Pressão dos Pneus: Guia Completo",
+            'slug' => "pressao-pneus-guia-completo",
+            'icon' => 'gauge'
         ];
 
         return $related;
     }
-
     /**
      * Gerar informações do veículo (LIMPO)
      */
@@ -894,9 +890,11 @@ class TemplateBasedContentService
         $replacements = [
             '{make}' => $vehicle->make,
             '{model}' => $vehicle->model,
-            '{year}' => $vehicle->year,
+            '{year}' => $vehicle->year,  // ADICIONADO
             '{tire_size}' => $vehicle->tireSize,
-            '{category}' => $vehicle->getMainCategory()
+            '{category}' => $vehicle->getMainCategory(),
+            '{category_text}' => $vehicle->isMotorcycle() ? 'motocicleta' : 'veículo',
+            '{pressure_display}' => "{$vehicle->pressureEmptyFront}/{$vehicle->pressureEmptyRear} PSI"
         ];
 
         return str_replace(array_keys($replacements), array_values($replacements), $template);

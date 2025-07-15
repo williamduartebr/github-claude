@@ -104,13 +104,13 @@ class TitleYearCorrectionService
             // ⏱️ Rate limiting - máximo 1 request por minuto
             $lastRequest = Cache::get('claude_title_year_last_request', 0);
             $timeSinceLastRequest = time() - $lastRequest;
-            
+
             if ($timeSinceLastRequest < 60) {
                 $waitTime = 60 - $timeSinceLastRequest;
                 Log::info("⏸️ Aguardando {$waitTime}s para respeitar rate limit da Claude API (título/ano)");
                 sleep($waitTime);
             }
-            
+
             Cache::put('claude_title_year_last_request', time(), 300);
 
             $correction->markAsProcessing();
@@ -134,8 +134,9 @@ class TitleYearCorrectionService
                     'anthropic-version' => '2023-06-01',
                     'content-type' => 'application/json',
                 ])->post($this->apiUrl, [
-                    'model' => 'claude-3-haiku-20240307',
-                    'max_tokens' => 3000,
+                    // 'model' => 'claude-3-haiku-20240307',
+                    'model' => 'claude-3-5-sonnet-20240620',
+                    'max_tokens' => 4000,
                     'temperature' => 0.3,
                     'messages' => [
                         [
@@ -159,13 +160,13 @@ class TitleYearCorrectionService
             } else {
                 $statusCode = $response->status();
                 $errorBody = $response->body();
-                
+
                 // Se for rate limit (429), aguardar mais tempo
                 if ($statusCode === 429) {
                     Log::warning("⚠️ Rate limit atingido na Claude API (título/ano), aguardando 5 minutos");
                     sleep(300); // 5 minutos
                 }
-                
+
                 $correction->markAsFailed("Falha na API ({$statusCode}): " . $errorBody);
                 return false;
             }
@@ -358,8 +359,8 @@ EOT;
             ->get();
 
         $results = [
-            'processed' => 0, 
-            'successful' => 0, 
+            'processed' => 0,
+            'successful' => 0,
             'failed' => 0,
             'details' => [
                 'titles_updated' => 0,
@@ -373,12 +374,12 @@ EOT;
 
             if ($this->processTitleYearCorrection($correction)) {
                 $results['successful']++;
-                
+
                 // Contar detalhes das atualizações
                 $fresh = $correction->fresh();
                 if ($fresh && isset($fresh->correction_data)) {
                     $data = $fresh->correction_data;
-                    
+
                     if ($data['title_updated'] ?? false) {
                         $results['details']['titles_updated']++;
                     }
@@ -484,7 +485,7 @@ EOT;
             // Se Claude determina que não precisa atualizar
             if (!($correctedData['needs_update'] ?? true)) {
                 Log::info("Claude determinou que {$tempArticle->slug} não precisa de atualização de título/ano: " . ($correctedData['reason'] ?? ''));
-                
+
                 // ✅ NOVO: Mesmo que Claude diga que não precisa, verificar se há N/A e corrigir localmente
                 return $this->applyLocalPlaceholderFix($tempArticle);
             }
@@ -534,7 +535,7 @@ EOT;
             return false;
         } catch (\Exception $e) {
             Log::error("Erro ao aplicar correções de título/ano em {$tempArticle->slug}: " . $e->getMessage());
-            
+
             // ✅ NOVO: Em caso de erro, tentar correção local
             return $this->applyLocalPlaceholderFix($tempArticle);
         }
@@ -549,26 +550,26 @@ EOT;
             $vehicleData = $tempArticle->vehicle_data ?? [];
             $content = $tempArticle->content ?? [];
             $seoData = $tempArticle->seo_data ?? [];
-            
+
             $vehicleName = $vehicleData['vehicle_name'] ?? 'N/A';
             $vehicleBrand = $vehicleData['vehicle_brand'] ?? 'N/A';
             $vehicleModel = $vehicleData['vehicle_model'] ?? 'N/A';
             $vehicleYear = $vehicleData['vehicle_year'] ?? date('Y');
-            
+
             // Se não temos dados do veículo, não podemos corrigir
             if ($vehicleName === 'N/A' || $vehicleBrand === 'N/A' || $vehicleModel === 'N/A') {
                 Log::warning("Dados de veículo insuficientes para {$tempArticle->slug}");
                 return false;
             }
-            
+
             $fullVehicleName = "{$vehicleBrand} {$vehicleModel} {$vehicleYear}";
             $updated = false;
 
             // ✅ Corrigir page_title
             if (isset($seoData['page_title']) && strpos($seoData['page_title'], 'N/A N/A N/A') !== false) {
                 $seoData['page_title'] = str_replace(
-                    'N/A N/A N/A', 
-                    $fullVehicleName, 
+                    'N/A N/A N/A',
+                    $fullVehicleName,
                     $seoData['page_title']
                 );
                 $updated = true;
@@ -578,8 +579,8 @@ EOT;
             // ✅ Corrigir meta_description
             if (isset($seoData['meta_description']) && strpos($seoData['meta_description'], 'N/A N/A N/A') !== false) {
                 $seoData['meta_description'] = str_replace(
-                    'N/A N/A N/A', 
-                    $fullVehicleName, 
+                    'N/A N/A N/A',
+                    $fullVehicleName,
                     $seoData['meta_description']
                 );
                 $updated = true;
@@ -590,30 +591,30 @@ EOT;
             if (isset($content['perguntas_frequentes']) && is_array($content['perguntas_frequentes'])) {
                 foreach ($content['perguntas_frequentes'] as $index => $faq) {
                     $faqUpdated = false;
-                    
+
                     if (isset($faq['pergunta']) && strpos($faq['pergunta'], 'N/A N/A N/A') !== false) {
                         $content['perguntas_frequentes'][$index]['pergunta'] = str_replace(
-                            'N/A N/A N/A', 
-                            $fullVehicleName, 
+                            'N/A N/A N/A',
+                            $fullVehicleName,
                             $faq['pergunta']
                         );
                         $faqUpdated = true;
                     }
-                    
+
                     if (isset($faq['resposta']) && strpos($faq['resposta'], 'N/A N/A N/A') !== false) {
                         $content['perguntas_frequentes'][$index]['resposta'] = str_replace(
-                            'N/A N/A N/A', 
-                            $fullVehicleName, 
+                            'N/A N/A N/A',
+                            $fullVehicleName,
                             $faq['resposta']
                         );
                         $faqUpdated = true;
                     }
-                    
+
                     if ($faqUpdated) {
                         $updated = true;
                     }
                 }
-                
+
                 if ($updated) {
                     Log::info("Corrigido FAQs localmente para {$tempArticle->slug}");
                 }
@@ -648,9 +649,11 @@ EOT;
         // Verificar SEO data
         $pageTitle = $seoData['page_title'] ?? '';
         $metaDescription = $seoData['meta_description'] ?? '';
-        
-        if (strpos($pageTitle, 'N/A N/A N/A') !== false || 
-            strpos($metaDescription, 'N/A N/A N/A') !== false) {
+
+        if (
+            strpos($pageTitle, 'N/A N/A N/A') !== false ||
+            strpos($metaDescription, 'N/A N/A N/A') !== false
+        ) {
             return true;
         }
 
@@ -660,9 +663,11 @@ EOT;
             foreach ($faqs as $faq) {
                 $pergunta = $faq['pergunta'] ?? '';
                 $resposta = $faq['resposta'] ?? '';
-                
-                if (strpos($pergunta, 'N/A N/A N/A') !== false || 
-                    strpos($resposta, 'N/A N/A N/A') !== false) {
+
+                if (
+                    strpos($pergunta, 'N/A N/A N/A') !== false ||
+                    strpos($resposta, 'N/A N/A N/A') !== false
+                ) {
                     return true;
                 }
             }
