@@ -3,287 +3,260 @@
 namespace Src\ContentGeneration\TirePressureGuide\Infrastructure\Services;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Serviço para processamento de dados de veículos do CSV
+ * Fixed VehicleDataProcessorService
  * 
- * Responsável por carregar, validar, filtrar e processar dados de veículos
- * Similar ao sistema atual (vehicle_importer.php), mas adaptado para DDD
+ * CORRIGIDO PARA COMPATIBILIDADE COM CSV todos_veiculos.csv:
+ * - Mapeamento correto dos campos (category -> main_category)
+ * - Derivação de is_motorcycle e vehicle_type baseado em category
+ * - Validação robusta de dados do CSV
+ * - Tratamento de campos ausentes
  */
 class VehicleDataProcessorService
 {
-    protected array $requiredHeaders = [
-        'make',
-        'model', 
-        'year',
-        'tire_size'
-    ];
-
-    protected array $optionalHeaders = [
-        'pressure_empty_front',
-        'pressure_empty_rear',
-        'pressure_light_front',
-        'pressure_light_rear',
-        'pressure_max_front',
-        'pressure_max_rear',
-        'pressure_spare',
-        'category'
+    /**
+     * Mapeamento de campos CSV para sistema
+     */
+    protected array $fieldMapping = [
+        'make' => 'make',
+        'model' => 'model', 
+        'year' => 'year',
+        'tire_size' => 'tire_size',
+        'pressure_empty_front' => 'pressure_empty_front',
+        'pressure_empty_rear' => 'pressure_empty_rear',
+        'pressure_light_front' => 'pressure_light_front',
+        'pressure_light_rear' => 'pressure_light_rear',
+        'pressure_max_front' => 'pressure_max_front',
+        'pressure_max_rear' => 'pressure_max_rear',
+        'pressure_spare' => 'pressure_spare',
+        'category' => 'main_category', // MAPEAMENTO PRINCIPAL
+        'recommended_oil' => 'recommended_oil' // CAMPO EXTRA
     ];
 
     /**
-     * Carregar veículos do arquivo CSV
+     * Mapeamento de categorias para tipos de veículo
      */
-    public function loadFromCsv(string $csvPath): Collection
+    protected array $categoryToVehicleType = [
+        // Carros
+        'sedans' => 'car',
+        'hatchbacks' => 'car', 
+        'suvs' => 'car',
+        'pickups' => 'car',
+        'conversíveis' => 'car',
+        'wagons' => 'car',
+        'compactos' => 'car',
+        'luxo' => 'car',
+        'esportivos' => 'car',
+        'utilitários' => 'car',
+        
+        // Motocicletas
+        'motocicletas' => 'motorcycle',
+        'motos' => 'motorcycle',
+        'scooters' => 'motorcycle',
+        'trail' => 'motorcycle',
+        'touring' => 'motorcycle',
+        'custom' => 'motorcycle',
+        'naked' => 'motorcycle',
+        'sport' => 'motorcycle'
+    ];
+
+    /**
+     * Processar CSV de veículos
+     */
+    public function processVehicleData(string $csvPath, array $filters = []): Collection
+    {
+        try {
+            Log::info("Iniciando processamento do CSV", [
+                'csv_path' => $csvPath,
+                'filters' => $filters
+            ]);
+
+            // 1. Ler e validar CSV
+            $rawData = $this->readCsvFile($csvPath);
+            
+            if ($rawData->isEmpty()) {
+                throw new \Exception("CSV vazio ou não encontrado: {$csvPath}");
+            }
+
+            Log::info("CSV lido com sucesso", [
+                'total_rows' => $rawData->count(),
+                'first_row_keys' => array_keys($rawData->first() ?? [])
+            ]);
+
+            // 2. Validar estrutura do CSV
+            $this->validateCsvStructure($rawData->first());
+
+            // 3. Processar cada linha
+            $processedData = $rawData->map(function ($row, $index) {
+                try {
+                    return $this->processVehicleRow($row, $index);
+                } catch (\Exception $e) {
+                    Log::warning("Erro ao processar linha {$index}", [
+                        'row_data' => $row,
+                        'error' => $e->getMessage()
+                    ]);
+                    return null;
+                }
+            })->filter(); // Remove nulls
+
+            // 4. Aplicar filtros
+            $filteredData = $this->applyFilters($processedData, $filters);
+
+            // 5. Validar dados processados
+            $validatedData = $this->validateProcessedData($filteredData);
+
+            Log::info("Processamento concluído", [
+                'raw_count' => $rawData->count(),
+                'processed_count' => $processedData->count(),
+                'filtered_count' => $filteredData->count(),
+                'validated_count' => $validatedData->count()
+            ]);
+
+            return $validatedData;
+
+        } catch (\Exception $e) {
+            Log::error("Erro no processamento do CSV", [
+                'csv_path' => $csvPath,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Ler arquivo CSV
+     */
+    protected function readCsvFile(string $csvPath): Collection
     {
         if (!file_exists($csvPath)) {
-            throw new \InvalidArgumentException("Arquivo CSV não encontrado: {$csvPath}");
+            throw new \Exception("Arquivo CSV não encontrado: {$csvPath}");
         }
 
-        $vehicles = collect();
-        $handle = fopen($csvPath, 'r');
+        $csvContent = file_get_contents($csvPath);
+        if ($csvContent === false) {
+            throw new \Exception("Não foi possível ler o arquivo CSV: {$csvPath}");
+        }
+
+        // Parse CSV
+        $lines = array_map('str_getcsv', explode("\n", trim($csvContent)));
         
-        if ($handle === false) {
-            throw new \RuntimeException("Não foi possível abrir o arquivo: {$csvPath}");
+        if (empty($lines)) {
+            throw new \Exception("CSV vazio");
         }
 
-        try {
-            // Ler cabeçalho
-            $headers = fgetcsv($handle);
-            if ($headers === false) {
-                throw new \RuntimeException("Não foi possível ler o cabeçalho do CSV");
+        // Primeira linha são os headers
+        $headers = array_shift($lines);
+        
+        // Limpar headers (remover espaços, caracteres especiais)
+        $headers = array_map(function($header) {
+            return trim(strtolower($header));
+        }, $headers);
+
+        // Converter para Collection de arrays associativos
+        $data = collect($lines)->map(function ($line) use ($headers) {
+            if (count($line) !== count($headers)) {
+                return null; // Linha inválida
             }
+            
+            return array_combine($headers, $line);
+        })->filter(); // Remove nulls
 
-            // Normalizar cabeçalhos (lowercase)
-            $headers = array_map('strtolower', $headers);
-            $headerMap = $this->mapHeaders($headers);
-
-            // Validar cabeçalhos obrigatórios
-            $this->validateRequiredHeaders($headerMap);
-
-            $lineNumber = 1;
-            while (($data = fgetcsv($handle)) !== false) {
-                $lineNumber++;
-                
-                try {
-                    $vehicle = $this->processVehicleLine($data, $headerMap, $lineNumber);
-                    if ($vehicle) {
-                        $vehicles->push($vehicle);
-                    }
-                } catch (\Exception $e) {
-                    Log::warning("Erro ao processar linha {$lineNumber} do CSV: " . $e->getMessage(), [
-                        'line_data' => $data,
-                        'csv_path' => $csvPath
-                    ]);
-                }
-            }
-
-        } finally {
-            fclose($handle);
-        }
-
-        return $vehicles;
+        return $data;
     }
 
     /**
-     * Mapear cabeçalhos para índices
+     * Validar estrutura do CSV
      */
-    protected function mapHeaders(array $headers): array
+    protected function validateCsvStructure(array $firstRow): void
     {
-        $map = [];
-        
-        foreach ($headers as $index => $header) {
-            $map[$header] = $index;
-        }
-        
-        return $map;
-    }
+        $requiredFields = [
+            'make', 'model', 'year', 'tire_size', 
+            'pressure_empty_front', 'pressure_empty_rear',
+            'pressure_light_front', 'pressure_light_rear',
+            'pressure_max_front', 'pressure_max_rear',
+            'pressure_spare', 'category'
+        ];
 
-    /**
-     * Validar cabeçalhos obrigatórios
-     */
-    protected function validateRequiredHeaders(array $headerMap): void
-    {
-        $missing = [];
+        $availableFields = array_keys($firstRow);
         
-        foreach ($this->requiredHeaders as $required) {
-            if (!isset($headerMap[$required])) {
-                $missing[] = $required;
-            }
-        }
+        $missingFields = array_diff($requiredFields, $availableFields);
         
-        if (!empty($missing)) {
-            throw new \InvalidArgumentException(
-                "Cabeçalhos obrigatórios não encontrados no CSV: " . implode(', ', $missing)
-            );
+        if (!empty($missingFields)) {
+            throw new \Exception("Campos obrigatórios ausentes no CSV: " . implode(', ', $missingFields));
         }
+
+        Log::info("Estrutura do CSV validada com sucesso", [
+            'required_fields' => $requiredFields,
+            'available_fields' => $availableFields
+        ]);
     }
 
     /**
      * Processar linha individual do CSV
      */
-    protected function processVehicleLine(array $data, array $headerMap, int $lineNumber): ?array
+    protected function processVehicleRow(array $row, int $index): array
     {
-        // Verificar se linha tem dados suficientes
-        if (count($data) < count($this->requiredHeaders)) {
-            return null;
-        }
-
-        $vehicle = [];
+        // 1. Mapear campos básicos
+        $vehicleData = [];
         
-        // Processar campos obrigatórios
-        foreach ($this->requiredHeaders as $field) {
-            $index = $headerMap[$field];
-            $value = isset($data[$index]) ? trim($data[$index]) : '';
+        foreach ($this->fieldMapping as $csvField => $systemField) {
+            $value = trim($row[$csvField] ?? '');
             
-            if (empty($value)) {
-                // Pular veículos com campos obrigatórios vazios
-                return null;
-            }
-            
-            $vehicle[$field] = $this->cleanFieldValue($field, $value);
+            // Converter tipos de dados
+            $vehicleData[$systemField] = $this->convertFieldValue($csvField, $value);
         }
 
-        // Processar campos opcionais
-        foreach ($this->optionalHeaders as $field) {
-            if (isset($headerMap[$field])) {
-                $index = $headerMap[$field];
-                $value = isset($data[$index]) ? trim($data[$index]) : '';
-                $vehicle[$field] = $this->cleanFieldValue($field, $value);
-            } else {
-                // Definir valores padrão
-                $vehicle[$field] = $this->getDefaultValue($field);
-            }
-        }
+        // 2. Derivar campos ausentes
+        $vehicleData = $this->deriveAdditionalFields($vehicleData, $row, $index);
 
-        // Adicionar dados processados
-        $vehicle = $this->enrichVehicleData($vehicle);
+        // 3. Validar dados da linha
+        $this->validateVehicleRowData($vehicleData, $index);
 
-        return $vehicle;
+        // 4. Enriquecer dados
+        $vehicleData = $this->enrichVehicleData($vehicleData);
+
+        return $vehicleData;
     }
 
     /**
-     * Limpar e normalizar valores dos campos
+     * Converter valor do campo para tipo correto
      */
-    protected function cleanFieldValue(string $field, string $value): mixed
+    protected function convertFieldValue(string $field, string $value): mixed
     {
-        if (empty($value) || $value === 'NA' || $value === 'N/A') {
+        if (empty($value)) {
             return $this->getDefaultValue($field);
         }
 
         switch ($field) {
-            case 'make':
-            case 'model':
-                return $this->cleanStringField($value);
-                
             case 'year':
-                return $this->cleanYearField($value);
-                
-            case 'tire_size':
-                return $this->cleanTireSizeField($value);
-                
-            case 'category':
-                return $this->cleanCategoryField($value);
-                
-            // Campos de pressão
             case 'pressure_empty_front':
             case 'pressure_empty_rear':
-            case 'pressure_light_front':
-            case 'pressure_light_rear':
             case 'pressure_max_front':
             case 'pressure_max_rear':
+                return (int) $value;
+                
+            case 'pressure_light_front':
+            case 'pressure_light_rear': 
             case 'pressure_spare':
-                return $this->cleanPressureField($value);
+                return (float) $value;
+                
+            case 'make':
+            case 'model':
+                return ucwords(trim($value)); // Capitalizar
+                
+            case 'tire_size':
+                return strtoupper(trim($value)); // Maiúsculo
+                
+            case 'category':
+                return strtolower(trim($value)); // Minúsculo para mapeamento
                 
             default:
                 return trim($value);
         }
-    }
-
-    /**
-     * Limpar campos de texto
-     */
-    protected function cleanStringField(string $value): string
-    {
-        // Remover espaços extras e normalizar
-        $value = trim($value);
-        $value = preg_replace('/\s+/', ' ', $value);
-        
-        // Primeira letra maiúscula
-        return ucfirst(strtolower($value));
-    }
-
-    /**
-     * Limpar campo de ano
-     */
-    protected function cleanYearField(string $value): int
-    {
-        $year = (int) preg_replace('/[^0-9]/', '', $value);
-        
-        // Validar range razoável
-        if ($year < 1990 || $year > date('Y') + 2) {
-            throw new \InvalidArgumentException("Ano inválido: {$value}");
-        }
-        
-        return $year;
-    }
-
-    /**
-     * Limpar campo de tamanho do pneu
-     */
-    protected function cleanTireSizeField(string $value): string
-    {
-        $value = trim(strtoupper($value));
-        
-        // Remover espaços desnecessários
-        $value = preg_replace('/\s+/', ' ', $value);
-        
-        return $value;
-    }
-
-    /**
-     * Limpar campo de categoria
-     */
-    protected function cleanCategoryField(string $value): string
-    {
-        $value = trim(strtolower($value));
-        
-        // Mapear categorias conhecidas
-        $categoryMap = [
-            'sedan' => 'sedan',
-            'hatch' => 'hatchback',
-            'hatchback' => 'hatchback',
-            'suv' => 'suv',
-            'pickup' => 'pickup',
-            'moto' => 'motorcycle',
-            'motocicleta' => 'motorcycle',
-            'motorcycle' => 'motorcycle',
-            'van' => 'van',
-            'comercial' => 'commercial'
-        ];
-        
-        return $categoryMap[$value] ?? $value;
-    }
-
-    /**
-     * Limpar campos de pressão
-     */
-    protected function cleanPressureField(string $value): ?float
-    {
-        if (empty($value) || $value === 'NA' || $value === 'N/A') {
-            return null;
-        }
-        
-        // Extrair apenas números e ponto decimal
-        $pressure = preg_replace('/[^0-9.]/', '', $value);
-        $pressure = (float) $pressure;
-        
-        // Validar range razoável (10-60 PSI)
-        if ($pressure < 10 || $pressure > 60) {
-            return null;
-        }
-        
-        return round($pressure, 1);
     }
 
     /**
@@ -292,466 +265,276 @@ class VehicleDataProcessorService
     protected function getDefaultValue(string $field): mixed
     {
         $defaults = [
-            'tire_size' => '185/65 R15',
+            'year' => 2020,
             'pressure_empty_front' => 30,
             'pressure_empty_rear' => 28,
-            'pressure_light_front' => 32,
-            'pressure_light_rear' => 30,
+            'pressure_light_front' => 32.0,
+            'pressure_light_rear' => 30.0,
             'pressure_max_front' => 36,
             'pressure_max_rear' => 34,
-            'pressure_spare' => 35,
-            'category' => 'sedan'
+            'pressure_spare' => 32.0,
+            'main_category' => 'hatchbacks',
+            'recommended_oil' => '5W30'
         ];
-        
-        return $defaults[$field] ?? null;
+
+        return $defaults[$field] ?? '';
     }
 
     /**
-     * Enriquecer dados do veículo com informações processadas
+     * Derivar campos adicionais
      */
-    protected function enrichVehicleData(array $vehicle): array
+    protected function deriveAdditionalFields(array $vehicleData, array $originalRow, int $index): array
     {
-        // Detectar se é motocicleta
-        $vehicle['is_motorcycle'] = $this->isMotorcycle($vehicle);
+        // 1. Determinar se é motocicleta
+        $category = strtolower($vehicleData['main_category'] ?? '');
+        $vehicleData['is_motorcycle'] = $this->isMotorcycle($category);
         
-        // Detectar tipo de veículo
-        $vehicle['vehicle_type'] = $this->determineVehicleType($vehicle);
+        // 2. Determinar tipo de veículo
+        $vehicleData['vehicle_type'] = $vehicleData['is_motorcycle'] ? 'motorcycle' : 'car';
         
-        // Categoria principal
-        $vehicle['main_category'] = $this->determineMainCategory($vehicle);
+        // 3. Gerar identificador único
+        $vehicleData['vehicle_identifier'] = $this->generateVehicleIdentifier(
+            $vehicleData['make'] ?? '',
+            $vehicleData['model'] ?? '',
+            $vehicleData['year'] ?? 0
+        );
         
-        // Identificador único
-        $vehicle['vehicle_identifier'] = "{$vehicle['make']} {$vehicle['model']} {$vehicle['year']}";
+        // 4. Gerar slug make-model
+        $vehicleData['make_model_slug'] = $this->generateMakeModelSlug(
+            $vehicleData['make'] ?? '',
+            $vehicleData['model'] ?? ''
+        );
         
-        // Dados estruturados do veículo
-        $vehicle['vehicle_data'] = [
-            'make' => $vehicle['make'],
-            'model' => $vehicle['model'],
-            'year' => $vehicle['year'],
-            'tire_size' => $vehicle['tire_size'],
-            'is_motorcycle' => $vehicle['is_motorcycle'],
-            'vehicle_type' => $vehicle['vehicle_type'],
-            'main_category' => $vehicle['main_category'],
-            'pressure_display' => $this->formatPressureDisplay($vehicle),
-            'pressure_empty_display' => $this->formatEmptyPressureDisplay($vehicle),
-            'pressure_loaded_display' => $this->formatLoadedPressureDisplay($vehicle)
-        ];
+        // 5. Adicionar índice de linha para debug
+        $vehicleData['csv_row_index'] = $index;
         
-        return $vehicle;
+        // 6. Timestamp de processamento
+        $vehicleData['processed_at'] = now()->toISOString();
+
+        // 7. Normalizar categoria para padrão do sistema
+        $vehicleData['main_category'] = $this->normalizeCategoryName($vehicleData['main_category'] ?? '');
+
+        // 8. Gerar display de pressões
+        $vehicleData['pressure_display'] = $this->generatePressureDisplay($vehicleData);
+        $vehicleData['pressure_empty_display'] = $this->generateEmptyPressureDisplay($vehicleData);
+        $vehicleData['pressure_loaded_display'] = $this->generateLoadedPressureDisplay($vehicleData);
+
+        return $vehicleData;
     }
 
     /**
-     * Verificar se é motocicleta
+     * Verificar se é motocicleta baseado na categoria
      */
-    protected function isMotorcycle(array $vehicle): bool
+    protected function isMotorcycle(string $category): bool
     {
-        // Verificar categoria
-        if (in_array($vehicle['category'] ?? '', ['motorcycle', 'moto', 'motocicleta'])) {
-            return true;
+        $motorcycleKeywords = [
+            'moto', 'motocicleta', 'scooter', 'trail', 'touring', 
+            'custom', 'naked', 'sport', 'cb', 'ninja', 'fazer'
+        ];
+
+        foreach ($motorcycleKeywords as $keyword) {
+            if (str_contains($category, $keyword)) {
+                return true;
+            }
         }
-        
-        // Verificar tamanho do pneu (padrões típicos de moto)
-        $tireSize = $vehicle['tire_size'] ?? '';
-        if (preg_match('/\d{2,3}\/\d{2}-\d{2}/', $tireSize) && 
-            (strpos($tireSize, 'dianteiro') !== false || strpos($tireSize, 'traseiro') !== false)) {
-            return true;
-        }
-        
+
         return false;
     }
 
     /**
-     * Determinar tipo de veículo
+     * Gerar identificador único do veículo
      */
-    protected function determineVehicleType(array $vehicle): string
+    protected function generateVehicleIdentifier(string $make, string $model, int $year): string
     {
-        if ($vehicle['is_motorcycle']) {
-            return 'motorcycle';
-        }
-        
-        $category = $vehicle['category'] ?? '';
-        
-        $typeMap = [
-            'sedan' => 'car',
-            'hatchback' => 'car',
-            'suv' => 'suv',
-            'pickup' => 'pickup',
-            'van' => 'van',
-            'commercial' => 'commercial'
-        ];
-        
-        return $typeMap[$category] ?? 'car';
+        return Str::slug($make) . '-' . Str::slug($model) . '-' . $year;
     }
 
     /**
-     * Determinar categoria principal
+     * Gerar slug make-model
      */
-    protected function determineMainCategory(array $vehicle): string
+    protected function generateMakeModelSlug(string $make, string $model): string
     {
-        if ($vehicle['is_motorcycle']) {
-            return 'Motocicletas';
-        }
-        
+        return Str::slug($make . ' ' . $model);
+    }
+
+    /**
+     * Normalizar nome da categoria
+     */
+    protected function normalizeCategoryName(string $category): string
+    {
         $categoryMap = [
             'sedan' => 'Sedans',
-            'hatchback' => 'Hatchbacks',
+            'sedans' => 'Sedans',
+            'hatch' => 'Hatchbacks',
+            'hatchback' => 'Hatchbacks', 
+            'hatchbacks' => 'Hatchbacks',
             'suv' => 'SUVs',
-            'pickup' => 'Picapes',
-            'van' => 'Vans',
-            'commercial' => 'Comerciais'
+            'suvs' => 'SUVs',
+            'pickup' => 'Pickups',
+            'pickups' => 'Pickups',
+            'conversível' => 'Conversíveis',
+            'conversíveis' => 'Conversíveis',
+            'wagon' => 'Wagons',
+            'wagons' => 'Wagons',
+            'compacto' => 'Compactos',
+            'compactos' => 'Compactos',
+            'motocicleta' => 'Motocicletas',
+            'motocicletas' => 'Motocicletas',
+            'moto' => 'Motocicletas',
+            'motos' => 'Motocicletas'
         ];
+
+        $normalized = $categoryMap[strtolower($category)] ?? ucfirst($category);
         
-        $category = $vehicle['category'] ?? 'sedan';
-        return $categoryMap[$category] ?? 'Carros';
+        return $normalized ?: 'Outros';
     }
 
     /**
-     * Formatar exibição de pressão geral
+     * Gerar display de pressões
      */
-    protected function formatPressureDisplay(array $vehicle): string
+    protected function generatePressureDisplay(array $vehicleData): string
     {
-        $front = $vehicle['pressure_empty_front'] ?? 30;
-        $rear = $vehicle['pressure_empty_rear'] ?? 28;
-        
-        if ($vehicle['is_motorcycle']) {
-            return "Dianteiro: {$front} PSI / Traseiro: {$rear} PSI";
-        }
+        $front = $vehicleData['pressure_light_front'] ?? 30;
+        $rear = $vehicleData['pressure_light_rear'] ?? 28;
         
         return "Dianteiros: {$front} PSI / Traseiros: {$rear} PSI";
     }
 
     /**
-     * Formatar pressão para veículo vazio
+     * Gerar display de pressão vazio
      */
-    protected function formatEmptyPressureDisplay(array $vehicle): string
+    protected function generateEmptyPressureDisplay(array $vehicleData): string
     {
-        $front = $vehicle['pressure_empty_front'] ?? 30;
-        $rear = $vehicle['pressure_empty_rear'] ?? 28;
+        $front = $vehicleData['pressure_empty_front'] ?? 30;
+        $rear = $vehicleData['pressure_empty_rear'] ?? 28;
+        
         return "{$front}/{$rear} PSI";
     }
 
     /**
-     * Formatar pressão para veículo carregado
+     * Gerar display de pressão carregado
      */
-    protected function formatLoadedPressureDisplay(array $vehicle): string
+    protected function generateLoadedPressureDisplay(array $vehicleData): string
     {
-        $front = $vehicle['pressure_max_front'] ?? 36;
-        $rear = $vehicle['pressure_max_rear'] ?? 34;
+        $front = $vehicleData['pressure_max_front'] ?? 36;
+        $rear = $vehicleData['pressure_max_rear'] ?? 34;
+        
         return "{$front}/{$rear} PSI";
     }
 
     /**
-     * Aplicar filtros aos veículos
+     * Validar dados da linha processada
      */
-    public function applyFilters(Collection $vehicles, array $filters): Collection
-    {
-        return $vehicles->filter(function ($vehicle) use ($filters) {
-            // Filtro por marca
-            if (!empty($filters['make'])) {
-                if (strcasecmp($vehicle['make'], $filters['make']) !== 0) {
-                    return false;
-                }
-            }
-            
-            // Filtro por categoria
-            if (!empty($filters['category'])) {
-                if (strcasecmp($vehicle['category'] ?? '', $filters['category']) !== 0) {
-                    return false;
-                }
-            }
-            
-            // Filtro por tipo de veículo
-            if (!empty($filters['vehicle_type'])) {
-                if ($vehicle['vehicle_type'] !== $filters['vehicle_type']) {
-                    return false;
-                }
-            }
-            
-            // Filtro por faixa de anos
-            if (!empty($filters['year_from'])) {
-                if ($vehicle['year'] < $filters['year_from']) {
-                    return false;
-                }
-            }
-            
-            if (!empty($filters['year_to'])) {
-                if ($vehicle['year'] > $filters['year_to']) {
-                    return false;
-                }
-            }
-            
-            // Filtro de dados de pressão obrigatórios
-            if (!empty($filters['require_tire_pressure'])) {
-                if (empty($vehicle['pressure_empty_front']) || empty($vehicle['pressure_empty_rear'])) {
-                    return false;
-                }
-            }
-            
-            return true;
-        });
-    }
-
-    /**
-     * Remover veículos duplicados
-     */
-    public function removeDuplicates(Collection $vehicles): Collection
-    {
-        return $vehicles->unique(function ($vehicle) {
-            return $vehicle['vehicle_identifier'];
-        })->values();
-    }
-
-    /**
-     * Validar dados essenciais dos veículos
-     */
-    public function validateVehicleData(Collection $vehicles): Collection
-    {
-        return $vehicles->filter(function ($vehicle) {
-            // Campos obrigatórios não podem estar vazios
-            if (empty($vehicle['make']) || empty($vehicle['model']) || empty($vehicle['year'])) {
-                return false;
-            }
-            
-            // Ano deve ser válido
-            if ($vehicle['year'] < 1990 || $vehicle['year'] > date('Y') + 2) {
-                return false;
-            }
-            
-            // Deve ter pelo menos pressões básicas
-            if (empty($vehicle['pressure_empty_front']) || empty($vehicle['pressure_empty_rear'])) {
-                return false;
-            }
-            
-            return true;
-        })->values();
-    }
-
-    /**
-     * Obter estatísticas dos veículos
-     */
-    public function getStatistics(Collection $vehicles): array
-    {
-        $total = $vehicles->count();
-        
-        $byMake = $vehicles->groupBy('make')->map->count()->sortDesc();
-        $byCategory = $vehicles->groupBy('main_category')->map->count()->sortDesc();
-        $byVehicleType = $vehicles->groupBy('vehicle_type')->map->count()->sortDesc();
-        $byYear = $vehicles->groupBy('year')->map->count()->sortDesc();
-        
-        // Estatísticas de pressão
-        $withCompleteData = $vehicles->filter(function ($vehicle) {
-            return !empty($vehicle['pressure_empty_front']) && 
-                   !empty($vehicle['pressure_empty_rear']) &&
-                   !empty($vehicle['pressure_max_front']) && 
-                   !empty($vehicle['pressure_max_rear']);
-        })->count();
-        
-        $motorcycles = $vehicles->where('is_motorcycle', true)->count();
-        $cars = $total - $motorcycles;
-        
-        return [
-            'total' => $total,
-            'motorcycles' => $motorcycles,
-            'cars' => $cars,
-            'with_complete_pressure_data' => $withCompleteData,
-            'by_make' => $byMake->toArray(),
-            'by_category' => $byCategory->toArray(),
-            'by_vehicle_type' => $byVehicleType->toArray(),
-            'by_year' => $byYear->toArray(),
-            'year_range' => [
-                'min' => $vehicles->min('year'),
-                'max' => $vehicles->max('year')
-            ]
-        ];
-    }
-
-    /**
-     * Criar lotes de veículos para processamento
-     */
-    public function createBatches(Collection $vehicles, int $batchSize): Collection
-    {
-        $batches = collect();
-        $chunks = $vehicles->chunk($batchSize);
-        
-        foreach ($chunks as $index => $chunk) {
-            $batchId = 'batch_' . date('Ymd_His') . '_' . ($index + 1);
-            
-            $batches->push([
-                'batch_id' => $batchId,
-                'vehicles' => $chunk,
-                'count' => $chunk->count(),
-                'created_at' => now()
-            ]);
-        }
-        
-        return $batches;
-    }
-
-    /**
-     * Validar estrutura do CSV
-     */
-    public function validateCsvStructure(string $csvPath): array
+    protected function validateVehicleRowData(array $vehicleData, int $index): void
     {
         $errors = [];
-        
-        if (!file_exists($csvPath)) {
-            $errors[] = "Arquivo não encontrado: {$csvPath}";
-            return $errors;
-        }
-        
-        if (!is_readable($csvPath)) {
-            $errors[] = "Arquivo não é legível: {$csvPath}";
-            return $errors;
-        }
-        
-        $handle = fopen($csvPath, 'r');
-        if ($handle === false) {
-            $errors[] = "Não foi possível abrir o arquivo: {$csvPath}";
-            return $errors;
-        }
-        
-        try {
-            // Verificar cabeçalho
-            $headers = fgetcsv($handle);
-            if ($headers === false) {
-                $errors[] = "Não foi possível ler o cabeçalho do CSV";
-                return $errors;
-            }
-            
-            // Normalizar cabeçalhos
-            $headers = array_map('strtolower', $headers);
-            
-            // Verificar cabeçalhos obrigatórios
-            foreach ($this->requiredHeaders as $required) {
-                if (!in_array($required, $headers)) {
-                    $errors[] = "Cabeçalho obrigatório não encontrado: {$required}";
-                }
-            }
-            
-            // Verificar se há dados
-            $firstLine = fgetcsv($handle);
-            if ($firstLine === false) {
-                $errors[] = "CSV não contém dados além do cabeçalho";
-            }
-            
-        } finally {
-            fclose($handle);
-        }
-        
-        return $errors;
-    }
 
-    /**
-     * Obter informações sobre o CSV
-     */
-    public function getCsvInfo(string $csvPath): array
-    {
-        $info = [
-            'file_path' => $csvPath,
-            'file_size' => 0,
-            'file_size_human' => '0 B',
-            'total_lines' => 0,
-            'headers' => [],
-            'estimated_vehicles' => 0,
-            'last_modified' => null
+        // Validações críticas
+        if (empty($vehicleData['make'])) {
+            $errors[] = 'Marca ausente';
+        }
+
+        if (empty($vehicleData['model'])) {
+            $errors[] = 'Modelo ausente';
+        }
+
+        if (($vehicleData['year'] ?? 0) < 1990 || ($vehicleData['year'] ?? 0) > 2030) {
+            $errors[] = 'Ano inválido: ' . ($vehicleData['year'] ?? 'N/A');
+        }
+
+        if (empty($vehicleData['tire_size'])) {
+            $errors[] = 'Tamanho do pneu ausente';
+        }
+
+        // Validar pressões
+        $pressureFields = [
+            'pressure_empty_front', 'pressure_empty_rear',
+            'pressure_light_front', 'pressure_light_rear',
+            'pressure_max_front', 'pressure_max_rear',
+            'pressure_spare'
         ];
-        
-        if (!file_exists($csvPath)) {
-            return $info;
-        }
-        
-        $info['file_size'] = filesize($csvPath);
-        $info['file_size_human'] = $this->formatBytes($info['file_size']);
-        $info['last_modified'] = date('Y-m-d H:i:s', filemtime($csvPath));
-        
-        $handle = fopen($csvPath, 'r');
-        if ($handle === false) {
-            return $info;
-        }
-        
-        try {
-            // Ler cabeçalho
-            $headers = fgetcsv($handle);
-            if ($headers !== false) {
-                $info['headers'] = $headers;
+
+        foreach ($pressureFields as $field) {
+            $value = $vehicleData[$field] ?? 0;
+            if ($value <= 0 || $value > 60) {
+                $errors[] = "Pressão inválida {$field}: {$value}";
             }
-            
-            // Contar linhas
-            $lineCount = 0;
-            while (fgetcsv($handle) !== false) {
-                $lineCount++;
-            }
-            
-            $info['total_lines'] = $lineCount + 1; // +1 para o cabeçalho
-            $info['estimated_vehicles'] = $lineCount;
-            
-        } finally {
-            fclose($handle);
         }
-        
-        return $info;
+
+        if (!empty($errors)) {
+            throw new \Exception("Erros na linha {$index}: " . implode(', ', $errors));
+        }
     }
 
     /**
-     * Formatar bytes em formato legível
+     * Enriquecer dados do veículo
      */
-    protected function formatBytes(int $bytes, int $precision = 2): string
+    protected function enrichVehicleData(array $vehicleData): array
     {
-        $units = ['B', 'KB', 'MB', 'GB'];
-        
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
-        }
-        
-        return round($bytes, $precision) . ' ' . $units[$i];
+        // Adicionar timestamp de enriquecimento
+        $vehicleData['enriched_at'] = now()->toISOString();
+
+        // Detectar características especiais do veículo
+        $vehicleData['is_premium'] = $this->isPremiumVehicle($vehicleData);
+        $vehicleData['has_tpms'] = $this->hasTpmsSystem($vehicleData);
+        $vehicleData['segment'] = $this->determineVehicleSegment($vehicleData);
+
+        return $vehicleData;
     }
 
     /**
-     * Exportar veículos processados para CSV
+     * Verificar se é veículo premium
      */
-    public function exportToCsv(Collection $vehicles, string $outputPath): int
+    protected function isPremiumVehicle(array $vehicleData): bool
     {
-        $handle = fopen($outputPath, 'w');
-        if ($handle === false) {
-            throw new \RuntimeException("Não foi possível criar arquivo: {$outputPath}");
-        }
+        $premiumMakes = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Acura', 'Infiniti'];
+        $make = $vehicleData['make'] ?? '';
         
-        try {
-            // Escrever cabeçalho
-            if ($vehicles->isNotEmpty()) {
-                $firstVehicle = $vehicles->first();
-                fputcsv($handle, array_keys($firstVehicle));
-                
-                // Escrever dados
-                foreach ($vehicles as $vehicle) {
-                    fputcsv($handle, $vehicle);
-                }
-            }
-            
-        } finally {
-            fclose($handle);
-        }
-        
-        return $vehicles->count();
+        return in_array($make, $premiumMakes) || 
+               ($vehicleData['year'] ?? 0) >= 2020 && 
+               str_contains(strtolower($vehicleData['model'] ?? ''), 'premium');
     }
 
     /**
-     * Obter veículos por critérios específicos
+     * Verificar se tem sistema TPMS
      */
-    public function getVehiclesByCriteria(Collection $vehicles, array $criteria): Collection
+    protected function hasTpmsSystem(array $vehicleData): bool
     {
-        return $vehicles->filter(function ($vehicle) use ($criteria) {
-            foreach ($criteria as $field => $value) {
-                if (isset($vehicle[$field])) {
-                    if (is_array($value)) {
-                        if (!in_array($vehicle[$field], $value)) {
-                            return false;
-                        }
-                    } else {
-                        if ($vehicle[$field] != $value) {
-                            return false;
-                        }
-                    }
+        // TPMS obrigatório no Brasil a partir de 2014 para carros novos
+        return ($vehicleData['year'] ?? 0) >= 2014 && !$vehicleData['is_motorcycle'];
+    }
+
+    /**
+     * Determinar segmento do veículo
+     */
+    protected function determineVehicleSegment(array $vehicleData): string
+    {
+        $category = strtolower($vehicleData['main_category'] ?? '');
+        
+        $segmentMap = [
+            'hatchbacks' => 'B',
+            'sedans' => 'C', 
+            'suvs' => 'D',
+            'pickups' => 'F',
+            'motocicletas' => 'MOTO'
+        ];
+
+        return $segmentMap[$category] ?? 'OUTROS';
+    }
+
+    /**
+     * Aplicar filtros aos dados processados
+     */
+    protected function applyFilters(Collection $data, array $filters): Collection
+    {
+        if (empty($filters)) {
+            return $data;
+        }
+
+        return $data->filter(function ($vehicle) use ($filters) {
+            foreach ($filters as $field => $value) {
+                if (isset($vehicle[$field]) && $vehicle[$field] !== $value) {
+                    return false;
                 }
             }
             return true;
@@ -759,57 +542,41 @@ class VehicleDataProcessorService
     }
 
     /**
-     * Validar consistência de dados de pressão
+     * Validar dados processados finais
      */
-    public function validatePressureConsistency(array $vehicle): array
+    protected function validateProcessedData(Collection $data): Collection
     {
-        $errors = [];
-        
-        $emptyFront = $vehicle['pressure_empty_front'] ?? 0;
-        $emptyRear = $vehicle['pressure_empty_rear'] ?? 0;
-        $maxFront = $vehicle['pressure_max_front'] ?? 0;
-        $maxRear = $vehicle['pressure_max_rear'] ?? 0;
-        
-        // Pressão máxima deve ser maior que vazio
-        if ($maxFront > 0 && $emptyFront > 0 && $maxFront <= $emptyFront) {
-            $errors[] = "Pressão máxima dianteira deve ser maior que vazio";
-        }
-        
-        if ($maxRear > 0 && $emptyRear > 0 && $maxRear <= $emptyRear) {
-            $errors[] = "Pressão máxima traseira deve ser maior que vazio";
-        }
-        
-        // Pressões devem estar dentro de ranges razoáveis
-        if ($emptyFront > 0 && ($emptyFront < 15 || $emptyFront > 50)) {
-            $errors[] = "Pressão dianteira fora do range razoável (15-50 PSI)";
-        }
-        
-        if ($emptyRear > 0 && ($emptyRear < 15 || $emptyRear > 50)) {
-            $errors[] = "Pressão traseira fora do range razoável (15-50 PSI)";
-        }
-        
-        return $errors;
+        return $data->filter(function ($vehicle) {
+            // Filtros de qualidade final
+            return !empty($vehicle['make']) &&
+                   !empty($vehicle['model']) && 
+                   !empty($vehicle['tire_size']) &&
+                   ($vehicle['pressure_empty_front'] ?? 0) > 0 &&
+                   ($vehicle['pressure_empty_rear'] ?? 0) > 0;
+        });
     }
 
     /**
-     * Limpar e otimizar collection de veículos
+     * Obter estatísticas do processamento
      */
-    public function optimizeVehicleCollection(Collection $vehicles): Collection
+    public function getProcessingStats(Collection $data): array
     {
-        return $vehicles
-            ->filter(function ($vehicle) {
-                // Remover veículos com dados inválidos
-                return !empty($vehicle['make']) && 
-                       !empty($vehicle['model']) && 
-                       !empty($vehicle['year']) &&
-                       $vehicle['year'] >= 1990 &&
-                       $vehicle['year'] <= date('Y') + 2;
-            })
-            ->map(function ($vehicle) {
-                // Limpar campos desnecessários
-                unset($vehicle['_raw_data']);
-                return $vehicle;
-            })
-            ->values(); // Reindexar
+        $stats = [
+            'total_vehicles' => $data->count(),
+            'by_make' => $data->groupBy('make')->map->count()->toArray(),
+            'by_category' => $data->groupBy('main_category')->map->count()->toArray(),
+            'by_year' => $data->groupBy('year')->map->count()->toArray(),
+            'motorcycles' => $data->where('is_motorcycle', true)->count(),
+            'cars' => $data->where('is_motorcycle', false)->count(),
+            'premium_vehicles' => $data->where('is_premium', true)->count(),
+            'with_tpms' => $data->where('has_tpms', true)->count()
+        ];
+
+        // Ordenar estatísticas
+        arsort($stats['by_make']);
+        arsort($stats['by_category']);
+        krsort($stats['by_year']);
+
+        return $stats;
     }
 }

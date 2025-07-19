@@ -2,353 +2,414 @@
 
 namespace Src\ContentGeneration\TirePressureGuide\Application\UseCases;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\VehicleDataProcessorService;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\InitialArticleGeneratorService;
 use Src\ContentGeneration\TirePressureGuide\Domain\Entities\TirePressureArticle;
-use Src\ContentGeneration\TirePressureGuide\Application\DTOs\VehicleDataDTO;
 
 /**
- * Use Case para geração inicial de artigos de calibragem (Etapa 1)
+ * Fixed GenerateInitialArticlesUseCase
  * 
- * Orquestra o processo de geração de artigos completos a partir de dados de veículos
- * Coordena a validação, geração de conteúdo e persistência na TirePressureArticle
+ * CORRIGIDO PARA COMPATIBILIDADE COM CSV todos_veiculos.csv:
+ * - Validação robusta dos dados do CSV
+ * - Tratamento de erros específicos de campos ausentes/inválidos
+ * - Mapeamento correto dos campos do CSV
+ * - Suporte a filtros específicos do CSV
  */
 class GenerateInitialArticlesUseCase
 {
+    protected VehicleDataProcessorService $vehicleProcessor;
     protected InitialArticleGeneratorService $articleGenerator;
 
-    public function __construct(InitialArticleGeneratorService $articleGenerator)
-    {
+    public function __construct(
+        VehicleDataProcessorService $vehicleProcessor,
+        InitialArticleGeneratorService $articleGenerator
+    ) {
+        $this->vehicleProcessor = $vehicleProcessor;
         $this->articleGenerator = $articleGenerator;
     }
 
     /**
-     * Executar geração de artigo para um veículo
-     * 
-     * @param array $vehicleData Dados do veículo do CSV
-     * @param string $batchId ID do lote de processamento
-     * @param bool $dryRun Simulação sem persistir
-     * @return bool Sucesso da operação
+     * Executar geração de artigos
      */
-    public function execute(array $vehicleData, string $batchId, bool $dryRun = false): bool
-    {
+    public function execute(
+        string $csvPath,
+        int $batchSize = 50,
+        array $filters = [],
+        bool $dryRun = false,
+        bool $overwrite = false,
+        ?callable $progressCallback = null
+    ): object {
+        
+        $results = (object)[
+            'success' => false,
+            'total_processed' => 0,
+            'articles_generated' => 0,
+            'articles_skipped' => 0,
+            'articles_failed' => 0,
+            'errors' => [],
+            'batch_id' => $this->generateBatchId(),
+            'processing_stats' => [],
+            'csv_validation' => [],
+            'generation_summary' => []
+        ];
+
         try {
-            // 1. Validar dados do veículo
-            $validationResult = $this->validateVehicleData($vehicleData);
-            if (!$validationResult['valid']) {
-                Log::warning("Dados de veículo inválidos", [
-                    'vehicle' => $vehicleData['vehicle_identifier'] ?? 'Desconhecido',
-                    'errors' => $validationResult['errors']
-                ]);
-                return false;
+            Log::info("Iniciando geração de artigos TirePressureGuide", [
+                'csv_path' => $csvPath,
+                'batch_size' => $batchSize,
+                'filters' => $filters,
+                'dry_run' => $dryRun,
+                'overwrite' => $overwrite,
+                'batch_id' => $results->batch_id
+            ]);
+
+            // 1. Processar dados do CSV com validação robusta
+            $vehicleData = $this->processVehicleDataWithValidation($csvPath, $filters, $results);
+            
+            if ($vehicleData->isEmpty()) {
+                throw new \Exception("Nenhum dado válido encontrado no CSV após processamento");
             }
 
-            // 2. Verificar se artigo já existe (a menos que seja para sobrescrever)
-            $existingArticle = $this->checkExistingArticle($vehicleData);
-            if ($existingArticle && !$dryRun) {
-                Log::info("Artigo já existe, pulando", [
-                    'vehicle' => $vehicleData['vehicle_identifier'],
-                    'existing_id' => $existingArticle->_id
-                ]);
-                return true; // Considera sucesso, mas não processa
+            $results->total_processed = $vehicleData->count();
+            $results->processing_stats = $this->vehicleProcessor->getProcessingStats($vehicleData);
+
+            Log::info("Dados do CSV processados com sucesso", [
+                'total_vehicles' => $results->total_processed,
+                'by_category' => $results->processing_stats['by_category'],
+                'motorcycles' => $results->processing_stats['motorcycles'],
+                'cars' => $results->processing_stats['cars']
+            ]);
+
+            // 2. Verificar artigos existentes se necessário
+            if (!$overwrite) {
+                $vehicleData = $this->filterExistingArticles($vehicleData, $results);
             }
 
-            // 3. Preparar dados para geração
-            $enrichedData = $this->enrichVehicleData($vehicleData);
+            // 3. Processar em lotes
+            $chunks = $vehicleData->chunk($batchSize);
+            $totalChunks = $chunks->count();
+            $currentChunk = 0;
 
-            // 4. Simular geração se for dry run
-            if ($dryRun) {
-                return $this->simulateGeneration($enrichedData, $batchId);
-            }
-
-            // 5. Gerar artigo usando transação
-            $article = $this->generateArticleWithTransaction($enrichedData, $batchId);
-
-            if ($article) {
-                // 6. Validar qualidade do artigo gerado
-                $qualityCheck = $this->validateArticleQuality($article);
+            foreach ($chunks as $chunk) {
+                $currentChunk++;
                 
-                // 7. Atualizar score de qualidade
-                $article->content_score = $qualityCheck['score'];
-                $article->quality_checked = true;
-                
-                if (!empty($qualityCheck['issues'])) {
-                    $article->quality_issues = $qualityCheck['issues'];
+                Log::info("Processando lote {$currentChunk}/{$totalChunks}", [
+                    'chunk_size' => $chunk->count(),
+                    'batch_id' => $results->batch_id
+                ]);
+
+                $chunkResults = $this->processVehicleChunk(
+                    $chunk, 
+                    $results->batch_id, 
+                    $dryRun,
+                    $currentChunk,
+                    $totalChunks
+                );
+
+                // Agregar resultados
+                $results->articles_generated += $chunkResults['generated'];
+                $results->articles_skipped += $chunkResults['skipped'];
+                $results->articles_failed += $chunkResults['failed'];
+                $results->errors = array_merge($results->errors, $chunkResults['errors']);
+
+                // Callback de progresso
+                if ($progressCallback) {
+                    $progressCallback($currentChunk, $totalChunks, $results);
                 }
-                
-                $article->save();
 
-                Log::info("Artigo gerado com sucesso", [
-                    'vehicle' => $vehicleData['vehicle_identifier'],
-                    'article_id' => $article->_id,
-                    'quality_score' => $qualityCheck['score']
-                ]);
-
-                return true;
+                // Pause entre lotes para não sobrecarregar
+                if ($currentChunk < $totalChunks) {
+                    usleep(100000); // 100ms
+                }
             }
 
-            return false;
+            // 4. Finalizar processamento
+            $results->success = true;
+            $results->generation_summary = $this->generateSummary($results);
+
+            Log::info("Geração de artigos concluída", [
+                'batch_id' => $results->batch_id,
+                'total_processed' => $results->total_processed,
+                'generated' => $results->articles_generated,
+                'skipped' => $results->articles_skipped,
+                'failed' => $results->articles_failed,
+                'success_rate' => $this->calculateSuccessRate($results)
+            ]);
 
         } catch (\Exception $e) {
-            Log::error("Erro no use case de geração de artigo", [
-                'vehicle' => $vehicleData['vehicle_identifier'] ?? 'Desconhecido',
-                'batch_id' => $batchId,
+            $results->success = false;
+            $results->errors[] = "Erro geral: " . $e->getMessage();
+            
+            Log::error("Erro na geração de artigos", [
+                'batch_id' => $results->batch_id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
-            return false;
-        }
-    }
-
-    /**
-     * Executar geração em lote
-     * 
-     * @param array $vehiclesBatch Array de veículos
-     * @param string $batchId ID do lote
-     * @param bool $dryRun Simulação
-     * @return array Resultados do processamento
-     */
-    public function executeBatch(array $vehiclesBatch, string $batchId, bool $dryRun = false): array
-    {
-        $results = [
-            'total' => count($vehiclesBatch),
-            'successful' => 0,
-            'failed' => 0,
-            'skipped' => 0,
-            'errors' => []
-        ];
-
-        foreach ($vehiclesBatch as $index => $vehicleData) {
-            try {
-                $success = $this->execute($vehicleData, $batchId, $dryRun);
-                
-                if ($success) {
-                    $results['successful']++;
-                } else {
-                    $results['failed']++;
-                }
-
-            } catch (\Exception $e) {
-                $results['failed']++;
-                $results['errors'][] = [
-                    'vehicle' => $vehicleData['vehicle_identifier'] ?? "Índice {$index}",
-                    'error' => $e->getMessage()
-                ];
-            }
         }
 
         return $results;
     }
 
     /**
-     * Validar dados do veículo
+     * Processar dados do CSV com validação robusta
      */
-    protected function validateVehicleData(array $vehicleData): array
+    protected function processVehicleDataWithValidation(string $csvPath, array $filters, object $results): Collection
     {
-        $errors = [];
-        $required = ['make', 'model', 'year', 'tire_size'];
-
-        // Verificar campos obrigatórios
-        foreach ($required as $field) {
-            if (empty($vehicleData[$field])) {
-                $errors[] = "Campo obrigatório ausente: {$field}";
+        try {
+            // Validar se arquivo existe
+            if (!file_exists($csvPath)) {
+                throw new \Exception("Arquivo CSV não encontrado: {$csvPath}");
             }
-        }
 
-        // Validar ano
-        if (!empty($vehicleData['year'])) {
-            $year = (int) $vehicleData['year'];
-            if ($year < 1990 || $year > date('Y') + 2) {
-                $errors[] = "Ano inválido: {$year}";
-            }
-        }
+            // Processar dados
+            $vehicleData = $this->vehicleProcessor->processVehicleData($csvPath, $filters);
 
-        // Validar pressões básicas
-        if (empty($vehicleData['pressure_empty_front']) || $vehicleData['pressure_empty_front'] <= 0) {
-            $errors[] = "Pressão dianteira vazia inválida";
-        }
+            // Validação adicional específica para geração de artigos
+            $validatedData = $this->validateDataForArticleGeneration($vehicleData);
 
-        if (empty($vehicleData['pressure_empty_rear']) || $vehicleData['pressure_empty_rear'] <= 0) {
-            $errors[] = "Pressão traseira vazia inválida";
-        }
+            // Salvar validação nos resultados
+            $results->csv_validation = [
+                'file_exists' => true,
+                'file_readable' => is_readable($csvPath),
+                'raw_count' => $vehicleData->count(),
+                'validated_count' => $validatedData->count(),
+                'validation_rate' => $vehicleData->count() > 0 
+                    ? round(($validatedData->count() / $vehicleData->count()) * 100, 2) 
+                    : 0
+            ];
 
-        // Validar consistência de pressões
-        if (!empty($vehicleData['pressure_empty_front']) && !empty($vehicleData['pressure_max_front'])) {
-            if ($vehicleData['pressure_max_front'] <= $vehicleData['pressure_empty_front']) {
-                $errors[] = "Pressão máxima dianteira deve ser maior que vazia";
-            }
-        }
+            return $validatedData;
 
-        if (!empty($vehicleData['pressure_empty_rear']) && !empty($vehicleData['pressure_max_rear'])) {
-            if ($vehicleData['pressure_max_rear'] <= $vehicleData['pressure_empty_rear']) {
-                $errors[] = "Pressão máxima traseira deve ser maior que vazia";
-            }
+        } catch (\Exception $e) {
+            $results->csv_validation = [
+                'file_exists' => file_exists($csvPath),
+                'file_readable' => file_exists($csvPath) ? is_readable($csvPath) : false,
+                'error' => $e->getMessage()
+            ];
+            
+            throw $e;
         }
+    }
 
-        // Validar ranges de pressão
-        $pressureFields = ['pressure_empty_front', 'pressure_empty_rear', 'pressure_max_front', 'pressure_max_rear'];
-        foreach ($pressureFields as $field) {
-            if (!empty($vehicleData[$field])) {
-                $pressure = (float) $vehicleData[$field];
-                if ($pressure < 10 || $pressure > 60) {
-                    $errors[] = "Pressão fora do range válido (10-60 PSI): {$field} = {$pressure}";
+    /**
+     * Validar dados específicamente para geração de artigos
+     */
+    protected function validateDataForArticleGeneration(Collection $vehicleData): Collection
+    {
+        return $vehicleData->filter(function ($vehicle) {
+            // Validações críticas para geração de artigos
+            $criticalFields = [
+                'make', 'model', 'year', 'tire_size',
+                'pressure_empty_front', 'pressure_empty_rear',
+                'main_category', 'vehicle_type'
+            ];
+
+            foreach ($criticalFields as $field) {
+                if (empty($vehicle[$field])) {
+                    Log::warning("Veículo rejeitado: campo '{$field}' ausente", [
+                        'vehicle_identifier' => $vehicle['vehicle_identifier'] ?? 'unknown'
+                    ]);
+                    return false;
                 }
             }
-        }
 
-        return [
-            'valid' => empty($errors),
-            'errors' => $errors
-        ];
-    }
+            // Validar ranges de pressão
+            $pressures = [
+                $vehicle['pressure_empty_front'] ?? 0,
+                $vehicle['pressure_empty_rear'] ?? 0,
+                $vehicle['pressure_light_front'] ?? 0,
+                $vehicle['pressure_light_rear'] ?? 0
+            ];
 
-    /**
-     * Verificar se artigo já existe
-     */
-    protected function checkExistingArticle(array $vehicleData): ?TirePressureArticle
-    {
-        return TirePressureArticle::where('make', $vehicleData['make'])
-                                 ->where('model', $vehicleData['model'])
-                                 ->where('year', $vehicleData['year'])
-                                 ->first();
-    }
+            foreach ($pressures as $pressure) {
+                if ($pressure < 15 || $pressure > 60) {
+                    Log::warning("Veículo rejeitado: pressão inválida", [
+                        'vehicle_identifier' => $vehicle['vehicle_identifier'] ?? 'unknown',
+                        'pressures' => $pressures
+                    ]);
+                    return false;
+                }
+            }
 
-    /**
-     * Enriquecer dados do veículo
-     */
-    protected function enrichVehicleData(array $vehicleData): array
-    {
-        // Garantir que dados estruturados estejam presentes
-        if (!isset($vehicleData['vehicle_data'])) {
-            $vehicleData['vehicle_data'] = [];
-        }
+            // Validar ano
+            $year = $vehicle['year'] ?? 0;
+            if ($year < 1990 || $year > 2030) {
+                Log::warning("Veículo rejeitado: ano inválido", [
+                    'vehicle_identifier' => $vehicle['vehicle_identifier'] ?? 'unknown',
+                    'year' => $year
+                ]);
+                return false;
+            }
 
-        // Enrichment básico
-        $vehicleData['vehicle_identifier'] = $vehicleData['vehicle_identifier'] ?? 
-                                           "{$vehicleData['make']} {$vehicleData['model']} {$vehicleData['year']}";
-
-        // Detectar tipo de veículo se não definido
-        if (!isset($vehicleData['is_motorcycle'])) {
-            $vehicleData['is_motorcycle'] = $this->detectMotorcycle($vehicleData);
-        }
-
-        // Definir categoria principal se não definida
-        if (!isset($vehicleData['main_category'])) {
-            $vehicleData['main_category'] = $vehicleData['is_motorcycle'] ? 'Motocicletas' : 'Carros';
-        }
-
-        // Definir tipo de veículo se não definido
-        if (!isset($vehicleData['vehicle_type'])) {
-            $vehicleData['vehicle_type'] = $vehicleData['is_motorcycle'] ? 'motorcycle' : 'car';
-        }
-
-        // Garantir pressões padrão se não definidas
-        $this->ensureDefaultPressures($vehicleData);
-
-        // Adicionar dados estruturados
-        $vehicleData['vehicle_data'] = array_merge($vehicleData['vehicle_data'], [
-            'make' => $vehicleData['make'],
-            'model' => $vehicleData['model'],
-            'year' => $vehicleData['year'],
-            'tire_size' => $vehicleData['tire_size'],
-            'is_motorcycle' => $vehicleData['is_motorcycle'],
-            'vehicle_type' => $vehicleData['vehicle_type'],
-            'main_category' => $vehicleData['main_category'],
-            'pressure_display' => $this->formatPressureDisplay($vehicleData),
-            'pressure_empty_display' => $this->formatEmptyPressureDisplay($vehicleData),
-            'pressure_loaded_display' => $this->formatLoadedPressureDisplay($vehicleData),
-            'enriched_at' => now()->toISOString()
-        ]);
-
-        return $vehicleData;
-    }
-
-    /**
-     * Detectar se é motocicleta
-     */
-    protected function detectMotorcycle(array $vehicleData): bool
-    {
-        // Verificar categoria
-        $category = strtolower($vehicleData['category'] ?? '');
-        if (in_array($category, ['motorcycle', 'moto', 'motocicleta'])) {
             return true;
-        }
-
-        // Verificar tamanho do pneu (padrões típicos de moto)
-        $tireSize = $vehicleData['tire_size'] ?? '';
-        if (preg_match('/\d{2,3}\/\d{2}-\d{2}/', $tireSize) && 
-            (strpos($tireSize, 'dianteiro') !== false || strpos($tireSize, 'traseiro') !== false)) {
-            return true;
-        }
-
-        return false;
+        });
     }
 
     /**
-     * Garantir pressões padrão
+     * Filtrar artigos que já existem
      */
-    protected function ensureDefaultPressures(array &$vehicleData): void
+    protected function filterExistingArticles(Collection $vehicleData, object $results): Collection
     {
-        $defaults = $vehicleData['is_motorcycle'] ? [
-            'pressure_empty_front' => 28,
-            'pressure_empty_rear' => 32,
-            'pressure_light_front' => 30,
-            'pressure_light_rear' => 34,
-            'pressure_max_front' => 32,
-            'pressure_max_rear' => 36,
-            'pressure_spare' => null // Motos não têm estepe
-        ] : [
-            'pressure_empty_front' => 30,
-            'pressure_empty_rear' => 28,
-            'pressure_light_front' => 32,
-            'pressure_light_rear' => 30,
-            'pressure_max_front' => 36,
-            'pressure_max_rear' => 34,
-            'pressure_spare' => 35
+        $existingSlugs = TirePressureArticle::pluck('slug')->toArray();
+        
+        return $vehicleData->filter(function ($vehicle) use ($existingSlugs, $results) {
+            $slug = $this->generateSlugFromVehicle($vehicle);
+            
+            if (in_array($slug, $existingSlugs)) {
+                $results->articles_skipped++;
+                return false;
+            }
+            
+            return true;
+        });
+    }
+
+    /**
+     * Gerar slug a partir dos dados do veículo
+     */
+    protected function generateSlugFromVehicle(array $vehicle): string
+    {
+        $make = \Illuminate\Support\Str::slug($vehicle['make'] ?? '');
+        $model = \Illuminate\Support\Str::slug($vehicle['model'] ?? '');
+        $year = $vehicle['year'] ?? '';
+        
+        return "pressao-ideal-pneu-{$make}-{$model}-{$year}";
+    }
+
+    /**
+     * Processar chunk de veículos
+     */
+    protected function processVehicleChunk(
+        Collection $chunk, 
+        string $batchId, 
+        bool $dryRun,
+        int $currentChunk,
+        int $totalChunks
+    ): array {
+        $chunkResults = [
+            'generated' => 0,
+            'skipped' => 0,
+            'failed' => 0,
+            'errors' => []
         ];
 
-        foreach ($defaults as $field => $defaultValue) {
-            if (empty($vehicleData[$field]) && $defaultValue !== null) {
-                $vehicleData[$field] = $defaultValue;
+        foreach ($chunk as $vehicleData) {
+            try {
+                if ($dryRun) {
+                    // Simular geração
+                    $success = $this->simulateGeneration($vehicleData, $batchId);
+                } else {
+                    // Gerar artigo real
+                    $article = $this->generateArticleWithTransaction($vehicleData, $batchId);
+                    $success = ($article !== null);
+                }
+
+                if ($success) {
+                    $chunkResults['generated']++;
+                } else {
+                    $chunkResults['failed']++;
+                    $chunkResults['errors'][] = "Falha na geração: " . ($vehicleData['vehicle_identifier'] ?? 'unknown');
+                }
+
+            } catch (\Exception $e) {
+                $chunkResults['failed']++;
+                $chunkResults['errors'][] = "Erro em " . ($vehicleData['vehicle_identifier'] ?? 'unknown') . ": " . $e->getMessage();
+                
+                Log::error("Erro ao processar veículo no chunk", [
+                    'vehicle_identifier' => $vehicleData['vehicle_identifier'] ?? 'unknown',
+                    'chunk' => $currentChunk,
+                    'error' => $e->getMessage()
+                ]);
             }
         }
+
+        return $chunkResults;
     }
 
     /**
-     * Formatar exibição de pressão
+     * Gerar ID do lote
      */
-    protected function formatPressureDisplay(array $vehicleData): string
+    protected function generateBatchId(): string
     {
-        $front = $vehicleData['pressure_empty_front'] ?? 30;
-        $rear = $vehicleData['pressure_empty_rear'] ?? 28;
-        
-        if ($vehicleData['is_motorcycle']) {
-            return "Dianteiro: {$front} PSI / Traseiro: {$rear} PSI";
+        return 'batch_' . now()->format('Ymd_His') . '_' . uniqid();
+    }
+
+    /**
+     * Calcular taxa de sucesso
+     */
+    protected function calculateSuccessRate(object $results): float
+    {
+        if ($results->total_processed === 0) {
+            return 0.0;
         }
+
+        return round(($results->articles_generated / $results->total_processed) * 100, 2);
+    }
+
+    /**
+     * Gerar resumo da execução
+     */
+    protected function generateSummary(object $results): array
+    {
+        return [
+            'execution_time' => now()->toISOString(),
+            'success_rate' => $this->calculateSuccessRate($results),
+            'total_errors' => count($results->errors),
+            'csv_validation_rate' => $results->csv_validation['validation_rate'] ?? 0,
+            'top_categories' => $this->getTopCategories($results->processing_stats),
+            'recommendations' => $this->generateRecommendations($results)
+        ];
+    }
+
+    /**
+     * Obter principais categorias processadas
+     */
+    protected function getTopCategories(array $stats): array
+    {
+        if (empty($stats['by_category'])) {
+            return [];
+        }
+
+        $categories = $stats['by_category'];
+        arsort($categories);
         
-        return "Dianteiros: {$front} PSI / Traseiros: {$rear} PSI";
+        return array_slice($categories, 0, 5, true);
     }
 
     /**
-     * Formatar pressão para veículo vazio
+     * Gerar recomendações baseadas nos resultados
      */
-    protected function formatEmptyPressureDisplay(array $vehicleData): string
+    protected function generateRecommendations(object $results): array
     {
-        $front = $vehicleData['pressure_empty_front'] ?? 30;
-        $rear = $vehicleData['pressure_empty_rear'] ?? 28;
-        return "{$front}/{$rear} PSI";
-    }
+        $recommendations = [];
 
-    /**
-     * Formatar pressão para veículo carregado
-     */
-    protected function formatLoadedPressureDisplay(array $vehicleData): string
-    {
-        $front = $vehicleData['pressure_max_front'] ?? 36;
-        $rear = $vehicleData['pressure_max_rear'] ?? 34;
-        return "{$front}/{$rear} PSI";
+        $successRate = $this->calculateSuccessRate($results);
+        
+        if ($successRate < 70) {
+            $recommendations[] = "Taxa de sucesso baixa ({$successRate}%). Verificar qualidade dos dados do CSV.";
+        }
+
+        if ($results->articles_failed > ($results->total_processed * 0.1)) {
+            $recommendations[] = "Muitas falhas na geração. Verificar logs para identificar problemas recorrentes.";
+        }
+
+        if (count($results->errors) > 50) {
+            $recommendations[] = "Muitos erros encontrados. Considerar executar com lotes menores.";
+        }
+
+        $validationRate = $results->csv_validation['validation_rate'] ?? 0;
+        if ($validationRate < 80) {
+            $recommendations[] = "Taxa de validação do CSV baixa ({$validationRate}%). Verificar integridade dos dados.";
+        }
+
+        if (empty($recommendations)) {
+            $recommendations[] = "Processamento executado com sucesso. Todos os indicadores estão normais.";
+        }
+
+        return $recommendations;
     }
 
     /**
@@ -360,15 +421,27 @@ class GenerateInitialArticlesUseCase
             'vehicle' => $vehicleData['vehicle_identifier'],
             'batch_id' => $batchId,
             'template' => $this->articleGenerator->getTemplateForVehicle($vehicleData),
-            'is_motorcycle' => $vehicleData['is_motorcycle']
+            'is_motorcycle' => $vehicleData['is_motorcycle'],
+            'main_category' => $vehicleData['main_category']
         ]);
 
         // Simular validações que seriam feitas
         $mockArticleContent = [
-            'sections' => [
-                'introduction' => ['title' => 'Introdução', 'content' => 'Mock content'],
-                'pressure_table' => ['title' => 'Tabela', 'content' => []],
-                'conclusion' => ['title' => 'Conclusão', 'content' => 'Mock content']
+            'introducao' => 'Mock introduction content',
+            'tabela_pressoes' => [
+                'versoes' => [
+                    [
+                        'nome_versao' => 'Todas as versões',
+                        'pressao_dianteira_normal' => $vehicleData['pressure_empty_front'] . ' PSI',
+                        'pressao_traseira_normal' => $vehicleData['pressure_empty_rear'] . ' PSI'
+                    ]
+                ]
+            ],
+            'perguntas_frequentes' => [
+                [
+                    'question' => 'Mock question?',
+                    'answer' => 'Mock answer'
+                ]
             ]
         ];
 
@@ -376,7 +449,8 @@ class GenerateInitialArticlesUseCase
         
         Log::info("SIMULAÇÃO: Score calculado", [
             'vehicle' => $vehicleData['vehicle_identifier'],
-            'mock_score' => $mockScore
+            'mock_score' => $mockScore,
+            'content_sections' => array_keys($mockArticleContent)
         ]);
 
         return true; // Simulação sempre retorna sucesso
@@ -389,7 +463,18 @@ class GenerateInitialArticlesUseCase
     {
         try {
             return DB::transaction(function () use ($vehicleData, $batchId) {
-                return $this->articleGenerator->generateArticle($vehicleData, $batchId);
+                $article = $this->articleGenerator->generateArticle($vehicleData, $batchId);
+                
+                if ($article) {
+                    Log::info("Artigo gerado com sucesso", [
+                        'vehicle' => $vehicleData['vehicle_identifier'],
+                        'article_id' => $article->_id,
+                        'slug' => $article->slug,
+                        'content_score' => $article->content_score
+                    ]);
+                }
+                
+                return $article;
             });
         } catch (\Exception $e) {
             Log::error("Erro na transação de geração de artigo", [
@@ -401,189 +486,105 @@ class GenerateInitialArticlesUseCase
     }
 
     /**
-     * Validar qualidade do artigo gerado
+     * Obter estatísticas do processamento atual
      */
-    protected function validateArticleQuality(TirePressureArticle $article): array
+    public function getCurrentStats(): array
     {
-        $issues = [];
-        $score = $article->content_score ?? 5.0;
-
-        // Verificar dados básicos
-        if (empty($article->title)) {
-            $issues[] = 'Título ausente';
-            $score -= 1.0;
-        }
-
-        if (empty($article->wordpress_slug)) {
-            $issues[] = 'Slug WordPress ausente';
-            $score -= 0.5;
-        }
-
-        if (empty($article->meta_description)) {
-            $issues[] = 'Meta descrição ausente';
-            $score -= 0.5;
-        }
-
-        // Verificar conteúdo estruturado
-        $articleContent = $article->article_content ?? [];
-        
-        if (empty($articleContent['sections'])) {
-            $issues[] = 'Seções de conteúdo ausentes';
-            $score -= 2.0;
-        } else {
-            // Verificar seções obrigatórias
-            $requiredSections = ['introduction', 'pressure_table', 'how_to_calibrate', 'conclusion'];
-            foreach ($requiredSections as $section) {
-                if (!isset($articleContent['sections'][$section])) {
-                    $issues[] = "Seção obrigatória ausente: {$section}";
-                    $score -= 0.5;
-                }
-            }
-        }
-
-        // Verificar dados de pressão
-        if (empty($article->pressure_empty_front) || empty($article->pressure_empty_rear)) {
-            $issues[] = 'Pressões básicas ausentes';
-            $score -= 1.0;
-        }
-
-        // Verificar URL e SEO
-        if (empty($article->canonical_url)) {
-            $issues[] = 'URL canônica ausente';
-            $score -= 0.3;
-        }
-
-        if (empty($article->seo_keywords) || count($article->seo_keywords) < 3) {
-            $issues[] = 'Palavras-chave SEO insuficientes';
-            $score -= 0.3;
-        }
-
-        // Garantir score mínimo
-        $score = max(1.0, min(10.0, $score));
-
         return [
-            'score' => round($score, 1),
-            'issues' => $issues,
-            'quality_level' => $this->getQualityLevel($score)
+            'total_articles' => TirePressureArticle::count(),
+            'pending' => TirePressureArticle::where('generation_status', 'pending')->count(),
+            'generated' => TirePressureArticle::where('generation_status', 'generated')->count(),
+            'claude_enhanced' => TirePressureArticle::where('generation_status', 'claude_enhanced')->count(),
+            'published' => TirePressureArticle::where('generation_status', 'published')->count(),
+            'by_category' => TirePressureArticle::raw(function($collection) {
+                return $collection->aggregate([
+                    ['$group' => [
+                        '_id' => '$category',
+                        'count' => ['$sum' => 1]
+                    ]]
+                ]);
+            })->pluck('count', '_id')->toArray()
         ];
     }
 
     /**
-     * Determinar nível de qualidade
+     * Validar compatibilidade do CSV antes do processamento
      */
-    protected function getQualityLevel(float $score): string
+    public function validateCsvCompatibility(string $csvPath): array
     {
-        if ($score >= 8.5) return 'excellent';
-        if ($score >= 7.0) return 'good';
-        if ($score >= 5.5) return 'average';
-        if ($score >= 4.0) return 'poor';
-        return 'very_poor';
-    }
-
-    /**
-     * Obter estatísticas de geração
-     */
-    public function getGenerationStatistics(): array
-    {
-        return TirePressureArticle::getGenerationStatistics();
-    }
-
-    /**
-     * Obter artigos prontos para refinamento Claude (Etapa 2)
-     */
-    public function getArticlesReadyForClaude(int $limit = 50): \Illuminate\Database\Eloquent\Collection
-    {
-        return TirePressureArticle::readyForClaude()
-                                 ->orderBy('created_at', 'asc')
-                                 ->limit($limit)
-                                 ->get();
-    }
-
-    /**
-     * Marcar artigo como processado
-     */
-    public function markAsProcessed(TirePressureArticle $article): void
-    {
-        $article->markAsGenerated();
-        
-        Log::info("Artigo marcado como processado", [
-            'article_id' => $article->_id,
-            'vehicle' => $article->vehicle_full_name,
-            'status' => $article->generation_status
-        ]);
-    }
-
-    /**
-     * Validar lote antes do processamento
-     */
-    public function validateBatch(array $vehiclesBatch): array
-    {
-        $validationResults = [
-            'total' => count($vehiclesBatch),
-            'valid' => 0,
-            'invalid' => 0,
-            'errors' => []
-        ];
-
-        foreach ($vehiclesBatch as $index => $vehicleData) {
-            $validation = $this->validateVehicleData($vehicleData);
-            
-            if ($validation['valid']) {
-                $validationResults['valid']++;
-            } else {
-                $validationResults['invalid']++;
-                $validationResults['errors'][] = [
-                    'index' => $index,
-                    'vehicle' => $vehicleData['vehicle_identifier'] ?? "Índice {$index}",
-                    'errors' => $validation['errors']
-                ];
-            }
-        }
-
-        return $validationResults;
-    }
-
-    /**
-     * Limpar artigos órfãos ou com problemas
-     */
-    public function cleanupProblematicArticles(): array
-    {
-        $results = [
-            'deleted' => 0,
-            'fixed' => 0,
-            'errors' => []
+        $validation = [
+            'compatible' => false,
+            'file_exists' => false,
+            'file_readable' => false,
+            'required_fields_present' => [],
+            'missing_fields' => [],
+            'extra_fields' => [],
+            'sample_data_valid' => false,
+            'estimated_articles' => 0,
+            'recommendations' => []
         ];
 
         try {
-            // Artigos sem dados básicos
-            $problematicArticles = TirePressureArticle::where(function ($query) {
-                $query->whereNull('make')
-                      ->orWhereNull('model')
-                      ->orWhereNull('year')
-                      ->orWhereNull('wordpress_slug');
-            })->get();
+            // Verificar arquivo
+            $validation['file_exists'] = file_exists($csvPath);
+            $validation['file_readable'] = $validation['file_exists'] && is_readable($csvPath);
 
-            foreach ($problematicArticles as $article) {
-                try {
-                    if (empty($article->make) || empty($article->model) || empty($article->year)) {
-                        // Deletar artigos sem dados básicos
-                        $article->delete();
-                        $results['deleted']++;
-                    } elseif (empty($article->wordpress_slug)) {
-                        // Tentar corrigir slug
-                        $article->wordpress_slug = $article->generateWordPressSlug();
-                        $article->save();
-                        $results['fixed']++;
-                    }
-                } catch (\Exception $e) {
-                    $results['errors'][] = "Erro ao processar artigo {$article->_id}: " . $e->getMessage();
+            if (!$validation['file_readable']) {
+                $validation['recommendations'][] = "Arquivo CSV não encontrado ou não legível: {$csvPath}";
+                return $validation;
+            }
+
+            // Processar amostra pequena
+            $sampleData = $this->vehicleProcessor->processVehicleData($csvPath, [], 10);
+            
+            if ($sampleData->isEmpty()) {
+                $validation['recommendations'][] = "CSV vazio ou dados inválidos";
+                return $validation;
+            }
+
+            // Verificar campos
+            $firstRow = $sampleData->first();
+            $requiredFields = [
+                'make', 'model', 'year', 'tire_size',
+                'pressure_empty_front', 'pressure_empty_rear',
+                'main_category', 'vehicle_type'
+            ];
+
+            foreach ($requiredFields as $field) {
+                if (isset($firstRow[$field])) {
+                    $validation['required_fields_present'][] = $field;
+                } else {
+                    $validation['missing_fields'][] = $field;
                 }
             }
 
+            $validation['compatible'] = empty($validation['missing_fields']);
+            $validation['sample_data_valid'] = $sampleData->count() > 0;
+            $validation['estimated_articles'] = $this->estimateArticleCount($csvPath);
+
+            if ($validation['compatible']) {
+                $validation['recommendations'][] = "CSV compatível com o sistema. Pronto para processamento.";
+            } else {
+                $validation['recommendations'][] = "CSV incompatível. Campos ausentes: " . implode(', ', $validation['missing_fields']);
+            }
+
         } catch (\Exception $e) {
-            $results['errors'][] = "Erro geral na limpeza: " . $e->getMessage();
+            $validation['recommendations'][] = "Erro na validação: " . $e->getMessage();
         }
 
-        return $results;
+        return $validation;
+    }
+
+    /**
+     * Estimar quantidade de artigos que serão gerados
+     */
+    protected function estimateArticleCount(string $csvPath): int
+    {
+        try {
+            $lines = file($csvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            return max(0, count($lines) - 1); // -1 para header
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 }
