@@ -7,28 +7,38 @@ use Illuminate\Support\Str;
 use Src\ContentGeneration\TirePressureGuide\Domain\Entities\TirePressureArticle;
 
 /**
- * Modified InitialArticleGeneratorService - agora gera no formato ideal_tire_pressure_car.json
+ * Modified InitialArticleGeneratorService - DUAL TEMPLATE SUPPORT
  * 
- * PRINCIPAL MUDANÇA: 
- * - Conteúdo agora segue estrutura esperada pelos ViewModels
- * - Seções separadas para refinamento Claude ficam fora do 'content'
- * - Formato compatível com IdealTirePressureCarViewModel/MotorcycleViewModel
+ * NOVA FUNCIONALIDADE: 
+ * - Gera DOIS TIPOS de artigo com mesmo código base
+ * - 'ideal' → formato IdealTirePressureCarViewModel
+ * - 'calibration' → formato TirePressureGuideCarViewModel
+ * - Detecção automática car vs motorcycle
  */
 class InitialArticleGeneratorService
 {
     /**
-     * Gerar artigo completo no novo formato
+     * Gerar artigo completo com template específico
+     * 
+     * @param array $vehicleData
+     * @param string $batchId
+     * @param string $templateType 'ideal' ou 'calibration'
      */
-    public function generateArticle(array $vehicleData, string $batchId): ?TirePressureArticle
+    public function generateArticle(array $vehicleData, string $batchId, string $templateType = 'ideal'): ?TirePressureArticle
     {
         try {
-            // 1. Gerar conteúdo estruturado no formato dos ViewModels
-            $structuredContent = $this->generateStructuredContent($vehicleData);
+            // 1. Validar template type
+            if (!in_array($templateType, ['ideal', 'calibration'])) {
+                throw new \Exception("Template type inválido: {$templateType}. Use 'ideal' ou 'calibration'");
+            }
+
+            // 2. Gerar conteúdo estruturado baseado no template type
+            $structuredContent = $this->generateStructuredContent($vehicleData, $templateType);
             
-            // 2. Gerar seções separadas para refinamento Claude (fora do content)
-            $separatedSections = $this->generateSeparatedSections($vehicleData);
+            // 3. Gerar seções separadas para refinamento Claude
+            $separatedSections = $this->generateSeparatedSections($vehicleData, $templateType);
             
-            // 3. Criar artigo na base de dados
+            // 4. Criar artigo na base de dados
             $article = new TirePressureArticle();
             
             // Dados básicos do veículo
@@ -38,20 +48,23 @@ class InitialArticleGeneratorService
             $article->tire_size = $vehicleData['tire_size'];
             $article->vehicle_data = $vehicleData;
             
-            // Metadados e SEO
-            $article->title = $this->generateTitle($vehicleData);
-            $article->slug = $this->generateSlug($vehicleData);
-            $article->wordpress_slug = $article->slug;
-            $article->meta_description = $this->generateMetaDescription($vehicleData);
-            $article->seo_keywords = $this->generateSeoKeywords($vehicleData);
+            // NOVO: Template type para diferenciar artigos
+            $article->template_type = $templateType;
             
-            // NOVA ESTRUTURA: Conteúdo no formato dos ViewModels
+            // Metadados e SEO baseados no template
+            $article->title = $this->generateTitle($vehicleData, $templateType);
+            $article->slug = $this->generateSlug($vehicleData, $templateType);
+            $article->wordpress_slug = $article->slug;
+            $article->meta_description = $this->generateMetaDescription($vehicleData, $templateType);
+            $article->seo_keywords = $this->generateSeoKeywords($vehicleData, $templateType);
+            
+            // Conteúdo estruturado baseado no template
             $article->article_content = $structuredContent;
             
             // URLs e template
-            $article->template_used = $this->getTemplateForVehicle($vehicleData);
-            $article->wordpress_url = $this->generateWordPressUrl($vehicleData);
-            $article->canonical_url = $this->generateCanonicalUrl($vehicleData);
+            $article->template_used = $this->getTemplateForVehicle($vehicleData, $templateType);
+            $article->wordpress_url = $this->generateWordPressUrl($vehicleData, $templateType);
+            $article->canonical_url = $this->generateCanonicalUrl($vehicleData, $templateType);
             
             // Pressões extraídas
             $article->pressure_light_front = $vehicleData['pressure_empty_front'] ?? 30.0;
@@ -67,7 +80,7 @@ class InitialArticleGeneratorService
             $article->quality_checked = false;
             $article->content_score = $this->calculateContentScore($structuredContent);
             
-            // SEÇÕES SEPARADAS PARA REFINAMENTO CLAUDE (Fora do content principal)
+            // Seções separadas para refinamento Claude
             $article->sections_intro = $separatedSections['intro'];
             $article->sections_pressure_table = $separatedSections['pressure_table'];
             $article->sections_how_to_calibrate = $separatedSections['how_to_calibrate'];
@@ -99,11 +112,12 @@ class InitialArticleGeneratorService
                 // Marcar como gerado e quebrar em seções
                 $article->markAsGenerated();
                 
-                Log::info("Artigo gerado com sucesso no novo formato", [
+                Log::info("Artigo gerado com sucesso - Template: {$templateType}", [
                     'vehicle' => $vehicleData['vehicle_identifier'],
-                    'template' => $article->template_used,
+                    'template_type' => $templateType,
+                    'template_used' => $article->template_used,
                     'content_score' => $article->content_score,
-                    'sections_count' => count($separatedSections)
+                    'slug' => $article->slug
                 ]);
                 
                 return $article;
@@ -112,8 +126,9 @@ class InitialArticleGeneratorService
             return null;
             
         } catch (\Exception $e) {
-            Log::error("Erro ao gerar artigo", [
+            Log::error("Erro ao gerar artigo - Template: {$templateType}", [
                 'vehicle' => $vehicleData['vehicle_identifier'] ?? 'unknown',
+                'template_type' => $templateType,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -122,25 +137,29 @@ class InitialArticleGeneratorService
     }
     
     /**
-     * Gerar conteúdo estruturado no formato esperado pelos ViewModels
-     * 
-     * NOVO FORMATO: Compatível com IdealTirePressureCarViewModel
+     * Gerar conteúdo estruturado baseado no template type
      */
-    protected function generateStructuredContent(array $vehicleData): array
+    protected function generateStructuredContent(array $vehicleData, string $templateType): array
     {
         $isMotorcycle = $vehicleData['is_motorcycle'] ?? false;
         
-        if ($isMotorcycle) {
-            return $this->generateMotorcycleContent($vehicleData);
+        if ($templateType === 'ideal') {
+            return $isMotorcycle 
+                ? $this->generateIdealMotorcycleContent($vehicleData)
+                : $this->generateIdealCarContent($vehicleData);
+        } elseif ($templateType === 'calibration') {
+            return $isMotorcycle
+                ? $this->generateCalibrationMotorcycleContent($vehicleData)
+                : $this->generateCalibrationCarContent($vehicleData);
         }
         
-        return $this->generateCarContent($vehicleData);
+        throw new \Exception("Template type não suportado: {$templateType}");
     }
     
     /**
-     * Gerar conteúdo para carros no formato ideal_tire_pressure_car.json
+     * Gerar conteúdo IDEAL para carros (IdealTirePressureCarViewModel)
      */
-    protected function generateCarContent(array $vehicleData): array
+    protected function generateIdealCarContent(array $vehicleData): array
     {
         $make = $vehicleData['make'];
         $model = $vehicleData['model'];
@@ -153,7 +172,7 @@ class InitialArticleGeneratorService
         $maxRearPressure = $vehicleData['pressure_max_rear'] ?? 34;
         
         return [
-            'introducao' => "Para manter seu {$make} {$model} {$year} sempre em perfeitas condições de segurança e desempenho, a calibragem correta dos pneus é fundamental. A pressão adequada não apenas garante maior vida útil dos pneus, mas também melhora a economia de combustível e a estabilidade do veículo.",
+            'introducao' => "Para manter seu {$make} {$model} {$year} sempre em perfeitas condições de segurança e desempenho, a pressão ideal dos pneus é fundamental. Conhecer os valores corretos garante maior economia de combustível e vida útil dos pneus.",
             
             'especificacoes_pneus' => [
                 'medida_original' => $tireSize,
@@ -174,7 +193,7 @@ class InitialArticleGeneratorService
                         'pressao_traseira_normal' => "{$rearPressure} PSI",
                         'pressao_dianteira_carregado' => "{$maxFrontPressure} PSI",
                         'pressao_traseira_carregado' => "{$maxRearPressure} PSI",
-                        'observacao' => 'Pressões para uso padrão e com carga máxima'
+                        'observacao' => 'Pressões ideais para uso padrão e com carga máxima'
                     ]
                 ],
                 'condicoes_uso' => [
@@ -184,570 +203,350 @@ class InitialArticleGeneratorService
                         'bagagem' => 'Leve',
                         'ajuste_dianteira' => "{$frontPressure} PSI",
                         'ajuste_traseira' => "{$rearPressure} PSI",
-                        'beneficios' => 'Maior conforto e economia de combustível'
-                    ],
-                    [
-                        'situacao' => 'Família completa',
-                        'ocupantes' => '4-5 pessoas',
-                        'bagagem' => 'Moderada',
-                        'ajuste_dianteira' => ($frontPressure + 2) . " PSI",
-                        'ajuste_traseira' => ($rearPressure + 2) . " PSI",
-                        'beneficios' => 'Compensação para peso adicional'
-                    ],
-                    [
-                        'situacao' => 'Viagem com carga',
-                        'ocupantes' => 'Variável',
-                        'bagagem' => 'Pesada',
-                        'ajuste_dianteira' => "{$maxFrontPressure} PSI",
-                        'ajuste_traseira' => "{$maxRearPressure} PSI",
-                        'beneficios' => 'Máxima segurança e estabilidade'
+                        'beneficios' => 'Pressão ideal para economia e conforto'
                     ]
                 ]
             ],
             
-            'conversao_unidades' => [
-                'tabela_conversao' => [
-                    ['psi' => '28', 'bar' => '1.9', 'kgf_cm2' => '1.9'],
-                    ['psi' => '30', 'bar' => '2.1', 'kgf_cm2' => '2.1'],
-                    ['psi' => '32', 'bar' => '2.2', 'kgf_cm2' => '2.2'],
-                    ['psi' => '34', 'bar' => '2.3', 'kgf_cm2' => '2.3'],
-                    ['psi' => '36', 'bar' => '2.5', 'kgf_cm2' => '2.5']
-                ],
-                'observacao' => 'Conversão aproximada. Use sempre a unidade especificada pelo fabricante.'
-            ],
-            
-            'localizacao_etiqueta' => [
-                'local_principal' => 'Soleira da porta do motorista',
-                'local_alternativo' => 'Manual do proprietário',
-                'informacoes_contidas' => [
-                    'Pressões para diferentes cargas',
-                    'Tamanho original dos pneus',
-                    'Pressão do pneu sobressalente'
-                ],
-                'dicas_localizacao' => [
-                    'Procure uma etiqueta adesiva na parte interna da porta',
-                    'Algumas vezes está localizada na tampa do combustível',
-                    'Consulte sempre o manual se não encontrar'
-                ]
-            ],
-            
-            'beneficios_calibragem' => [
-                'seguranca' => [
-                    'Maior aderência ao asfalto',
-                    'Melhor desempenho em frenagens',
-                    'Redução do risco de aquaplanagem',
-                    'Maior estabilidade em curvas'
-                ],
-                'economia' => [
-                    'Redução do consumo de combustível',
-                    'Maior vida útil dos pneus',
-                    'Menor desgaste da suspensão',
-                    'Economia em manutenções'
-                ],
-                'desempenho' => [
-                    'Melhor dirigibilidade',
-                    'Maior conforto ao dirigir',
-                    'Menor ruído interno',
-                    'Resposta mais precisa da direção'
-                ]
-            ],
-            
-            'dicas_manutencao' => [
-                'frequencia_calibragem' => 'A cada 15 dias ou antes de viagens longas',
-                'horario_ideal' => 'Pela manhã, com pneus frios',
-                'equipamento_recomendado' => 'Calibrador digital de qualidade',
-                'cuidados_especiais' => [
-                    'Verifique sempre o pneu sobressalente',
-                    'Não se esqueça das tampas das válvulas',
-                    'Inspecione visualmente os pneus regularmente',
-                    'Faça rodízio dos pneus conforme recomendação'
-                ],
-                'sinais_pressao_incorreta' => [
-                    'Desgaste irregular dos pneus',
-                    'Aumento no consumo de combustível',
-                    'Comportamento estranho da direção',
-                    'Aviso do sistema TPMS aceso'
-                ]
-            ],
-            
-            'alertas_importantes' => [
-                [
-                    'tipo' => 'warning',
-                    'titulo' => 'Nunca calibre com pneus quentes',
-                    'descricao' => 'Pneus aquecidos podem mostrar pressão até 4 PSI superior ao real'
-                ],
-                [
-                    'tipo' => 'info',
-                    'titulo' => 'Calibre todos os pneus',
-                    'descricao' => 'Não se esqueça do pneu sobressalente - ele também perde pressão com o tempo'
-                ],
-                [
-                    'tipo' => 'danger',
-                    'titulo' => 'Pressão muito baixa é perigosa',
-                    'descricao' => 'Pode causar superaquecimento do pneu e até mesmo estouro em alta velocidade'
-                ]
-            ],
-            
-            'perguntas_frequentes' => [
-                [
-                    'question' => "Qual a pressão correta para meu {$make} {$model} {$year}?",
-                    'answer' => "Para uso normal: dianteiros {$frontPressure} PSI, traseiros {$rearPressure} PSI. Com carga máxima: dianteiros {$maxFrontPressure} PSI, traseiros {$maxRearPressure} PSI."
-                ],
-                [
-                    'question' => 'Com que frequência devo calibrar os pneus?',
-                    'answer' => 'Recomenda-se calibrar a cada 15 dias ou antes de viagens longas. Pneus perdem pressão naturalmente, cerca de 1-2 PSI por mês.'
-                ],
-                [
-                    'question' => 'Posso usar pressões diferentes das recomendadas?',
-                    'answer' => 'Não é recomendado. As pressões são calculadas pelos engenheiros para garantir o melhor equilíbrio entre segurança, economia e desempenho.'
-                ],
-                [
-                    'question' => 'O que fazer se o pneu estiver perdendo pressão rapidamente?',
-                    'answer' => 'Procure imediatamente um borracheiro para verificar furos, problemas na válvula ou danos na roda. Nunca ignore perda rápida de pressão.'
-                ]
-            ],
-            
-            'consideracoes_finais' => "Manter a pressão correta nos pneus do seu {$make} {$model} {$year} é uma das manutenções mais simples e importantes que você pode fazer. Além de garantir sua segurança, você economiza combustível e prolonga a vida útil dos pneus. Lembre-se sempre de verificar a pressão com pneus frios e seguir as especificações do fabricante."
+            'conversao_unidades' => $this->generateDefaultUnitConversion(),
+            'localizacao_etiqueta' => $this->generateLocationInfo(),
+            'beneficios_calibragem' => $this->generateBenefitsInfo(),
+            'dicas_manutencao' => $this->generateMaintenanceTips(),
+            'alertas_importantes' => $this->generateImportantAlerts(),
+            'perguntas_frequentes' => $this->generateIdealFAQ($vehicleData),
+            'consideracoes_finais' => "Manter a pressão ideal dos pneus do seu {$make} {$model} {$year} é essencial para máxima segurança, economia e desempenho. Verifique regularmente e siga sempre as especificações do fabricante."
         ];
     }
     
     /**
-     * Gerar seções separadas para refinamento Claude
-     * 
-     * IMPORTANTE: Estas seções ficam FORA do content principal
-     * Serão refinadas pela API Claude na Etapa 2
+     * Gerar conteúdo CALIBRAGEM para carros (TirePressureGuideCarViewModel)
      */
-    protected function generateSeparatedSections(array $vehicleData): array
-    {
-        $make = $vehicleData['make'];
-        $model = $vehicleData['model'];
-        $year = $vehicleData['year'];
-        
-        return [
-            'intro' => [
-                'title' => 'Introdução Personalizada',
-                'content' => "Descubra a pressão ideal para os pneus do seu {$make} {$model} {$year}.",
-                'target_tone' => 'educational_friendly',
-                'min_words' => 80,
-                'max_words' => 120,
-                'status' => 'pending_refinement'
-            ],
-            
-            'pressure_table' => [
-                'title' => 'Tabela de Pressões Otimizada',
-                'content' => [
-                    'main_pressures' => $this->getMainPressures($vehicleData),
-                    'usage_scenarios' => $this->getUsageScenarios($vehicleData)
-                ],
-                'target_tone' => 'technical_precise',
-                'enhancement_focus' => 'data_accuracy',
-                'status' => 'pending_refinement'
-            ],
-            
-            'how_to_calibrate' => [
-                'title' => 'Procedimento Específico do Veículo',
-                'content' => $this->generateBasicCalibrationSteps($vehicleData),
-                'target_tone' => 'instructional_clear',
-                'vehicle_specific' => true,
-                'min_steps' => 5,
-                'max_steps' => 8,
-                'status' => 'pending_refinement'
-            ],
-            
-            'middle_content' => [
-                'title' => 'Dicas e Alertas Importantes',
-                'content' => $this->generateMiddleContent($vehicleData),
-                'target_tone' => 'helpful_advisory',
-                'enhancement_focus' => 'safety_tips',
-                'status' => 'pending_refinement'
-            ],
-            
-            'faq' => [
-                'title' => 'FAQ Personalizada',
-                'content' => $this->generateBasicFAQ($vehicleData),
-                'target_tone' => 'conversational_helpful',
-                'vehicle_specific' => true,
-                'min_questions' => 4,
-                'max_questions' => 7,
-                'status' => 'pending_refinement'
-            ],
-            
-            'conclusion' => [
-                'title' => 'Conclusão e Call-to-Action',
-                'content' => "Mantenha seu {$make} {$model} sempre seguro com a calibragem correta!",
-                'target_tone' => 'encouraging_actionable',
-                'include_cta' => true,
-                'min_words' => 60,
-                'max_words' => 100,
-                'status' => 'pending_refinement'
-            ]
-        ];
-    }
-    
-    /**
-     * Determinar template baseado no tipo de veículo
-     */
-    public function getTemplateForVehicle(array $vehicleData): string
-    {
-        $isMotorcycle = $vehicleData['is_motorcycle'] ?? false;
-        
-        return $isMotorcycle ? 'ideal_tire_pressure_motorcycle' : 'ideal_tire_pressure_car';
-    }
-    
-    /**
-     * Calcular score de qualidade do conteúdo
-     */
-    public function calculateContentScore(array $content): float
-    {
-        $score = 5.0; // Base score
-        
-        // Verificar seções essenciais
-        if (!empty($content['introducao'])) $score += 0.5;
-        if (!empty($content['tabela_pressoes'])) $score += 1.0;
-        if (!empty($content['perguntas_frequentes'])) $score += 0.5;
-        if (!empty($content['consideracoes_finais'])) $score += 0.5;
-        
-        // Verificar qualidade da tabela de pressões
-        if (!empty($content['tabela_pressoes']['versoes'])) $score += 0.5;
-        if (!empty($content['tabela_pressoes']['condicoes_uso'])) $score += 0.5;
-        
-        return min(10.0, $score);
-    }
-    
-    /**
-     * Gerar conteúdo para motocicletas no formato ideal_tire_pressure_motorcycle.json
-     */
-    protected function generateMotorcycleContent(array $vehicleData): array
+    protected function generateCalibrationCarContent(array $vehicleData): array
     {
         $make = $vehicleData['make'];
         $model = $vehicleData['model'];
         $year = $vehicleData['year'];
         $tireSize = $vehicleData['tire_size'];
         
-        $frontPressure = $vehicleData['pressure_empty_front'] ?? 28;
-        $rearPressure = $vehicleData['pressure_empty_rear'] ?? 26;
-        $maxFrontPressure = $vehicleData['pressure_max_front'] ?? 32;
-        $maxRearPressure = $vehicleData['pressure_max_rear'] ?? 30;
+        $frontPressure = $vehicleData['pressure_empty_front'] ?? 30;
+        $rearPressure = $vehicleData['pressure_empty_rear'] ?? 28;
+        $maxFrontPressure = $vehicleData['pressure_max_front'] ?? 36;
+        $maxRearPressure = $vehicleData['pressure_max_rear'] ?? 34;
         
         return [
-            'introducao' => "Para manter sua {$make} {$model} {$year} sempre em perfeitas condições de segurança e desempenho, a calibragem correta dos pneus é fundamental. Em motocicletas, a pressão adequada é ainda mais crítica, pois afeta diretamente a estabilidade e o controle.",
+            'introducao' => "Aprenda como calibrar corretamente os pneus do seu {$make} {$model} {$year}. Um procedimento simples que garante segurança, economia e maior vida útil dos pneus quando feito corretamente.",
             
-            'especificacoes_pneus' => [
-                'pneu_dianteiro' => [
-                    'medida_original' => $this->getMotorcycleFrontTireSize($tireSize),
-                    'pressao_recomendada' => "{$frontPressure} PSI",
-                    'pressao_maxima' => "{$maxFrontPressure} PSI"
-                ],
-                'pneu_traseiro' => [
-                    'medida_original' => $this->getMotorcycleRearTireSize($tireSize),
-                    'pressao_recomendada' => "{$rearPressure} PSI", 
-                    'pressao_maxima' => "{$maxRearPressure} PSI"
-                ],
-                'tipo_construcao' => 'Radial',
-                'indice_velocidade' => $this->getMotorcycleSpeedRating($vehicleData),
-                'marca_original' => $this->getMotorcycleOriginalTireBrand($vehicleData)
+            'tire_specifications' => [
+                'original_size' => $tireSize,
+                'alternative_size' => '',
+                'load_index' => $this->calculateLoadIndex($vehicleData),
+                'speed_rating' => $this->getSpeedRating($vehicleData),
+                'construction_type' => 'Radial',
+                'recommended_brands' => $this->getOriginalTireBrand($vehicleData),
+                'tread_depth_new' => '8.0mm',
+                'tread_depth_minimum' => '1.6mm'
             ],
             
-            'tabela_pressoes' => [
-                'uso_urbano' => [
-                    'dianteiro' => "{$frontPressure} PSI",
-                    'traseiro' => "{$rearPressure} PSI",
-                    'observacao' => 'Ideal para uso diário na cidade'
+            'pressure_table' => [
+                'standard_conditions' => [
+                    'front_empty' => "{$frontPressure} PSI",
+                    'rear_empty' => "{$rearPressure} PSI",
+                    'front_loaded' => "{$maxFrontPressure} PSI",
+                    'rear_loaded' => "{$maxRearPressure} PSI",
+                    'spare_tire' => ($vehicleData['pressure_spare'] ?? 32) . " PSI"
                 ],
-                'uso_estrada' => [
-                    'dianteiro' => ($frontPressure + 2) . " PSI",
-                    'traseiro' => ($rearPressure + 2) . " PSI",
-                    'observacao' => 'Para viagens longas e alta velocidade'
-                ],
-                'piloto_pesado' => [
-                    'dianteiro' => ($frontPressure + 1) . " PSI",
-                    'traseiro' => ($rearPressure + 3) . " PSI",
-                    'observacao' => 'Acima de 90kg, ajustar pressão traseira'
-                ],
-                'com_carona' => [
-                    'dianteiro' => ($frontPressure + 1) . " PSI",
-                    'traseiro' => "{$maxRearPressure} PSI",
-                    'observacao' => 'Essencial para estabilidade com carona'
+                'usage_scenarios' => [
+                    [
+                        'scenario' => 'Uso urbano diário',
+                        'description' => '1-2 ocupantes, bagagem leve',
+                        'front_pressure' => "{$frontPressure} PSI",
+                        'rear_pressure' => "{$rearPressure} PSI",
+                        'notes' => 'Ideal para economia de combustível'
+                    ],
+                    [
+                        'scenario' => 'Viagem familiar',
+                        'description' => 'Família completa, bagagens',
+                        'front_pressure' => ($frontPressure + 2) . " PSI",
+                        'rear_pressure' => ($rearPressure + 2) . " PSI",
+                        'notes' => 'Ajuste para peso adicional'
+                    ],
+                    [
+                        'scenario' => 'Carga máxima',
+                        'description' => 'Veículo totalmente carregado',
+                        'front_pressure' => "{$maxFrontPressure} PSI",
+                        'rear_pressure' => "{$maxRearPressure} PSI",
+                        'notes' => 'Máxima segurança e estabilidade'
+                    ]
                 ]
             ],
             
-            'conversao_unidades' => [
-                'tabela_conversao' => [
-                    ['psi' => '26', 'bar' => '1.8', 'kgf_cm2' => '1.8'],
-                    ['psi' => '28', 'bar' => '1.9', 'kgf_cm2' => '1.9'],
-                    ['psi' => '30', 'bar' => '2.1', 'kgf_cm2' => '2.1'],
-                    ['psi' => '32', 'bar' => '2.2', 'kgf_cm2' => '2.2'],
-                    ['psi' => '34', 'bar' => '2.3', 'kgf_cm2' => '2.3']
+            'calibration_procedure' => [
+                'preparation' => [
+                    'step_1' => 'Aguarde pelo menos 3 horas após dirigir (pneus frios)',
+                    'step_2' => 'Prepare calibrador digital de qualidade',
+                    'step_3' => 'Tenha em mãos a especificação de pressão',
+                    'step_4' => 'Inspecione visualmente os pneus antes de calibrar'
                 ],
-                'observacao' => 'Conversão aproximada. Motocicletas requerem precisão maior que carros.'
-            ],
-            
-            'localizacao_informacoes' => [
-                'local_principal' => 'Adesivo no chassi ou manual do proprietário',
-                'local_alternativo' => 'Lateral do pneu (pressão máxima)',
-                'informacoes_contidas' => [
-                    'Pressões para diferentes condições',
-                    'Tamanho original dos pneus',
-                    'Carga máxima suportada'
+                'calibration_steps' => [
+                    'step_1' => [
+                        'title' => 'Remova a tampa da válvula',
+                        'description' => 'Guarde em local seguro para não perder',
+                        'tip' => 'Use sempre tampas originais ou compatíveis'
+                    ],
+                    'step_2' => [
+                        'title' => 'Conecte o calibrador',
+                        'description' => 'Pressione firmemente contra a válvula',
+                        'tip' => 'Ouvir escape de ar é normal nos primeiros segundos'
+                    ],
+                    'step_3' => [
+                        'title' => 'Leia a pressão atual',
+                        'description' => 'Anote o valor mostrado no calibrador',
+                        'tip' => 'Faça duas leituras para confirmar precisão'
+                    ],
+                    'step_4' => [
+                        'title' => 'Ajuste se necessário',
+                        'description' => 'Adicione ou retire ar conforme necessário',
+                        'tip' => 'Pequenos ajustes são normais a cada calibragem'
+                    ],
+                    'step_5' => [
+                        'title' => 'Recoloque a tampa',
+                        'description' => 'Aperte bem para vedar a válvula',
+                        'tip' => 'Tampa previne entrada de sujeira na válvula'
+                    ]
                 ],
-                'dicas_localizacao' => [
-                    'Em scooters, verifique sob o assento',
-                    'Em motos naked, próximo ao monoshock',
-                    'Manual sempre tem informações completas'
+                'post_calibration' => [
+                    'verify_all_tires' => 'Verifique todos os pneus, incluindo sobressalente',
+                    'visual_inspection' => 'Faça inspeção visual para detectar problemas',
+                    'record_date' => 'Anote a data da calibragem para controle',
+                    'test_drive' => 'Faça um teste rápido para verificar comportamento'
                 ]
             ],
             
-            'beneficios_calibragem' => [
-                'seguranca' => [
-                    'Maior estabilidade em curvas',
-                    'Melhor aderência em frenagens',
-                    'Redução do risco de derrapagem',
-                    'Controle superior em alta velocidade'
+            'equipment_guide' => [
+                'calibrator_types' => [
+                    'digital' => 'Mais preciso, recomendado para uso frequente',
+                    'analog' => 'Econômico, adequado para uso ocasional',
+                    'gas_station' => 'Disponível em postos, verificar calibração'
                 ],
-                'economia' => [
-                    'Redução do consumo de combustível',
-                    'Maior vida útil dos pneus',
-                    'Menor desgaste da suspensão',
-                    'Economia em manutenções'
-                ],
-                'desempenho' => [
-                    'Melhor manobrabilidade',
-                    'Maior precisão na direção',
-                    'Conforto superior do piloto',
-                    'Resposta mais rápida do acelerador'
+                'recommended_features' => [
+                    'precision' => 'Precisão de ±1 PSI',
+                    'display' => 'Display de fácil leitura',
+                    'auto_shutoff' => 'Desligamento automático para economia',
+                    'units' => 'Suporte a PSI, BAR e kgf/cm²'
                 ]
             ],
             
-            'consideracoes_especiais' => [
-                'temperatura_ambiente' => [
-                    'Calibre com pneus frios sempre',
-                    'Pressão aumenta 1-2 PSI com aquecimento',
-                    'No calor excessivo, reduza 1 PSI'
+            'tpms_system' => [
+                'description' => 'Sistema de Monitoramento de Pressão dos Pneus',
+                'availability' => $this->getTPMSAvailability($vehicleData),
+                'warning_triggers' => [
+                    'low_pressure' => 'Pressão 25% abaixo do recomendado',
+                    'high_pressure' => 'Pressão excessivamente alta',
+                    'sensor_malfunction' => 'Falha no sensor individual'
                 ],
-                'tipo_pilotagem' => [
-                    'Pilotagem esportiva: +2 PSI',
-                    'Uso urbano leve: pressão normal',
-                    'Viagens longas: +1-2 PSI'
+                'reset_procedure' => [
+                    'step_1' => 'Calibre todos os pneus na pressão correta',
+                    'step_2' => 'Localize botão TPMS no painel ou menu',
+                    'step_3' => 'Mantenha pressionado até luz piscar',
+                    'step_4' => 'Dirija por 15 minutos para recalibração'
                 ],
-                'peso_piloto' => [
-                    'Até 70kg: pressão padrão',
-                    '70-90kg: +1 PSI traseiro',
-                    'Acima 90kg: +2-3 PSI traseiro'
+                'troubleshooting' => [
+                    'light_stays_on' => 'Verifique pressão de todos os pneus novamente',
+                    'intermittent_warning' => 'Possível sensor com bateria baixa',
+                    'no_response' => 'Consulte manual ou procure assistência técnica'
                 ]
             ],
             
-            'dicas_manutencao' => [
-                'frequencia_calibragem' => 'A cada 7 dias ou antes de viagens',
-                'horario_ideal' => 'Pela manhã, antes da primeira viagem',
-                'equipamento_recomendado' => 'Calibrador digital específico para motos',
-                'cuidados_especiais' => [
-                    'Verifique válvulas regularmente',
-                    'Use tampas nas válvulas sempre',
-                    'Inspecione pneus a cada calibragem',
-                    'Monitore desgaste dos sulcos'
+            'maintenance_schedule' => [
+                'frequency' => [
+                    'weekly' => 'Inspeção visual básica',
+                    'biweekly' => 'Verificação de pressão completa',
+                    'monthly' => 'Calibragem e inspeção detalhada',
+                    'seasonal' => 'Verificação completa incluindo alinhamento'
                 ],
-                'sinais_pressao_incorreta' => [
-                    'Moto "pesada" para virar',
-                    'Desgaste irregular dos pneus',
-                    'Aumento no consumo',
-                    'Instabilidade em curvas'
+                'seasonal_adjustments' => [
+                    'summer_heat' => 'Reduzir 1-2 PSI em dias muito quentes',
+                    'winter_cold' => 'Adicionar 1-2 PSI em dias muito frios',
+                    'temperature_rule' => 'Pressão varia ~1 PSI a cada 10°C'
                 ]
             ],
             
-            'alertas_criticos' => [
-                [
-                    'tipo' => 'danger',
-                    'titulo' => 'Nunca rode com pressão baixa',
-                    'descricao' => 'Pressão baixa em motos pode causar perda total de controle e acidentes graves'
-                ],
-                [
-                    'tipo' => 'warning',
-                    'titulo' => 'Calibre sempre com pneus frios',
-                    'descricao' => 'Pneus aquecidos mostram pressão até 3 PSI superior ao real'
-                ],
-                [
-                    'tipo' => 'info',
-                    'titulo' => 'Pressão traseira é mais crítica',
-                    'descricao' => 'Pneu traseiro suporta mais peso e precisa de maior atenção'
+            'troubleshooting' => [
+                'common_problems' => [
+                    'frequent_loss' => [
+                        'symptom' => 'Pneu perde pressão rapidamente',
+                        'causes' => ['Furo no pneu', 'Problema na válvula', 'Dano na roda'],
+                        'solution' => 'Inspeção profissional imediata'
+                    ],
+                    'uneven_wear' => [
+                        'symptom' => 'Desgaste irregular do pneu',
+                        'causes' => ['Pressão incorreta', 'Desalinhamento', 'Suspensão'],
+                        'solution' => 'Verificar pressão e alinhamento'
+                    ],
+                    'vibration' => [
+                        'symptom' => 'Vibração no volante',
+                        'causes' => ['Pressão desigual', 'Balanceamento', 'Deformação'],
+                        'solution' => 'Calibragem e balanceamento'
+                    ]
                 ]
             ],
             
-            'procedimento_calibragem' => [
-                'passo_1' => [
-                    'titulo' => 'Preparação',
-                    'descricao' => 'Deixe a moto esfriar por pelo menos 3 horas',
-                    'dicas' => ['Prefira calibrar pela manhã', 'Evite após viagens longas']
+            'safety_considerations' => [
+                'critical_safety' => [
+                    'never_hot' => 'Nunca calibre com pneus aquecidos',
+                    'spare_tire' => 'Mantenha sobressalente sempre calibrado',
+                    'immediate_attention' => 'Investigue perda rápida de pressão',
+                    'professional_help' => 'Procure ajuda para problemas complexos'
                 ],
-                'passo_2' => [
-                    'titulo' => 'Verificação inicial',
-                    'descricao' => 'Inspecione visualmente os pneus',
-                    'dicas' => ['Procure objetos estranhos', 'Verifique rachadura nas laterais']
-                ],
-                'passo_3' => [
-                    'titulo' => 'Medição',
-                    'descricao' => 'Use calibrador digital de qualidade',
-                    'dicas' => ['Faça duas medições para confirmar', 'Anote os valores encontrados']
-                ],
-                'passo_4' => [
-                    'titulo' => 'Ajuste',
-                    'descricao' => 'Ajuste conforme tabela de pressões',
-                    'dicas' => ['Considere peso do piloto', 'Ajuste tipo de uso previsto']
-                ],
-                'passo_5' => [
-                    'titulo' => 'Finalização',
-                    'descricao' => 'Coloque tampas nas válvulas',
-                    'dicas' => ['Tampas evitam sujeira', 'Anote data da calibragem']
+                'emergency_procedures' => [
+                    'flat_tire' => 'Procedimento para pneu furado',
+                    'pressure_loss' => 'Como agir com perda gradual',
+                    'tpms_warning' => 'Resposta ao alerta do sistema'
                 ]
             ],
             
-            'perguntas_frequentes' => [
-                [
-                    'question' => "Qual a pressão correta para minha {$make} {$model} {$year}?",
-                    'answer' => "Para uso urbano normal: dianteiro {$frontPressure} PSI, traseiro {$rearPressure} PSI. Para viagens ou piloto pesado, consulte nossa tabela detalhada."
+            'cost_considerations' => [
+                'maintenance_costs' => [
+                    'calibrator_purchase' => 'R$ 50-200 para calibrador próprio',
+                    'gas_station_service' => 'R$ 5-15 por calibragem',
+                    'monthly_expense' => 'R$ 10-30 mensais para manutenção',
+                    'tire_life_extension' => 'Até 30% mais vida útil com calibragem correta'
                 ],
-                [
-                    'question' => 'Com que frequência devo calibrar os pneus da moto?',
-                    'answer' => 'Recomenda-se calibrar semanalmente ou antes de viagens. Motocicletas perdem pressão mais rapidamente que carros.'
-                ],
-                [
-                    'question' => 'Posso usar calibrador de posto de gasolina?',
-                    'answer' => 'Pode, mas calibradores específicos para motos são mais precisos. A diferença de 1-2 PSI é significativa em motocicletas.'
-                ],
-                [
-                    'question' => 'A pressão muda com o peso do piloto?',
-                    'answer' => 'Sim, principalmente no pneu traseiro. Pilotos mais pesados precisam aumentar 2-3 PSI na traseira para compensar.'
-                ],
-                [
-                    'question' => 'O que acontece se eu calibrar com pressão errada?',
-                    'answer' => 'Pressão baixa causa instabilidade e desgaste rápido. Pressão alta reduz aderência e conforto. Ambos são perigosos.'
+                'fuel_savings' => [
+                    'proper_pressure' => 'Até 3% economia no combustível',
+                    'yearly_savings' => 'R$ 200-500 anuais em combustível',
+                    'performance_gains' => 'Melhor aceleração e frenagem'
                 ]
             ],
             
-            'consideracoes_finais' => "Manter a pressão correta dos pneus da sua {$make} {$model} {$year} é questão de segurança vital. Diferente dos carros, em motocicletas uma pequena variação na pressão pode significar a diferença entre um passeio seguro e um acidente grave. Faça da calibragem um hábito semanal e sua moto sempre estará pronta para levá-lo com segurança a qualquer destino."
+            'perguntas_frequentes' => $this->generateCalibrationFAQ($vehicleData),
+            
+            'consideracoes_finais' => "A calibragem correta dos pneus do seu {$make} {$model} {$year} é uma responsabilidade que traz benefícios imediatos em segurança e economia. Seguindo este guia e mantendo uma rotina regular de verificação, você garante o melhor desempenho do seu veículo."
         ];
     }
     
-    // ===== MÉTODOS AUXILIARES PARA MOTOCICLETAS =====
-    
     /**
-     * Obter tamanho do pneu dianteiro da moto
+     * Gerar seções separadas para refinamento Claude baseado no template
      */
-    protected function getMotorcycleFrontTireSize(string $tireSize): string
-    {
-        // Se tireSize contém "/" é formato "dianteiro/traseiro"
-        if (str_contains($tireSize, '/')) {
-            $parts = explode('/', $tireSize);
-            return trim($parts[0]);
-        }
-        
-        // Tamanhos comuns de pneu dianteiro para motos
-        $frontTireMap = [
-            '125cc' => '80/100-18',
-            '150cc' => '90/90-19', 
-            '250cc' => '110/70-17',
-            '300cc' => '110/70-17',
-            '600cc' => '120/70-17',
-            '1000cc' => '120/70-17'
-        ];
-        
-        // Tentar deduzir pela cilindrada no modelo
-        foreach ($frontTireMap as $cc => $tire) {
-            if (str_contains(strtolower($tireSize), str_replace('cc', '', $cc))) {
-                return $tire;
-            }
-        }
-        
-        return $tireSize ?: '110/70-17'; // Padrão
-    }
-    
-    /**
-     * Obter tamanho do pneu traseiro da moto
-     */
-    protected function getMotorcycleRearTireSize(string $tireSize): string
-    {
-        // Se tireSize contém "/" é formato "dianteiro/traseiro"
-        if (str_contains($tireSize, '/')) {
-            $parts = explode('/', $tireSize);
-            return isset($parts[1]) ? trim($parts[1]) : trim($parts[0]);
-        }
-        
-        // Tamanhos comuns de pneu traseiro para motos
-        $rearTireMap = [
-            '125cc' => '90/90-18',
-            '150cc' => '100/90-18',
-            '250cc' => '140/70-17', 
-            '300cc' => '140/70-17',
-            '600cc' => '180/55-17',
-            '1000cc' => '190/50-17'
-        ];
-        
-        // Tentar deduzir pela cilindrada no modelo
-        foreach ($rearTireMap as $cc => $tire) {
-            if (str_contains(strtolower($tireSize), str_replace('cc', '', $cc))) {
-                return $tire;
-            }
-        }
-        
-        return $tireSize ?: '140/70-17'; // Padrão
-    }
-    
-    /**
-     * Obter índice de velocidade para motos
-     */
-    protected function getMotorcycleSpeedRating(array $vehicleData): string
-    {
-        $year = $vehicleData['year'] ?? 2020;
-        $category = strtolower($vehicleData['main_category'] ?? '');
-        
-        // Motos mais novas tendem a ter índices maiores
-        if ($year >= 2020) {
-            if (str_contains($category, 'sport') || str_contains($category, 'touring')) {
-                return 'W'; // 270 km/h
-            }
-            return 'H'; // 210 km/h
-        }
-        
-        return 'S'; // 180 km/h - padrão para motos mais antigas
-    }
-    
-    /**
-     * Obter marca original de pneus para motos
-     */
-    protected function getMotorcycleOriginalTireBrand(array $vehicleData): string
-    {
-        $make = strtolower($vehicleData['make'] ?? '');
-        
-        $brandMap = [
-            'honda' => 'Dunlop, Michelin',
-            'yamaha' => 'Bridgestone, Pirelli',
-            'kawasaki' => 'Bridgestone, Dunlop',
-            'suzuki' => 'Bridgestone, Dunlop',
-            'bmw' => 'Metzeler, Continental',
-            'ducati' => 'Pirelli, Metzeler'
-        ];
-        
-        return $brandMap[$make] ?? 'Bridgestone, Pirelli';
-    }
-    
-    protected function generateTitle(array $vehicleData): string
+    protected function generateSeparatedSections(array $vehicleData, string $templateType): array
     {
         $make = $vehicleData['make'];
         $model = $vehicleData['model'];
         $year = $vehicleData['year'];
         
-        return "Pressão Ideal dos Pneus - {$make} {$model} {$year}";
+        $baseTitle = $templateType === 'ideal' ? 'Pressão Ideal' : 'Calibragem';
+        
+        return [
+            'intro' => [
+                'title' => "Introdução - {$baseTitle}",
+                'content' => $templateType === 'ideal' 
+                    ? "Descubra a pressão ideal para os pneus do seu {$make} {$model} {$year}."
+                    : "Aprenda a calibrar corretamente os pneus do seu {$make} {$model} {$year}.",
+                'target_tone' => 'educational_friendly',
+                'template_type' => $templateType,
+                'status' => 'pending_refinement'
+            ],
+            
+            'pressure_table' => [
+                'title' => $templateType === 'ideal' ? 'Pressões Ideais' : 'Tabela de Calibragem',
+                'content' => [
+                    'main_pressures' => $this->getMainPressures($vehicleData),
+                    'usage_scenarios' => $this->getUsageScenarios($vehicleData)
+                ],
+                'template_type' => $templateType,
+                'status' => 'pending_refinement'
+            ],
+            
+            'how_to_calibrate' => [
+                'title' => $templateType === 'ideal' ? 'Como Verificar' : 'Procedimento de Calibragem',
+                'content' => $this->generateBasicCalibrationSteps($vehicleData, $templateType),
+                'template_type' => $templateType,
+                'status' => 'pending_refinement'
+            ],
+            
+            'middle_content' => [
+                'title' => 'Dicas e Alertas',
+                'content' => $this->generateMiddleContent($vehicleData, $templateType),
+                'template_type' => $templateType,
+                'status' => 'pending_refinement'
+            ],
+            
+            'faq' => [
+                'title' => 'FAQ Personalizada',
+                'content' => $templateType === 'ideal' 
+                    ? $this->generateIdealFAQ($vehicleData)
+                    : $this->generateCalibrationFAQ($vehicleData),
+                'template_type' => $templateType,
+                'status' => 'pending_refinement'
+            ],
+            
+            'conclusion' => [
+                'title' => 'Conclusão',
+                'content' => $templateType === 'ideal'
+                    ? "Mantenha sempre a pressão ideal no seu {$make} {$model} para máxima segurança!"
+                    : "Calibre regularmente seu {$make} {$model} seguindo este guia completo!",
+                'template_type' => $templateType,
+                'status' => 'pending_refinement'
+            ]
+        ];
     }
     
-    protected function generateSlug(array $vehicleData): string
+    /**
+     * Determinar template baseado no tipo de veículo e template type
+     */
+    public function getTemplateForVehicle(array $vehicleData, string $templateType = 'ideal'): string
+    {
+        $isMotorcycle = $vehicleData['is_motorcycle'] ?? false;
+        
+        if ($templateType === 'ideal') {
+            return $isMotorcycle ? 'ideal_tire_pressure_motorcycle' : 'ideal_tire_pressure_car';
+        } elseif ($templateType === 'calibration') {
+            return $isMotorcycle ? 'tire_pressure_guide_motorcycle' : 'tire_pressure_guide_car';
+        }
+        
+        return 'ideal_tire_pressure_car'; // Fallback
+    }
+    
+    /**
+     * Gerar título baseado no template type
+     */
+    protected function generateTitle(array $vehicleData, string $templateType): string
+    {
+        $make = $vehicleData['make'];
+        $model = $vehicleData['model'];
+        $year = $vehicleData['year'];
+        
+        if ($templateType === 'ideal') {
+            return "Pressão Ideal dos Pneus - {$make} {$model} {$year}";
+        } elseif ($templateType === 'calibration') {
+            return "Calibragem dos Pneus - {$make} {$model} {$year} | Guia Completo";
+        }
+        
+        return "Pneus {$make} {$model} {$year}";
+    }
+    
+    /**
+     * Gerar slug baseado no template type
+     */
+    protected function generateSlug(array $vehicleData, string $templateType): string
     {
         $make = Str::slug($vehicleData['make']);
         $model = Str::slug($vehicleData['model']);
         $year = $vehicleData['year'];
         
-        return "pressao-ideal-pneu-{$make}-{$model}-{$year}";
+        if ($templateType === 'ideal') {
+            return "pressao-pneus-{$make}-{$model}-{$year}";
+        } elseif ($templateType === 'calibration') {
+            return "calibragem-pneu-{$make}-{$model}-{$year}";
+        }
+        
+        return "pneu-{$make}-{$model}-{$year}";
     }
     
-    protected function generateMetaDescription(array $vehicleData): string
+    /**
+     * Gerar meta description baseado no template type
+     */
+    protected function generateMetaDescription(array $vehicleData, string $templateType): string
     {
         $make = $vehicleData['make'];
         $model = $vehicleData['model'];
@@ -755,24 +554,349 @@ class InitialArticleGeneratorService
         $frontPressure = $vehicleData['pressure_empty_front'] ?? 30;
         $rearPressure = $vehicleData['pressure_empty_rear'] ?? 28;
         
-        return "Descubra a pressão ideal dos pneus do {$make} {$model} {$year}. Dianteiros: {$frontPressure} PSI, Traseiros: {$rearPressure} PSI. Guia completo com tabela e dicas de segurança.";
+        if ($templateType === 'ideal') {
+            return "Pressão ideal dos pneus do {$make} {$model} {$year}: {$frontPressure}/{$rearPressure} PSI. Tabela completa, especificações e dicas para máxima economia.";
+        } elseif ($templateType === 'calibration') {
+            return "Como calibrar pneus do {$make} {$model} {$year}: guia passo a passo, equipamentos, TPMS e troubleshooting. Pressões: {$frontPressure}/{$rearPressure} PSI.";
+        }
+        
+        return "Informações sobre pneus do {$make} {$model} {$year}.";
     }
     
-    protected function generateSeoKeywords(array $vehicleData): array
+    /**
+     * Gerar palavras-chave SEO baseado no template type
+     */
+    protected function generateSeoKeywords(array $vehicleData, string $templateType): array
     {
         $make = strtolower($vehicleData['make']);
         $model = strtolower($vehicleData['model']);
         $year = $vehicleData['year'];
         
-        return [
-            "pressão pneu {$make} {$model} {$year}",
-            "calibragem {$make} {$model}",
-            "pressão ideal pneu {$make}",
-            "calibragem pneu carro",
+        $baseKeywords = [
+            "pneu {$make} {$model} {$year}",
+            "{$make} {$model}",
             "manutenção automotiva",
             "economia combustível",
             "segurança automotiva"
         ];
+        
+        if ($templateType === 'ideal') {
+            return array_merge($baseKeywords, [
+                "pressão ideal pneu {$make} {$model} {$year}",
+                "pressão ideal pneu {$make}",
+                "pressão pneu",
+                "especificação pneu"
+            ]);
+        } elseif ($templateType === 'calibration') {
+            return array_merge($baseKeywords, [
+                "calibragem pneu {$make} {$model} {$year}",
+                "como calibrar pneu {$make}",
+                "calibragem pneu",
+                "TPMS {$make}",
+                "guia calibragem"
+            ]);
+        }
+        
+        return $baseKeywords;
+    }
+    
+    // ===== MÉTODOS AUXILIARES ESPECÍFICOS POR TEMPLATE =====
+    
+    /**
+     * Gerar FAQ para template IDEAL
+     */
+    protected function generateIdealFAQ(array $vehicleData): array
+    {
+        $make = $vehicleData['make'];
+        $model = $vehicleData['model'];
+        $year = $vehicleData['year'];
+        $frontPressure = $vehicleData['pressure_empty_front'] ?? 30;
+        $rearPressure = $vehicleData['pressure_empty_rear'] ?? 28;
+        
+        return [
+            [
+                'question' => "Qual a pressão ideal para o {$make} {$model} {$year}?",
+                'answer' => "A pressão ideal é {$frontPressure} PSI nos pneus dianteiros e {$rearPressure} PSI nos traseiros para uso normal. Com carga total, aumente 4 PSI em cada pneu."
+            ],
+            [
+                'question' => 'Por que manter a pressão ideal é importante?',
+                'answer' => 'A pressão ideal garante máxima economia de combustível, maior vida útil dos pneus, melhor aderência e segurança na direção.'
+            ],
+            [
+                'question' => 'Como saber se a pressão está ideal?',
+                'answer' => 'Use um calibrador digital de qualidade e verifique sempre com pneus frios. Compare com os valores especificados pelo fabricante.'
+            ],
+            [
+                'question' => 'A pressão ideal muda com a temperatura?',
+                'answer' => 'Sim, a pressão varia aproximadamente 1 PSI para cada 10°C de diferença na temperatura ambiente.'
+            ]
+        ];
+    }
+    
+    /**
+     * Gerar FAQ para template CALIBRATION
+     */
+    protected function generateCalibrationFAQ(array $vehicleData): array
+    {
+        $make = $vehicleData['make'];
+        $model = $vehicleData['model'];
+        $year = $vehicleData['year'];
+        
+        return [
+            [
+                'question' => "Como calibrar corretamente o {$make} {$model} {$year}?",
+                'answer' => "Aguarde 3 horas após dirigir, use calibrador digital, verifique a pressão atual, ajuste conforme especificação e recoloque as tampas das válvulas."
+            ],
+            [
+                'question' => 'Que tipo de calibrador devo usar?',
+                'answer' => 'Prefira calibradores digitais com precisão de ±1 PSI. Evite calibradores muito baratos que podem ter medições imprecisas.'
+            ],
+            [
+                'question' => 'Com que frequência devo calibrar?',
+                'answer' => 'Verifique a cada 15 dias e sempre antes de viagens longas. Pneus perdem pressão naturalmente ao longo do tempo.'
+            ],
+            [
+                'question' => 'O que fazer se o TPMS acender?',
+                'answer' => 'Pare em local seguro, verifique visualmente os pneus, meça a pressão e calibre se necessário. Se persistir, procure assistência.'
+            ],
+            [
+                'question' => 'Posso calibrar com pneus quentes?',
+                'answer' => 'Não recomendado. Pneus aquecidos mostram pressão até 4 PSI superior ao real, levando a subcalibragem perigosa.'
+            ]
+        ];
+    }
+    
+    /**
+     * Gerar passos de calibragem baseado no template
+     */
+    protected function generateBasicCalibrationSteps(array $vehicleData, string $templateType): array
+    {
+        $make = $vehicleData['make'];
+        
+        if ($templateType === 'ideal') {
+            return [
+                'Verificar pressão sempre com pneus frios',
+                "Localizar especificações do {$make} na porta do motorista",
+                'Usar calibrador digital de qualidade',
+                'Comparar com valores ideais recomendados',
+                'Verificar também o pneu sobressalente',
+                'Anotar data da verificação'
+            ];
+        } else {
+            return [
+                'Aguardar 3 horas após dirigir (pneus frios)',
+                'Preparar calibrador digital e especificações',
+                'Remover tampas das válvulas com cuidado',
+                'Conectar calibrador e ler pressão atual',
+                'Ajustar pressão conforme necessário',
+                'Recolocar tampas e verificar sobressalente',
+                'Testar sistema TPMS se disponível'
+            ];
+        }
+    }
+    
+    /**
+     * Gerar conteúdo do meio baseado no template
+     */
+    protected function generateMiddleContent(array $vehicleData, string $templateType): array
+    {
+        if ($templateType === 'ideal') {
+            return [
+                'benefits_tips' => [
+                    'Economia de até 3% no combustível',
+                    'Maior vida útil dos pneus',
+                    'Melhor aderência e segurança',
+                    'Menor desgaste da suspensão'
+                ],
+                'maintenance_tips' => [
+                    'Verificar pressão quinzenalmente',
+                    'Inspecionar desgaste regularmente',
+                    'Manter sobressalente calibrado'
+                ]
+            ];
+        } else {
+            return [
+                'equipment_tips' => [
+                    'Calibrador digital é mais preciso',
+                    'Evitar calibradores de posto sem manutenção',
+                    'Ter calibrador próprio para emergências'
+                ],
+                'safety_tips' => [
+                    'Nunca calibrar com pneus quentes',
+                    'Verificar TPMS após calibragem',
+                    'Investigar perda rápida de pressão'
+                ]
+            ];
+        }
+    }
+    
+    /**
+     * Gerar conteúdo IDEAL para motocicletas
+     */
+    protected function generateIdealMotorcycleContent(array $vehicleData): array
+    {
+        $make = $vehicleData['make'];
+        $model = $vehicleData['model'];
+        $year = $vehicleData['year'];
+        
+        return [
+            'introducao' => "A pressão ideal dos pneus da sua {$make} {$model} {$year} é fundamental para segurança e performance. Em motocicletas, pequenas variações fazem grande diferença.",
+            // ... estrutura específica para moto ideal
+            'consideracoes_finais' => "Manter a pressão ideal na sua {$make} {$model} {$year} é questão de segurança vital. Verifique sempre antes de cada viagem."
+        ];
+    }
+    
+    /**
+     * Gerar conteúdo CALIBRATION para motocicletas
+     */
+    protected function generateCalibrationMotorcycleContent(array $vehicleData): array
+    {
+        $make = $vehicleData['make'];
+        $model = $vehicleData['model'];
+        $year = $vehicleData['year'];
+        
+        return [
+            'introducao' => "Aprenda o procedimento correto para calibrar os pneus da sua {$make} {$model} {$year}. Segurança começa com calibragem adequada.",
+            // ... estrutura específica para calibragem de moto
+            'consideracoes_finais' => "A calibragem correta da {$make} {$model} {$year} deve ser feita com precisão e frequência. Sua vida depende disso."
+        ];
+    }
+    
+    // ===== MÉTODOS AUXILIARES GERAIS =====
+    
+    protected function generateDefaultUnitConversion(): array
+    {
+        return [
+            'tabela_conversao' => [
+                ['psi' => '28', 'bar' => '1.9', 'kgf_cm2' => '1.9'],
+                ['psi' => '30', 'bar' => '2.1', 'kgf_cm2' => '2.1'],
+                ['psi' => '32', 'bar' => '2.2', 'kgf_cm2' => '2.2'],
+                ['psi' => '34', 'bar' => '2.3', 'kgf_cm2' => '2.3'],
+                ['psi' => '36', 'bar' => '2.5', 'kgf_cm2' => '2.5']
+            ],
+            'observacao' => 'Conversão aproximada entre unidades de pressão.'
+        ];
+    }
+    
+    protected function generateLocationInfo(): array
+    {
+        return [
+            'local_principal' => 'Soleira da porta do motorista',
+            'local_alternativo' => 'Manual do proprietário',
+            'informacoes_contidas' => [
+                'Pressões para diferentes cargas',
+                'Tamanho original dos pneus',
+                'Pressão do sobressalente'
+            ]
+        ];
+    }
+    
+    protected function generateBenefitsInfo(): array
+    {
+        return [
+            'seguranca' => [
+                'Maior aderência ao asfalto',
+                'Melhor desempenho em frenagens',
+                'Maior estabilidade em curvas'
+            ],
+            'economia' => [
+                'Redução do consumo de combustível',
+                'Maior vida útil dos pneus',
+                'Menor desgaste da suspensão'
+            ],
+            'desempenho' => [
+                'Melhor dirigibilidade',
+                'Maior conforto ao dirigir',
+                'Resposta mais precisa da direção'
+            ]
+        ];
+    }
+    
+    protected function generateMaintenanceTips(): array
+    {
+        return [
+            'frequencia_calibragem' => 'A cada 15 dias ou antes de viagens longas',
+            'horario_ideal' => 'Pela manhã, com pneus frios',
+            'equipamento_recomendado' => 'Calibrador digital de qualidade',
+            'cuidados_especiais' => [
+                'Verifique sempre o pneu sobressalente',
+                'Use tampas nas válvulas',
+                'Inspecione visualmente os pneus'
+            ]
+        ];
+    }
+    
+    protected function generateImportantAlerts(): array
+    {
+        return [
+            [
+                'tipo' => 'warning',
+                'titulo' => 'Nunca calibre com pneus quentes',
+                'descricao' => 'Pneus aquecidos mostram pressão incorreta'
+            ],
+            [
+                'tipo' => 'info',
+                'titulo' => 'Verifique o sobressalente',
+                'descricao' => 'Pneu sobressalente também perde pressão'
+            ],
+            [
+                'tipo' => 'danger',
+                'titulo' => 'Pressão baixa é perigosa',
+                'descricao' => 'Pode causar aquecimento e estouro do pneu'
+            ]
+        ];
+    }
+    
+    protected function getTPMSAvailability(array $vehicleData): string
+    {
+        $year = $vehicleData['year'] ?? 2020;
+        return $year >= 2014 ? 'Disponível (obrigatório desde 2014)' : 'Não disponível';
+    }
+    
+    protected function calculateLoadIndex(array $vehicleData): string
+    {
+        $category = $vehicleData['main_category'] ?? 'hatch';
+        $loadIndexMap = [
+            'hatch' => '82',
+            'sedan' => '84', 
+            'suv' => '86',
+            'pickup' => '88'
+        ];
+        
+        return $loadIndexMap[strtolower($category)] ?? '82';
+    }
+    
+    protected function getSpeedRating(array $vehicleData): string
+    {
+        $year = $vehicleData['year'] ?? 2020;
+        return $year >= 2018 ? 'H' : 'T';
+    }
+    
+    protected function getOriginalTireBrand(array $vehicleData): string
+    {
+        $make = strtolower($vehicleData['make'] ?? '');
+        $brandMap = [
+            'toyota' => 'Dunlop, Bridgestone',
+            'honda' => 'Michelin, Bridgestone', 
+            'chevrolet' => 'Pirelli, Goodyear',
+            'volkswagen' => 'Continental, Pirelli',
+            'ford' => 'Goodyear, Pirelli'
+        ];
+        
+        return $brandMap[$make] ?? 'Bridgestone, Pirelli';
+    }
+    
+    protected function getEngineInfo(array $vehicleData): string
+    {
+        $category = $vehicleData['main_category'] ?? 'hatch';
+        $engineMap = [
+            'hatch' => '1.0/1.6 Flex',
+            'sedan' => '1.6/2.0 Flex',
+            'suv' => '1.6/2.0 Flex',
+            'pickup' => '2.8 Diesel'
+        ];
+        
+        return $engineMap[strtolower($category)] ?? '1.6 Flex';
     }
     
     protected function getMainPressures(array $vehicleData): array
@@ -799,111 +923,36 @@ class InitialArticleGeneratorService
         ];
     }
     
-    protected function generateBasicCalibrationSteps(array $vehicleData): array
+    protected function generateWordPressUrl(array $vehicleData, string $templateType): string
     {
-        $make = $vehicleData['make'];
-        
-        return [
-            'Verifique a pressão sempre com pneus frios',
-            "Localize a etiqueta de pressões do {$make} na porta do motorista",
-            'Use um calibrador digital de qualidade',
-            'Ajuste conforme a carga do veículo',
-            'Não se esqueça do pneu sobressalente',
-            'Recoloque as tampas das válvulas'
-        ];
-    }
-    
-    protected function generateMiddleContent(array $vehicleData): array
-    {
-        return [
-            'safety_tips' => [
-                'Nunca calibre com pneus aquecidos',
-                'Verifique sinais de desgaste irregular',
-                'Pressão baixa pode causar aquecimento excessivo'
-            ],
-            'maintenance_tips' => [
-                'Calibre a cada 15 dias',
-                'Faça inspeção visual regular',
-                'Considere o rodízio dos pneus'
-            ]
-        ];
-    }
-    
-    protected function generateBasicFAQ(array $vehicleData): array
-    {
-        $make = $vehicleData['make'];
-        $model = $vehicleData['model'];
-        
-        return [
-            [
-                'question' => "Qual a pressão recomendada para o {$make} {$model}?",
-                'answer' => 'Varia conforme a carga e condições de uso. Consulte nossa tabela detalhada.'
-            ],
-            [
-                'question' => 'Com que frequência calibrar?',
-                'answer' => 'A cada 15 dias ou antes de viagens longas.'
-            ]
-        ];
-    }
-    
-    // Métodos auxiliares para dados específicos do veículo
-    protected function calculateLoadIndex(array $vehicleData): string
-    {
-        // Lógica simplificada baseada na categoria
-        $category = $vehicleData['main_category'] ?? 'hatch';
-        $loadIndexMap = [
-            'hatch' => '82',
-            'sedan' => '84', 
-            'suv' => '86',
-            'pickup' => '88'
-        ];
-        
-        return $loadIndexMap[strtolower($category)] ?? '82';
-    }
-    
-    protected function getSpeedRating(array $vehicleData): string
-    {
-        // Baseado no ano e categoria
-        $year = $vehicleData['year'];
-        return $year >= 2018 ? 'H' : 'T';
-    }
-    
-    protected function getOriginalTireBrand(array $vehicleData): string
-    {
-        $make = strtolower($vehicleData['make']);
-        $brandMap = [
-            'toyota' => 'Dunlop, Bridgestone',
-            'honda' => 'Michelin, Bridgestone', 
-            'chevrolet' => 'Pirelli, Goodyear',
-            'volkswagen' => 'Continental, Pirelli',
-            'ford' => 'Goodyear, Pirelli'
-        ];
-        
-        return $brandMap[$make] ?? 'Bridgestone, Pirelli';
-    }
-    
-    protected function getEngineInfo(array $vehicleData): string
-    {
-        // Simplificado - poderia ser mais específico
-        $category = $vehicleData['main_category'] ?? 'hatch';
-        $engineMap = [
-            'hatch' => '1.0/1.6 Flex',
-            'sedan' => '1.6/2.0 Flex',
-            'suv' => '1.6/2.0 Flex',
-            'pickup' => '2.8 Diesel'
-        ];
-        
-        return $engineMap[strtolower($category)] ?? '1.6 Flex';
-    }
-    
-    protected function generateWordPressUrl(array $vehicleData): string
-    {
-        $slug = $this->generateSlug($vehicleData);
+        $slug = $this->generateSlug($vehicleData, $templateType);
         return "https://mercadoveiculos.com/info/{$slug}/";
     }
     
-    protected function generateCanonicalUrl(array $vehicleData): string
+    protected function generateCanonicalUrl(array $vehicleData, string $templateType): string
     {
-        return $this->generateWordPressUrl($vehicleData);
+        return $this->generateWordPressUrl($vehicleData, $templateType);
     }
-}   
+    
+    /**
+     * Calcular score de qualidade do conteúdo
+     */
+    public function calculateContentScore(array $content): float
+    {
+        $score = 5.0; // Base score
+        
+        // Verificar seções essenciais
+        if (!empty($content['introducao'])) $score += 0.5;
+        
+        // Verificar seções específicas por template
+        if (!empty($content['tabela_pressoes']) || !empty($content['pressure_table'])) $score += 1.0;
+        if (!empty($content['perguntas_frequentes'])) $score += 0.5;
+        if (!empty($content['consideracoes_finais'])) $score += 0.5;
+        
+        // Verificar qualidade específica
+        if (!empty($content['calibration_procedure']) || !empty($content['especificacoes_pneus'])) $score += 0.5;
+        if (!empty($content['tpms_system']) || !empty($content['beneficios_calibragem'])) $score += 0.5;
+        
+        return min(10.0, $score);
+    }
+}
