@@ -3,6 +3,10 @@
 namespace Src\ContentGeneration\TirePressureGuide\Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DebugFailedVehiclesCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\SyncBlogTiresPressureCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\TestEnhancedProcessingCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DiagnosticCsvProcessingCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTirePressureArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\GenerateTirePressureArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTempTirePressureArticlesCommand;
@@ -23,7 +27,11 @@ class TirePressureGuideServiceProvider extends ServiceProvider
     protected array $commands = [
         GenerateTirePressureArticlesCommand::class,
         PublishTirePressureArticlesCommand::class,
-        PublishTempTirePressureArticlesCommand::class, // NOVO: Command para teste
+        PublishTempTirePressureArticlesCommand::class,
+        DiagnosticCsvProcessingCommand::class,
+        DebugFailedVehiclesCommand::class,
+        SyncBlogTiresPressureCommand::class,
+        TestEnhancedProcessingCommand::class,
     ];
 
     /**
