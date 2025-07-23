@@ -3,21 +3,29 @@
 namespace Src\ContentGeneration\TirePressureGuide\Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\ClaudeHaikuService;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\VehicleDataProcessorService;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\VehicleDataCorrectionService;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DebugFailedVehiclesCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DiagnosticVehicleDataCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\SyncBlogTiresPressureCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\TestEnhancedProcessingCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DiagnosticCsvProcessingCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTirePressureArticlesCommand;
+
+// ✅ NOVOS IMPORTS PARA CORREÇÃO DO VEHICLE_DATA
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\GenerateTirePressureArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTempTirePressureArticlesCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\Schedules\VehicleDataCorrectionSchedule;
 
 /**
- * Updated TirePressureGuideServiceProvider
+ * TirePressureGuideServiceProvider - VERSÃO COMPLETA COM CORREÇÃO
  * 
  * ADICIONADO:
- * - PublishTempTirePressureArticlesCommand para testes
- * - ExtendedTirePressureGuideApplicationService com novos métodos
- * - Binding para InitialArticleGeneratorService modificado
+ * - VehicleDataCorrectionSchedule para correção automática
+ * - DiagnosticVehicleDataCommand para diagnósticos
+ * - ClaudeHaikuService para API do Claude
+ * - VehicleDataCorrectionService para lógica de correção
  */
 class TirePressureGuideServiceProvider extends ServiceProvider
 {
@@ -32,6 +40,10 @@ class TirePressureGuideServiceProvider extends ServiceProvider
         DebugFailedVehiclesCommand::class,
         SyncBlogTiresPressureCommand::class,
         TestEnhancedProcessingCommand::class,
+        
+        // ✅ NOVOS COMMANDS PARA CORREÇÃO DO VEHICLE_DATA
+        VehicleDataCorrectionSchedule::class,
+        DiagnosticVehicleDataCommand::class,
     ];
 
     /**
@@ -44,6 +56,9 @@ class TirePressureGuideServiceProvider extends ServiceProvider
 
         // Registrar services estendidos
         $this->registerExtendedServices();
+
+        // ✅ Registrar NOVOS services para correção
+        $this->registerVehicleDataCorrectionServices();
 
         // Registrar commands
         $this->registerCommands();
@@ -72,7 +87,6 @@ class TirePressureGuideServiceProvider extends ServiceProvider
         $this->app->singleton(
             \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\InitialArticleGeneratorService::class,
             function ($app) {
-                // Aqui podemos injetar dependências específicas se necessário
                 return new \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\InitialArticleGeneratorService();
             }
         );
@@ -102,6 +116,18 @@ class TirePressureGuideServiceProvider extends ServiceProvider
             \Src\ContentGeneration\TirePressureGuide\Application\Services\TirePressureGuideApplicationService::class,
             'tire.pressure.guide.service'
         );
+    }
+
+    /**
+     * ✅ NOVOS SERVICES PARA CORREÇÃO DO VEHICLE_DATA
+     */
+    protected function registerVehicleDataCorrectionServices(): void
+    {
+        // ClaudeHaikuService - Cliente para Claude 3 Haiku
+        $this->app->singleton(ClaudeHaikuService::class);
+
+        // VehicleDataCorrectionService - Service principal para correções
+        $this->app->singleton(VehicleDataCorrectionService::class);
     }
 
     /**
@@ -162,6 +188,11 @@ class TirePressureGuideServiceProvider extends ServiceProvider
             \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\InitialArticleGeneratorService::class,
             \Src\ContentGeneration\TirePressureGuide\Application\UseCases\GenerateInitialArticlesUseCase::class,
             \Src\ContentGeneration\TirePressureGuide\Application\Services\TirePressureGuideApplicationService::class,
+            
+            // ✅ NOVOS SERVICES
+            ClaudeHaikuService::class,
+            VehicleDataCorrectionService::class,
+            
             'tire.pressure.guide.service',
             'tire.pressure.config'
         ];
@@ -182,6 +213,13 @@ class TirePressureGuideServiceProvider extends ServiceProvider
             
             $this->app->singleton('command.tire-pressure.publish-temp', 
                 PublishTempTirePressureArticlesCommand::class);
+
+            // ✅ NOVOS ALIASES
+            $this->app->singleton('command.tire-pressure.correct-vehicle-data', 
+                VehicleDataCorrectionSchedule::class);
+                
+            $this->app->singleton('command.tire-pressure.diagnostic', 
+                DiagnosticVehicleDataCommand::class);
         }
     }
 }
