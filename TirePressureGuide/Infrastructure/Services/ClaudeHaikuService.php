@@ -85,8 +85,8 @@ class ClaudeHaikuService
     protected function buildPayload(string $prompt, array $options): array
     {
         return [
-            'model' => 'claude-3-haiku-20240307',
-            'max_tokens' => $options['max_tokens'] ?? 1500,
+            'model' => 'claude-3-5-sonnet-20240620',
+            'max_tokens' => $options['max_tokens'] ?? 2000,
             'temperature' => $options['temperature'] ?? 0.1,
             'messages' => [
                 [

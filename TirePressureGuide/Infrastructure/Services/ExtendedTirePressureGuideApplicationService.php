@@ -1,12 +1,13 @@
 <?php
 
-namespace Src\ContentGeneration\TirePressureGuide\Application\Services;
+namespace Src\ContentGeneration\TirePressureGuide\Infrastructure\Services;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Src\ArticleGenerator\Infrastructure\Eloquent\TempArticle;
 use Src\ContentGeneration\TirePressureGuide\Domain\Entities\TirePressureArticle;
+use Src\ContentGeneration\TirePressureGuide\Application\Services\TirePressureGuideApplicationService;
 
 /**
  * Extended TirePressureGuideApplicationService

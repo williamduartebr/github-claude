@@ -28,7 +28,7 @@ class TirePressureArticle extends Model
         'seo_keywords' => 'array',
         'claude_enhancements' => 'array',
         'quality_issues' => 'array',
-        
+
         // Seções separadas para refinamento Claude
         'sections_intro' => 'array',
         'sections_pressure_table' => 'array',
@@ -39,26 +39,26 @@ class TirePressureArticle extends Model
         'sections_refined' => 'array',
         'sections_scores' => 'array',
         'sections_status' => 'array',
-        
+
         // Cross-linking e relacionamentos
         'sibling_article_id' => 'string',
         'cross_links' => 'array',
         'related_articles' => 'array',
-        
+
         // Métricas avançadas
         'performance_metrics' => 'array',
         'quality_metrics' => 'array',
         'validation_results' => 'array',
-        
+
         // Sistema de backup e versioning
         'content_versions' => 'array',
         'backup_data' => 'array',
         'last_backup_at' => 'datetime',
-        
+
         // ✅ NOVOS CAMPOS PARA CORREÇÃO DO VEHICLE_DATA
         'vehicle_data_corrected_at' => 'datetime',
         'vehicle_data_version' => 'string',
-        
+
         // Timestamps e controle
         'claude_last_enhanced_at' => 'datetime',
         'sections_last_refined_at' => 'datetime',
@@ -90,7 +90,7 @@ class TirePressureArticle extends Model
      */
     public function needsVehicleDataCorrection(): bool
     {
-        return empty($this->vehicle_data_version) || $this->vehicle_data_version !== 'v2.1';
+        return empty($this->vehicle_data_version) || $this->vehicle_data_version !== 'v3.1';
     }
 
     /**
@@ -100,21 +100,21 @@ class TirePressureArticle extends Model
     {
         $this->vehicle_data = $correctedData;
         $this->vehicle_data_corrected_at = now();
-        $this->vehicle_data_version = 'v2.1';
-        
+        $this->vehicle_data_version = 'v3.1';
+
         // Atualizar campos derivados
         if (isset($correctedData['pressure_light_front'])) {
             $this->pressure_light_front = (string) $correctedData['pressure_light_front'];
         }
-        
+
         if (isset($correctedData['pressure_light_rear'])) {
             $this->pressure_light_rear = (string) $correctedData['pressure_light_rear'];
         }
-        
+
         if (isset($correctedData['pressure_spare'])) {
             $this->pressure_spare = (string) $correctedData['pressure_spare'];
         }
-        
+
         $this->save();
     }
 
@@ -127,9 +127,9 @@ class TirePressureArticle extends Model
      */
     public function scopeNeedsVehicleDataCorrection($query)
     {
-        return $query->where(function($q) {
+        return $query->where(function ($q) {
             $q->whereNull('vehicle_data_version')
-              ->orWhere('vehicle_data_version', '!=', 'v2.1');
+                ->orWhere('vehicle_data_version', '!=', 'v3.1');
         });
     }
 
@@ -139,8 +139,8 @@ class TirePressureArticle extends Model
     public function scopeByVehicle($query, string $make, string $model, int $year)
     {
         return $query->where('vehicle_data.make', $make)
-                     ->where('vehicle_data.model', $model)
-                     ->where('vehicle_data.year', $year);
+            ->where('vehicle_data.model', $model)
+            ->where('vehicle_data.year', $year);
     }
 
     // =======================================================================
@@ -249,7 +249,7 @@ class TirePressureArticle extends Model
     protected function validateTemplateType(): void
     {
         $validTypes = ['ideal', 'calibration'];
-        
+
         if (!in_array($this->template_type, $validTypes)) {
             $this->template_type = 'ideal';
         }
@@ -260,9 +260,17 @@ class TirePressureArticle extends Model
      */
     protected function updateQualityMetrics(): void
     {
-        if ($this->isDirty(['sections_intro', 'sections_pressure_table', 'sections_how_to_calibrate', 
-                           'sections_middle_content', 'sections_faq', 'sections_conclusion']) 
-            && $this->quality_checked !== false) {
+        if (
+            $this->isDirty([
+                'sections_intro',
+                'sections_pressure_table',
+                'sections_how_to_calibrate',
+                'sections_middle_content',
+                'sections_faq',
+                'sections_conclusion'
+            ])
+            && $this->quality_checked !== false
+        ) {
             $this->calculateQualityMetrics();
         }
     }
@@ -273,23 +281,29 @@ class TirePressureArticle extends Model
     protected function calculateQualityMetrics(): void
     {
         $metrics = $this->quality_metrics ?? [];
-        
+
         // Calcular completeness baseado nas seções
         $totalSections = 6;
         $completedSections = 0;
-        
-        $sections = ['sections_intro', 'sections_pressure_table', 'sections_how_to_calibrate', 
-                    'sections_middle_content', 'sections_faq', 'sections_conclusion'];
-        
+
+        $sections = [
+            'sections_intro',
+            'sections_pressure_table',
+            'sections_how_to_calibrate',
+            'sections_middle_content',
+            'sections_faq',
+            'sections_conclusion'
+        ];
+
         foreach ($sections as $section) {
             if (!empty($this->$section)) {
                 $completedSections++;
             }
         }
-        
+
         $metrics['content_completeness'] = round(($completedSections / $totalSections) * 100, 2);
         $metrics['calculated_at'] = now()->toISOString();
-        
+
         $this->quality_metrics = $metrics;
     }
 
@@ -354,12 +368,30 @@ class TirePressureArticle extends Model
     protected function removeAccents(string $text): string
     {
         $unwanted = [
-            'á' => 'a', 'à' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
-            'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
-            'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
-            'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
-            'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
-            'ç' => 'c', 'ñ' => 'n'
+            'á' => 'a',
+            'à' => 'a',
+            'â' => 'a',
+            'ã' => 'a',
+            'ä' => 'a',
+            'é' => 'e',
+            'è' => 'e',
+            'ê' => 'e',
+            'ë' => 'e',
+            'í' => 'i',
+            'ì' => 'i',
+            'î' => 'i',
+            'ï' => 'i',
+            'ó' => 'o',
+            'ò' => 'o',
+            'ô' => 'o',
+            'õ' => 'o',
+            'ö' => 'o',
+            'ú' => 'u',
+            'ù' => 'u',
+            'û' => 'u',
+            'ü' => 'u',
+            'ç' => 'c',
+            'ñ' => 'n'
         ];
 
         return strtr($text, $unwanted);
@@ -375,23 +407,23 @@ class TirePressureArticle extends Model
     public static function createIndexes(): void
     {
         $collection = (new static)->getCollection();
-        
+
         // Índices básicos
         $collection->createIndex(['generation_status' => 1]);
         $collection->createIndex(['template_type' => 1]);
         $collection->createIndex(['batch_id' => 1]);
-        
+
         // ✅ NOVOS ÍNDICES PARA CORREÇÃO
         $collection->createIndex(['vehicle_data_version' => 1]);
         $collection->createIndex(['vehicle_data_corrected_at' => 1]);
-        
+
         // Índice composto para busca de veículos
         $collection->createIndex([
             'vehicle_data.make' => 1,
             'vehicle_data.model' => 1,
             'vehicle_data.year' => 1
         ]);
-        
+
         // Índice para correções pendentes
         $collection->createIndex([
             'vehicle_data_version' => 1,
@@ -406,14 +438,14 @@ class TirePressureArticle extends Model
     {
         $this->generation_status = 'generated';
         $this->processed_at = now();
-        
+
         if (!$this->performance_metrics) {
             $this->performance_metrics = [
                 'generation_completed_at' => now()->toISOString(),
                 'template_type' => $this->template_type
             ];
         }
-        
+
         $this->save();
     }
 }

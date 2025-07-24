@@ -107,7 +107,7 @@ class TirePressureGuideServiceProvider extends ServiceProvider
             \Src\ContentGeneration\TirePressureGuide\Application\Services\TirePressureGuideApplicationService::class,
             function ($app) {
                 // Usar a versão estendida
-                return new \Src\ContentGeneration\TirePressureGuide\Application\Services\ExtendedTirePressureGuideApplicationService();
+                return new \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\ExtendedTirePressureGuideApplicationService();
             }
         );
 

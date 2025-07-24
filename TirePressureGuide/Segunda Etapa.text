@@ -50,7 +50,7 @@ $correctedVehicleData = $this->claudeHaikuService->correctVehicleData($baseVehic
 foreach ($articles as $article) {
     $article->vehicle_data = $correctedVehicleData;
     $article->vehicle_data_corrected_at = now();
-    $article->vehicle_data_version = 'v2.1';
+    $article->vehicle_data_version = 'v3.1';
     $article->save();
 }
 ```
@@ -152,7 +152,7 @@ Src/ContentGeneration/TirePressureGuide/Infrastructure/Console/Commands/Schedule
 ```php
 // Buscar próximo veículo único que precisa correção:
 $firstArticle = TirePressureArticle::whereNull('vehicle_data_version')
-    ->orWhere('vehicle_data_version', '!=', 'v2.1')
+    ->orWhere('vehicle_data_version', '!=', 'v3.1')
     ->orderBy('created_at', 'asc')
     ->first();
 
@@ -199,7 +199,7 @@ php artisan tire-pressure-guide:correct-vehicle-data
 ```php
 // Adicionar na TirePressureArticle:
 'vehicle_data_corrected_at' => 'datetime',     // Quando foi corrigido
-'vehicle_data_version' => 'string',            // Versão da correção (v2.1)
+'vehicle_data_version' => 'string',            // Versão da correção (v3.1)
 ```
 
 ---
@@ -218,7 +218,7 @@ Src/ContentGeneration/TirePressureGuide/Infrastructure/Console/Commands/Schedule
 - **Rate limiting:** 60 segundos entre chamadas Claude
 - **Model:** Claude 3.5 Sonnet (qualidade premium)
 - **Estimativa:** 60 artigos/dia = 32 dias total
-- **Prerequisito:** `vehicle_data_version = 'v2.1'`
+- **Prerequisito:** `vehicle_data_version = 'v3.1'`
 
 ### **2. SERVICE DE REFINAMENTO:**
 ```
@@ -260,7 +260,7 @@ php artisan tire-pressure-guide:refine-sections
 // Buscar próximo veículo único que precisa correção:
 $vehicleGroup = TirePressureArticle::select('vehicle_data.make', 'vehicle_data.model', 'vehicle_data.year')
     ->whereNull('vehicle_data_version')
-    ->orWhere('vehicle_data_version', '!=', 'v2.1')
+    ->orWhere('vehicle_data_version', '!=', 'v3.1')
     ->groupBy(['vehicle_data.make', 'vehicle_data.model', 'vehicle_data.year'])
     ->orderBy('created_at', 'asc')
     ->first();
@@ -289,7 +289,7 @@ public function correctVehicleDataForBothArticles(array $vehicleArticles): bool
         foreach ($vehicleArticles as $article) {
             $article->vehicle_data = $correctedData;
             $article->vehicle_data_corrected_at = now();
-            $article->vehicle_data_version = 'v2.1';
+            $article->vehicle_data_version = 'v3.1';
             $article->save();
         }
         return true;
@@ -333,7 +333,7 @@ RETORNE APENAS JSON CORRIGIDO:
 ```php
 // SÓ refinar seções se vehicle_data foi corrigido:
 $article = TirePressureArticle::whereNull('sections_last_refined_at')
-    ->where('vehicle_data_version', 'v2.1')  // OBRIGATÓRIO!
+    ->where('vehicle_data_version', 'v3.1')  // OBRIGATÓRIO!
     ->where('generation_status', 'generated')
     ->orderBy('created_at', 'asc')
     ->first();
@@ -559,7 +559,7 @@ class TirePressureRefinementSchedule
 
 3. ✅ **Adicionar campos de controle na Model**
    - `vehicle_data_corrected_at`
-   - `vehicle_data_version` (v2.1)
+   - `vehicle_data_version` (v3.1)
 
 4. ✅ **Implementar CorrectVehicleDataCommand**
    - Command manual para teste e recovery
@@ -573,7 +573,7 @@ class TirePressureRefinementSchedule
 
 1. ✅ **Implementar TirePressureRefinementSchedule**
    - Schedule a cada 2 minutos
-   - **Prerequisito:** `vehicle_data_version = 'v2.1'`
+   - **Prerequisito:** `vehicle_data_version = 'v3.1'`
    - Processamento de 1 artigo por vez
 
 2. ✅ **Criar CompleteSectionRefinementService**
@@ -601,7 +601,7 @@ class TirePressureRefinementSchedule
 **APÓS FASE 1:**
 - **1926 artigos** com **`vehicle_data` padronizado e corrigido**
 - **Dados estruturados** consistentes e enriquecidos
-- **Flags de controle** (`vehicle_data_version = 'v2.1'`)
+- **Flags de controle** (`vehicle_data_version = 'v3.1'`)
 - **Base sólida** para refinamento das seções
 
 **APÓS FASE 2:**
@@ -621,7 +621,7 @@ class TirePressureRefinementSchedule
 1. **PRIMEIRA:** Corrigir `vehicle_data` com Claude 3 Haiku
 2. **DEPOIS:** Refinar seções com Claude 3.5 Sonnet (usando dados corrigidos)
 3. **NUNCA modificar `article_content`** - apenas seções
-4. **Prerequisito obrigatório:** `vehicle_data_version = 'v2.1'` para refinar seções
+4. **Prerequisito obrigatório:** `vehicle_data_version = 'v3.1'` para refinar seções
 5. **Rate limiting diferenciado:** 3 min (Haiku) vs 1 min (Sonnet)
 6. **Validação sequencial** - Fase 2 só executa após Fase 1
 7. **Logs detalhados** para monitoramento de ambas as fases

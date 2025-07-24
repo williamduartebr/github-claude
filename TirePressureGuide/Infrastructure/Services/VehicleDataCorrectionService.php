@@ -40,7 +40,7 @@ class VehicleDataCorrectionService
 
             // 2. Chamar Claude 3 Haiku
             $response = $this->claudeService->generateContent($prompt, [
-                'max_tokens' => 1500,
+                'max_tokens' => 2000,
                 'temperature' => 0.1,  // Máxima consistência
                 'timeout' => 30
             ]);
@@ -57,7 +57,6 @@ class VehicleDataCorrectionService
             ]);
 
             return $correctedData;
-
         } catch (\Exception $e) {
             Log::error('VehicleDataCorrectionService: Erro na correção', [
                 'vehicle' => "{$currentVehicleData['make']} {$currentVehicleData['model']} {$currentVehicleData['year']}",
@@ -119,7 +118,7 @@ RESPONDA APENAS COM JSON VÁLIDO (todos os campos originais + correções):
         // Extrair JSON da resposta
         $jsonStart = strpos($response, '{');
         $jsonEnd = strrpos($response, '}') + 1;
-        
+
         if ($jsonStart === false || $jsonEnd === false) {
             throw new \Exception('Resposta do Claude não contém JSON válido');
         }
@@ -141,10 +140,14 @@ RESPONDA APENAS COM JSON VÁLIDO (todos os campos originais + correções):
     protected function validateCorrectedData(array $data): void
     {
         $requiredFields = [
-            'pressure_empty_front', 'pressure_empty_rear',
-            'pressure_light_front', 'pressure_light_rear',
-            'pressure_max_front', 'pressure_max_rear',
-            'pressure_spare', 'vehicle_segment'
+            'pressure_empty_front',
+            'pressure_empty_rear',
+            'pressure_light_front',
+            'pressure_light_rear',
+            'pressure_max_front',
+            'pressure_max_rear',
+            'pressure_spare',
+            'vehicle_segment'
         ];
 
         foreach ($requiredFields as $field) {

@@ -38,11 +38,11 @@ class DiagnosticVehicleDataCommand extends Command
     protected function showGeneralStats(): void
     {
         $this->info("\n📊 ESTATÍSTICAS GERAIS:");
-        
+
         $total = TirePressureArticle::count();
         $withVehicleData = TirePressureArticle::whereNotNull('vehicle_data')->count();
         $needsCorrection = TirePressureArticle::query()->needsVehicleDataCorrection()->count();
-        $alreadyCorrected = TirePressureArticle::where('vehicle_data_version', 'v2.1')->count();
+        $alreadyCorrected = TirePressureArticle::where('vehicle_data_version', 'v3.1')->count();
 
         $this->line("• Total de artigos: {$total}");
         $this->line("• Com vehicle_data: {$withVehicleData}");
@@ -53,9 +53,9 @@ class DiagnosticVehicleDataCommand extends Command
     protected function showArticlesNeedingCorrection(): void
     {
         $this->info("\n🔧 ARTIGOS QUE PRECISAM CORREÇÃO:");
-        
+
         $limit = (int) $this->option('limit');
-        
+
         $articles = TirePressureArticle::query()
             ->needsVehicleDataCorrection()
             ->whereNotNull('vehicle_data')
@@ -72,22 +72,22 @@ class DiagnosticVehicleDataCommand extends Command
             $make = $vehicleData['make'] ?? 'N/A';
             $model = $vehicleData['model'] ?? 'N/A';
             $year = $vehicleData['year'] ?? 'N/A';
-            
+
             $this->line("• ID: {$article->id}");
             $this->line("  Veículo: {$make} {$model} {$year}");
             $this->line("  Template: {$article->template_type}");
             $this->line("  Slug: {$article->slug}");
             $this->line("  Versão: " . ($article->vehicle_data_version ?? 'null'));
-            
+
             // ✅ BUSCA CORRIGIDA: Usar valores exatos dos campos
             $siblings = TirePressureArticle::where('vehicle_data.make', $make)
                 ->where('vehicle_data.model', $model)
                 ->where('vehicle_data.year', $year)
                 ->where('_id', '!=', $article->_id)  // ✅ Usar _id do MongoDB
                 ->get();
-                
+
             $this->line("  Irmãos encontrados: {$siblings->count()}");
-            
+
             if ($siblings->count() > 0) {
                 foreach ($siblings as $sibling) {
                     $this->line("    - {$sibling->template_type}: {$sibling->slug}");
@@ -95,20 +95,20 @@ class DiagnosticVehicleDataCommand extends Command
             } else {
                 // ✅ DEBUG: Verificar se o problema é na busca
                 $this->warn("    🔍 Debug: Buscando com outros critérios...");
-                
+
                 // Tentar busca mais ampla
                 $allSameVehicle = TirePressureArticle::where('vehicle_data.make', $make)
                     ->where('vehicle_data.model', $model)
                     ->where('vehicle_data.year', $year)
                     ->get();
-                    
+
                 $this->line("    🔍 Total do mesmo veículo: {$allSameVehicle->count()}");
-                
+
                 foreach ($allSameVehicle as $same) {
                     $this->line("      - {$same->template_type}: {$same->slug} (ID: {$same->_id})");
                 }
             }
-            
+
             $this->line("");
         }
     }
@@ -116,7 +116,7 @@ class DiagnosticVehicleDataCommand extends Command
     protected function checkForOrphanedData(): void
     {
         $this->info("\n🔍 VERIFICANDO DADOS ÓRFÃOS:");
-        
+
         // Buscar artigos com dados de veículo mas sem irmãos
         $orphans = TirePressureArticle::query()
             ->needsVehicleDataCorrection()
@@ -127,16 +127,16 @@ class DiagnosticVehicleDataCommand extends Command
                 $make = $vehicleData['make'] ?? null;
                 $model = $vehicleData['model'] ?? null;
                 $year = $vehicleData['year'] ?? null;
-                
+
                 if (!$make || !$model || !$year) {
                     return true; // Dados incompletos = órfão
                 }
-                
+
                 $siblings = TirePressureArticle::where('vehicle_data.make', $make)
                     ->where('vehicle_data.model', $model)
                     ->where('vehicle_data.year', $year)
                     ->count();
-                    
+
                 return $siblings === 1; // Só encontrou ele mesmo = órfão
             });
 
@@ -146,13 +146,13 @@ class DiagnosticVehicleDataCommand extends Command
         }
 
         $this->warn("⚠️  Encontrados {$orphans->count()} registros órfãos:");
-        
+
         foreach ($orphans as $orphan) {
             $vehicleData = $orphan->vehicle_data ?? [];
             $make = $vehicleData['make'] ?? 'N/A';
             $model = $vehicleData['model'] ?? 'N/A';
             $year = $vehicleData['year'] ?? 'N/A';
-            
+
             $this->line("• {$make} {$model} {$year} - Template: {$orphan->template_type}");
             $this->line("  ID: {$orphan->id}");
             $this->line("  Slug: {$orphan->slug}");
@@ -162,34 +162,34 @@ class DiagnosticVehicleDataCommand extends Command
     protected function checkTemplateDistribution(): void
     {
         $this->info("\n📋 DISTRIBUIÇÃO POR TEMPLATE:");
-        
+
         // Para MongoDB, usar método simples sem selectRaw
         $idealCount = TirePressureArticle::where('template_type', 'ideal')->count();
         $calibrationCount = TirePressureArticle::where('template_type', 'calibration')->count();
         $otherCount = TirePressureArticle::whereNotIn('template_type', ['ideal', 'calibration'])->count();
-        
+
         $this->line("• ideal: {$idealCount} artigos");
         $this->line("• calibration: {$calibrationCount} artigos");
-        
+
         if ($otherCount > 0) {
             $this->line("• outros: {$otherCount} artigos");
         }
-        
+
         // Verificar correções necessárias por template
         $idealNeedsCorrection = TirePressureArticle::query()
             ->needsVehicleDataCorrection()
             ->where('template_type', 'ideal')
             ->count();
-            
+
         $calibrationNeedsCorrection = TirePressureArticle::query()
             ->needsVehicleDataCorrection()
             ->where('template_type', 'calibration')
             ->count();
-            
+
         $this->info("\n🔧 PRECISAM CORREÇÃO:");
         $this->line("• ideal: {$idealNeedsCorrection} artigos");
         $this->line("• calibration: {$calibrationNeedsCorrection} artigos");
-        
+
         // ⚠️ DIAGNÓSTICO CRÍTICO
         if ($calibrationCount == 0) {
             $this->error("\n❌ PROBLEMA CRÍTICO DETECTADO:");
