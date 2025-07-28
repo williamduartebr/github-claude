@@ -86,7 +86,7 @@ class ClaudeHaikuService
     {
         return [
             'model' => 'claude-3-5-sonnet-20240620',
-            'max_tokens' => $options['max_tokens'] ?? 2000,
+            'max_tokens' => $options['max_tokens'] ?? 1500,
             'temperature' => $options['temperature'] ?? 0.1,
             'messages' => [
                 [

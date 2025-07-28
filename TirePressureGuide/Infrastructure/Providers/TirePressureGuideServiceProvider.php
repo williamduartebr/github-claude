@@ -2,6 +2,7 @@
 
 namespace Src\ContentGeneration\TirePressureGuide\Infrastructure\Providers;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\ClaudeHaikuService;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\VehicleDataProcessorService;
@@ -11,9 +12,10 @@ use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\Diag
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\SyncBlogTiresPressureCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\TestEnhancedProcessingCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DiagnosticCsvProcessingCommand;
-use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTirePressureArticlesCommand;
 
 // ✅ NOVOS IMPORTS PARA CORREÇÃO DO VEHICLE_DATA
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\SyncRemainingVehicleDataCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTirePressureArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\GenerateTirePressureArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\PublishTempTirePressureArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\Schedules\VehicleDataCorrectionSchedule;
@@ -44,6 +46,9 @@ class TirePressureGuideServiceProvider extends ServiceProvider
         // ✅ NOVOS COMMANDS PARA CORREÇÃO DO VEHICLE_DATA
         VehicleDataCorrectionSchedule::class,
         DiagnosticVehicleDataCommand::class,
+
+        // ✅ NOVO: Command para sincronização restante
+        SyncRemainingVehicleDataCommand::class,
     ];
 
     /**
@@ -71,6 +76,20 @@ class TirePressureGuideServiceProvider extends ServiceProvider
     {
         // Publicar migrations se estiver em console
         $this->publishMigrations();
+
+        // ✅ NOVO: Registrar Observer para sincronização automática
+        $this->registerObservers();
+    }
+
+    /**
+     * ✅ NOVO: Registrar observers
+     */
+    protected function registerObservers(): void
+    {
+        // Observer para sincronização automática de vehicle_data
+        \Src\ContentGeneration\TirePressureGuide\Domain\Entities\TirePressureArticle::observe(
+            \Src\ContentGeneration\TirePressureGuide\Infrastructure\Observers\TirePressureArticleObserver::class
+        );
     }
 
     /**
