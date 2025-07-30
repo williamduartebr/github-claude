@@ -114,9 +114,9 @@ class OilRecommendationViewModel extends TemplateViewModel
 
             $structuredData['about'] = [
                 '@type' => $vehicleSchemaType,
+                'name' => 'Óleo recomendado para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleInfo['marca'], // marca → brand
                 'model' => $vehicleInfo['modelo'], // modelo → model
-                'name' => 'Óleo recomendado para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
             ];
 
             // Adiciona ano se existir

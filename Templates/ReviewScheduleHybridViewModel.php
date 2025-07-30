@@ -102,6 +102,7 @@ class ReviewScheduleHybridViewModel extends TemplateViewModel
             
             $structuredData['about'] = [
                 '@type' => $vehicleType,
+                'name' => 'Cronograma de revisões para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleInfo['marca'], // marca → brand
                 'model' => $vehicleInfo['modelo'], // modelo → model
             ];

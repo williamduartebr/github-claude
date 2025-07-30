@@ -558,6 +558,7 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             
             $structuredData['about'] = [
                 '@type' => $vehicleSchemaType,
+                'name' => 'Guia de calibragem para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];

@@ -114,7 +114,7 @@ class WhenToChangeTiresViewModel extends TemplateViewModel
 
             $structuredData['about'] = [
                 '@type' => $vehicleSchemaType,
-                'name' => $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
+                'name' => 'Quando trocar pneus do ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleInfo['marca'], // marca → brand
                 'model' => $vehicleInfo['modelo'], // modelo → model
             ];
@@ -549,7 +549,7 @@ class WhenToChangeTiresViewModel extends TemplateViewModel
         return [
             ['title' => 'Home', 'url' => '/'],
             ['title' => 'Info Center', 'url' => '/info'],
-            ['title' => 'Quando Trocar Pneus', 'url' => '/info/categorias/quando-trocar-pneus'],
+            ['title' => 'Quando Trocar Pneus', 'url' => route('info.category.show', 'quando-trocar-pneus')],
             ['title' => $this->getVehicleFullName(), 'url' => '']
         ];
     }

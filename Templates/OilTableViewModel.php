@@ -102,9 +102,9 @@ class OilTableViewModel extends TemplateViewModel
 
             $structuredData['about'] = [
                 '@type' => $vehicleSchemaType,
+                'name' => 'Tabela de óleo para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleInfo['marca'], // marca → brand
                 'model' => $vehicleInfo['modelo'], // modelo → model
-                'name' => 'Tabela de óleo para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
             ];
 
             // Adiciona ano se existir

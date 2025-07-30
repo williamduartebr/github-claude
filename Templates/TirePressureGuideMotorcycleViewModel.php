@@ -613,6 +613,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
             $structuredData['about'] = [
                 '@type' => 'Motorcycle',
+                'name' => 'Guia de calibragem para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];

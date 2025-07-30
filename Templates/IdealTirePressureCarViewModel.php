@@ -676,6 +676,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
             $structuredData['mainEntity'] = [
                 '@type' => $vehicleSchemaType,
+                'name' => 'Pressão ideal para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];

@@ -100,6 +100,7 @@ class ReviewScheduleMotorcycleViewModel extends TemplateViewModel
             // Para motocicletas, sempre usa o tipo Motorcycle
             $structuredData['about'] = [
                 '@type' => 'Motorcycle',
+                'name' => 'Cronograma de revisões para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleInfo['marca'], // marca → brand
                 'model' => $vehicleInfo['modelo'], // modelo → model
             ];

@@ -109,9 +109,9 @@ class TireRecommendationViewModel extends TemplateViewModel
 
             $structuredData['about'] = [
                 '@type' => $vehicleSchemaType,
+                'name' => 'Pneus recomendados para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleInfo['marca'], // marca → brand
                 'model' => $vehicleInfo['modelo'], // modelo → model
-                'name' => 'Pneus recomendados para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
             ];
 
             // Adiciona ano se existir

@@ -811,6 +811,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
             $structuredData['mainEntity'] = [
                 '@type' => 'Motorcycle',
+                'name' => 'Pressão ideal para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];
