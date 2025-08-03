@@ -5,38 +5,39 @@ namespace Src\TirePressureCorrection\Infrastructure\Console\Commands\Schedules;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Src\TirePressureCorrection\Domain\Entities\TirePressureCorrection;
+use Src\VehicleData\Domain\Entities\VehicleData;
 
 /**
- * Schedule automático para correção de pressões de pneus
+ * Schedule automático para correção de pressões de pneus via VehicleData
  * 
  * EXECUÇÃO: A cada 3 horas
- * PROCESSO: Coleta → Aplicação
+ * PROCESSO: Atualização direta via VehicleData (sem API)
  */
 class TirePressureCorrectionSchedule extends Command
 {
     protected $signature = 'schedule:tire-pressure-correction 
-                           {--stage=both : Estágio a executar (collect|apply|both)}
-                           {--limit=30 : Limite de artigos por execução}
-                           {--groups=5 : Limite de grupos para coleta}
-                           {--dry-run : Modo simulação}';
+                           {--limit=50 : Limite de artigos por execução}
+                           {--min-quality-score=6.0 : Score mínimo de qualidade dos dados}
+                           {--dry-run : Modo simulação}
+                           {--force : Forçar reprocessamento}';
     
-    protected $description = 'Schedule automático para correção de pressões de pneus';
+    protected $description = 'Schedule automático para correção de pressões via VehicleData';
     
     public function handle(): int
     {
-        $stage = $this->option('stage');
         $limit = (int) $this->option('limit');
-        $groups = (int) $this->option('groups');
+        $minQualityScore = (float) $this->option('min-quality-score');
         $dryRun = $this->option('dry-run');
+        $force = $this->option('force');
         
-        Log::info('TirePressureCorrectionSchedule: Iniciando', [
-            'stage' => $stage,
+        Log::info('TirePressureCorrectionSchedule: Iniciando execução via VehicleData', [
             'limit' => $limit,
-            'groups' => $groups,
-            'dry_run' => $dryRun
+            'min_quality_score' => $minQualityScore,
+            'dry_run' => $dryRun,
+            'force' => $force
         ]);
         
-        $this->info('🚀 SCHEDULE DE CORREÇÃO DE PRESSÕES');
+        $this->info('🚀 SCHEDULE DE CORREÇÃO DE PRESSÕES (VIA VEHICLE DATA)');
         $this->info('   Horário: ' . now()->format('d/m/Y H:i:s'));
         $this->newLine();
         
@@ -47,13 +48,13 @@ class TirePressureCorrectionSchedule extends Command
                 $dryRun = true;
             }
             
-            // Executar estágios
-            $results = match($stage) {
-                'collect' => $this->runCollectStage($limit, $groups, $dryRun),
-                'apply' => $this->runApplyStage($limit, $dryRun),
-                'both' => $this->runBothStages($limit, $groups, $dryRun),
-                default => throw new \Exception("Estágio inválido: {$stage}")
-            };
+            // Verificar pré-requisitos
+            if (!$this->checkPrerequisites()) {
+                return Command::FAILURE;
+            }
+            
+            // Executar correção via VehicleData
+            $results = $this->runVehicleDataCorrection($limit, $minQualityScore, $dryRun, $force);
             
             // Exibir resumo
             $this->showSummary($results);
@@ -76,112 +77,98 @@ class TirePressureCorrectionSchedule extends Command
     }
     
     /**
-     * Executar estágio de coleta
+     * Verificar pré-requisitos do sistema
      */
-    protected function runCollectStage(int $limit, int $groups, bool $dryRun): array
+    protected function checkPrerequisites(): bool
     {
-        $this->info('📥 ESTÁGIO 1: COLETA DE DADOS');
+        // Verificar se VehicleData existe e tem dados
+        $vehicleCount = VehicleData::count();
+        
+        if ($vehicleCount === 0) {
+            $this->error('❌ VehicleData está vazio!');
+            $this->line('   Execute primeiro: php artisan vehicle-data:extract');
+            return false;
+        }
+        
+        // Verificar qualidade dos dados
+        $qualityVehicles = VehicleData::where('data_quality_score', '>=', 6.0)->count();
+        
+        if ($qualityVehicles === 0) {
+            $this->error('❌ Nenhum veículo com qualidade suficiente no VehicleData!');
+            return false;
+        }
+        
+        $this->info("✅ Pré-requisitos OK: {$vehicleCount} veículos ({$qualityVehicles} com qualidade ≥6.0)");
+        return true;
+    }
+    
+    /**
+     * Executar correção via VehicleData
+     */
+    protected function runVehicleDataCorrection(int $limit, float $minQualityScore, bool $dryRun, bool $force): array
+    {
+        $this->info('🔄 EXECUTANDO CORREÇÃO VIA VEHICLE DATA');
         $this->newLine();
         
-        // Verificar se há artigos para processar
-        $pendingCount = $this->countPendingArticles();
+        // Verificar artigos pendentes
+        $pendingCount = $this->countPendingArticles($force);
         
         if ($pendingCount === 0) {
-            $this->info('✅ Nenhum artigo novo para processar');
-            return ['collect' => ['skipped' => true]];
+            $this->info('✅ Nenhum artigo pendente para processar');
+            return [
+                'processed' => 0,
+                'updated' => 0,
+                'skipped' => 0,
+                'errors' => 0,
+                'skipped_reason' => 'no_articles'
+            ];
         }
         
         $this->info("📊 Artigos pendentes: {$pendingCount}");
         
-        // Executar comando de coleta
+        // Executar o novo comando
         $params = [
             '--limit' => $limit,
-            '--groups' => $groups
+            '--min-quality-score' => $minQualityScore
         ];
         
         if ($dryRun) {
             $params['--dry-run'] = true;
         }
         
-        $exitCode = $this->call('articles:collect-tire-pressures', $params);
+        if ($force) {
+            $params['--force'] = true;
+        }
+        
+        $exitCode = $this->call('articles:update-tire-pressures-from-vehicle-data', $params);
+        
+        // Simular retorno de resultados (seria melhor se o command retornasse dados)
+        $stats = TirePressureCorrection::getStats();
         
         return [
-            'collect' => [
-                'exit_code' => $exitCode,
-                'skipped' => false
-            ]
+            'exit_code' => $exitCode,
+            'processed' => min($limit, $pendingCount),
+            'success' => $exitCode === 0,
+            'current_stats' => $stats
         ];
-    }
-    
-    /**
-     * Executar estágio de aplicação
-     */
-    protected function runApplyStage(int $limit, bool $dryRun): array
-    {
-        $this->newLine();
-        $this->info('📤 ESTÁGIO 2: APLICAÇÃO DE CORREÇÕES');
-        $this->newLine();
-        
-        // Verificar correções pendentes
-        $pendingCorrections = TirePressureCorrection::pending()->count();
-        
-        if ($pendingCorrections === 0) {
-            $this->info('✅ Nenhuma correção pendente para aplicar');
-            return ['apply' => ['skipped' => true]];
-        }
-        
-        $this->info("📊 Correções pendentes: {$pendingCorrections}");
-        
-        // Executar comando de aplicação
-        $params = ['--limit' => $limit];
-        
-        if ($dryRun) {
-            $params['--dry-run'] = true;
-        }
-        
-        $exitCode = $this->call('articles:apply-tire-pressures', $params);
-        
-        return [
-            'apply' => [
-                'exit_code' => $exitCode,
-                'skipped' => false
-            ]
-        ];
-    }
-    
-    /**
-     * Executar ambos os estágios
-     */
-    protected function runBothStages(int $limit, int $groups, bool $dryRun): array
-    {
-        $results = [];
-        
-        // Estágio 1: Coleta
-        $results['collect'] = $this->runCollectStage($limit, $groups, $dryRun);
-        
-        // Aguardar um pouco entre estágios
-        if (!$dryRun && !($results['collect']['collect']['skipped'] ?? false)) {
-            $this->info('⏳ Aguardando 30 segundos entre estágios...');
-            sleep(30);
-        }
-        
-        // Estágio 2: Aplicação
-        $results['apply'] = $this->runApplyStage($limit, $dryRun);
-        
-        return $results;
     }
     
     /**
      * Contar artigos pendentes
      */
-    protected function countPendingArticles(): int
+    protected function countPendingArticles(bool $force): int
     {
-        // Artigos já processados recentemente
+        if ($force) {
+            // Se forçar, contar todos os artigos válidos
+            return $this->countValidArticles();
+        }
+        
+        // Artigos já processados recentemente (últimos 7 dias)
         $processedArticles = TirePressureCorrection::where('created_at', '>=', now()->subDays(7))
             ->where('status', '!=', TirePressureCorrection::STATUS_FAILED)
             ->pluck('article_id');
         
-        // Para MongoDB, fazer a contagem manualmente
+        // Contar artigos não processados
         $count = 0;
         
         \Src\AutoInfoCenter\Domain\Eloquent\Article::where('template', 'when_to_change_tires')
@@ -193,8 +180,33 @@ class TirePressureCorrectionSchedule extends Command
                 foreach ($articles as $article) {
                     $marca = data_get($article, 'extracted_entities.marca');
                     $modelo = data_get($article, 'extracted_entities.modelo');
+                    $ano = data_get($article, 'extracted_entities.ano');
                     
-                    if (!empty($marca) && !empty($modelo)) {
+                    if (!empty($marca) && !empty($modelo) && !empty($ano)) {
+                        $count++;
+                    }
+                }
+            });
+        
+        return $count;
+    }
+    
+    /**
+     * Contar todos os artigos válidos
+     */
+    protected function countValidArticles(): int
+    {
+        $count = 0;
+        
+        \Src\AutoInfoCenter\Domain\Eloquent\Article::where('template', 'when_to_change_tires')
+            ->whereNotNull('extracted_entities')
+            ->chunk(100, function ($articles) use (&$count) {
+                foreach ($articles as $article) {
+                    $marca = data_get($article, 'extracted_entities.marca');
+                    $modelo = data_get($article, 'extracted_entities.modelo');
+                    $ano = data_get($article, 'extracted_entities.ano');
+                    
+                    if (!empty($marca) && !empty($modelo) && !empty($ano)) {
                         $count++;
                     }
                 }
@@ -211,23 +223,30 @@ class TirePressureCorrectionSchedule extends Command
         $this->newLine();
         $this->info('=== RESUMO DA EXECUÇÃO ===');
         
-        // Estatísticas gerais
-        $stats = TirePressureCorrection::getDetailedStats();
+        if (isset($results['skipped_reason'])) {
+            $this->line("⏭️  Execução pulada: {$results['skipped_reason']}");
+            return;
+        }
+        
+        // Estatísticas atuais
+        $stats = $results['current_stats'] ?? TirePressureCorrection::getDetailedStats();
         
         $this->table(
             ['Métrica', 'Valor'],
             [
+                ['Status da execução', $results['success'] ? '✅ Sucesso' : '❌ Falha'],
+                ['Exit code', $results['exit_code'] ?? 'N/A'],
                 ['Total de correções', $stats['total']],
                 ['Pendentes', $stats['pending']],
                 ['Concluídas', $stats['completed']],
+                ['Sem alterações', $stats['no_changes']],
                 ['Falhas', $stats['failed']],
-                ['Taxa de sucesso', $stats['success_rate'] . '%'],
-                ['Média por dia', round($stats['average_per_day'], 1)]
+                ['Taxa de sucesso', round($stats['success_rate'] ?? 0, 1) . '%'],
             ]
         );
         
         // Log para monitoramento
-        Log::info('TirePressureCorrectionSchedule: Execução concluída', [
+        Log::info('TirePressureCorrectionSchedule: Execução concluída via VehicleData', [
             'results' => $results,
             'stats' => $stats
         ]);
@@ -255,17 +274,17 @@ class TirePressureCorrectionSchedule extends Command
      */
     public static function register($schedule): void
     {
-        // Executar a cada 3 horas
+        // Executar a cada 3 horas usando VehicleData
         $schedule->command('schedule:tire-pressure-correction')
             ->everyThreeHours()
             ->withoutOverlapping()
             ->runInBackground()
             ->appendOutputTo(storage_path('logs/tire-pressure-correction-schedule.log'))
             ->onFailure(function () {
-                Log::error('TirePressureCorrectionSchedule: Falha na execução agendada');
+                Log::error('TirePressureCorrectionSchedule: Falha na execução agendada via VehicleData');
             })
             ->onSuccess(function () {
-                Log::info('TirePressureCorrectionSchedule: Execução agendada concluída');
+                Log::info('TirePressureCorrectionSchedule: Execução agendada concluída via VehicleData');
             });
     }
 }
