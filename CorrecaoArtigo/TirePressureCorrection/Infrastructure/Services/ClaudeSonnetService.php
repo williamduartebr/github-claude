@@ -1,18 +1,18 @@
 <?php
 
-namespace Src\ContentGeneration\TirePressureGuide\Infrastructure\Services;
+namespace Src\TirePressureCorrection\Infrastructure\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * Service SIMPLES para Claude 3 Haiku
+ * Service SIMPLES para Claude Sonnet
  * 
  * OTIMIZADO PARA: Dados estruturados, JSON, correções rápidas
  * CARACTERÍSTICAS: Rápido, barato, preciso para dados técnicos
  */
-class ClaudeHaikuService
+class ClaudeSonnetService
 {
     protected string $apiKey;
     protected string $baseUrl;
@@ -26,7 +26,7 @@ class ClaudeHaikuService
     }
 
     /**
-     * Gerar conteúdo com Claude 3 Haiku
+     * Gerar conteúdo com Claude Sonnet
      */
     public function generateContent(string $prompt, array $options = []): string
     {
@@ -35,7 +35,7 @@ class ClaudeHaikuService
 
         $payload = $this->buildPayload($prompt, $options);
 
-        Log::info('ClaudeHaikuService: Enviando requisição', [
+        Log::info('ClaudeSonnetService: Enviando requisição', [
             'model' => $payload['model'],
             'max_tokens' => $payload['max_tokens'],
             'prompt_length' => strlen($prompt)
@@ -61,7 +61,7 @@ class ClaudeHaikuService
                 throw new \Exception('Claude retornou resposta vazia');
             }
 
-            Log::info('ClaudeHaikuService: Resposta recebida', [
+            Log::info('ClaudeSonnetService: Resposta recebida', [
                 'content_length' => strlen($content),
                 'usage' => $responseData['usage'] ?? null
             ]);
@@ -71,7 +71,7 @@ class ClaudeHaikuService
 
             return $content;
         } catch (\Exception $e) {
-            Log::error('ClaudeHaikuService: Erro na requisição', [
+            Log::error('ClaudeSonnetService: Erro na requisição', [
                 'error' => $e->getMessage(),
                 'prompt_preview' => substr($prompt, 0, 200)
             ]);
@@ -111,7 +111,7 @@ class ClaudeHaikuService
             if ($timeSinceLastRequest < $this->rateLimitSeconds) {
                 $waitTime = $this->rateLimitSeconds - $timeSinceLastRequest;
 
-                Log::info("ClaudeHaikuService: Rate limit ativo, aguardando {$waitTime} segundos");
+                Log::info("ClaudeSonnetService: Rate limit ativo, aguardando {$waitTime} segundos");
                 sleep($waitTime);
             }
         }
