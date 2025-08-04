@@ -1,0 +1,646 @@
+# 📋 **ESPECIFICAÇÃO COMPLETA - ETAPA 2 DO TIREPRESSUREGUIDE**
+
+## **🎯 CONTEXTO ATUAL DO PROJETO**
+
+### **📊 Estado Atual:**
+- ✅ **Primeira Etapa CONCLUÍDA** com 99.8% de sucesso
+- ✅ **1926 artigos gerados** (965 veículos únicos × 2 templates)
+- ✅ **Template "ideal":** 963 artigos (pressão ideal dos pneus)
+- ✅ **Template "calibration":** 963 artigos (como calibrar pneus)
+- 🔄 **PRÓXIMO:** Segunda Etapa dividida em 2 fases
+
+### **📋 ESTRUTURA DOS ARTIGOS:**
+Cada `TirePressureArticle` contém:
+- `vehicle_data` - Dados técnicos estruturados (**PRECISA CORREÇÃO PRIMEIRO**)
+- `article_content` - Conteúdo base gerado (**MANTER INTACTO**)
+- `sections_*` - 6 seções para refinamento (**NOSSA RESPONSABILIDADE**)
+
+---
+
+## **🚀 ETAPA 2: DIVIDIDA EM 2 FASES SEQUENCIAIS**
+
+### **📋 FASE 1: CORREÇÃO DO `vehicle_data` (PRIMEIRO)**
+
+**OBJETIVO:** Padronizar `vehicle_data` IDÊNTICO para os 2 artigos de cada veículo
+
+#### **💡 ESTRATÉGIA OTIMIZADA:**
+Como cada veículo gera 2 artigos (ideal + calibration) com **`vehicle_data` idêntico**, podemos:
+- ✅ **Processar 1 veículo** = **corrigir 2 artigos** simultaneamente
+- ✅ **965 execuções** = **1926 artigos** corrigidos
+- ✅ **Economia de 50%** no tempo e chamadas API
+
+#### **🔍 IDENTIFICAÇÃO POR VEÍCULO:**
+```php
+// Buscar AMBOS os artigos do mesmo veículo:
+$articles = TirePressureArticle::where('vehicle_data.make', 'Fiat')
+    ->where('vehicle_data.model', '500e') 
+    ->where('vehicle_data.year', 2023)
+    ->get();
+
+// Resultado: 2 artigos com vehicle_data IDÊNTICO
+// - slug: "pressao-pneus-fiat-500e-2023" (template: ideal)
+// - slug: "como-calibrar-pneus-fiat-500e-2023" (template: calibration)
+```
+
+#### **⚡ PROCESSAMENTO SIMULTÂNEO:**
+```php
+// Corrigir vehicle_data UMA VEZ, aplicar nos DOIS artigos:
+$correctedVehicleData = $this->claudeHaikuService->correctVehicleData($baseVehicleData);
+
+foreach ($articles as $article) {
+    $article->vehicle_data = $correctedVehicleData;
+    $article->vehicle_data_corrected_at = now();
+    $article->vehicle_data_version = 'v3.1';
+    $article->save();
+}
+```
+
+#### **🤖 Configuração Claude para `vehicle_data`:**
+```php
+'model' => 'claude-3-haiku-20240307',  // PERFEITO para dados estruturados
+'max_tokens' => 1500,                  // Suficiente para JSON
+'temperature' => 0.1,                  // Máxima consistência
+'timeout' => 30,                       // Rápido
+'rate_limit' => 'every_180_seconds'    // 3 minutos (mais conservador)
+```
+
+#### **💰 Estimativas Fase 1 (OTIMIZADA):**
+- **Veículos únicos:** 965 (não 1926!)
+- **Chamadas Claude:** 965 (economia de 50%)
+- **Custo por veículo:** ~$0.003 USD
+- **Total:** ~$3 USD (metade do estimado!)
+- **Tempo:** 2 dias (965 × 3 min = 48 horas)
+- **Artigos corrigidos:** 1926 (2 por veículo)
+
+#### **🔧 Correções no `vehicle_data`:**
+```php
+// Campos a serem padronizados/corrigidos:
+'vehicle_full_name' => 'Fiat 500e 2023',           // Gerado
+'category_normalized' => 'Carros Elétricos',       // Normalizado
+'pressure_display' => 'Dianteiros: 34 PSI / Traseiros: 32 PSI',
+'empty_pressure_display' => '32/30 PSI',
+'loaded_pressure_display' => '36/34 PSI',
+'is_premium' => true,                               // Detectado
+'has_tpms' => true,                                // Calculado
+'vehicle_segment' => 'B',                          // Classificado
+'vehicle_type' => 'car'                            // Padronizado
+```
+
+### **📋 FASE 2: REFINAMENTO DAS SEÇÕES (DEPOIS)**
+
+**OBJETIVO:** Refinar 6 seções usando `vehicle_data` corrigido
+
+#### **🤖 Configuração Claude para Seções:**
+```php
+'model' => 'claude-3-5-sonnet-20240620',  // QUALIDADE PREMIUM
+'max_tokens' => 4000,                      // Todas as 6 seções
+'temperature' => 0.3,                      // Criatividade controlada
+'timeout' => 45,                           // 45 segundos
+'rate_limit' => 'every_60_seconds'         // 1 request/minuto
+```
+
+#### **💰 Estimativas Fase 2:**
+- **Custo por artigo:** ~$0.04 USD
+- **Total 1926 artigos:** ~$77 USD
+- **Tempo:** 32 dias (schedule a cada 2 min)
+- **Model:** Claude 3.5 Sonnet (qualidade premium para conteúdo)
+
+---
+
+## **📝 AS 6 SEÇÕES A SEREM REFINADAS**
+
+### **🎯 Seções que Claude deve gerar:**
+
+1. **`sections_intro`** - Introdução envolvente e específica
+2. **`sections_pressure_table`** - Tabela técnica otimizada  
+3. **`sections_how_to_calibrate`** - Instruções passo-a-passo
+4. **`sections_middle_content`** - Dicas, avisos, manutenção
+5. **`sections_faq`** - FAQ personalizada para o veículo
+6. **`sections_conclusion`** - Conclusão com call-to-action
+
+### **🔄 DIFERENCIAÇÃO POR TEMPLATE:**
+
+#### **Template "ideal" (Pressão Ideal):**
+- **Foco:** Especificações técnicas, tabelas detalhadas, benefícios
+- **Intro:** "Pressão ideal do {vehicle_full_name}"
+- **FAQ:** "Qual a pressão ideal?", "Por que essa pressão?"
+
+#### **Template "calibration" (Como Calibrar):**
+- **Foco:** Procedimentos práticos, passo-a-passo, equipamentos
+- **Intro:** "Como calibrar {vehicle_full_name}"
+- **FAQ:** "Como calibrar?", "Que equipamento usar?"
+
+---
+
+## **🏗️ ARQUIVOS PARA IMPLEMENTAR - FASE 1 (PRIMEIRO)**
+
+### **1. SCHEDULE PARA CORREÇÃO `vehicle_data` (OTIMIZADO):**
+```
+Src/ContentGeneration/TirePressureGuide/Infrastructure/Console/Commands/Schedules/
+└── VehicleDataCorrectionSchedule.php
+```
+
+**Especificações:**
+- **Frequência:** A cada 3 minutos
+- **Processamento:** 1 veículo (2 artigos) por execução
+- **Rate limiting:** 180 segundos entre chamadas Claude
+- **Model:** Claude 3 Haiku
+- **Estimativa:** 965 veículos = 2 dias total
+- **Economia:** 50% menos chamadas API
+
+**Lógica de seleção otimizada:**
+```php
+// Buscar próximo veículo único que precisa correção:
+$firstArticle = TirePressureArticle::whereNull('vehicle_data_version')
+    ->orWhere('vehicle_data_version', '!=', 'v3.1')
+    ->orderBy('created_at', 'asc')
+    ->first();
+
+if ($firstArticle) {
+    // Buscar AMBOS os artigos do mesmo veículo:
+    $vehicleArticles = TirePressureArticle::where('vehicle_data.make', $firstArticle->vehicle_data['make'])
+        ->where('vehicle_data.model', $firstArticle->vehicle_data['model'])
+        ->where('vehicle_data.year', $firstArticle->vehicle_data['year'])
+        ->get();
+    
+    // Processar os 2 artigos simultaneamente
+}
+```
+
+### **2. SERVICE PARA CORREÇÃO:**
+```
+Src/ContentGeneration/TirePressureGuide/Application/Services/
+└── VehicleDataCorrectionService.php
+```
+
+**Responsabilidades:**
+- Construir prompt para correção de dados estruturados
+- Chamar Claude 3 Haiku com configurações otimizadas
+- Parsear resposta JSON corrigida
+- Aplicar validações básicas
+- Salvar `vehicle_data` corrigido com flag de controle
+
+### **3. COMMAND MANUAL PARA `vehicle_data`:**
+```
+Src/ContentGeneration/TirePressureGuide/Infrastructure/Console/Commands/
+└── CorrectVehicleDataCommand.php
+```
+
+**Opções:**
+```bash
+php artisan tire-pressure-guide:correct-vehicle-data 
+    --make=Toyota               # Filtrar por marca
+    --limit=50                  # Número máximo
+    --dry-run                   # Preview sem executar
+    --force                     # Forçar re-correção
+```
+
+### **4. CAMPOS DE CONTROLE PARA `vehicle_data`:**
+```php
+// Adicionar na TirePressureArticle:
+'vehicle_data_corrected_at' => 'datetime',     // Quando foi corrigido
+'vehicle_data_version' => 'string',            // Versão da correção (v3.1)
+```
+
+---
+
+## **🏗️ ARQUIVOS PARA IMPLEMENTAR - FASE 2 (DEPOIS)**
+
+### **1. SCHEDULE PARA REFINAMENTO SEÇÕES:**
+```
+Src/ContentGeneration/TirePressureGuide/Infrastructure/Console/Commands/Schedules/
+└── TirePressureRefinementSchedule.php
+```
+
+**Especificações:**
+- **Frequência:** A cada 2 minutos
+- **Processamento:** 1 artigo por execução
+- **Rate limiting:** 60 segundos entre chamadas Claude
+- **Model:** Claude 3.5 Sonnet (qualidade premium)
+- **Estimativa:** 60 artigos/dia = 32 dias total
+- **Prerequisito:** `vehicle_data_version = 'v3.1'`
+
+### **2. SERVICE DE REFINAMENTO:**
+```
+Src/ContentGeneration/TirePressureGuide/Application/Services/
+└── CompleteSectionRefinementService.php
+```
+
+**Responsabilidades:**
+- Construir prompt baseado em `vehicle_data` + `template_type`
+- Chamar Claude API com configurações otimizadas
+- Parsear resposta e extrair as 6 seções
+- Salvar todas as seções de uma vez
+- Marcar artigo como refinado
+
+### **3. COMMAND MANUAL DE APOIO:**
+```
+Src/ContentGeneration/TirePressureGuide/Infrastructure/Console/Commands/
+└── RefineArticleSectionsCommand.php
+```
+
+**Opções:**
+```bash
+php artisan tire-pressure-guide:refine-sections 
+    --template=ideal             # Filtrar por template
+    --limit=50                   # Número máximo
+    --make=Toyota               # Filtrar por marca
+    --dry-run                   # Preview sem executar
+    --force                     # Forçar re-refinamento
+```
+
+---
+
+## **⚙️ IMPLEMENTAÇÃO TÉCNICA - FASE 1**
+
+### **🔒 SISTEMA DE CONTROLE PARA `vehicle_data`:**
+
+#### **Lógica de seleção otimizada:**
+```php
+// Buscar próximo veículo único que precisa correção:
+$vehicleGroup = TirePressureArticle::select('vehicle_data.make', 'vehicle_data.model', 'vehicle_data.year')
+    ->whereNull('vehicle_data_version')
+    ->orWhere('vehicle_data_version', '!=', 'v3.1')
+    ->groupBy(['vehicle_data.make', 'vehicle_data.model', 'vehicle_data.year'])
+    ->orderBy('created_at', 'asc')
+    ->first();
+
+if ($vehicleGroup) {
+    // Buscar AMBOS os artigos do mesmo veículo:
+    $vehicleArticles = TirePressureArticle::where('vehicle_data.make', $vehicleGroup['make'])
+        ->where('vehicle_data.model', $vehicleGroup['model'])
+        ->where('vehicle_data.year', $vehicleGroup['year'])
+        ->get(); // Resultado: 2 artigos (ideal + calibration)
+}
+```
+
+#### **Método de correção simultânea:**
+```php
+public function correctVehicleDataForBothArticles(array $vehicleArticles): bool
+{
+    // Pegar vehicle_data de qualquer um (são idênticos)
+    $baseVehicleData = $vehicleArticles[0]->vehicle_data;
+    
+    // UMA chamada Claude para corrigir
+    $correctedData = $this->claudeHaikuService->correctStructuredData($baseVehicleData);
+    
+    if ($correctedData) {
+        // Aplicar nos DOIS artigos
+        foreach ($vehicleArticles as $article) {
+            $article->vehicle_data = $correctedData;
+            $article->vehicle_data_corrected_at = now();
+            $article->vehicle_data_version = 'v3.1';
+            $article->save();
+        }
+        return true;
+    }
+    
+    return false;
+}
+```
+
+### **🎯 PROMPT PARA CLAUDE HAIKU:**
+
+```php
+$prompt = "
+TAREFA: Corrigir e padronizar dados estruturados de veículo.
+
+DADOS ATUAIS:
+" . json_encode($this->vehicle_data, JSON_PRETTY_PRINT) . "
+
+CORREÇÕES NECESSÁRIAS:
+1. Gerar 'vehicle_full_name' = 'MARCA MODELO ANO'
+2. Normalizar 'category_normalized' (Sedans, SUVs, Carros Elétricos, etc)
+3. Criar 'pressure_display' = 'Dianteiros: X PSI / Traseiros: Y PSI'
+4. Padronizar 'empty_pressure_display' = 'X/Y PSI'
+5. Padronizar 'loaded_pressure_display' = 'X/Y PSI'
+6. Definir 'is_premium' (BMW, Mercedes, Audi = true)
+7. Definir 'has_tpms' (ano >= 2019 = true)
+8. Definir 'vehicle_segment' (A, B, C, D)
+9. Padronizar 'vehicle_type' ('car' ou 'motorcycle')
+
+RETORNE APENAS JSON CORRIGIDO:
+";
+```
+
+---
+
+## **⚙️ IMPLEMENTAÇÃO TÉCNICA - FASE 2**
+
+### **🔒 SISTEMA DE CONTROLE PARA SEÇÕES:**
+
+#### **Prerequisito obrigatório:**
+```php
+// SÓ refinar seções se vehicle_data foi corrigido:
+$article = TirePressureArticle::whereNull('sections_last_refined_at')
+    ->where('vehicle_data_version', 'v3.1')  // OBRIGATÓRIO!
+    ->where('generation_status', 'generated')
+    ->orderBy('created_at', 'asc')
+    ->first();
+```
+
+#### **Campos de controle para seções:**
+```php
+// Adicionar na TirePressureArticle:
+'sections_last_refined_at' => 'datetime',    // Quando foi refinado
+'sections_refinement_version' => 'string',   // Versão do refinement (v2.0)
+'refinement_status' => 'string',             // pending/processing/completed/failed
+```
+
+### **🎯 PROMPT STRUCTURE:**
+
+#### **Template do prompt:**
+```php
+$prompt = "
+DADOS DO VEÍCULO:
+" . json_encode($article->vehicle_data, JSON_PRETTY_PRINT) . "
+
+TEMPLATE: {$article->template_type}
+
+CONTEÚDO DE REFERÊNCIA:
+" . json_encode($article->article_content, JSON_PRETTY_PRINT) . "
+
+TAREFA: Gere 6 seções refinadas específicas para este veículo:
+
+1. sections_intro - Introdução envolvente
+2. sections_pressure_table - Tabela técnica  
+3. sections_how_to_calibrate - Instruções específicas
+4. sections_middle_content - Dicas e avisos
+5. sections_faq - FAQ personalizada
+6. sections_conclusion - Conclusão motivacional
+
+RETORNE APENAS JSON com as 6 seções:
+";
+```
+
+### **🔧 FLUXO DE PROCESSAMENTO:**
+
+```php
+// Pseudocódigo do fluxo:
+1. $article = getNextArticleForRefinement()
+2. $article->markAsProcessing()
+3. $prompt = buildPrompt($article->vehicle_data, $article->template_type)
+4. $response = claudeAPI->refine($prompt)
+5. $sections = parseResponse($response)
+6. $article->updateAllSections($sections)
+7. $article->markAsRefinedComplete()
+```
+
+---
+
+## **📊 SISTEMA DE QUALIDADE E VALIDAÇÃO**
+
+### **🎯 VALIDAÇÕES AUTOMÁTICAS:**
+
+#### **Após refinamento:**
+```php
+// Verificar se todas as seções foram preenchidas
+$requiredSections = ['intro', 'pressure_table', 'how_to_calibrate', 'middle_content', 'faq', 'conclusion'];
+$completeSections = 0;
+
+foreach ($requiredSections as $section) {
+    if (!empty($article->{"sections_$section"})) {
+        $completeSections++;
+    }
+}
+
+if ($completeSections === 6) {
+    $article->refinement_status = 'completed';
+    $article->sections_refinement_version = 'v2.0';
+} else {
+    $article->refinement_status = 'failed';
+    // Agendar para retry
+}
+```
+
+#### **Cálculo de score:**
+```php
+$qualityScore = 0;
+foreach ($requiredSections as $section) {
+    $content = $article->{"sections_$section"};
+    if (!empty($content)) {
+        $sectionScore = calculateSectionScore($content, $section);
+        $qualityScore += $sectionScore;
+    }
+}
+$overallScore = $qualityScore / 6; // Score médio
+```
+
+---
+
+## **⚡ SCHEDULE CONFIGURATION**
+
+### **🔄 Schedule Principal:**
+
+```php
+class TirePressureRefinementSchedule
+{
+    public function __invoke(Schedule $schedule): void
+    {
+        $schedule->call(function () {
+            
+            // ATOMIC LOCK - evita concorrência
+            $lockKey = 'tire_pressure_refinement_v2';
+            if (!Cache::lock($lockKey, 180)->get()) {
+                return; // Já está executando
+            }
+            
+            try {
+                $this->processSingleArticle();
+            } finally {
+                Cache::lock($lockKey, 180)->release();
+            }
+            
+        })
+        ->everyTwoMinutes()                    // SEGURO: 2 min entre execuções
+        ->name('tire-pressure-refinement-v2')
+        ->withoutOverlapping(180);             // 3 min sem sobreposição
+    }
+    
+    private function processSingleArticle(): void
+    {
+        $service = app(CompleteSectionRefinementService::class);
+        
+        // Buscar próximo artigo
+        $article = TirePressureArticle::getNextForRefinement();
+        
+        if ($article) {
+            $success = $service->refineAllSections($article);
+            
+            Log::info("Artigo refinado", [
+                'article_id' => $article->_id,
+                'vehicle' => $article->vehicle_data['vehicle_full_name'] ?? 'N/A',
+                'template' => $article->template_type,
+                'success' => $success
+            ]);
+        }
+    }
+}
+```
+
+---
+
+## **📈 CRONOGRAMA COMPLETO DAS 2 FASES**
+
+### **⏱️ FASE 1 - Correção `vehicle_data` (OTIMIZADA):**
+
+| Métrica | Valor |
+|---------|-------|
+| **Veículos únicos** | 965 |
+| **Artigos totais** | 1926 (2 por veículo) |
+| **Chamadas Claude** | 965 (economia de 50%!) |
+| **Frequência do schedule** | A cada 3 minutos |
+| **Veículos por hora** | ~20 |
+| **Veículos por dia** | ~480 |
+| **Tempo total estimado** | 2 dias (não 4!) |
+| **Model Claude** | 3 Haiku |
+| **Custo total** | ~$3 USD (não $6!) |
+
+### **⏱️ FASE 2 - Refinamento Seções (INALTERADA):**
+
+| Métrica | Valor |
+|---------|-------|
+| **Total de artigos** | 1926 (com vehicle_data corrigido) |
+| **Frequência do schedule** | A cada 2 minutos |
+| **Artigos por hora** | ~30 |
+| **Artigos por dia** | ~60 (com rate limiting) |
+| **Tempo total estimado** | 32 dias |
+| **Model Claude** | 3.5 Sonnet |
+| **Custo total** | ~$77 USD |
+
+### **📊 CRONOGRAMA TOTAL OTIMIZADO:**
+- **Fase 1:** 2 dias (correção dados - OTIMIZADA!)
+- **Fase 2:** 32 dias (refinamento seções)
+- **Total:** 34 dias (não 36!)
+- **Custo total:** ~$80 USD ($3 + $77)
+
+---
+
+## **🔍 MONITORAMENTO E LOGS**
+
+### **📊 Métricas a acompanhar:**
+
+```php
+// Estatísticas em tempo real:
+- Artigos processados hoje
+- Artigos pendentes
+- Taxa de sucesso
+- Tempo médio por artigo
+- Erros recentes
+- Estimativa de conclusão
+```
+
+### **🚨 Alertas automáticos:**
+
+```php
+// Condições de alerta:
+- Taxa de erro > 10%
+- Artigos travados > 2 horas
+- Rate limit atingido frequentemente
+- Fila muito grande (> 100 artigos)
+```
+
+---
+
+## **🎯 PRÓXIMOS PASSOS - IMPLEMENTAÇÃO EM FASES**
+
+### **📋 FASE 1 - Checklist (PRIMEIRO):**
+
+1. ✅ **Implementar VehicleDataCorrectionSchedule**
+   - Schedule a cada 3 minutos
+   - Lock atômico para evitar concorrência
+   - Processamento de 1 artigo por vez
+
+2. ✅ **Criar VehicleDataCorrectionService**
+   - Método `correctVehicleData()`
+   - Prompt builder para Claude 3 Haiku
+   - Parser de resposta JSON
+   - Rate limiting a cada 3 minutos
+
+3. ✅ **Adicionar campos de controle na Model**
+   - `vehicle_data_corrected_at`
+   - `vehicle_data_version` (v3.1)
+
+4. ✅ **Implementar CorrectVehicleDataCommand**
+   - Command manual para teste e recovery
+   - Opções de filtro e dry-run
+
+5. ✅ **Sistema de validação básica**
+   - Verificação se dados foram padronizados
+   - Flag de controle para evitar reprocessamento
+
+### **📋 FASE 2 - Checklist (DEPOIS DA FASE 1):**
+
+1. ✅ **Implementar TirePressureRefinementSchedule**
+   - Schedule a cada 2 minutos
+   - **Prerequisito:** `vehicle_data_version = 'v3.1'`
+   - Processamento de 1 artigo por vez
+
+2. ✅ **Criar CompleteSectionRefinementService**
+   - Método `refineAllSections()`
+   - Prompt builder baseado em `vehicle_data` corrigido + `template_type`
+   - Parser de resposta JSON
+   - Rate limiting a cada 60 segundos
+
+3. ✅ **Adicionar campos de controle para seções**
+   - `sections_last_refined_at`
+   - `sections_refinement_version` (v2.0)
+   - `refinement_status`
+
+4. ✅ **Implementar RefineArticleSectionsCommand**
+   - Command manual para teste e recovery
+   - Opções de filtro e dry-run
+
+5. ✅ **Sistema de validação de qualidade**
+   - Verificação automática das 6 seções
+   - Cálculo de score de qualidade
+   - Recovery automático para falhas
+
+### **🎯 Resultado Final Esperado:**
+
+**APÓS FASE 1:**
+- **1926 artigos** com **`vehicle_data` padronizado e corrigido**
+- **Dados estruturados** consistentes e enriquecidos
+- **Flags de controle** (`vehicle_data_version = 'v3.1'`)
+- **Base sólida** para refinamento das seções
+
+**APÓS FASE 2:**
+- **1926 artigos** com **6 seções refinadas** cada
+- **Conteúdo específico** por veículo e template
+- **Qualidade premium** via Claude 3.5 Sonnet
+- **Sistema robusto** com recovery automático
+- **Monitoramento completo** de progresso
+- **Prontos para `PublishTempTirePressureArticlesCommand`**
+
+---
+
+## **💡 INFORMAÇÕES IMPORTANTES PARA O PRÓXIMO CHAT**
+
+### **🔑 Pontos Críticos:**
+
+1. **PRIMEIRA:** Corrigir `vehicle_data` com Claude 3 Haiku
+2. **DEPOIS:** Refinar seções com Claude 3.5 Sonnet (usando dados corrigidos)
+3. **NUNCA modificar `article_content`** - apenas seções
+4. **Prerequisito obrigatório:** `vehicle_data_version = 'v3.1'` para refinar seções
+5. **Rate limiting diferenciado:** 3 min (Haiku) vs 1 min (Sonnet)
+6. **Validação sequencial** - Fase 2 só executa após Fase 1
+7. **Logs detalhados** para monitoramento de ambas as fases
+
+### **🏗️ Arquitetura Existente:**
+- Model `TirePressureArticle` já implementada
+- Claude API service já existe (precisa configurar Haiku + Sonnet)
+- Rate limiting já configurado (ajustar para 2 modelos)
+- Sistema de backup já implementado
+
+### **🎯 Objetivo Final:**
+Criar sistema **100% automatizado** em **2 FASES SEQUENCIAIS**:
+1. **Fase 1:** Padronizar `vehicle_data` (4 dias, Haiku, $6)
+2. **Fase 2:** Refinar 6 seções (32 dias, Sonnet, $77)
+
+**Total: 34 dias, $80 USD, QUALIDADE PREMIUM!** 🚀
+
+**ECONOMIA ADICIONAL PELA OTIMIZAÇÃO:**
+- ✅ **Tempo:** 2 dias a menos (34 vs 36)
+- ✅ **Custo:** $3 a menos ($80 vs $83)  
+- ✅ **API calls:** 965 a menos (50% economia na Fase 1)
+- ✅ **Eficiência:** Máxima pelo processamento simultâneo
