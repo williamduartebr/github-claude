@@ -1,0 +1,311 @@
+{
+    "title": "Como Calibrar os Pneus do Toyota Corolla 2021: Guia Passo a Passo",
+    "slug": "como-calibrar-pneus-toyota-corolla-2021",
+    "template": "tire_pressure_guide_car",
+    "category_id": 30,
+    "category_name": "Pneus e Rodas",
+    "category_slug": "pneus-rodas",
+    "content": {
+        "introducao": "Calibrar corretamente os pneus do seu Toyota Corolla 2021 é uma habilidade essencial que todo proprietário deve dominar. Mais do que uma simples manutenção, é um procedimento que impacta diretamente na segurança, economia e desempenho do veículo. Com as tecnologias avançadas do Corolla, incluindo o sistema TPMS, uma calibragem adequada maximiza todos os benefícios que este sedan oferece. Neste guia prático, você aprenderá o procedimento completo, desde a preparação até os ajustes finais, garantindo que seu Corolla sempre esteja nas condições ideais de rodagem.",
+        "especificacoes_oficiais": {
+            "pneu_dianteiro": {
+                "medida_original": "205/55R16 91V",
+                "pressao_vazio": "32 PSI (2.2 bar)",
+                "pressao_carregado": "35 PSI (2.4 bar)",
+                "pressao_maxima": "44 PSI (3.0 bar)"
+            },
+            "pneu_traseiro": {
+                "medida_original": "205/55R16 91V",
+                "pressao_vazio": "32 PSI (2.2 bar)",
+                "pressao_carregado": "35 PSI (2.4 bar)",
+                "pressao_maxima": "44 PSI (3.0 bar)"
+            },
+            "pneu_estepe": {
+                "medida": "T155/90D16",
+                "pressao_recomendada": "60 PSI (4.1 bar)",
+                "velocidade_maxima": "80 km/h",
+                "distancia_maxima": "80 km"
+            }
+        },
+        "tabela_pressoes": [
+            {
+                "condicao": "Uso Diário Normal",
+                "dianteiros": "32 PSI",
+                "traseiros": "32 PSI",
+                "quando_usar": "Cidade, até 3 pessoas, bagagem leve"
+            },
+            {
+                "condicao": "Veículo Carregado",
+                "dianteiros": "35 PSI",
+                "traseiros": "35 PSI",
+                "quando_usar": "4-5 pessoas, viagens, bagagem pesada"
+            },
+            {
+                "condicao": "Viagem Rodoviária",
+                "dianteiros": "34 PSI",
+                "traseiros": "34 PSI",
+                "quando_usar": "Velocidades constantes, longas distâncias"
+            },
+            {
+                "condicao": "Economia Máxima",
+                "dianteiros": "36 PSI",
+                "traseiros": "34 PSI",
+                "quando_usar": "Foco em consumo, pilotagem suave"
+            }
+        ],
+        "procedimento_calibragem": [
+            {
+                "passo": 1,
+                "titulo": "Preparação e Segurança",
+                "descricao": "Estacione em local plano e seguro, de preferência em um posto de combustível",
+                "detalhes": [
+                    "Aguarde pelo menos 3 horas após dirigir (pneus frios)",
+                    "Tenha em mãos: calibrador, moedas para o compressor, pano limpo",
+                    "Localize a etiqueta de pressões na porta do motorista",
+                    "Verifique visualmente os pneus antes de calibrar"
+                ],
+                "tempo_estimado": "5 minutos",
+                "dica": "Nunca calibre com pneus quentes - a pressão estará artificialmente alta"
+            },
+            {
+                "passo": 2,
+                "titulo": "Verificação da Pressão Atual",
+                "descricao": "Meça a pressão atual de todos os pneus, incluindo o estepe",
+                "detalhes": [
+                    "Remova a tampa da válvula e guarde em local seguro",
+                    "Conecte firmemente o calibrador na válvula",
+                    "Anote a pressão atual de cada pneu",
+                    "Compare com as especificações recomendadas"
+                ],
+                "tempo_estimado": "5 minutos",
+                "dica": "Se ouvir escape de ar, reposicione o calibrador na válvula"
+            },
+            {
+                "passo": 3,
+                "titulo": "Ajuste das Pressões",
+                "descricao": "Calibre cada pneu conforme a necessidade identificada",
+                "detalhes": [
+                    "Para adicionar ar: conecte o compressor e monitore a pressão",
+                    "Para reduzir: pressione o pino central da válvula brevemente",
+                    "Adicione ar gradualmente - nunca tudo de uma vez",
+                    "Verifique frequentemente para não exceder a pressão desejada"
+                ],
+                "tempo_estimado": "10 minutos",
+                "dica": "Adicione 1-2 PSI por vez e meça novamente"
+            },
+            {
+                "passo": 4,
+                "titulo": "Verificação Final e Limpeza",
+                "descricao": "Confirme as pressões e finalize o procedimento",
+                "detalhes": [
+                    "Meça novamente todos os pneus para confirmar",
+                    "Recoloque todas as tampas das válvulas",
+                    "Limpe o calibrador e guarde adequadamente",
+                    "Anote a data da calibragem para controle"
+                ],
+                "tempo_estimado": "5 minutos",
+                "dica": "Mantenha um registro das calibragens no porta-luvas"
+            }
+        ],
+        "sistema_tpms": {
+            "descricao": "O Toyota Corolla 2021 vem equipado com sistema TPMS (Tire Pressure Monitoring System)",
+            "funcionamento": "Sensores nas rodas monitoram constantemente a pressão e alertam sobre variações",
+            "alertas": [
+                {
+                    "tipo": "Luz Amarela Fixa",
+                    "significado": "Pressão baixa em um ou mais pneus",
+                    "acao": "Verificar e calibrar imediatamente"
+                },
+                {
+                    "tipo": "Luz Amarela Piscando",
+                    "significado": "Falha no sistema TPMS",
+                    "acao": "Procurar assistência técnica Toyota"
+                }
+            ],
+            "reset_procedimento": [
+                "Calibre todos os pneus nas pressões corretas",
+                "Ligue o veículo (sem dar partida no motor)",
+                "Mantenha pressionado o botão TPMS por 3 segundos",
+                "A luz piscará 3 vezes confirmando o reset",
+                "Dirija por alguns quilômetros para confirmação"
+            ],
+            "dicas_tpms": [
+                "O sistema pode levar até 20 minutos para detectar mudanças",
+                "Temperaturas extremas podem disparar alertas falsos",
+                "Pneus novos podem precisar de até 100km para calibrar o sistema"
+            ]
+        },
+        "impactos_calibragem": {
+            "pressao_baixa": {
+                "consequencias": [
+                    "Aumento do consumo de combustível em até 3%",
+                    "Desgaste acelerado das laterais dos pneus",
+                    "Superaquecimento do pneu em alta velocidade",
+                    "Maior distância de frenagem",
+                    "Dirigibilidade comprometida em curvas"
+                ],
+                "sinais_visuais": "Desgaste nas bordas externas da banda de rodagem"
+            },
+            "pressao_alta": {
+                "consequencias": [
+                    "Desgaste acelerado do centro da banda de rodagem",
+                    "Redução da área de contato com o solo",
+                    "Conforto prejudicado (maior transmissão de impactos)",
+                    "Maior risco de danos por objetos cortantes",
+                    "Frenagem menos eficiente"
+                ],
+                "sinais_visuais": "Desgaste concentrado no centro do pneu"
+            },
+            "pressao_ideal": {
+                "beneficios": [
+                    "Economia máxima de combustível",
+                    "Desgaste uniforme e vida útil otimizada",
+                    "Melhor aderência e segurança",
+                    "Conforto de rodagem ideal",
+                    "Performance otimizada do sistema TPMS"
+                ]
+            }
+        },
+        "dicas_manutencao": [
+            {
+                "categoria": "Frequência de Verificação",
+                "dicas": [
+                    "Verifique semanalmente ou antes de viagens longas",
+                    "Sempre com pneus frios (manhã ou após 3h parado)",
+                    "Inclua o estepe na verificação mensal",
+                    "Monitore mais frequentemente em mudanças de temperatura"
+                ]
+            },
+            {
+                "categoria": "Equipamentos Recomendados",
+                "dicas": [
+                    "Calibrador digital para maior precisão",
+                    "Compressor portátil para emergências",
+                    "Kit de reparo para furos pequenos",
+                    "Manômetro de qualidade para verificações"
+                ]
+            },
+            {
+                "categoria": "Cuidados Especiais",
+                "dicas": [
+                    "Não remova ar com pneus quentes",
+                    "Proteja as válvulas com tampas",
+                    "Verifique se há objetos cravados nos sulcos",
+                    "Observe sinais de desgaste irregular"
+                ]
+            }
+        ],
+        "alertas_seguranca": [
+            {
+                "nivel": "Crítico",
+                "titulo": "Diferença Excessiva Entre Pneus",
+                "descricao": "Variação maior que 4 PSI entre pneus pode causar instabilidade",
+                "acao_imediata": "Equalizar pressões imediatamente"
+            },
+            {
+                "nivel": "Alto",
+                "titulo": "Perda Rápida de Pressão",
+                "descricao": "Pneu que perde pressão rapidamente pode ter furo ou dano na válvula",
+                "acao_imediata": "Inspecionar e reparar antes de dirigir"
+            },
+            {
+                "nivel": "Moderado",
+                "titulo": "TPMS Constantemente Ativo",
+                "descricao": "Sistema de monitoramento sempre alertando pode indicar vazamento lento",
+                "acao_imediata": "Verificação profissional recomendada"
+            }
+        ],
+        "perguntas_frequentes": [
+            {
+                "pergunta": "Com que frequência devo calibrar os pneus do Corolla 2021?",
+                "resposta": "Verifique semanalmente ou antes de viagens longas. A pressão dos pneus pode variar naturalmente cerca de 1-2 PSI por mês."
+            },
+            {
+                "pergunta": "O que fazer quando a luz do TPMS acende?",
+                "resposta": "Verifique imediatamente a pressão de todos os pneus. Se estiverem corretas, pode ser falha no sistema - procure a concessionária Toyota."
+            },
+            {
+                "pergunta": "Posso calibrar com pneus quentes?",
+                "resposta": "Não é recomendado. Pneus quentes têm pressão artificialmente alta. Sempre calibre com pneus frios para medições precisas."
+            },
+            {
+                "pergunta": "Preciso usar a pressão exata recomendada?",
+                "resposta": "Sim. As pressões da Toyota foram calculadas para otimizar segurança, economia e desempenho. Variações podem comprometer esses aspectos."
+            },
+            {
+                "pergunta": "O estepe precisa ser verificado?",
+                "resposta": "Sim, mensalmente. O estepe temporário do Corolla deve estar sempre em 60 PSI, pois não é usado regularmente e pode perder pressão."
+            }
+        ],
+        "consideracoes_finais": "Dominar a calibragem dos pneus do seu Toyota Corolla 2021 é uma habilidade fundamental que impacta diretamente na sua experiência de condução. O procedimento simples, quando realizado corretamente e com regularidade, garante que você aproveite ao máximo a engenharia Toyota: economia de combustível, segurança avançada e conforto superior. O sistema TPMS do Corolla é seu aliado nesta tarefa, mas não substitui a verificação manual regular. Lembre-se que os 32 PSI recomendados não são apenas números - representam o equilíbrio perfeito calculado pela Toyota para entregar a melhor experiência possível. Invista alguns minutos semanais nesta manutenção preventiva e seu Corolla retribuirá com anos de condução segura e econômica."
+    },
+    "extracted_entities": {
+        "marca": "Toyota",
+        "modelo": "Corolla",
+        "ano": 2021,
+        "motorizacao": "",
+        "versao": "Todas",
+        "tipo_veiculo": "car",
+        "categoria": "Sedans",
+        "combustivel": "flex"
+    },
+    "seo_data": {
+        "page_title": "Como Calibrar Pneus Toyota Corolla 2021 - Guia Passo a Passo",
+        "meta_description": "Aprenda a calibrar corretamente os pneus do Toyota Corolla 2021. Guia completo com procedimento, sistema TPMS, pressões e dicas de manutenção.",
+        "url_slug": "como-calibrar-pneus-toyota-corolla-2021",
+        "h1": "Como Calibrar os Pneus do Toyota Corolla 2021: Guia Passo a Passo",
+        "h2_tags": [
+            "Especificações Oficiais",
+            "Tabela de Pressões por Condição",
+            "Procedimento de Calibragem",
+            "Sistema TPMS",
+            "Impactos da Calibragem",
+            "Dicas de Manutenção",
+            "Alertas de Segurança"
+        ],
+        "primary_keyword": "como calibrar pneus Toyota Corolla 2021",
+        "secondary_keywords": [
+            "calibragem Corolla 2021",
+            "TPMS Toyota Corolla",
+            "pressão pneus Corolla",
+            "manutenção pneus Toyota"
+        ],
+        "meta_robots": "index,follow",
+        "canonical_url": "https://mercadoveiculos.com/info/como-calibrar-pneus-toyota-corolla-2021",
+        "schema_type": "Article",
+        "focus_keywords": [
+            "calibrar pneus",
+            "procedimento calibragem",
+            "sistema TPMS",
+            "manutenção preventiva"
+        ]
+    },
+    "vehicle_data": {
+        "vehicle_full_name": "Toyota Corolla 2021",
+        "vehicle_brand": "Toyota",
+        "vehicle_model": "Corolla",
+        "vehicle_year": 2021,
+        "vehicle_category": "Sedans",
+        "vehicle_type": "car",
+        "tire_size": "205/55R16 91V",
+        "pressures": {
+            "empty_front": 32,
+            "empty_rear": 32,
+            "loaded_front": 35,
+            "loaded_rear": 35,
+            "max_front": 44,
+            "max_rear": 44,
+            "spare": 60
+        },
+        "pressure_display": "32/32 PSI",
+        "pressure_loaded_display": "35/35 PSI",
+        "is_premium": false,
+        "has_tpms": true,
+        "vehicle_segment": "C"
+    },
+    "metadata": [],
+    "status": "published",
+    "created_at": "2025-08-05T12:20:00.000000Z",
+    "updated_at": "2025-08-05T12:20:00.000000Z",
+    "id": "mock_guide_car_001"
+}
