@@ -3,7 +3,6 @@
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
-use Illuminate\Support\Str;
 
 class IdealTirePressureCarViewModel extends TemplateViewModel
 {
@@ -19,40 +18,17 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
-        // Introdução
         $this->processedData['introduction'] = $content['introducao'] ?? '';
-
-        // Especificações dos pneus
         $this->processedData['tire_specifications'] = $this->processTireSpecifications($content['especificacoes_pneus'] ?? []);
-
-        // Tabela principal de pressões
         $this->processedData['pressure_table'] = $this->processPressureTable($content['tabela_pressoes'] ?? []);
-
-        // Tabela de conversão de unidades
         $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
-
-        // Localização da etiqueta
         $this->processedData['label_location'] = $this->processLabelLocation($content['localizacao_etiqueta'] ?? []);
-
-        // Benefícios da calibragem correta
         $this->processedData['calibration_benefits'] = $this->processCalibrationBenefits($content['beneficios_calibragem'] ?? []);
-
-        // Dicas de manutenção
         $this->processedData['maintenance_tips'] = $this->processMaintenanceTips($content['dicas_manutencao'] ?? []);
-
-        // Alertas importantes
         $this->processedData['important_alerts'] = $this->processImportantAlerts($content['alertas_importantes'] ?? []);
-
-        // Perguntas frequentes
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
-
-        // Considerações finais
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-
-        // Informações do veículo formatadas
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
-
-        // Dados estruturados para SEO
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
     }
@@ -87,7 +63,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             'usage_conditions' => []
         ];
 
-        // Processa versões do veículo
         if (!empty($table['versoes']) && is_array($table['versoes'])) {
             foreach ($table['versoes'] as $version) {
                 if (!empty($version['nome_versao'])) {
@@ -106,7 +81,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             }
         }
 
-        // Processa condições de uso
         if (!empty($table['condicoes_uso']) && is_array($table['condicoes_uso'])) {
             foreach ($table['condicoes_uso'] as $condition) {
                 if (!empty($condition['situacao'])) {
@@ -256,11 +230,9 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Processa informações do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processVehicleInfo(): array
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
         return [
@@ -501,14 +473,11 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Obtém nome completo do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getVehicleFullName(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
-        // Validação básica - retorna vazio se não tiver marca ou modelo
         if (empty($vehicleInfo['marca']) || empty($vehicleInfo['modelo'])) {
             return '';
         }
@@ -522,11 +491,9 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Obtém URL da imagem do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getVehicleImageUrl(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
         $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
         $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
@@ -537,7 +504,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Gera slug baseado nos dados do veículo
-     * MÉTODO NOVO: Para substituir make_model_slug que não existe
      */
     private function generateSlug(array $vehicleInfo): string
     {
@@ -549,11 +515,9 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Verifica se é veículo premium
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isPremiumVehicle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $make = strtolower($this->article->extracted_entities['marca'] ?? '');
         $premiumBrands = ['audi', 'bmw', 'mercedes', 'lexus', 'volvo', 'porsche'];
 
@@ -562,11 +526,9 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Obtém segmento do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getVehicleSegment(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
 
         $segmentMap = [
@@ -584,14 +546,11 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Processa dados SEO específicos para carros
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processSeoData(): array
     {
         $vehicleFullName = $this->getVehicleFullName();
         $mainPressure = $this->getMainPressureDisplay();
-
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
         return [
@@ -626,14 +585,11 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
     /**
      * Constrói dados estruturados Schema.org
-     * MÉTODO CORRIGIDO: Usa extracted_entities e valida dados antes de gerar schema
      */
     private function buildStructuredData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'];
         $vehicleFullName = $vehicleInfo['full_name'];
-
-        // CORREÇÃO: Usar extracted_entities para dados do schema
         $vehicleData = $this->article->extracted_entities ?? [];
 
         $structuredData = [
@@ -669,19 +625,16 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             ]
         ];
 
-        // VALIDAÇÃO: Só adiciona dados do veículo se marca E modelo existirem
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
-            // Determina o tipo baseado no tipo_veiculo
             $vehicleSchemaType = ($vehicleData['tipo_veiculo'] ?? '') === 'motorcycle' ? 'Motorcycle' : 'Car';
 
             $structuredData['mainEntity'] = [
                 '@type' => $vehicleSchemaType,
-                'name' => 'Pressão ideal para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
+                'name' => 'Pressão ideal para ' . $vehicleData['marca'] . ' ' . $vehicleData['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];
 
-            // Adiciona ano se existir
             if (!empty($vehicleData['ano'])) {
                 $structuredData['mainEntity']['modelDate'] = (string) $vehicleData['ano'];
             }
@@ -750,4 +703,5 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     {
         return $this->processedData;
     }
+
 }

@@ -3,7 +3,6 @@
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
-use Illuminate\Support\Str;
 
 class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
 {
@@ -19,43 +18,18 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
-        // Introdução
         $this->processedData['introduction'] = $content['introducao'] ?? '';
-
-        // Especificações oficiais dos pneus
         $this->processedData['tire_specifications'] = $this->processTireSpecifications($content['especificacoes_oficiais'] ?? []);
-
-        // Tabela de pressões por condição de uso (adaptada para motos)
         $this->processedData['pressure_table'] = $this->processPressureTable($content['tabela_pressoes'] ?? []);
-
-        // Procedimento de calibragem específico para motos
         $this->processedData['calibration_procedure'] = $this->processCalibrationProcedure($content['procedimento_calibragem'] ?? []);
-
-        // Considerações especiais para motocicletas
         $this->processedData['motorcycle_considerations'] = $this->processMotorcycleConsiderations($content['consideracoes_moto'] ?? []);
-
-        // Impactos da calibragem específicos para motos
         $this->processedData['calibration_impacts'] = $this->processCalibrationImpacts($content['impactos_calibragem'] ?? []);
-
-        // Dicas de manutenção para motocicletas
         $this->processedData['maintenance_tips'] = $this->processMaintenanceTips($content['dicas_manutencao'] ?? []);
-
-        // Alertas de segurança específicos para motos
         $this->processedData['safety_alerts'] = $this->processSafetyAlerts($content['alertas_seguranca'] ?? []);
-
-        // Dicas para diferentes tipos de pilotagem
         $this->processedData['riding_tips'] = $this->processRidingTips($content['dicas_pilotagem'] ?? []);
-
-        // Perguntas frequentes
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
-
-        // Considerações finais
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-
-        // Informações do veículo formatadas
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
-
-        // Dados estruturados para SEO
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
     }
@@ -71,7 +45,6 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
 
         $processed = [];
 
-        // Pneu dianteiro
         if (!empty($specs['pneu_dianteiro'])) {
             $processed['front_tire'] = [
                 'size' => $specs['pneu_dianteiro']['medida_original'] ?? '',
@@ -84,7 +57,6 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             ];
         }
 
-        // Pneu traseiro
         if (!empty($specs['pneu_traseiro'])) {
             $processed['rear_tire'] = [
                 'size' => $specs['pneu_traseiro']['medida_original'] ?? '',
@@ -217,7 +189,6 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     {
         $processed = [];
 
-        // Sub-calibrado
         if (!empty($impacts['sub_calibrado'])) {
             $processed['under_inflated'] = [
                 'fuel_consumption' => $impacts['sub_calibrado']['consumo'] ?? '',
@@ -230,7 +201,6 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             ];
         }
 
-        // Super-calibrado
         if (!empty($impacts['super_calibrado'])) {
             $processed['over_inflated'] = [
                 'fuel_consumption' => $impacts['super_calibrado']['consumo'] ?? '',
@@ -243,7 +213,6 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             ];
         }
 
-        // Calibragem ideal
         if (!empty($impacts['calibragem_ideal'])) {
             $processed['ideal_calibration'] = [
                 'fuel_consumption' => $impacts['calibragem_ideal']['consumo'] ?? '',
@@ -315,13 +284,11 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Processa informações do veículo (moto)
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processVehicleInfo(): array
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
-        
+
         return [
             'full_name' => $this->getVehicleFullName(),
             'make' => $vehicleInfo['marca'] ?? '',
@@ -329,7 +296,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             'year' => $vehicleInfo['ano'] ?? '',
             'category' => $vehicleInfo['categoria'] ?? 'motocicleta',
             'engine' => $vehicleInfo['motorizacao'] ?? '',
-            'displacement' => $vehicleInfo['motorizacao'] ?? '', // cilindrada geralmente está em motorizacao
+            'displacement' => $vehicleInfo['motorizacao'] ?? '',
             'type' => $vehicleInfo['categoria'] ?? '',
             'image_url' => $this->getMotorcycleImageUrl(),
             'is_sport' => $this->isSportMotorcycle(),
@@ -344,23 +311,23 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     private function getMotorcycleSituationCssClass(string $situation): string
     {
         $situation = strtolower($situation);
-        
+
         if (str_contains($situation, 'urbano') || str_contains($situation, 'cidade')) {
             return 'moto-situation-urban';
         }
-        
+
         if (str_contains($situation, 'estrada') || str_contains($situation, 'rodovia')) {
             return 'moto-situation-highway';
         }
-        
+
         if (str_contains($situation, 'garupa') || str_contains($situation, 'passageiro')) {
             return 'moto-situation-passenger';
         }
-        
+
         if (str_contains($situation, 'trilha') || str_contains($situation, 'off')) {
             return 'moto-situation-offroad';
         }
-        
+
         return 'moto-situation-default';
     }
 
@@ -376,7 +343,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             4 => 'target',
             5 => 'check-circle'
         ];
-        
+
         return $icons[$stepNumber] ?? 'circle';
     }
 
@@ -386,7 +353,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     private function getConsiderationIconClass(string $category): string
     {
         $category = strtolower($category);
-        
+
         $iconMap = [
             'temperatura' => 'thermometer',
             'carga' => 'package',
@@ -394,7 +361,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             'terreno' => 'map',
             'velocidade' => 'trending-up'
         ];
-        
+
         return $iconMap[$category] ?? 'info';
     }
 
@@ -404,23 +371,23 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     private function getRidingTypeIconClass(string $ridingType): string
     {
         $type = strtolower($ridingType);
-        
+
         if (str_contains($type, 'urbano') || str_contains($type, 'cidade')) {
             return 'home';
         }
-        
+
         if (str_contains($type, 'esportivo') || str_contains($type, 'sport')) {
             return 'zap';
         }
-        
+
         if (str_contains($type, 'touring') || str_contains($type, 'viagem')) {
             return 'map';
         }
-        
+
         if (str_contains($type, 'trilha') || str_contains($type, 'off')) {
             return 'mountain';
         }
-        
+
         return 'navigation';
     }
 
@@ -430,102 +397,88 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     private function getMotorcycleTipIconClass(string $category): string
     {
         $category = strtolower($category);
-        
+
         if (str_contains($category, 'verificação') || str_contains($category, 'inspeção')) {
             return 'search';
         }
-        
+
         if (str_contains($category, 'cuidados') || str_contains($category, 'proteção')) {
             return 'shield';
         }
-        
+
         if (str_contains($category, 'manutenção') || str_contains($category, 'preventiva')) {
             return 'wrench';
         }
-        
+
         if (str_contains($category, 'emergência') || str_contains($category, 'viagem')) {
             return 'alert-triangle';
         }
-        
+
         return 'tool';
     }
 
     /**
      * Verifica se é moto esportiva
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isSportMotorcycle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        
-        return str_contains($category, 'esportiva') || 
-               str_contains($type, 'sport') || 
-               str_contains($type, 'esportiva');
+
+        return str_contains($category, 'esportiva') ||
+            str_contains($category, 'sport') ||
+            str_contains($category, 'esportiva');
     }
 
     /**
      * Verifica se é moto touring
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isTouringMotorcycle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        
-        return str_contains($category, 'touring') || 
-               str_contains($type, 'touring') || 
-               str_contains($type, 'viagem');
+
+        return str_contains($category, 'touring') ||
+            str_contains($category, 'viagem');
     }
 
     /**
      * Verifica se é moto off-road
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isOffroadMotorcycle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        
-        return str_contains($category, 'off') || 
-               str_contains($type, 'trail') || 
-               str_contains($type, 'enduro') ||
-               str_contains($type, 'trilha');
+
+        return str_contains($category, 'off') ||
+            str_contains($category, 'trail') ||
+            str_contains($category, 'enduro') ||
+            str_contains($category, 'trilha');
     }
 
     /**
      * Obtém URL da imagem da motocicleta
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getMotorcycleImageUrl(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
         $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
         $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
         $year = $vehicleInfo['ano'] ?? '';
-        
+
         return "https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/motorcycles/{$makeSlug}-{$modelSlug}-{$year}.jpg";
     }
 
     /**
      * Processa dados SEO específicos para motocicletas
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processSeoData(): array
     {
         $vehicleFullName = $this->getVehicleFullName();
         $frontPressure = $this->processedData['tire_specifications']['front_tire']['pressure_solo'] ?? '';
         $rearPressure = $this->processedData['tire_specifications']['rear_tire']['pressure_solo'] ?? '';
-        
+
         $pressureDisplay = $frontPressure && $rearPressure ? "{$frontPressure} (dianteira) / {$rearPressure} (traseira)" : '';
-        
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
+
         $vehicleInfo = $this->article->extracted_entities ?? [];
-        
+
         return [
             'title' => $this->article->title ?? "Calibragem do Pneu da {$vehicleFullName} - Pressão Ideal",
             'meta_description' => $this->article->meta_description ?? "Saiba a pressão ideal para calibrar os pneus da {$vehicleFullName}. Pressões recomendadas: {$pressureDisplay}. Guia completo com dicas de segurança e performance!",
@@ -542,16 +495,13 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Constrói dados estruturados Schema.org para motocicletas
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function buildStructuredData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'];
         $vehicleFullName = $vehicleInfo['full_name'];
-        
-        // CORREÇÃO: Usar extracted_entities para dados do schema
         $vehicleData = $this->article->extracted_entities ?? [];
-        
+
         $structuredData = [
             '@context' => 'https://schema.org',
             '@type' => 'Article',
@@ -592,7 +542,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
                     'name' => 'Calibrador digital de pneus'
                 ],
                 [
-                    '@type' => 'HowToSupply', 
+                    '@type' => 'HowToSupply',
                     'name' => 'Compressor de ar portátil'
                 ]
             ],
@@ -605,20 +555,17 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
                     '@type' => 'HowToTool',
                     'name' => 'Manual do proprietário'
                 ]
-            ],
-            'step' => $this->buildMotorcycleHowToSteps()
+            ]
         ];
 
-        // VALIDAÇÃO: Só adiciona dados do veículo se marca E modelo existirem
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
             $structuredData['about'] = [
                 '@type' => 'Motorcycle',
-                'name' => 'Guia de calibragem para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
+                'name' => 'Guia de calibragem para ' . $vehicleData['marca'] . ' ' . $vehicleData['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];
 
-            // Adiciona ano se existir
             if (!empty($vehicleData['ano'])) {
                 $structuredData['about']['modelDate'] = (string) $vehicleData['ano'];
             }
@@ -628,67 +575,16 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * Constrói os passos do HowTo específicos para motocicletas
-     */
-    private function buildMotorcycleHowToSteps(): array
-    {
-        $steps = [];
-        $stepNumber = 1;
-
-        // Passos específicos para motocicletas
-        $motorcycleSteps = [
-            [
-                'name' => 'Verificação de Segurança',
-                'text' => 'Posicione a motocicleta em superfície plana, com motor frio há pelo menos 2 horas'
-            ],
-            [
-                'name' => 'Consulta do Manual',
-                'text' => 'Verifique as pressões recomendadas no manual do proprietário ou etiqueta na moto'
-            ],
-            [
-                'name' => 'Preparação do Equipamento',
-                'text' => 'Use calibrador digital específico para motos, com precisão de 0,1 PSI'
-            ],
-            [
-                'name' => 'Medição da Pressão',
-                'text' => 'Remova a tampa da válvula e meça a pressão rapidamente para evitar perda de ar'
-            ],
-            [
-                'name' => 'Ajuste da Pressão',
-                'text' => 'Calibre primeiro o pneu dianteiro, depois o traseiro, considerando piloto solo ou com garupa'
-            ],
-            [
-                'name' => 'Verificação Final',
-                'text' => 'Confira novamente as pressões e recoloque as tampas das válvulas'
-            ]
-        ];
-
-        foreach ($motorcycleSteps as $step) {
-            $steps[] = [
-                '@type' => 'HowToStep',
-                'position' => $stepNumber++,
-                'name' => $step['name'],
-                'text' => $step['text'],
-                'url' => $this->getCanonicalUrl() . '#' . Str::slug($step['name'])
-            ];
-        }
-
-        return $steps;
-    }
-
-    /**
      * Obtém nome completo do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getVehicleFullName(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
-        
+
         $make = $vehicleInfo['marca'] ?? '';
         $model = $vehicleInfo['modelo'] ?? '';
         $year = $vehicleInfo['ano'] ?? '';
-        
+
         return trim("{$make} {$model} {$year}");
     }
 
@@ -699,11 +595,11 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     {
         $severityMap = [
             'crítico' => 'alert-critical',
-            'importante' => 'alert-important', 
+            'importante' => 'alert-important',
             'atenção' => 'alert-warning',
             'info' => 'alert-info'
         ];
-        
+
         return $severityMap[strtolower($type)] ?? 'alert-info';
     }
 
@@ -718,7 +614,7 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
             'atenção' => 'info',
             'info' => 'help-circle'
         ];
-        
+
         return $iconMap[strtolower($type)] ?? 'help-circle';
     }
 
@@ -782,5 +678,4 @@ class TirePressureGuideMotorcycleViewModel extends TemplateViewModel
     {
         return $this->processedData;
     }
-
 }

@@ -3,7 +3,6 @@
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
-use Illuminate\Support\Str;
 
 class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 {
@@ -19,46 +18,19 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
-        // Introdução
         $this->processedData['introduction'] = $content['introducao'] ?? '';
-
-        // Especificações dos pneus
         $this->processedData['tire_specifications'] = $this->processMotorcycleTireSpecifications($content['especificacoes_pneus'] ?? []);
-
-        // Tabela de pressões específica para motos
         $this->processedData['pressure_table'] = $this->processMotorcyclePressureTable($content['tabela_pressoes'] ?? []);
-
-        // Tabela de conversão de unidades
         $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
-
-        // Localização das informações
         $this->processedData['information_location'] = $this->processInformationLocation($content['localizacao_informacoes'] ?? []);
-
-        // Benefícios da calibragem específicos para motos
         $this->processedData['calibration_benefits'] = $this->processMotorcycleCalibrationBenefits($content['beneficios_calibragem'] ?? []);
-
-        // Considerações especiais para motocicletas
         $this->processedData['special_considerations'] = $this->processSpecialConsiderations($content['consideracoes_especiais'] ?? []);
-
-        // Dicas de manutenção específicas para motos
         $this->processedData['maintenance_tips'] = $this->processMotorcycleMaintenanceTips($content['dicas_manutencao'] ?? []);
-
-        // Alertas críticos para motocicletas
         $this->processedData['critical_alerts'] = $this->processCriticalAlerts($content['alertas_criticos'] ?? []);
-
-        // Procedimento de calibragem para motos
         $this->processedData['calibration_procedure'] = $this->processCalibrationProcedure($content['procedimento_calibragem'] ?? []);
-
-        // Perguntas frequentes
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
-
-        // Considerações finais
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-
-        // Informações do veículo formatadas
         $this->processedData['vehicle_info'] = $this->processMotorcycleVehicleInfo();
-
-        // Dados estruturados para SEO
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
     }
@@ -74,7 +46,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
         $processed = [];
 
-        // Pneu dianteiro
         if (!empty($specs['pneu_dianteiro'])) {
             $processed['front_tire'] = [
                 'size' => $specs['pneu_dianteiro']['medida_original'] ?? '',
@@ -85,7 +56,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             ];
         }
 
-        // Pneu traseiro
         if (!empty($specs['pneu_traseiro'])) {
             $processed['rear_tire'] = [
                 'size' => $specs['pneu_traseiro']['medida_original'] ?? '',
@@ -109,7 +79,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             'special_conditions' => []
         ];
 
-        // Pressões oficiais
         if (!empty($table['pressoes_oficiais'])) {
             $processed['official_pressures'] = [
                 'solo_rider' => [
@@ -125,7 +94,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             ];
         }
 
-        // Condições especiais
         if (!empty($table['condicoes_especiais']) && is_array($table['condicoes_especiais'])) {
             foreach ($table['condicoes_especiais'] as $condition) {
                 if (!empty($condition['situacao'])) {
@@ -340,11 +308,9 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Processa informações do veículo (motocicleta)
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processMotorcycleVehicleInfo(): array
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
         return [
@@ -352,7 +318,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             'make' => $vehicleInfo['marca'] ?? '',
             'model' => $vehicleInfo['modelo'] ?? '',
             'year' => $vehicleInfo['ano'] ?? '',
-            'displacement' => $vehicleInfo['motorizacao'] ?? '', // cilindrada geralmente em motorizacao
+            'displacement' => $vehicleInfo['motorizacao'] ?? '',
             'type' => $vehicleInfo['categoria'] ?? '',
             'category' => 'motocicleta',
             'image_url' => $this->getMotorcycleImageUrl(),
@@ -409,7 +375,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
      */
     private function isRecommendedMotorcyclePressure(string $psi): bool
     {
-        $recommendedPressures = ['36', '42']; // Pressões padrão comuns para motos
+        $recommendedPressures = ['36', '42'];
         return in_array($psi, $recommendedPressures);
     }
 
@@ -645,14 +611,11 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Obtém nome completo da motocicleta
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getMotorcycleFullName(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
-        // Validação básica - retorna vazio se não tiver marca ou modelo
         if (empty($vehicleInfo['marca']) || empty($vehicleInfo['modelo'])) {
             return '';
         }
@@ -666,11 +629,9 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Obtém URL da imagem da motocicleta
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getMotorcycleImageUrl(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
         $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
         $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
@@ -681,47 +642,38 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Verifica se é moto esportiva
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isSportMotorcycle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
         return str_contains($type, 'sport') || str_contains($type, 'esportiva');
     }
 
     /**
      * Verifica se é moto naked
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isNakedMotorcycle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
         return str_contains($type, 'naked') || str_contains($type, 'street');
     }
 
     /**
      * Verifica se é moto touring
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isTouringMotorcycle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
         return str_contains($type, 'touring') || str_contains($type, 'viagem');
     }
 
     /**
      * Obtém categoria do tamanho do motor
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getEngineSizeCategory(): string
     {
-        // CORREÇÃO: Usar extracted_entities e extrair cilindrada da motorizacao
         $motorizacao = $this->article->extracted_entities['motorizacao'] ?? '';
 
-        // Extrai números da motorização (ex: "650cc" -> 650)
         preg_match('/(\d+)/', $motorizacao, $matches);
         $displacement = isset($matches[1]) ? intval($matches[1]) : 0;
 
@@ -735,7 +687,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Processa dados SEO específicos para motocicletas
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processSeoData(): array
     {
@@ -745,7 +696,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
         $pressureDisplay = $frontPressure && $rearPressure ? "{$frontPressure} (dianteira) / {$rearPressure} (traseira)" : '';
 
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
         return [
@@ -764,14 +714,11 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
     /**
      * Constrói dados estruturados Schema.org para motocicletas
-     * MÉTODO CORRIGIDO: Usa extracted_entities e valida dados antes de gerar schema
      */
     private function buildStructuredData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'];
         $vehicleFullName = $vehicleInfo['full_name'];
-
-        // CORREÇÃO: Usar extracted_entities para dados do schema
         $vehicleData = $this->article->extracted_entities ?? [];
 
         $structuredData = [
@@ -807,16 +754,14 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             ]
         ];
 
-        // VALIDAÇÃO: Só adiciona dados do veículo se marca E modelo existirem
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
             $structuredData['mainEntity'] = [
                 '@type' => 'Motorcycle',
-                'name' => 'Pressão ideal para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
+                'name' => 'Pressão ideal para ' . $vehicleData['marca'] . ' ' . $vehicleData['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];
 
-            // Adiciona ano se existir
             if (!empty($vehicleData['ano'])) {
                 $structuredData['mainEntity']['modelDate'] = (string) $vehicleData['ano'];
             }

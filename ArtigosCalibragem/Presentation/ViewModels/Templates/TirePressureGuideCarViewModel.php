@@ -3,7 +3,6 @@
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
-use Illuminate\Support\Str;
 
 class TirePressureGuideCarViewModel extends TemplateViewModel
 {
@@ -19,40 +18,17 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
-        // Introdução
         $this->processedData['introduction'] = $content['introducao'] ?? '';
-
-        // Especificações oficiais dos pneus
         $this->processedData['tire_specifications'] = $this->processTireSpecifications($content['especificacoes_oficiais'] ?? []);
-
-        // Tabela de pressões por condição de uso
         $this->processedData['pressure_table'] = $this->processPressureTable($content['tabela_pressoes'] ?? []);
-
-        // Procedimento de calibragem passo a passo
         $this->processedData['calibration_procedure'] = $this->processCalibrationProcedure($content['procedimento_calibragem'] ?? []);
-
-        // Sistema TPMS (Tire Pressure Monitoring System)
         $this->processedData['tpms_system'] = $this->processTpmsSystem($content['sistema_tpms'] ?? []);
-
-        // Impactos da calibragem incorreta vs ideal
         $this->processedData['calibration_impacts'] = $this->processCalibrationImpacts($content['impactos_calibragem'] ?? []);
-
-        // Dicas de manutenção e cuidados
         $this->processedData['maintenance_tips'] = $this->processMaintenanceTips($content['dicas_manutencao'] ?? []);
-
-        // Alertas de segurança importantes
         $this->processedData['safety_alerts'] = $this->processSafetyAlerts($content['alertas_seguranca'] ?? []);
-
-        // Perguntas frequentes
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
-
-        // Considerações finais
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-
-        // Informações do veículo formatadas
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
-
-        // Dados estruturados para SEO
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
     }
@@ -68,7 +44,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
 
         $processed = [];
 
-        // Pneu dianteiro
         if (!empty($specs['pneu_dianteiro'])) {
             $processed['front_tire'] = [
                 'size' => $specs['pneu_dianteiro']['medida_original'] ?? '',
@@ -80,7 +55,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             ];
         }
 
-        // Pneu traseiro
         if (!empty($specs['pneu_traseiro'])) {
             $processed['rear_tire'] = [
                 'size' => $specs['pneu_traseiro']['medida_original'] ?? '',
@@ -92,7 +66,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             ];
         }
 
-        // Estepe
         if (!empty($specs['pneu_estepe'])) {
             $processed['spare_tire'] = [
                 'size' => $specs['pneu_estepe']['medida'] ?? '',
@@ -184,7 +157,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     {
         $processed = [];
 
-        // Sub-calibrado
         if (!empty($impacts['sub_calibrado'])) {
             $processed['under_inflated'] = [
                 'fuel_consumption' => $impacts['sub_calibrado']['consumo'] ?? '',
@@ -196,7 +168,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             ];
         }
 
-        // Super-calibrado
         if (!empty($impacts['super_calibrado'])) {
             $processed['over_inflated'] = [
                 'fuel_consumption' => $impacts['super_calibrado']['consumo'] ?? '',
@@ -208,7 +179,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             ];
         }
 
-        // Calibragem ideal
         if (!empty($impacts['calibragem_ideal'])) {
             $processed['ideal_calibration'] = [
                 'fuel_consumption' => $impacts['calibragem_ideal']['consumo'] ?? '',
@@ -276,13 +246,11 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
 
     /**
      * Processa informações do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processVehicleInfo(): array
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
-        
+
         return [
             'full_name' => $this->getVehicleFullName(),
             'make' => $vehicleInfo['marca'] ?? '',
@@ -299,54 +267,46 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
 
     /**
      * Obtém nome completo do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getVehicleFullName(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
-        
+
         $make = $vehicleInfo['marca'] ?? '';
         $model = $vehicleInfo['modelo'] ?? '';
         $year = $vehicleInfo['ano'] ?? '';
-        
+
         return trim("{$make} {$model} {$year}");
     }
 
     /**
      * Verifica se é veículo elétrico
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isElectricVehicle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $fuel = $this->article->extracted_entities['combustivel'] ?? '';
         return in_array(strtolower($fuel), ['elétrico', 'electric', 'eletrico']);
     }
 
     /**
      * Verifica se é veículo híbrido
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function isHybridVehicle(): bool
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $fuel = $this->article->extracted_entities['combustivel'] ?? '';
         return str_contains(strtolower($fuel), 'híbrido') || str_contains(strtolower($fuel), 'hibrido');
     }
 
     /**
      * Obtém URL da imagem do veículo
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function getVehicleImageUrl(): string
     {
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
         $vehicleInfo = $this->article->extracted_entities ?? [];
         $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
         $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
         $year = $vehicleInfo['ano'] ?? '';
-        
+
         return "https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/vehicles/{$makeSlug}-{$modelSlug}-{$year}.jpg";
     }
 
@@ -356,23 +316,23 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     private function getSituationCssClass(string $situation): string
     {
         $situation = strtolower($situation);
-        
+
         if (str_contains($situation, 'normal') || str_contains($situation, 'urbano')) {
             return 'situation-normal';
         }
-        
+
         if (str_contains($situation, 'família') || str_contains($situation, 'completa')) {
             return 'situation-family';
         }
-        
+
         if (str_contains($situation, 'viagem') || str_contains($situation, 'longa')) {
             return 'situation-travel';
         }
-        
+
         if (str_contains($situation, 'rodovia') || str_contains($situation, 'velocidade')) {
             return 'situation-highway';
         }
-        
+
         return 'situation-default';
     }
 
@@ -387,7 +347,7 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             3 => 'tool',
             4 => 'list-ordered'
         ];
-        
+
         return $icons[$stepNumber] ?? 'check-circle';
     }
 
@@ -411,19 +371,19 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     private function getTipIconClass(string $category): string
     {
         $category = strtolower($category);
-        
+
         if (str_contains($category, 'verificação') || str_contains($category, 'regular')) {
             return 'clock';
         }
-        
+
         if (str_contains($category, 'cuidados') || str_contains($category, 'especiais')) {
             return 'shield';
         }
-        
+
         if (str_contains($category, 'manutenção') || str_contains($category, 'preventiva')) {
             return 'wrench';
         }
-        
+
         return 'info';
     }
 
@@ -434,11 +394,11 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     {
         $severityMap = [
             'crítico' => 'alert-critical',
-            'importante' => 'alert-important', 
+            'importante' => 'alert-important',
             'atenção' => 'alert-warning',
             'info' => 'alert-info'
         ];
-        
+
         return $severityMap[strtolower($type)] ?? 'alert-info';
     }
 
@@ -453,25 +413,23 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             'atenção' => 'info',
             'info' => 'help-circle'
         ];
-        
+
         return $iconMap[strtolower($type)] ?? 'help-circle';
     }
 
     /**
      * Processa dados SEO específicos para carros
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function processSeoData(): array
     {
         $vehicleFullName = $this->getVehicleFullName();
         $frontPressure = $this->processedData['tire_specifications']['front_tire']['pressure_empty'] ?? '';
         $rearPressure = $this->processedData['tire_specifications']['rear_tire']['pressure_empty'] ?? '';
-        
+
         $pressureDisplay = $frontPressure && $rearPressure ? "{$frontPressure} (dianteira) / {$rearPressure} (traseira)" : '';
-        
-        // CORREÇÃO: Usar extracted_entities ao invés de vehicle_info
+
         $vehicleInfo = $this->article->extracted_entities ?? [];
-        
+
         return [
             'title' => $this->article->title ?? "Calibragem do Pneu do {$vehicleFullName} - Pressão Ideal",
             'meta_description' => $this->article->meta_description ?? "Saiba a pressão ideal para calibrar os pneus do {$vehicleFullName}. Pressões recomendadas: {$pressureDisplay}. Guia completo com dicas de segurança e economia!",
@@ -488,16 +446,13 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
 
     /**
      * Constrói dados estruturados Schema.org
-     * MÉTODO CORRIGIDO: Usa extracted_entities ao invés de vehicle_info
      */
     private function buildStructuredData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'];
         $vehicleFullName = $vehicleInfo['full_name'];
-        
-        // CORREÇÃO: Usar extracted_entities para dados do schema
         $vehicleData = $this->article->extracted_entities ?? [];
-        
+
         $structuredData = [
             '@context' => 'https://schema.org',
             '@type' => 'Article',
@@ -538,7 +493,7 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
                     'name' => 'Calibrador digital de pneus'
                 ],
                 [
-                    '@type' => 'HowToSupply', 
+                    '@type' => 'HowToSupply',
                     'name' => 'Compressor de ar'
                 ]
             ],
@@ -547,74 +502,25 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
                     '@type' => 'HowToTool',
                     'name' => 'Calibrador digital'
                 ]
-            ],
-            'step' => $this->buildHowToSteps()
+            ]
         ];
 
-        // VALIDAÇÃO: Só adiciona dados do veículo se marca E modelo existirem
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
-            // Determina o tipo baseado no tipo_veiculo
             $vehicleSchemaType = ($vehicleData['tipo_veiculo'] ?? '') === 'motocicleta' ? 'Motorcycle' : 'Car';
-            
+
             $structuredData['about'] = [
                 '@type' => $vehicleSchemaType,
-                'name' => 'Guia de calibragem para ' . $vehicleInfo['marca'] . ' ' . $vehicleInfo['modelo'],
+                'name' => 'Guia de calibragem para ' . $vehicleData['marca'] . ' ' . $vehicleData['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
             ];
 
-            // Adiciona ano se existir
             if (!empty($vehicleData['ano'])) {
                 $structuredData['about']['modelDate'] = (string) $vehicleData['ano'];
             }
         }
 
         return $structuredData;
-    }
-
-    /**
-     * Constrói os passos do HowTo para schema
-     */
-    private function buildHowToSteps(): array
-    {
-        $steps = [];
-        $stepNumber = 1;
-
-        // Passos básicos do procedimento
-        $basicSteps = [
-            [
-                'name' => 'Verificação Inicial',
-                'text' => 'Verifique a pressão sempre com pneus frios, preferencialmente pela manhã antes de usar o veículo'
-            ],
-            [
-                'name' => 'Localização da Etiqueta',
-                'text' => 'Encontre a etiqueta com as pressões recomendadas na soleira da porta do motorista'
-            ],
-            [
-                'name' => 'Preparação do Equipamento',
-                'text' => 'Use um calibrador digital de qualidade para maior precisão na medição'
-            ],
-            [
-                'name' => 'Calibragem dos Pneus',
-                'text' => 'Calibre na sequência: dianteiro esquerdo, direito, traseiro esquerdo, direito'
-            ],
-            [
-                'name' => 'Verificação Final',
-                'text' => 'Confira se todas as pressões estão corretas e não esqueça do estepe'
-            ]
-        ];
-
-        foreach ($basicSteps as $step) {
-            $steps[] = [
-                '@type' => 'HowToStep',
-                'position' => $stepNumber++,
-                'name' => $step['name'],
-                'text' => $step['text'],
-                'url' => $this->getCanonicalUrl() . '#' . Str::slug($step['name'])
-            ];
-        }
-
-        return $steps;
     }
 
     /**
