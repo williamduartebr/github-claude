@@ -147,7 +147,7 @@ class OilRecommendationViewModel extends TemplateViewModel
         $this->processedData['breadcrumbs'] = [
             [
                 'name' => 'Início',
-                'url' => url('/'),
+                'url' => route('home'),
                 'position' => 1
             ],
             [

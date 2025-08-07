@@ -2,6 +2,7 @@
 
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
+use Illuminate\Support\Str;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
 
 class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
@@ -793,23 +794,23 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     {
         return [
             [
-                'name' => 'Home',
+                'name' => 'Início',
                 'url' => route('home'),
                 'position' => 1
             ],
             [
-                'name' => 'Info Center',
-                'url' => route('info.home'),
+                'name' => 'Informações',
+                'url' => route('info.category.index'),
                 'position' => 2
             ],
             [
-                'name' => $this->article->category_name ?? 'Calibragem de Pneus',
+                'name' => Str::title($this->article->category_name ?? 'Calibragem de Pneus'),
                 'url' => route('info.category.show', $this->article->category_slug ?? 'calibragem-pneus'),
                 'position' => 3
             ],
             [
                 'name' => $this->article->title,
-                'url' => null,
+                'url' => route('info.article.show', $this->article->slug), // URL para evitar erro
                 'position' => 4
             ],
         ];

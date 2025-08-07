@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Src\AutoInfoCenter\Presentation\Controllers\ArticleController;
+use Src\AutoInfoCenter\Presentation\Controllers\TestMockController;
 use Src\AutoInfoCenter\Presentation\Controllers\InfoCategoryController;
 
 Route::middleware('web')->group(function () {
@@ -23,5 +24,28 @@ Route::middleware('web')->group(function () {
 
     Route::get('/popular-categories', [InfoCategoryController::class, 'getPopularCategories'])
         ->name('info.category.popular-categories');
+
+
+
+
+    // Rotas de teste para mocks
+    Route::prefix('test-mocks')->group(function () {
+        // 📋 Rota original - Testa todos os mocks
+        Route::get('/', [TestMockController::class, 'testAllMocks']);
+        
+        // 🆕 NOVA: Renderiza template específico
+        Route::get('/render/{filename}', [TestMockController::class, 'renderTemplate']);
+        
+        // 🆕 NOVA: Debug dados processados (JSON detalhado)
+        Route::get('/debug-processed/{filename}', [TestMockController::class, 'debugProcessedData']);
+        
+        // 📋 Rota original - Testa mock específico (deve ficar por último)
+        Route::get('/{filename}', [TestMockController::class, 'testMock']);
+    });
+
+    // 🔍 Rota original de debug básico
+    Route::get('debug-mock/{filename}', [TestMockController::class, 'debugMock']);
+
+
         
 });

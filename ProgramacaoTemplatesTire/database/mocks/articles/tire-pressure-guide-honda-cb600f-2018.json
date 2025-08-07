@@ -7,94 +7,173 @@
     "category_slug": "pneus-rodas",
     "content": {
         "introducao": "Calibrar corretamente os pneus da sua Honda CB600F 2018 é uma habilidade fundamental que todo motociclista deve dominar. Diferente dos carros, onde pequenos erros podem passar despercebidos, em motocicletas cada PSI impacta diretamente na estabilidade, frenagem e comportamento em curvas. A CB600F, com seus 599cc de potência e vocação esportiva, exige atenção especial às pressões para entregar toda sua performance com segurança. Neste guia prático, você aprenderá o procedimento completo, desde a preparação até os ajustes finais, garantindo que sua Hornet sempre esteja nas condições ideais para uma pilotagem segura e prazerosa.",
+        
         "especificacoes_oficiais": {
             "pneu_dianteiro": {
                 "medida_original": "120/70 ZR17 M/C (58W)",
+                "tipo": "Radial Performance",
+                "marca_original": "Bridgestone Battlax BT-023",
+                "indice_carga": "58 (236 kg)",
+                "indice_velocidade": "W (270 km/h)",
                 "pressao_recomendada": "36 PSI (2.5 bar)",
-                "pressao_maxima": "51 PSI (3.5 bar)",
-                "capacidade_carga": "236 kg",
-                "tipo": "Radial tubeless"
+                "pressao_maxima": "51 PSI (3.5 bar)"
             },
             "pneu_traseiro": {
                 "medida_original": "180/55 ZR17 M/C (73W)",
+                "tipo": "Radial Performance",
+                "marca_original": "Bridgestone Battlax BT-023",
+                "indice_carga": "73 (365 kg)",
+                "indice_velocidade": "W (270 km/h)",
                 "pressao_recomendada": "42 PSI (2.9 bar)",
-                "pressao_maxima": "51 PSI (3.5 bar)",
-                "capacidade_carga": "365 kg",
-                "tipo": "Radial tubeless"
+                "pressao_maxima": "51 PSI (3.5 bar)"
             }
         },
-        "procedimento_calibragem": [
+        
+        "tabela_pressoes": {
+            "condicoes_uso": [
+                {
+                    "situacao": "Uso Solo (Rua)",
+                    "ocupantes": "Apenas piloto",
+                    "bagagem": "Sem bagagem",
+                    "pressao_dianteira": "36 PSI (2.5 bar)",
+                    "pressao_traseira": "42 PSI (2.9 bar)",
+                    "observacao": "Condições urbanas e rodoviárias normais"
+                },
+                {
+                    "situacao": "Com Passageiro (Rua)",
+                    "ocupantes": "Piloto + garupa",
+                    "bagagem": "Bagagem leve",
+                    "pressao_dianteira": "36 PSI (2.5 bar)",
+                    "pressao_traseira": "42 PSI (2.9 bar)",
+                    "observacao": "Mesmo valor - distribuição equilibrada"
+                },
+                {
+                    "situacao": "Pilotagem Esportiva",
+                    "ocupantes": "Apenas piloto",
+                    "bagagem": "Sem bagagem",
+                    "pressao_dianteira": "38 PSI (2.6 bar)",
+                    "pressao_traseira": "40 PSI (2.8 bar)",
+                    "observacao": "Maior área de contato em curvas"
+                },
+                {
+                    "situacao": "Com Carga ou Bagagem",
+                    "ocupantes": "Piloto ou piloto + garupa",
+                    "bagagem": "Bagagem pesada/viagem",
+                    "pressao_dianteira": "38 PSI (2.6 bar)",
+                    "pressao_traseira": "44 PSI (3.0 bar)",
+                    "observacao": "Compensar peso adicional"
+                }
+            ]
+        },
+        
+        "procedimento_calibragem": {
+            "passos": [
+                {
+                    "numero": 1,
+                    "titulo": "Preparação e Posicionamento",
+                    "descricao": "Prepare a motocicleta e o ambiente para calibragem segura",
+                    "dicas": [
+                        "Coloque a moto no cavalete central em superfície plana",
+                        "Aguarde pelo menos 3 horas após pilotagem (pneus frios)",
+                        "Verifique se há objetos cravados nos sulcos",
+                        "Tenha em mãos: calibrador para motos, compressor, pano limpo"
+                    ]
+                },
+                {
+                    "numero": 2,
+                    "titulo": "Verificação da Pressão Atual",
+                    "descricao": "Meça a pressão atual de ambos os pneus",
+                    "dicas": [
+                        "Remova as tampas das válvulas (dianteiro e traseiro)",
+                        "Use calibrador específico para motos (bico reto)",
+                        "Conecte firmemente para evitar escape de ar",
+                        "Anote as pressões atuais para comparação"
+                    ]
+                },
+                {
+                    "numero": 3,
+                    "titulo": "Calibragem do Pneu Dianteiro",
+                    "descricao": "Ajuste a pressão do pneu dianteiro para 36 PSI",
+                    "dicas": [
+                        "Meta: 36 PSI para uso normal",
+                        "Adicione ar gradualmente, verificando a pressão frequentemente",
+                        "Para uso urbano mais confortável: 34 PSI",
+                        "Para pilotagem esportiva: 38 PSI"
+                    ]
+                },
+                {
+                    "numero": 4,
+                    "titulo": "Calibragem do Pneu Traseiro",
+                    "descricao": "Ajuste a pressão do pneu traseiro para 42 PSI",
+                    "dicas": [
+                        "Meta: 42 PSI para uso normal",
+                        "Pressão sempre maior que o dianteiro",
+                        "Para uso urbano: 40 PSI",
+                        "Para carga extra ou garupa: 44 PSI"
+                    ]
+                },
+                {
+                    "numero": 5,
+                    "titulo": "Verificação Final e Acabamento",
+                    "descricao": "Confirme as pressões e finalize o procedimento",
+                    "dicas": [
+                        "Meça novamente ambos os pneus para confirmação",
+                        "Dianteiro: 36 PSI | Traseiro: 42 PSI",
+                        "Recoloque as tampas das válvulas firmemente",
+                        "Anote a data para controle de manutenção"
+                    ]
+                }
+            ]
+        },
+        
+        "recomendacoes_uso": [
             {
-                "passo": 1,
-                "titulo": "Preparação e Posicionamento",
-                "descricao": "Prepare a motocicleta e o ambiente para calibragem segura",
-                "detalhes": [
-                    "Coloque a moto no cavalete central em superfície plana",
-                    "Aguarde pelo menos 3 horas após pilotagem (pneus frios)",
-                    "Verifique se há objetos cravados nos sulcos",
-                    "Tenha em mãos: calibrador para motos, compressor, pano limpo"
-                ],
-                "tempo_estimado": "5 minutos",
-                "dica_especial": "Nunca calibre apenas no cavalete lateral - o peso desigual afeta a medição",
-                "seguranca": "Certifique-se que a moto está estável antes de iniciar"
+                "categoria": "Uso Urbano",
+                "pressao_recomendada": "36/42 PSI",
+                "descricao": "Para o uso predominantemente urbano, mantenha a pressão padrão. Isso oferece melhor estabilidade no asfalto, reduz o desgaste e melhora a economia de combustível.",
+                "dica_tecnica": "Em trânsito intenso, com paradas frequentes, a temperatura dos pneus pode aumentar. Verifique a calibragem sempre com os pneus frios para maior precisão."
             },
             {
-                "passo": 2,
-                "titulo": "Verificação da Pressão Atual",
-                "descricao": "Meça a pressão atual de ambos os pneus",
-                "detalhes": [
-                    "Remova as tampas das válvulas (dianteiro e traseiro)",
-                    "Use calibrador específico para motos (bico reto)",
-                    "Conecte firmemente para evitar escape de ar",
-                    "Anote as pressões atuais para comparação"
-                ],
-                "tempo_estimado": "3 minutos",
-                "dica_especial": "Válvulas de moto são mais expostas - manuseie com cuidado",
-                "atencao": "Se a pressão estiver muito baixa (<20 PSI), verifique vazamentos"
+                "categoria": "Estradas e Rodovias",
+                "pressao_recomendada": "36/42 PSI",
+                "descricao": "Para viagens longas em rodovias, mantenha a pressão no limite da faixa recomendada. Isso melhora a estabilidade em alta velocidade e reduz a resistência ao rolamento.",
+                "dica_tecnica": "Em viagens longas, verifique a pressão dos pneus no mínimo a cada 500 km, pois variações de temperatura e altitude podem afetar a calibragem."
             },
             {
-                "passo": 3,
-                "titulo": "Calibragem do Pneu Dianteiro",
-                "descricao": "Ajuste a pressão do pneu dianteiro para 36 PSI",
-                "detalhes": [
-                    "Meta: 36 PSI para uso normal",
-                    "Adicione ar gradualmente, verificando a pressão frequentemente",
-                    "Para uso urbano mais confortável: 34 PSI",
-                    "Para pilotagem esportiva: 38 PSI"
-                ],
-                "tempo_estimado": "5 minutos",
-                "dica_especial": "Pneu dianteiro controla direção e frenagem - precisão é crucial",
-                "cuidado": "Não exceda 40 PSI para uso normal"
+                "categoria": "Pilotagem Esportiva",
+                "pressao_recomendada": "38/40 PSI",
+                "descricao": "Para pilotagem mais agressiva, ajuste ligeiramente as pressões para melhor resposta em curvas. O dianteiro ligeiramente mais alto e traseiro um pouco menor otimizam o contato.",
+                "dica_tecnica": "A diferença menor entre dianteiro e traseiro (apenas 2 PSI) melhora a agilidade e resposta da direção em curvas fechadas."
             },
             {
-                "passo": 4,
-                "titulo": "Calibragem do Pneu Traseiro",
-                "descricao": "Ajuste a pressão do pneu traseiro para 42 PSI",
-                "detalhes": [
-                    "Meta: 42 PSI para uso normal",
-                    "Pressão sempre maior que o dianteiro",
-                    "Para uso urbano: 40 PSI",
-                    "Para carga extra ou garupa: 44 PSI"
-                ],
-                "tempo_estimado": "5 minutos",
-                "dica_especial": "Traseiro suporta mais peso e transmite potência",
-                "importante": "Diferença ideal: 6 PSI a mais que o dianteiro"
-            },
-            {
-                "passo": 5,
-                "titulo": "Verificação Final e Acabamento",
-                "descricao": "Confirme as pressões e finalize o procedimento",
-                "detalhes": [
-                    "Meça novamente ambos os pneus para confirmação",
-                    "Dianteiro: 36 PSI | Traseiro: 42 PSI",
-                    "Recoloque as tampas das válvulas firmemente",
-                    "Anote a data para controle de manutenção"
-                ],
-                "tempo_estimado": "3 minutos",
-                "dica_especial": "Faça um teste rápido de estabilidade em baixa velocidade",
-                "registro": "Mantenha histórico das calibragens"
+                "categoria": "Com Carga ou Bagagem",
+                "pressao_recomendada": "38/44 PSI",
+                "descricao": "Para viagens com bagagem ou em dupla, aumente principalmente a pressão traseira para compensar o peso adicional e manter a estabilidade.",
+                "dica_tecnica": "Adicione aproximadamente 2 PSI à calibragem traseira para cada 20kg adicionais de carga. O ajuste é crucial para manter a geometria correta da moto."
             }
         ],
+        
+        "comparativo_impacto": {
+            "subcalibrado": {
+                "desgaste": 85,
+                "consumo": 80,
+                "estabilidade_asfalto": 40,
+                "conforto": 75
+            },
+            "calibragem_ideal": {
+                "desgaste": 25,
+                "consumo": 25,
+                "estabilidade_asfalto": 90,
+                "conforto": 80
+            },
+            "sobrecalibrado": {
+                "desgaste": 65,
+                "consumo": 30,
+                "estabilidade_asfalto": 60,
+                "conforto": 25
+            }
+        },
+        
         "equipamentos_necessarios": [
             {
                 "item": "Calibrador Digital para Motos",
@@ -116,15 +195,9 @@
                 "caracteristicas": "Esponjas, cola, ferramenta de inserção",
                 "preco_medio": "R$ 30-50",
                 "recomendacao": "Para pequenos furos em emergências"
-            },
-            {
-                "item": "Tampas de Válvula de Qualidade",
-                "importancia": "Preventivo",
-                "caracteristicas": "Metal ou borracha de boa qualidade",
-                "preco_medio": "R$ 10-20",
-                "recomendacao": "Protegem contra sujeira e umidade"
             }
         ],
+        
         "cuidados_especiais": [
             {
                 "categoria": "Diferenças Entre Pneus",
@@ -154,144 +227,76 @@
                 ]
             }
         ],
-        "impactos_pilotagem": {
-            "pressao_baixa": {
-                "dianteiro": [
-                    "Direção pesada e imprecisa",
-                    "Maior esforço para inclinar em curvas",
-                    "Desgaste acelerado das laterais",
-                    "Aquecimento excessivo do pneu"
-                ],
-                "traseiro": [
-                    "Perda de tração em acelerações",
-                    "Instabilidade em alta velocidade",
-                    "Formato 'quadrado' em uso urbano",
-                    "Maior consumo de combustível"
-                ]
-            },
-            "pressao_alta": {
-                "dianteiro": [
-                    "Direção nervosa e trepidante",
-                    "Menor área de contato para frenagem",
-                    "Desconforto em irregularidades",
-                    "Desgaste central acelerado"
-                ],
-                "traseiro": [
-                    "Perda de aderência em curvas",
-                    "Comportamento instável em piso molhado",
-                    "Maior susceptibilidade a furos",
-                    "Transmissão excessiva de impactos"
-                ]
-            },
-            "pressao_ideal": {
-                "beneficios": [
-                    "Controle preciso em todas as situações",
-                    "Frenagem eficiente e segura",
-                    "Estabilidade em curvas e retas",
-                    "Desgaste uniforme dos pneus",
-                    "Economia de combustível otimizada"
-                ]
-            }
+        
+        "sinais_problemas": {
+            "subcalibrado": [
+                "Desgaste excessivo nas bordas laterais do pneu",
+                "Sensação de 'flutuação' ou instabilidade nas curvas",
+                "Resposta lenta da direção e mudanças de direção",
+                "Aumento perceptível no consumo de combustível",
+                "Risco aumentado de danos ao pneu e ao aro"
+            ],
+            "sobrecalibrado": [
+                "Desgaste concentrado no centro da banda de rodagem",
+                "Redução significativa do conforto e maior vibração",
+                "Menor aderência em superfícies irregulares ou molhadas",
+                "Direção excessivamente sensível e instável",
+                "Maior suscetibilidade a danos por impactos (pedras, buracos)"
+            ]
         },
-        "manutencao_preventiva": [
+        
+        "pneus_alternativos": [
             {
-                "frequencia": "Semanal",
-                "atividade": "Verificação Visual",
-                "procedimento": [
-                    "Inspecione visualmente ambos os pneus",
-                    "Procure objetos cravados ou cortes",
-                    "Verifique desgaste irregular",
-                    "Observe estado das válvulas"
-                ]
+                "categoria": "Pneus Esportivos",
+                "pressao_dianteiro": "38-40 PSI",
+                "pressao_traseiro": "40-42 PSI",
+                "descricao": "Pneus como Michelin Pilot Power, Pirelli Diablo Rosso ou Bridgestone S22 pedem pressão ligeiramente superior para otimizar o contato e performance.",
+                "tags": ["Alta performance", "Aderência superior", "Curvas"]
             },
             {
-                "frequencia": "Quinzenal",
-                "atividade": "Verificação de Pressão",
-                "procedimento": [
-                    "Meça pressão com pneus frios",
-                    "Compare com especificações recomendadas",
-                    "Ajuste se necessário",
-                    "Registre as medições"
-                ]
+                "categoria": "Pneus Touring",
+                "pressao_dianteiro": "36-38 PSI",
+                "pressao_traseiro": "42-44 PSI",
+                "descricao": "Pneus com foco em durabilidade como Michelin Road 5, Continental Road Attack ou Pirelli Angel GT mantêm a pressão padrão ou ligeiramente superior.",
+                "tags": ["Longa duração", "Viagens", "Economia"]
             },
             {
-                "frequencia": "Mensal",
-                "atividade": "Inspeção Detalhada",
-                "procedimento": [
-                    "Verifique profundidade dos sulcos",
-                    "Inspecione laterais por rachaduras",
-                    "Teste firmeza das válvulas",
-                    "Avalie necessidade de balanceamento"
-                ]
-            },
-            {
-                "frequencia": "Antes de Viagens",
-                "atividade": "Verificação Completa",
-                "procedimento": [
-                    "Calibre nas pressões adequadas para viagem",
-                    "Inspecione completamente ambos os pneus",
-                    "Verifique kit de reparo",
-                    "Teste estabilidade em baixa velocidade"
-                ]
+                "categoria": "Pneus Urbanos",
+                "pressao_dianteiro": "34-36 PSI",
+                "pressao_traseiro": "40-42 PSI",
+                "descricao": "Pneus focados em conforto urbano como Michelin City Pro, Pirelli MT75 ou Bridgestone BT45 podem usar pressão ligeiramente menor.",
+                "tags": ["Conforto urbano", "Durabilidade", "Custo-benefício"]
             }
         ],
-        "alertas_seguranca": [
-            {
-                "nivel": "Crítico",
-                "titulo": "Diferença Excessiva Entre Pneus",
-                "descricao": "Variação maior que 5 PSI entre dianteiro e traseiro pode causar instabilidade severa",
-                "acao_imediata": "Ajustar imediatamente conforme especificações",
-                "risco": "Alto risco de perda de controle"
-            },
-            {
-                "nivel": "Alto",
-                "titulo": "Pressão Muito Baixa (<25 PSI)",
-                "descricao": "Pressão extremamente baixa pode causar descolamento do pneu da roda",
-                "acao_imediata": "Não pilote - calibre imediatamente",
-                "risco": "Risco de acidente grave"
-            },
-            {
-                "nivel": "Alto",
-                "titulo": "Perda Rápida de Pressão",
-                "descricao": "Pneu que perde pressão rapidamente durante calibragem",
-                "acao_imediata": "Interromper uso e inspecionar furo ou dano na válvula",
-                "risco": "Possível estouro em movimento"
-            },
-            {
-                "nivel": "Moderado",
-                "titulo": "Pressão Inconsistente",
-                "descricao": "Pressão varia muito entre calibragens próximas",
-                "acao_imediata": "Verificar válvulas e possíveis micro vazamentos",
-                "risco": "Degradação gradual da segurança"
-            }
-        ],
+        
         "perguntas_frequentes": [
             {
                 "pergunta": "Qual a pressão ideal para a Honda CB600F 2018?",
-                "resposta": "36 PSI no pneu dianteiro e 42 PSI no traseiro para uso normal. Para uso urbano mais confortável, pode usar 34/40 PSI."
+                "resposta": "Para uso normal, 36 PSI no pneu dianteiro e 42 PSI no traseiro. Para veículo carregado ou viagens, aumente para 38/44 PSI conforme recomendação da Honda."
             },
             {
-                "pergunta": "Por que a pressão do traseiro é sempre maior?",
-                "resposta": "O pneu traseiro suporta mais peso (piloto + motor) e transmite toda a potência. A pressão maior compensa essa carga e melhora a transmissão de força."
+                "pergunta": "Por que a pressão do pneu traseiro é maior?",
+                "resposta": "O pneu traseiro suporta mais peso (piloto + motor + transmissão) e transmite toda a potência. A pressão maior compensa essa carga adicional."
             },
             {
-                "pergunta": "Posso calibrar apenas no cavalete lateral?",
-                "resposta": "Não é recomendado. O cavalete lateral distribui peso desigualmente, afetando a medição. Sempre use o cavalete central para calibragem precisa."
+                "pergunta": "Posso usar a mesma pressão nos dois pneus?",
+                "resposta": "Não recomendado. Cada pneu tem função específica e a pressão diferenciada otimiza desempenho, segurança e durabilidade."
             },
             {
-                "pergunta": "Com que frequência devo verificar a pressão?",
-                "resposta": "Quinzenalmente ou antes de pilotagens longas. Motocicletas perdem pressão mais rapidamente que carros devido à menor volume de ar."
+                "pergunta": "Com que frequência verificar a pressão?",
+                "resposta": "Semanalmente ou antes de cada pilotagem longa. Motocicletas perdem pressão mais rapidamente que carros."
+            },
+            {
+                "pergunta": "É normal perder pressão com o tempo?",
+                "resposta": "Sim, é normal. Os pneus perdem naturalmente cerca de 1-2 PSI por mês devido à permeabilidade da borracha. Se a perda for maior que 4-5 PSI mensais, verifique vazamentos."
             },
             {
                 "pergunta": "Preciso ajustar a pressão para chuva?",
-                "resposta": "Para chuva intensa, pode reduzir 2 PSI em cada pneu (34/40 PSI) para aumentar área de contato e melhorar aderência em piso molhado."
-            },
-            {
-                "pergunta": "O que fazer se a pressão varia constantemente?",
-                "resposta": "Pode indicar micro vazamento na válvula ou furo pequeno. Faça teste com água e sabão nas válvulas e procure assistência se necessário."
+                "resposta": "Para chuva intensa, pode reduzir 2 PSI em cada pneu para aumentar a área de contato e melhorar aderência em piso molhado."
             }
         ],
-        "consideracoes_finais": "Dominar a calibragem dos pneus da sua Honda CB600F 2018 é uma habilidade que vai além da manutenção básica - é questão de segurança e performance. Em motocicletas, onde cada componente impacta diretamente na estabilidade e controle, manter as pressões corretas (36/42 PSI) não é opcional, é fundamental. A CB600F foi projetada para entregar performance e prazer de pilotagem, mas isso só é possível com manutenção adequada. Invista tempo nesta verificação quinzenal e sua Hornet retribuirá com milhares de quilômetros de pilotagem segura, estável e prazerosa. Lembre-se: em duas rodas, a prevenção não é apenas economia - é vida. Pilote sempre com responsabilidade e pneus perfeitamente calibrados."
+        
+        "consideracoes_finais": "Dominar a calibragem dos pneus da sua Honda CB600F 2018 é uma habilidade que vai além da manutenção básica - é questão de segurança e performance. Em motocicletas, onde cada componente impacta diretamente na estabilidade e controle, manter as pressões corretas (36/42 PSI) não é opcional, é fundamental. A CB600F foi projetada para entregar performance e prazer de pilotagem, mas isso só é possível com manutenção adequada. Invista tempo nesta verificação semanal e sua Hornet retribuirá com milhares de quilômetros de pilotagem segura, estável e prazerosa. Lembre-se: em duas rodas, a prevenção não é apenas economia - é vida. Pilote sempre com responsabilidade e pneus perfeitamente calibrados."
     },
     "extracted_entities": {
         "marca": "Honda",
@@ -307,15 +312,16 @@
         "page_title": "Como Calibrar Pneus Honda CB600F 2018 - Guia Completo Passo a Passo",
         "meta_description": "Aprenda a calibrar corretamente os pneus da Honda CB600F 2018. Guia completo com procedimento, equipamentos, pressões e cuidados especiais para motocicletas.",
         "url_slug": "como-calibrar-pneus-honda-cb600f-2018",
-        "h1": "Como Calibrar os Pneus da Honda CB600F 2018: Guia Completo",
+        "h1": "Calibragem do Pneu da Honda CB600F 2018",
         "h2_tags": [
-            "Especificações Oficiais",
-            "Procedimento de Calibragem",
-            "Equipamentos Necessários",
-            "Cuidados Especiais",
-            "Impactos na Pilotagem",
-            "Manutenção Preventiva",
-            "Alertas de Segurança"
+            "Especificações dos Pneus Originais",
+            "Pressões Recomendadas",
+            "Recomendações por Tipo de Uso",
+            "Impacto da Calibragem no Desempenho",
+            "Adaptações para Pneus Alternativos",
+            "Procedimento de Calibragem Correto",
+            "Sinais de Problemas na Calibragem",
+            "Perguntas Frequentes"
         ],
         "primary_keyword": "como calibrar pneus Honda CB600F 2018",
         "secondary_keywords": [
@@ -326,13 +332,7 @@
         ],
         "meta_robots": "index,follow",
         "canonical_url": "https://mercadoveiculos.com/info/como-calibrar-pneus-honda-cb600f-2018",
-        "schema_type": "Article",
-        "focus_keywords": [
-            "calibrar pneus moto",
-            "procedimento calibragem",
-            "segurança pilotagem",
-            "manutenção preventiva"
-        ]
+        "schema_type": "Article"
     },
     "vehicle_data": {
         "vehicle_full_name": "Honda CB600F 2018",
@@ -345,17 +345,17 @@
         "pressures": {
             "empty_front": 36,
             "empty_rear": 42,
-            "loaded_front": 36,
+            "loaded_front": 38,
             "loaded_rear": 44,
             "max_front": 51,
             "max_rear": 51,
             "urban_front": 34,
             "urban_rear": 40,
             "sport_front": 38,
-            "sport_rear": 42
+            "sport_rear": 40
         },
         "pressure_display": "36/42 PSI",
-        "pressure_loaded_display": "36/44 PSI",
+        "pressure_loaded_display": "38/44 PSI",
         "is_motorcycle": true,
         "is_premium": false,
         "has_tpms": false,

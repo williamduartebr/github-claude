@@ -115,7 +115,7 @@ class ReviewScheduleCarViewModel extends TemplateViewModel
         $this->processedData['breadcrumbs'] = [
             [
                 'name' => 'Início',
-                'url' => url('/'),
+                'url' => route('home'),
                 'position' => 1
             ],
             [
@@ -124,8 +124,8 @@ class ReviewScheduleCarViewModel extends TemplateViewModel
                 'position' => 2
             ],
             [
-                'name' => Str::title($this->article->category_name ?? ''),
-                'url' => route('info.category.show', $this->article->category_slug ?? ''),
+                'name' => Str::title($this->article->category_name ?? 'Revisões Programadas'),
+                'url' => route('info.category.show', $this->article->category_slug ?? 'revisoes-programadas'),
                 'position' => 3
             ],
             [

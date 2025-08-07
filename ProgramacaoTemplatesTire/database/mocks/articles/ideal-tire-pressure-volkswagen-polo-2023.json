@@ -1,0 +1,277 @@
+{
+    "title": "Pressão Ideal para Pneus do Volkswagen Polo 2023 – Tabela Completa",
+    "slug": "pressao-ideal-pneus-volkswagen-polo-2023",
+    "template": "ideal_tire_pressure_car",
+    "category_id": 30,
+    "category_name": "Pneus e Rodas",
+    "category_slug": "pneus-rodas",
+    "content": {
+        "introducao": "Manter os pneus do seu Volkswagen Polo 2023 com a pressão correta é fundamental para garantir segurança, economia de combustível e prolongar a vida útil dos pneus. Este guia apresenta a tabela completa de calibragem para todas as versões, com valores oficiais em PSI (padrão brasileiro) e conversões para outras unidades.",
+        
+        "especificacoes_por_versao": [
+            {
+                "versao": "Polo MPI",
+                "medida_pneus": "185/65 R15",
+                "indice_carga_velocidade": "88H",
+                "pressao_dianteiro_normal": "30 PSI",
+                "pressao_traseiro_normal": "28 PSI",
+                "pressao_dianteiro_carregado": "32 PSI",
+                "pressao_traseiro_carregado": "35 PSI"
+            },
+            {
+                "versao": "Polo TSI Comfortline",
+                "medida_pneus": "195/55 R16",
+                "indice_carga_velocidade": "87H",
+                "pressao_dianteiro_normal": "32 PSI",
+                "pressao_traseiro_normal": "30 PSI",
+                "pressao_dianteiro_carregado": "34 PSI",
+                "pressao_traseiro_carregado": "36 PSI"
+            },
+            {
+                "versao": "Polo TSI Highline",
+                "medida_pneus": "195/55 R16",
+                "indice_carga_velocidade": "87H",
+                "pressao_dianteiro_normal": "32 PSI",
+                "pressao_traseiro_normal": "30 PSI",
+                "pressao_dianteiro_carregado": "34 PSI",
+                "pressao_traseiro_carregado": "36 PSI"
+            },
+            {
+                "versao": "Polo TSI GTS",
+                "medida_pneus": "205/45 R17",
+                "indice_carga_velocidade": "88V",
+                "pressao_dianteiro_normal": "34 PSI",
+                "pressao_traseiro_normal": "32 PSI",
+                "pressao_dianteiro_carregado": "36 PSI",
+                "pressao_traseiro_carregado": "38 PSI"
+            }
+        ],
+        
+        "localizacao_etiqueta": {
+            "local_principal": "Coluna da porta do motorista",
+            "descricao": "A etiqueta oficial de pressão dos pneus do Volkswagen Polo 2023 está localizada na coluna da porta do motorista, visível quando a porta está aberta.",
+            "locais_alternativos": [
+                "Manual do proprietário na seção 'Especificações Técnicas'",
+                "Tampa do tanque de combustível (alguns casos)",
+                "Porta-luvas (alguns casos)"
+            ],
+            "observacao": "Sempre utilize os valores oficiais da etiqueta em PSI como referência principal."
+        },
+        
+        "condicoes_especiais": [
+            {
+                "condicao": "Viagens em Rodovias",
+                "ajuste_recomendado": "+3 PSI",
+                "aplicacao": "Velocidades sustentadas acima de 110 km/h",
+                "justificativa": "Compensa o aquecimento dos pneus em altas velocidades, melhorando a estabilidade e reduzindo o risco de falhas por superaquecimento.",
+                "icone": "rodovia"
+            },
+            {
+                "condicao": "Carga Máxima",
+                "ajuste_recomendado": "Ver tabela 'carga completa'",
+                "aplicacao": "4 ou 5 passageiros e bagagem",
+                "justificativa": "Quando transportar carga máxima, utilize sempre os valores da coluna 'carga completa'. Para cargas excepcionalmente pesadas, considere aumentar em mais 2 PSI os valores dos pneus traseiros.",
+                "icone": "carga"
+            },
+            {
+                "condicao": "Condução Econômica",
+                "ajuste_recomendado": "+3 PSI máximo",
+                "aplicacao": "Para maximizar economia de combustível",
+                "justificativa": "Pressões ligeiramente superiores reduzem a resistência ao rolamento. Atenção: não exceda este valor para não comprometer aderência e conforto.",
+                "icone": "economia"
+            }
+        ],
+        
+        "conversao_unidades": {
+            "tabela_conversao": [
+                {
+                    "psi": 28,
+                    "kgf_cm2": 1.97,
+                    "bar": 1.93
+                },
+                {
+                    "psi": 30,
+                    "kgf_cm2": 2.11,
+                    "bar": 2.07
+                },
+                {
+                    "psi": 32,
+                    "kgf_cm2": 2.25,
+                    "bar": 2.21
+                },
+                {
+                    "psi": 35,
+                    "kgf_cm2": 2.46,
+                    "bar": 2.41
+                },
+                {
+                    "psi": 38,
+                    "kgf_cm2": 2.67,
+                    "bar": 2.62
+                }
+            ],
+            "formulas": {
+                "psi_para_kgf": "kgf/cm² = PSI ÷ 14,22",
+                "kgf_para_psi": "PSI = kgf/cm² × 14,22",
+                "psi_para_bar": "Bar = PSI ÷ 14,5"
+            },
+            "observacao": "No Brasil, PSI é o padrão usado nos postos de combustível e calibradores. Use sempre PSI como referência principal."
+        },
+        
+        "cuidados_recomendacoes": [
+            {
+                "categoria": "Verificação Mensal",
+                "descricao": "Verifique a pressão dos pneus pelo menos uma vez por mês e sempre antes de viagens longas. No Brasil, é recomendado verificar quinzenalmente devido ao calor.",
+                "icone": "relogio"
+            },
+            {
+                "categoria": "Pneus Frios",
+                "descricao": "Calibre sempre com os pneus frios, preferencialmente pela manhã. Pneus quentes podem mostrar até 4-6 PSI a mais devido ao calor brasileiro.",
+                "icone": "termometro"
+            },
+            {
+                "categoria": "Calibradores dos Postos",
+                "descricao": "Use preferencialmente postos com calibradores digitais. Calibradores analógicos podem ter variações de até 3-4 PSI, comprometendo a precisão.",
+                "icone": "calibrador"
+            },
+            {
+                "categoria": "Calor Intenso",
+                "descricao": "No verão brasileiro, com temperaturas acima de 35°C, monitore a pressão com mais frequência. O calor pode aumentar a pressão em até 5-6 PSI.",
+                "icone": "sol"
+            },
+            {
+                "categoria": "Chuvas e Poeira",
+                "descricao": "Mantenha as tampas das válvulas sempre bem fechadas. A poeira e chuva brasileiras podem causar vazamentos lentos se as válvulas ficarem expostas.",
+                "icone": "chuva"
+            },
+            {
+                "categoria": "Rodízio de Pneus",
+                "descricao": "Faça o rodízio a cada 10.000 km. Após o rodízio, ajuste a pressão conforme a nova posição de cada pneu seguindo a tabela PSI.",
+                "icone": "rodizio"
+            }
+        ],
+        
+        "impacto_pressao": {
+            "subcalibrado": {
+                "titulo": "Pneu Subcalibrado",
+                "problemas": [
+                    "Maior consumo de combustível (+10% a 15%)",
+                    "Desgaste acelerado nas bordas (5 PSI baixo = -30% vida)",
+                    "Menor estabilidade em curvas",
+                    "Maior risco de aquaplanagem",
+                    "Alto risco de estouro no calor brasileiro"
+                ],
+                "cor": "red"
+            },
+            "ideal": {
+                "titulo": "Calibragem Correta (PSI)",
+                "beneficios": [
+                    "Consumo otimizado de combustível",
+                    "Desgaste uniforme e vida útil máxima",
+                    "Aderência e comportamento previsíveis",
+                    "Distâncias de frenagem otimizadas",
+                    "Resistência ideal ao calor brasileiro"
+                ],
+                "cor": "green"
+            },
+            "sobrecalibrado": {
+                "titulo": "Pneu Sobrecalibrado",
+                "problemas": [
+                    "Desgaste excessivo no centro (+5 PSI = -25% vida)",
+                    "Menor área de contato com o solo",
+                    "Redução na aderência, especialmente em piso molhado",
+                    "Maior rigidez, reduzindo o conforto",
+                    "Risco de estouro por pressão excessiva no calor"
+                ],
+                "cor": "amber"
+            }
+        },
+        
+        "perguntas_frequentes": [
+            {
+                "pergunta": "Qual a pressão ideal do Polo 2023 em PSI?",
+                "resposta": "Para o Volkswagen Polo 2023, as pressões variam entre 28-38 PSI dependendo da versão e condição de carga. Polo MPI: 30 PSI (dianteiro) e 28 PSI (traseiro) para uso normal. Versões TSI: 32-34 PSI dianteiro e 30-32 PSI traseiro. Sempre consulte a etiqueta na porta do motorista para valores exatos."
+            },
+            {
+                "pergunta": "Com que frequência verificar a pressão no Brasil?",
+                "resposta": "No clima brasileiro, recomenda-se verificar a pressão dos pneus quinzenalmente ou mensalmente. Devido às altas temperaturas (35°C+), os pneus podem perder pressão mais rapidamente. Sempre verifique antes de viagens longas e após mudanças bruscas de temperatura."
+            },
+            {
+                "pergunta": "O calor brasileiro afeta muito a pressão PSI?",
+                "resposta": "Sim! O calor brasileiro pode aumentar a pressão em 5-6 PSI. Por isso sempre calibre com pneus frios (manhã cedo) e nunca remova ar de pneus quentes. Em dias de 40°C+, a pressão pode subir significativamente durante a condução, por isso a importância de começar com os valores PSI corretos."
+            },
+            {
+                "pergunta": "Posso usar qualquer calibrador para medir PSI?",
+                "resposta": "Prefira calibradores digitais, que são mais precisos. Calibradores analógicos de postos podem ter variações de 3-4 PSI, comprometendo a calibragem correta. Se possível, tenha seu próprio calibrador digital portátil - eles custam pouco e garantem medições precisas em PSI."
+            }
+        ],
+        
+        "consideracoes_finais": "A pressão adequada dos pneus é fundamental para a segurança, economia e conforto ao volante do seu Volkswagen Polo 2023. No Brasil, onde utilizamos PSI como padrão, seguir as recomendações oficiais da Volkswagen não apenas prolonga a vida útil dos pneus, mas também otimiza o desempenho do veículo. No clima brasileiro, com suas altas temperaturas, é ainda mais importante verificar regularmente a pressão em PSI. As variações térmicas podem causar flutuações significativas na pressão interna, afetando diretamente a segurança e economia do veículo. Mantenha sempre os valores PSI recomendados e verifique mensalmente - esse pequeno cuidado traz grandes benefícios em economia, segurança e durabilidade dos pneus."
+    },
+    "extracted_entities": {
+        "marca": "Volkswagen",
+        "modelo": "Polo",
+        "ano": 2023,
+        "motorizacao": "1.0 MPI / 1.0 TSI",
+        "versao": "Todas",
+        "tipo_veiculo": "car",
+        "categoria": "Hatches",
+        "combustivel": "flex"
+    },
+    "seo_data": {
+        "page_title": "Pressão Ideal para Pneus Volkswagen Polo 2023 - Tabela Completa PSI",
+        "meta_description": "Tabela completa de pressão ideal para pneus do Volkswagen Polo 2023. Valores oficiais em PSI, conversões e recomendações para o Brasil.",
+        "url_slug": "pressao-ideal-pneus-volkswagen-polo-2023",
+        "h1": "Pressão Ideal para Pneus do Volkswagen Polo 2023 – Tabela Completa",
+        "h2_tags": [
+            "Especificações dos Pneus Originais",
+            "Tabela de Pressão dos Pneus (PSI - Padrão Brasileiro)",
+            "Ajustes para Condições Especiais",
+            "Conversão de Unidades - PSI (Padrão Brasileiro)",
+            "Cuidados e Recomendações para o Brasil",
+            "Impacto da Pressão no Desempenho",
+            "Perguntas Frequentes"
+        ],
+        "primary_keyword": "pressão ideal pneus Volkswagen Polo 2023",
+        "secondary_keywords": [
+            "pressão PSI Polo 2023",
+            "calibragem Volkswagen Polo",
+            "tabela pressão pneus",
+            "PSI padrão brasileiro"
+        ],
+        "meta_robots": "index,follow",
+        "canonical_url": "https://mercadoveiculos.com/info/pressao-ideal-pneus-volkswagen-polo-2023",
+        "schema_type": "Article"
+    },
+    "vehicle_data": {
+        "vehicle_full_name": "Volkswagen Polo 2023",
+        "vehicle_brand": "Volkswagen",
+        "vehicle_model": "Polo",
+        "vehicle_year": 2023,
+        "vehicle_category": "Hatches",
+        "vehicle_type": "car",
+        "tire_sizes": [
+            "185/65 R15 (MPI)",
+            "195/55 R16 (TSI)",
+            "205/45 R17 (GTS)"
+        ],
+        "pressures": {
+            "mpi_normal": "30/28 PSI",
+            "mpi_loaded": "32/35 PSI",
+            "tsi_normal": "32/30 PSI",
+            "tsi_loaded": "34/36 PSI",
+            "gts_normal": "34/32 PSI",
+            "gts_loaded": "36/38 PSI",
+            "spare": "36 PSI"
+        },
+        "pressure_range": "28-38 PSI",
+        "is_premium": false,
+        "has_tpms": false,
+        "vehicle_segment": "B"
+    },
+    "metadata": [],
+    "status": "published",
+    "created_at": "2025-08-05T13:00:00.000000Z",
+    "updated_at": "2025-08-05T13:00:00.000000Z",
+    "id": "mock_ideal_pressure_car_001"
+}

@@ -51,6 +51,47 @@ class TestMockController extends Controller
     }
     
     /**
+     * 🆕 NOVA FUNCIONALIDADE: Renderiza a view do template com dados processados
+     */
+    public function renderTemplate(string $filename)
+    {
+        $article = $this->mockService->getMockArticle($filename);
+        
+        if (!$article) {
+            return response()->json([
+                'error' => "Mock não encontrado: {$filename}"
+            ], 404);
+        }
+        
+        try {
+            // 1. Detecta template
+            $templateType = $this->templateDetector->detectTemplate($article);
+            
+            // 2. Cria ViewModel
+            $viewModel = $this->viewModelFactory->make($templateType, $article);
+            
+            // 3. Processa dados
+            $processedData = $viewModel->processArticleData();
+            
+            // 4. Renderiza template específico
+            $templateName = $processedData->getTemplateName();
+            $viewPath = "auto-info-center::article.templates.{$templateName}";
+
+            // 5. Retorna view renderizada
+            return view($viewPath, ['article' => $processedData]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao renderizar template',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => basename($e->getFile()),
+                'template_detected' => $templateType ?? 'unknown'
+            ], 500);
+        }
+    }
+    
+    /**
      * 🔍 DEBUG: Apenas verificar Article sem processar
      */
     public function debugMock(string $filename)
@@ -73,6 +114,49 @@ class TestMockController extends Controller
             'all_attributes' => $article->getAttributes(),
             'vehicle_data' => $article->vehicle_data ?? 'NOT_SET'
         ]);
+    }
+    
+    /**
+     * 🆕 DEBUG: Visualiza dados processados pelo ViewModel
+     */
+    public function debugProcessedData(string $filename)
+    {
+        $article = $this->mockService->getMockArticle($filename);
+        
+        if (!$article) {
+            return response()->json([
+                'error' => "Mock não encontrado: {$filename}"
+            ], 404);
+        }
+        
+        try {
+            // 1. Detecta template
+            $templateType = $this->templateDetector->detectTemplate($article);
+            
+            // 2. Cria ViewModel
+            $viewModel = $this->viewModelFactory->make($templateType, $article);
+            
+            // 3. Processa dados
+            $processedData = $viewModel->processArticleData();
+            
+            // 4. Retorna dados estruturados para análise
+            return response()->json([
+                'template_detected' => $templateType,
+                'template_name' => $processedData->getTemplateName(),
+                'processed_data_keys' => array_keys($processedData->getData()),
+                'processed_data' => $processedData->getData(),
+                'breadcrumbs' => $processedData->getBreadcrumbs() ?? [],
+                'canonical_url' => $processedData->getCanonicalUrl() ?? ''
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao processar dados',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => basename($e->getFile())
+            ], 500);
+        }
     }
     
     private function testSingleMock($article): array

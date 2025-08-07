@@ -19,20 +19,20 @@ class TemplateDetectorService
         'review_schedule_hybrid' => 'review_schedule_hybrid',
         'review_schedule_electric' => 'review_schedule_electric', 
         'when_to_change_tires' =>'when_to_change_tires',        
-            'tire_pressure_guide_car' => 'tire_pressure_guide_car',
-            'tire_pressure_guide_motorcycle' => 'tire_pressure_guide_motorcycle',
-            'ideal_tire_pressure_car' => 'ideal_tire_pressure_car',
-            'ideal_tire_pressure_motorcycle' => 'ideal_tire_pressure_motorcycle',// Novo           
+        'tire_pressure_guide_car' => 'tire_pressure_guide_car',
+        'tire_pressure_guide_motorcycle' => 'tire_pressure_guide_motorcycle',
+        'ideal_tire_pressure_car' => 'ideal_tire_pressure_car',
+        'ideal_tire_pressure_motorcycle' => 'ideal_tire_pressure_motorcycle',
 
-        'tire_pressure' => 'tire_pressure',
-        'air_filter' => 'air_filter',
-        'maintenance_schedule' => 'maintenance_schedule',
-        'battery_guide' => 'battery_guide',
-        'fluid_guide' => 'fluid_guide',
-        'fuel_consumption' => 'fuel_consumption',
-        'parts_recommendation' => 'parts_recommendation',
-        'repair_guide' => 'repair_guide',
-        'troubleshooting' => 'troubleshooting',
+        // 'tire_pressure' => 'tire_pressure',
+        // 'air_filter' => 'air_filter',
+        // 'maintenance_schedule' => 'maintenance_schedule',
+        // 'battery_guide' => 'battery_guide',
+        // 'fluid_guide' => 'fluid_guide',
+        // 'fuel_consumption' => 'fuel_consumption',
+        // 'parts_recommendation' => 'parts_recommendation',
+        // 'repair_guide' => 'repair_guide',
+        // 'troubleshooting' => 'troubleshooting',
         // Adicione mais mapeamentos conforme necessário
     ];
 

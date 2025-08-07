@@ -153,7 +153,7 @@ class WhenToChangeTiresViewModel extends TemplateViewModel
         $this->processedData['breadcrumbs'] = [
             [
                 'name' => 'Início',
-                'url' => url('/'),
+                'url' => route('home'),
                 'position' => 1
             ],
             [
@@ -162,8 +162,8 @@ class WhenToChangeTiresViewModel extends TemplateViewModel
                 'position' => 2
             ],
             [
-                'name' => Str::title($this->article->category_name ?? ''),
-                'url' => route('info.category.show', $this->article->category_slug ?? ''),
+                'name' => Str::title($this->article->category_name ?? 'Pneus e Roda'),
+                'url' => route('info.category.show', $this->article->category_slug ?? 'pneus-rodas'),
                 'position' => 3
             ],
             [
