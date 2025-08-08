@@ -482,6 +482,9 @@
             </section>
             @endif
 
+            <!-- Nota informativa -->
+            @include('auto-info-center::article.partials.info_note_manual')    
+
             <!-- Créditos e Atualização -->
             @include('auto-info-center::article.partials.update_content')
         </article>

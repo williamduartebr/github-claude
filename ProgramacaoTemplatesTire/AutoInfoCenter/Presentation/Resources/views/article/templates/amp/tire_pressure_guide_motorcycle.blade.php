@@ -607,13 +607,13 @@
 
     /* Nota informativa */
     .info-note {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
         padding: 16px;
         border-radius: 8px;
         font-size: 14px;
         margin: 24px 0;
-        border-left: 4px solid #DC2626;
-        color: #991b1b;
+        border-left: 4px solid #2563eb;
+        color: #1e40af;
     }
 
     /* Footer */
@@ -728,6 +728,192 @@
 
         .critical-safety-alert::before {
             left: 8px;
+        }
+    }
+</style>
+
+<!-- CSS adicional para a tabela (adicionar ao style amp-custom existente) -->
+<style>
+    .pressure-table-container {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        overflow-x: auto;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+
+    .motorcycle-pressure-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 0;
+        min-width: 700px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .motorcycle-pressure-table th {
+        background: linear-gradient(135deg, #DC2626, #991b1b);
+        color: white;
+        padding: 14px 10px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .motorcycle-pressure-table th:first-child {
+        text-align: left;
+        padding-left: 16px;
+    }
+
+    .motorcycle-pressure-table td {
+        padding: 12px 10px;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .condition-cell {
+        text-align: left !important;
+        padding-left: 16px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .condition-icon {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    .occupants-cell {
+        text-align: left !important;
+        min-width: 140px;
+    }
+
+    .occupants-text {
+        font-weight: 500;
+        color: #1f2937;
+    }
+
+    .luggage-info {
+        color: #6b7280;
+        font-style: italic;
+    }
+
+    .pressure-cell {
+        font-weight: 600;
+        min-width: 100px;
+    }
+
+    .pressure-highlight {
+        background: linear-gradient(135deg, #DC2626, #991b1b);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-block;
+        min-width: 80px;
+    }
+
+    .observation-cell {
+        text-align: left !important;
+        max-width: 200px;
+        color: #4b5563;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .motorcycle-pressure-table tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+
+    .motorcycle-pressure-table tr:hover {
+        background-color: rgba(220, 38, 38, 0.05);
+    }
+
+    /* Legenda */
+    .table-legend {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .table-legend h3 {
+        margin: 0 0 12px 0;
+        color: #1f2937;
+        font-size: 16px;
+    }
+
+    .legend-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .legend-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .legend-item span:last-child {
+        font-size: 13px;
+        color: #374151;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+        .motorcycle-pressure-table {
+            font-size: 12px;
+            min-width: 600px;
+        }
+
+        .motorcycle-pressure-table th,
+        .motorcycle-pressure-table td {
+            padding: 8px 6px;
+        }
+
+        .condition-cell,
+        .observation-cell {
+            padding-left: 12px !important;
+        }
+
+        .pressure-highlight {
+            padding: 4px 8px;
+            font-size: 11px;
+            min-width: 70px;
+        }
+
+        .legend-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .motorcycle-pressure-table {
+            min-width: 500px;
+            font-size: 11px;
+        }
+
+        .pressure-table-container {
+            padding: 12px;
         }
     }
 </style>
@@ -869,173 +1055,89 @@
         @endif
         @endif
 
-        <!-- Tabela de Pressões Recomendadas -->
-        @if(!empty($article->pressure_table))
-        <h2>📊 Pressões Recomendadas</h2>
-        
-        @php $pressureTable = $article->pressure_table @endphp
-        
-        <!-- Pressões Oficiais -->
-        @if(!empty($pressureTable['official_pressures']))
-        <table class="motorcycle-pressure-table">
-            <tr>
-                <th>Condição</th>
-                <th>Pneu Dianteiro</th>
-                <th>Pneu Traseiro</th>
-                <th>Observações</th>
-            </tr>
-            @php $official = $pressureTable['official_pressures'] @endphp
-            @if(!empty($official['solo_rider']))
-            <tr>
-                <td><strong>🏍️ Piloto Solo</strong></td>
-                <td><span class="pressure-highlight">{{ $official['solo_rider']['front'] }}</span></td>
-                <td><span class="pressure-highlight">{{ $official['solo_rider']['rear'] }}</span></td>
-                <td>{{ $official['solo_rider']['observation'] ?? 'Uso normal' }}</td>
-            </tr>
-            @endif
-            @if(!empty($official['with_passenger']))
-            <tr>
-                <td><strong>👥 Piloto + Garupa</strong></td>
-                <td><span class="pressure-highlight">{{ $official['with_passenger']['front'] }}</span></td>
-                <td><span class="pressure-highlight">{{ $official['with_passenger']['rear'] }}</span></td>
-                <td>{{ $official['with_passenger']['observation'] ?? 'Com passageiro' }}</td>
-            </tr>
-            @endif
-        </table>
-        @endif
-        
-        <!-- Condições Especiais -->
-        @if(!empty($pressureTable['special_conditions']))
-        <h3>Condições Especiais de Uso</h3>
-        <table class="motorcycle-pressure-table">
-            <tr>
-                <th>Situação</th>
-                <th>Dianteiro</th>
-                <th>Traseiro</th>
-                <th>Observação</th>
-            </tr>
-            @foreach($pressureTable['special_conditions'] as $condition)
-            <tr>
-                <td>{{ $condition['situation'] ?? '' }}</td>
-                <td><span class="pressure-highlight">{{ $condition['front_pressure'] ?? '' }}</span></td>
-                <td><span class="pressure-highlight">{{ $condition['rear_pressure'] ?? '' }}</span></td>
-                <td>{{ $condition['observation'] ?? '' }}</td>
-            </tr>
-            @endforeach
-        </table>
-        @endif
-        @else
-        <!-- Fallback: Se não houver pressure_table, vamos tentar usar os dados diretamente -->
-        @if(!empty($article->getData()['pressure_table']))
-        <h2>📊 Pressões Recomendadas</h2>
-        
-        @php $pressureData = $article->getData()['pressure_table'] @endphp
-        
-        @if(!empty($pressureData['official_pressures']))
-        <table class="motorcycle-pressure-table">
-            <tr>
-                <th>Condição</th>
-                <th>Pneu Dianteiro</th>
-                <th>Pneu Traseiro</th>
-                <th>Observações</th>
-            </tr>
-            @php $official = $pressureData['official_pressures'] @endphp
-            @if(!empty($official['solo_rider']))
-            <tr>
-                <td><strong>🏍️ Piloto Solo</strong></td>
-                <td><span class="pressure-highlight">{{ $official['solo_rider']['front'] }}</span></td>
-                <td><span class="pressure-highlight">{{ $official['solo_rider']['rear'] }}</span></td>
-                <td>{{ $official['solo_rider']['observation'] ?? 'Uso normal' }}</td>
-            </tr>
-            @endif
-            @if(!empty($official['with_passenger']))
-            <tr>
-                <td><strong>👥 Piloto + Garupa</strong></td>
-                <td><span class="pressure-highlight">{{ $official['with_passenger']['front'] }}</span></td>
-                <td><span class="pressure-highlight">{{ $official['with_passenger']['rear'] }}</span></td>
-                <td>{{ $official['with_passenger']['observation'] ?? 'Com passageiro' }}</td>
-            </tr>
-            @endif
-        </table>
-        @endif
-        
-        @if(!empty($pressureData['special_conditions']))
-        <h3>Condições Especiais de Uso</h3>
-        <table class="motorcycle-pressure-table">
-            <tr>
-                <th>Situação</th>
-                <th>Dianteiro</th>
-                <th>Traseiro</th>
-                <th>Observação</th>
-            </tr>
-            @foreach($pressureData['special_conditions'] as $condition)
-            <tr>
-                <td>{{ $condition['situation'] ?? '' }}</td>
-                <td><span class="pressure-highlight">{{ $condition['front_pressure'] ?? '' }}</span></td>
-                <td><span class="pressure-highlight">{{ $condition['rear_pressure'] ?? '' }}</span></td>
-                <td>{{ $condition['observation'] ?? '' }}</td>
-            </tr>
-            @endforeach
-        </table>
-        @endif
-        @endif
-        @endif
 
         <!-- Tabela de Pressões Recomendadas -->
         @if(!empty($article->pressure_table))
         <h2>📊 Pressões Recomendadas</h2>
 
-        @php $pressureTable = $article->pressure_table @endphp
+        <div class="pressure-table-container">
+            <table class="motorcycle-pressure-table">
+                <thead>
+                    <tr>
+                        <th>Condição de Uso</th>
+                        <th>Ocupantes</th>
+                        <th>Dianteiro</th>
+                        <th>Traseiro</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($article->pressure_table as $condition)
+                    <tr class="{{ $condition['css_class'] ?? 'bg-white' }}">
+                        <td class="condition-cell">
+                            @switch($condition['condition'] ?? '')
+                            @case('Uso Solo (Rua)')
+                            <span class="condition-icon">🏍️</span>
+                            @break
+                            @case('Com Passageiro (Rua)')
+                            <span class="condition-icon">👥</span>
+                            @break
+                            @case('Pilotagem Esportiva')
+                            <span class="condition-icon">🏁</span>
+                            @break
+                            @case('Com Carga ou Bagagem')
+                            <span class="condition-icon">🎒</span>
+                            @break
+                            @default
+                            <span class="condition-icon">🏍️</span>
+                            @endswitch
+                            <strong>{{ $condition['condition'] ?? '' }}</strong>
+                        </td>
+                        <td class="occupants-cell">
+                            <span class="occupants-text">{{ $condition['occupants'] ?? '' }}</span>
+                            @if(!empty($condition['luggage']))
+                            <br><small class="luggage-info">{{ $condition['luggage'] }}</small>
+                            @endif
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $condition['front_pressure'] ?? '' }}</span>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $condition['rear_pressure'] ?? '' }}</span>
+                        </td>
+                        <td class="observation-cell">
+                            <small>{{ $condition['observation'] ?? '' }}</small>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-        <!-- Pressões Oficiais -->
-        @if(!empty($pressureTable['official_pressures']))
-        <table class="motorcycle-pressure-table">
-            <tr>
-                <th>Condição</th>
-                <th>Pneu Dianteiro</th>
-                <th>Pneu Traseiro</th>
-                <th>Observações</th>
-            </tr>
-            @php $official = $pressureTable['official_pressures'] @endphp
-            @if(!empty($official['solo_rider']))
-            <tr>
-                <td><strong>🏍️ Piloto Solo</strong></td>
-                <td><span class="pressure-highlight">{{ $official['solo_rider']['front'] }}</span></td>
-                <td><span class="pressure-highlight">{{ $official['solo_rider']['rear'] }}</span></td>
-                <td>{{ $official['solo_rider']['observation'] ?? 'Uso normal' }}</td>
-            </tr>
-            @endif
-            @if(!empty($official['with_passenger']))
-            <tr>
-                <td><strong>👥 Piloto + Garupa</strong></td>
-                <td><span class="pressure-highlight">{{ $official['with_passenger']['front'] }}</span></td>
-                <td><span class="pressure-highlight">{{ $official['with_passenger']['rear'] }}</span></td>
-                <td>{{ $official['with_passenger']['observation'] ?? 'Com passageiro' }}</td>
-            </tr>
-            @endif
-        </table>
-        @endif
+        <!-- Legenda da Tabela -->
+        <div class="table-legend">
+            <h3>📋 Legenda:</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="legend-icon">🏍️</span>
+                    <span><strong>Uso Solo:</strong> Pilotagem urbana e rodoviária normal</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">👥</span>
+                    <span><strong>Com Passageiro:</strong> Piloto + garupa em trajetos normais</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🏁</span>
+                    <span><strong>Esportiva:</strong> Pilotagem mais agressiva, curvas e acelerações</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🎒</span>
+                    <span><strong>Com Carga:</strong> Viagens longas ou bagagem pesada</span>
+                </div>
+            </div>
+        </div>
 
-        <!-- Condições Especiais -->
-        @if(!empty($pressureTable['special_conditions']))
-        <h3>Condições Especiais de Uso</h3>
-        <table class="motorcycle-pressure-table">
-            <tr>
-                <th>Situação</th>
-                <th>Dianteiro</th>
-                <th>Traseiro</th>
-                <th>Observação</th>
-            </tr>
-            @foreach($pressureTable['special_conditions'] as $condition)
-            <tr>
-                <td>{{ $condition['situation'] ?? '' }}</td>
-                <td><span class="pressure-highlight">{{ $condition['front_pressure'] ?? '' }}</span></td>
-                <td><span class="pressure-highlight">{{ $condition['rear_pressure'] ?? '' }}</span></td>
-                <td>{{ $condition['observation'] ?? '' }}</td>
-            </tr>
-            @endforeach
-        </table>
-        @endif
+
         @endif
 
         <!-- Recomendações por Tipo de Uso -->
@@ -1045,9 +1147,7 @@
         @foreach($article->usage_recommendations as $recommendation)
         <div class="motorcycle-recommendation">
             <div class="recommendation-title">
-                <amp-img class="recommendation-icon"
-                    src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/statics/icons/icon-{{ $recommendation['icon_class'] ?? 'motorcycle' }}.svg"
-                    width="24" height="24" alt="{{ $recommendation['category'] }}"></amp-img>
+
                 {{ $recommendation['category'] }}
             </div>
             <div class="recommendation-pressure">{{ $recommendation['recommended_pressure'] ?? 'Conforme tabela' }}
@@ -1262,9 +1362,6 @@
         @foreach($article->special_care as $careGroup)
         <div class="motorcycle-recommendation">
             <div class="recommendation-title">
-                <amp-img class="recommendation-icon"
-                    src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/statics/icons/icon-{{ $careGroup['icon_class'] ?? 'warning' }}.svg"
-                    width="24" height="24" alt="{{ $careGroup['category'] }}"></amp-img>
                 {{ $careGroup['category'] }}
             </div>
             @if(!empty($careGroup['care_items']))
@@ -1299,38 +1396,43 @@
         </div>
         @endif
 
-        <!-- Perguntas Frequentes -->
+        <!-- FAQ -->
         @if(!empty($article->faq))
         <h2>❓ Perguntas Frequentes</h2>
-
-        <amp-accordion>
+        <amp-accordion expand-single-section>
             @foreach($article->faq as $faq)
             <section>
-                <h4>{{ $faq['pergunta'] }}</h4>
+
+                <h4>
+                    {{ $faq['pergunta'] }}</h4>
                 <div class="faq-content">
                     <p>{{ $faq['resposta'] }}</p>
                 </div>
             </section>
             @endforeach
         </amp-accordion>
+
         @endif
 
         <!-- Considerações Finais -->
         @if(!empty($article->final_considerations))
-        <h2>📝 Considerações Finais</h2>
-        <div
-            style="background: linear-gradient(135deg, #fef2f2, #fee2e2); padding: 20px; border-radius: 8px; border-left: 4px solid #DC2626;">
-            <p style="color: #7f1d1d; line-height: 1.7; font-weight: 500;">{{ $article->final_considerations }}</p>
-        </div>
+            <h2>📝 Considerações Finais</h2>
+        
+            <div class="info-note">
+            {!! $article->final_considerations !!}
+            </div>
         @endif
+
+        <!-- Nota informativa -->
+        @include('auto-info-center::article.partials.info_note_manual')
 
         <!-- Footer info -->
         <div class="article-footer">
             @if(!empty($article->formated_updated_at))
-            <p><strong>Atualizado em:</strong> {{ $article->formated_updated_at }}</p>
+            <p><strong>📅 Atualizado em:</strong> {{ $article->formated_updated_at }}</p>
             @endif
-            <p><strong>Por:</strong> Equipe Editorial Mercado Veículos</p>
-            <p><a href="{{ route('info.article.show', $article->slug) }}">Ver versão completa do artigo</a></p>
+            <p><strong>✍️ Por:</strong> Equipe Editorial Mercado Veículos</p>
+            <p><a href="{{ route('info.article.show', $article->slug) }}">🔗 Ver versão completa do artigo</a></p>
         </div>
     </article>
 </div>

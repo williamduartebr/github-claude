@@ -431,7 +431,7 @@
         line-height: 1.6;
         font-size: 14px;
     }
-    
+
     /* Footer */
     .article-footer {
         font-size: 12px;
@@ -831,6 +831,9 @@
         <h2>🏁 Considerações Finais</h2>
         <p>{{ $article->final_considerations }}</p>
         @endif
+
+        <!-- Nota informativa -->
+        @include('auto-info-center::article.partials.info_note_manual')
         
         <!-- Footer info -->
         <div class="article-footer">

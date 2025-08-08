@@ -552,19 +552,18 @@
         color: #4a5568;
         line-height: 1.6;
     }
-    
+
     /* Nota informativa */
     .info-note {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
         padding: 16px;
         border-radius: 8px;
         font-size: 14px;
         margin: 24px 0;
-        border-left: 4px solid #DC2626;
-        color: #991b1b;
-        font-weight: 500;
+        border-left: 4px solid #2563eb;
+        color: #1e40af;
     }
-    
+ 
     /* Footer */
     .article-footer {
         font-size: 12px;
@@ -1085,6 +1084,9 @@
                 <p style="color: #991b1b; margin-bottom: 0; font-weight: 500;"><strong>✓</strong> Em caso de dúvida, consulte o manual</p>
             </div>
         </div>
+
+        <!-- Nota informativa -->
+        @include('auto-info-center::article.partials.info_note_manual')
         
         <!-- Footer info -->
         <div class="article-footer">

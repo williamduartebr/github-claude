@@ -380,6 +380,9 @@
             <!-- Artigos Relacionados -->
             {{-- @include('auto-info-center::article.partials.related_content') --}}
 
+            <!-- Nota informativa -->
+            @include('auto-info-center::article.partials.info_note_manual')    
+
             <!-- Créditos e Atualização -->
             @include('auto-info-center::article.partials.update_content')
         </article>

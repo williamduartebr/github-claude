@@ -413,10 +413,15 @@
                 <p class="text-gray-800 mb-4">{{ $article->final_considerations }}</p>
             </section>
 
+            <!-- Nota informativa -->
+            @include('auto-info-center::article.partials.info_note_manual')            
+
             <!-- Créditos e Atualização -->
             @include('auto-info-center::article.partials.update_content')
+ 
         </article>
-    </div>
+    
+    </div>    
 
     <!-- Créditos Equipe Editorial -->
     @include('auto-info-center::article.partials.editorial_team')

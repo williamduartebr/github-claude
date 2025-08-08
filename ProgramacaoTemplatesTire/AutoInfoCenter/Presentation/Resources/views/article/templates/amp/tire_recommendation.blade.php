@@ -391,17 +391,6 @@
         line-height: 1.6;
     }
     
-    /* Nota informativa */
-    .info-note {
-        background: linear-gradient(135deg, rgba(14, 54, 138, 0.05), rgba(14, 54, 138, 0.1));
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        margin: 24px 0;
-        border-left: 4px solid #0E368A;
-        color: #1e40af;
-    }
-    
     /* Footer */
     .article-footer {
         font-size: 12px;
@@ -835,6 +824,9 @@
         <h2>📝 Considerações Finais</h2>
         <p>{{ $article->final_considerations }}</p>
         @endif
+
+        <!-- Nota informativa -->
+        @include('auto-info-center::article.partials.info_note_manual')
         
         <!-- Footer info -->
         <div class="article-footer">
