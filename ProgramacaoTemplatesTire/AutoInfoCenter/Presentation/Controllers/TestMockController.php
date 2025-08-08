@@ -90,6 +90,50 @@ class TestMockController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * 🆕 NOVA FUNCIONALIDADE: Renderiza a view do template AMP com dados processados
+     */
+    public function renderTemplateAmp(string $filename)
+    {
+        $article = $this->mockService->getMockArticle($filename);
+        
+        if (!$article) {
+            return response()->json([
+                'error' => "Mock não encontrado: {$filename}"
+            ], 404);
+        }
+        
+        try {
+            // 1. Detecta template
+            $templateType = $this->templateDetector->detectTemplate($article);
+            
+            // 2. Cria ViewModel
+            $viewModel = $this->viewModelFactory->make($templateType, $article);
+            
+            // 3. Processa dados
+            $processedData = $viewModel->processArticleData();
+            
+            // 4. Renderiza template AMP específico
+            $templateName = $processedData->getTemplateName();
+            $viewPath = "auto-info-center::article.templates.amp.{$templateName}";
+
+            // 5. Retorna view AMP renderizada
+            return view($viewPath, [
+                'article' => $processedData,
+                'canonical' => $processedData->getData()['canonical_url'] ?? ''
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao renderizar template AMP',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => basename($e->getFile()),
+                'template_detected' => $templateType ?? 'unknown'
+            ], 500);
+        }
+    }
     
     /**
      * 🔍 DEBUG: Apenas verificar Article sem processar

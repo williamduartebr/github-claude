@@ -35,6 +35,10 @@ Route::middleware('web')->group(function () {
         
         // 🆕 NOVA: Renderiza template específico
         Route::get('/render/{filename}', [TestMockController::class, 'renderTemplate']);
+
+         // 🆕 NOVA: Renderiza template AMP específico
+        Route::get('/render/{filename}/amp', [TestMockController::class, 'renderTemplateAmp']);
+
         
         // 🆕 NOVA: Debug dados processados (JSON detalhado)
         Route::get('/debug-processed/{filename}', [TestMockController::class, 'debugProcessedData']);
