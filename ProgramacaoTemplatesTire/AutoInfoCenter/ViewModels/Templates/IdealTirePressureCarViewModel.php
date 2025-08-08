@@ -20,105 +20,46 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         $content = $this->article->content;
 
         $this->processedData['introduction'] = $content['introducao'] ?? '';
-        $this->processedData['tire_specifications'] = $this->processTireSpecifications($content['especificacoes_pneus'] ?? []);
-        $this->processedData['pressure_table'] = $this->processPressureTable($content['tabela_pressoes'] ?? []);
-        $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
+        $this->processedData['tire_specifications_by_version'] = $this->processTireSpecificationsByVersion($content['especificacoes_por_versao'] ?? []);
         $this->processedData['label_location'] = $this->processLabelLocation($content['localizacao_etiqueta'] ?? []);
-        $this->processedData['calibration_benefits'] = $this->processCalibrationBenefits($content['beneficios_calibragem'] ?? []);
-        $this->processedData['maintenance_tips'] = $this->processMaintenanceTips($content['dicas_manutencao'] ?? []);
-        $this->processedData['important_alerts'] = $this->processImportantAlerts($content['alertas_importantes'] ?? []);
+        $this->processedData['special_conditions'] = $this->processSpecialConditions($content['condicoes_especiais'] ?? []);
+        $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
+        $this->processedData['care_recommendations'] = $this->processCareRecommendations($content['cuidados_recomendacoes'] ?? []);
+        $this->processedData['pressure_impact'] = $this->processPressureImpact($content['impacto_pressao'] ?? []);
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
+        $this->processedData['related_topics'] = $this->getRelatedTopics();
+        
+        // Dados auxiliares
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
+        $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
+        $this->processedData['canonical_url'] = $this->getCanonicalUrl();
     }
 
     /**
-     * Processa especificações dos pneus
+     * Processa especificações dos pneus por versão
      */
-    private function processTireSpecifications(array $specs): array
+    private function processTireSpecificationsByVersion(array $specs): array
     {
         if (empty($specs)) {
             return [];
         }
 
-        return [
-            'original_size' => $specs['medida_original'] ?? '',
-            'optional_size' => $specs['medida_opcional'] ?? '',
-            'load_index' => $specs['indice_carga'] ?? '',
-            'speed_rating' => $specs['indice_velocidade'] ?? '',
-            'construction_type' => $specs['tipo_construcao'] ?? '',
-            'original_brands' => $specs['marca_original'] ?? '',
-            'display_size' => $this->getDisplayTireSize($specs)
-        ];
-    }
+        $processed = [];
 
-    /**
-     * Processa tabela de pressões
-     */
-    private function processPressureTable(array $table): array
-    {
-        $processed = [
-            'versions' => [],
-            'usage_conditions' => []
-        ];
-
-        if (!empty($table['versoes']) && is_array($table['versoes'])) {
-            foreach ($table['versoes'] as $version) {
-                if (!empty($version['nome_versao'])) {
-                    $processed['versions'][] = [
-                        'name' => $version['nome_versao'],
-                        'engine' => $version['motor'] ?? '',
-                        'tire_size' => $version['medida_pneu'] ?? '',
-                        'front_normal' => $version['pressao_dianteira_normal'] ?? '',
-                        'rear_normal' => $version['pressao_traseira_normal'] ?? '',
-                        'front_loaded' => $version['pressao_dianteira_carregado'] ?? '',
-                        'rear_loaded' => $version['pressao_traseira_carregado'] ?? '',
-                        'observation' => $version['observacao'] ?? '',
-                        'version_class' => $this->getVersionCssClass($version['nome_versao'])
-                    ];
-                }
-            }
-        }
-
-        if (!empty($table['condicoes_uso']) && is_array($table['condicoes_uso'])) {
-            foreach ($table['condicoes_uso'] as $condition) {
-                if (!empty($condition['situacao'])) {
-                    $processed['usage_conditions'][] = [
-                        'situation' => $condition['situacao'],
-                        'occupants' => $condition['ocupantes'] ?? '',
-                        'luggage' => $condition['bagagem'] ?? '',
-                        'front_adjustment' => $condition['ajuste_dianteira'] ?? '',
-                        'rear_adjustment' => $condition['ajuste_traseira'] ?? '',
-                        'benefits' => $condition['beneficios'] ?? '',
-                        'situation_class' => $this->getSituationCssClass($condition['situacao']),
-                        'icon_class' => $this->getSituationIconClass($condition['situacao'])
-                    ];
-                }
-            }
-        }
-
-        return $processed;
-    }
-
-    /**
-     * Processa tabela de conversão de unidades
-     */
-    private function processUnitConversion(array $conversion): array
-    {
-        $processed = [
-            'conversion_table' => [],
-            'observation' => $conversion['observacao'] ?? ''
-        ];
-
-        if (!empty($conversion['tabela_conversao']) && is_array($conversion['tabela_conversao'])) {
-            foreach ($conversion['tabela_conversao'] as $row) {
-                $processed['conversion_table'][] = [
-                    'psi' => $row['psi'] ?? '',
-                    'kgf_cm2' => $row['kgf_cm2'] ?? '',
-                    'bar' => $row['bar'] ?? '',
-                    'is_common' => $this->isCommonPressure($row['psi'] ?? '')
+        foreach ($specs as $spec) {
+            if (!empty($spec['versao'])) {
+                $processed[] = [
+                    'version' => $spec['versao'],
+                    'tire_size' => $spec['medida_pneus'] ?? '',
+                    'load_speed_index' => $spec['indice_carga_velocidade'] ?? '',
+                    'front_normal' => $spec['pressao_dianteiro_normal'] ?? '',
+                    'rear_normal' => $spec['pressao_traseiro_normal'] ?? '',
+                    'front_loaded' => $spec['pressao_dianteiro_carregado'] ?? '',
+                    'rear_loaded' => $spec['pressao_traseiro_carregado'] ?? '',
+                    'css_class' => $this->getVersionCssClass($spec['versao'])
                 ];
             }
         }
@@ -137,36 +78,32 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
         return [
             'main_location' => $location['local_principal'] ?? '',
+            'description' => $location['descricao'] ?? '',
             'alternative_locations' => $location['locais_alternativos'] ?? [],
-            'label_information' => $location['informacoes_etiqueta'] ?? [],
-            'important_tip' => $location['dica_importante'] ?? '',
+            'note' => $location['observacao'] ?? '',
             'visual_guide' => $this->generateVisualGuide($location)
         ];
     }
 
     /**
-     * Processa benefícios da calibragem
+     * Processa condições especiais de uso
      */
-    private function processCalibrationBenefits(array $benefits): array
+    private function processSpecialConditions(array $conditions): array
     {
-        if (empty($benefits)) {
+        if (empty($conditions)) {
             return [];
         }
 
         $processed = [];
 
-        foreach ($benefits as $key => $benefit) {
-            if (!empty($benefit['titulo'])) {
+        foreach ($conditions as $condition) {
+            if (!empty($condition['condicao'])) {
                 $processed[] = [
-                    'category' => $key,
-                    'title' => $benefit['titulo'],
-                    'description' => $benefit['descricao'] ?? '',
-                    'financial_impact' => $benefit['impacto_financeiro'] ?? '',
-                    'estimated_savings' => $benefit['economia_estimada'] ?? '',
-                    'aspects' => $benefit['aspectos'] ?? [],
-                    'characteristics' => $benefit['caracteristicas'] ?? [],
-                    'icon_class' => $this->getBenefitIconClass($key),
-                    'color_class' => $this->getBenefitColorClass($key)
+                    'condition' => $condition['condicao'],
+                    'recommended_adjustment' => $condition['ajuste_recomendado'] ?? '',
+                    'application' => $condition['aplicacao'] ?? '',
+                    'justification' => $condition['justificativa'] ?? '',
+                    'icon_class' => $this->getConditionIconClass($condition['condicao'])
                 ];
             }
         }
@@ -175,25 +112,60 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa dicas de manutenção
+     * Processa tabela de conversão de unidades
      */
-    private function processMaintenanceTips(array $tips): array
+    private function processUnitConversion(array $conversion): array
     {
-        if (empty($tips) || !is_array($tips)) {
+        if (empty($conversion)) {
+            return [];
+        }
+
+        $processed = [
+            'conversion_table' => [],
+            'formulas' => [],
+            'note' => $conversion['observacao'] ?? ''
+        ];
+
+        // Processa tabela de conversão
+        if (!empty($conversion['tabela_conversao']) && is_array($conversion['tabela_conversao'])) {
+            foreach ($conversion['tabela_conversao'] as $row) {
+                $processed['conversion_table'][] = [
+                    'psi' => $row['psi'] ?? '',
+                    'kgf_cm2' => $row['kgf_cm2'] ?? '',
+                    'bar' => $row['bar'] ?? ''
+                ];
+            }
+        }
+
+        // Processa fórmulas
+        if (!empty($conversion['formulas'])) {
+            $processed['formulas'] = [
+                'psi_para_kgf' => $conversion['formulas']['psi_para_kgf'] ?? '',
+                'kgf_para_psi' => $conversion['formulas']['kgf_para_psi'] ?? '',
+                'psi_para_bar' => $conversion['formulas']['psi_para_bar'] ?? ''
+            ];
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Processa cuidados e recomendações
+     */
+    private function processCareRecommendations(array $recommendations): array
+    {
+        if (empty($recommendations)) {
             return [];
         }
 
         $processed = [];
 
-        foreach ($tips as $tip) {
-            if (!empty($tip['categoria']) && !empty($tip['itens'])) {
+        foreach ($recommendations as $rec) {
+            if (!empty($rec['categoria'])) {
                 $processed[] = [
-                    'category' => $tip['categoria'],
-                    'items' => $tip['itens'],
-                    'frequency' => $tip['frequencia'] ?? '',
-                    'priority' => $this->getTipPriority($tip['categoria']),
-                    'icon_class' => $this->getTipIconClass($tip['categoria']),
-                    'color_class' => $this->getTipColorClass($tip['categoria'])
+                    'category' => $rec['categoria'],
+                    'description' => $rec['descricao'] ?? '',
+                    'icon_class' => $this->getCareIconClass($rec['categoria'])
                 ];
             }
         }
@@ -202,26 +174,25 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa alertas importantes
+     * Processa impacto da pressão no desempenho
      */
-    private function processImportantAlerts(array $alerts): array
+    private function processPressureImpact(array $impact): array
     {
-        if (empty($alerts) || !is_array($alerts)) {
+        if (empty($impact)) {
             return [];
         }
 
         $processed = [];
 
-        foreach ($alerts as $alert) {
-            if (!empty($alert['titulo'])) {
+        foreach ($impact as $key => $impactData) {
+            if (!empty($impactData['titulo'])) {
                 $processed[] = [
-                    'type' => $alert['tipo'] ?? 'info',
-                    'title' => $alert['titulo'],
-                    'description' => $alert['descricao'] ?? '',
-                    'consequence' => $alert['consequencia'] ?? '',
-                    'severity_class' => $this->getAlertSeverityClass($alert['tipo'] ?? 'info'),
-                    'icon_class' => $this->getAlertIconClass($alert['tipo'] ?? 'info'),
-                    'border_class' => $this->getAlertBorderClass($alert['tipo'] ?? 'info')
+                    'type' => $key,
+                    'title' => $impactData['titulo'],
+                    'items' => $impactData['problemas'] ?? $impactData['beneficios'] ?? [],
+                    'color' => $this->getImpactColor($key),
+                    'icon_class' => $this->getImpactIconClass($key),
+                    'css_class' => $this->getImpactCssClass($key)
                 ];
             }
         }
@@ -242,6 +213,9 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             'model' => $vehicleInfo['modelo'] ?? '',
             'year' => $vehicleInfo['ano'] ?? '',
             'category' => $vehicleInfo['categoria'] ?? '',
+            'engine' => $vehicleInfo['motorizacao'] ?? '',
+            'version' => $vehicleInfo['versao'] ?? '',
+            'fuel' => $vehicleInfo['combustivel'] ?? '',
             'image_url' => $this->getVehicleImageUrl(),
             'slug' => $this->generateSlug($vehicleInfo),
             'is_premium' => $this->isPremiumVehicle(),
@@ -250,86 +224,42 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Obtém tamanho de pneu para exibição
-     */
-    private function getDisplayTireSize(array $specs): string
-    {
-        $original = $specs['medida_original'] ?? '';
-        $optional = $specs['medida_opcional'] ?? '';
-
-        if (!empty($optional)) {
-            return "{$original} / {$optional}";
-        }
-
-        return $original;
-    }
-
-    /**
      * Obtém classe CSS para versão do veículo
      */
     private function getVersionCssClass(string $version): string
     {
-        $version = strtolower($version);
-
-        if (str_contains($version, 'gts') || str_contains($version, 'sport')) {
-            return 'version-sport';
-        }
-
-        if (str_contains($version, 'tsi') || str_contains($version, 'turbo')) {
-            return 'version-turbo';
-        }
-
-        return 'version-standard';
+        return ($this->getVersionIndex($version) % 2 === 0) ? 'bg-white' : 'bg-gray-50';
     }
 
     /**
-     * Obtém classe CSS para situação de uso
+     * Obtém índice da versão para CSS alternado
      */
-    private function getSituationCssClass(string $situation): string
+    private function getVersionIndex(string $version): int
     {
-        $situation = strtolower($situation);
-
-        if (str_contains($situation, 'urbano') || str_contains($situation, 'normal')) {
-            return 'situation-urban';
-        }
-
-        if (str_contains($situation, 'família') || str_contains($situation, 'completa')) {
-            return 'situation-family';
-        }
-
-        if (str_contains($situation, 'viagem') || str_contains($situation, 'carga')) {
-            return 'situation-travel';
-        }
-
-        if (str_contains($situation, 'rodovia') || str_contains($situation, 'velocidade')) {
-            return 'situation-highway';
-        }
-
-        return 'situation-default';
+        static $versionIndex = 0;
+        return $versionIndex++;
     }
 
     /**
-     * Obtém classe de ícone para situação
+     * Obtém classe de ícone para condição especial
      */
-    private function getSituationIconClass(string $situation): string
+    private function getConditionIconClass(string $condition): string
     {
-        $situation = strtolower($situation);
+        $condition = strtolower($condition);
 
-        if (str_contains($situation, 'urbano')) return 'home';
-        if (str_contains($situation, 'família')) return 'users';
-        if (str_contains($situation, 'viagem')) return 'map';
-        if (str_contains($situation, 'rodovia')) return 'trending-up';
+        if (str_contains($condition, 'rodovia') || str_contains($condition, 'viagem')) {
+            return 'trending-up';
+        }
 
-        return 'circle';
-    }
+        if (str_contains($condition, 'carga') || str_contains($condition, 'máxima')) {
+            return 'package';
+        }
 
-    /**
-     * Verifica se é pressão comum
-     */
-    private function isCommonPressure(string $psi): bool
-    {
-        $commonPressures = ['30', '32', '34'];
-        return in_array($psi, $commonPressures);
+        if (str_contains($condition, 'econômica') || str_contains($condition, 'economia')) {
+            return 'dollar-sign';
+        }
+
+        return 'info';
     }
 
     /**
@@ -345,131 +275,115 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             ],
             'verification_steps' => [
                 'Abra a porta do motorista',
-                'Olhe na parte inferior da soleira',
-                'Procure por etiqueta branca com tabela'
+                'Olhe na coluna da porta',
+                'Procure por etiqueta branca com tabela de pressões'
             ]
         ];
     }
 
     /**
-     * Obtém classe de ícone para benefício
+     * Obtém classe de ícone para cuidados
      */
-    private function getBenefitIconClass(string $benefit): string
-    {
-        $iconMap = [
-            'economia' => 'dollar-sign',
-            'seguranca' => 'shield',
-            'durabilidade' => 'clock',
-            'performance' => 'zap'
-        ];
-
-        return $iconMap[$benefit] ?? 'check-circle';
-    }
-
-    /**
-     * Obtém classe de cor para benefício
-     */
-    private function getBenefitColorClass(string $benefit): string
-    {
-        $colorMap = [
-            'economia' => 'green',
-            'seguranca' => 'blue',
-            'durabilidade' => 'purple',
-            'performance' => 'orange'
-        ];
-
-        return $colorMap[$benefit] ?? 'gray';
-    }
-
-    /**
-     * Obtém prioridade da dica
-     */
-    private function getTipPriority(string $category): string
+    private function getCareIconClass(string $category): string
     {
         $category = strtolower($category);
 
-        if (str_contains($category, 'regular') || str_contains($category, 'verificação')) {
-            return 'alta';
+        if (str_contains($category, 'verificação') || str_contains($category, 'mensal')) {
+            return 'clock';
         }
 
-        if (str_contains($category, 'ideais') || str_contains($category, 'condições')) {
-            return 'média';
+        if (str_contains($category, 'frios') || str_contains($category, 'temperatura')) {
+            return 'thermometer';
         }
 
-        return 'normal';
-    }
+        if (str_contains($category, 'calibradores') || str_contains($category, 'equipamento')) {
+            return 'tool';
+        }
 
-    /**
-     * Obtém classe de ícone para dica
-     */
-    private function getTipIconClass(string $category): string
-    {
-        $category = strtolower($category);
+        if (str_contains($category, 'calor') || str_contains($category, 'sol')) {
+            return 'sun';
+        }
 
-        if (str_contains($category, 'verificação')) return 'search';
-        if (str_contains($category, 'condições')) return 'sun';
-        if (str_contains($category, 'cuidados')) return 'heart';
+        if (str_contains($category, 'chuva') || str_contains($category, 'poeira')) {
+            return 'cloud-rain';
+        }
+
+        if (str_contains($category, 'rodízio')) {
+            return 'rotate-cw';
+        }
 
         return 'info';
     }
 
     /**
-     * Obtém classe de cor para dica
+     * Obtém cor para tipo de impacto
      */
-    private function getTipColorClass(string $category): string
+    private function getImpactColor(string $type): string
     {
-        $category = strtolower($category);
-
-        if (str_contains($category, 'verificação')) return 'blue';
-        if (str_contains($category, 'condições')) return 'yellow';
-        if (str_contains($category, 'cuidados')) return 'green';
-
-        return 'gray';
-    }
-
-    /**
-     * Obtém classe de severidade para alerta
-     */
-    private function getAlertSeverityClass(string $type): string
-    {
-        $severityMap = [
-            'crítico' => 'alert-critical',
-            'importante' => 'alert-important',
-            'atenção' => 'alert-warning',
-            'info' => 'alert-info'
+        $colorMap = [
+            'subcalibrado' => 'red',
+            'ideal' => 'green',
+            'sobrecalibrado' => 'amber'
         ];
 
-        return $severityMap[strtolower($type)] ?? 'alert-info';
+        return $colorMap[$type] ?? 'gray';
     }
 
     /**
-     * Obtém classe de ícone para alerta
+     * Obtém classe de ícone para impacto
      */
-    private function getAlertIconClass(string $type): string
+    private function getImpactIconClass(string $type): string
     {
         $iconMap = [
-            'crítico' => 'alert-triangle',
-            'importante' => 'alert-circle',
-            'atenção' => 'info',
-            'info' => 'help-circle'
+            'subcalibrado' => 'minus',
+            'ideal' => 'check',
+            'sobrecalibrado' => 'alert-triangle'
         ];
 
-        return $iconMap[strtolower($type)] ?? 'help-circle';
+        return $iconMap[$type] ?? 'info';
     }
 
     /**
-     * Obtém classe de borda para alerta
+     * Obtém classe CSS para impacto
      */
-    private function getAlertBorderClass(string $type): string
+    private function getImpactCssClass(string $type): string
     {
-        $borderMap = [
-            'crítico' => 'border-red-500',
-            'importante' => 'border-orange-500',
-            'atenção' => 'border-yellow-500',
-            'info' => 'border-blue-500'
-        ];
+        $color = $this->getImpactColor($type);
+        return "from-{$color}-100 to-{$color}-200";
+    }
 
-        return $borderMap[strtolower($type)] ?? 'border-blue-500';
+    /**
+     * Obtém tópicos relacionados
+     */
+    private function getRelatedTopics(): array
+    {
+        $vehicleInfo = $this->article->extracted_entities ?? [];
+        $make = strtolower($vehicleInfo['marca'] ?? '');
+        $model = strtolower($vehicleInfo['modelo'] ?? '');
+        $year = $vehicleInfo['ano'] ?? '';
+
+        return [
+            [
+                'title' => "Melhores Pneus para {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$year}",
+                'description' => 'Descubra os pneus ideais para seu veículo',
+                'url' => "/info/pneus-recomendados/{$make}-{$model}-{$year}/"
+            ],
+            [
+                'title' => "Guia de Rodízio de Pneus do {$vehicleInfo['marca']} {$vehicleInfo['modelo']}",
+                'description' => 'Como fazer o rodízio correto dos pneus',
+                'url' => "/info/rodizio-pneus/{$make}-{$model}-{$year}/"
+            ],
+            [
+                'title' => "Consumo Real do {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$year}",
+                'description' => 'Dados reais de consumo de combustível',
+                'url' => "/info/consumo/{$make}-{$model}-{$year}/"
+            ],
+            [
+                'title' => "Cronograma de Revisões do {$vehicleInfo['marca']} {$vehicleInfo['modelo']}",
+                'description' => 'Plano de manutenção preventiva',
+                'url' => "/info/revisoes/{$make}-{$model}-{$year}/"
+            ]
+        ];
     }
 
     /**
@@ -533,55 +447,39 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
 
         $segmentMap = [
-            'hatch' => 'Hatchback Compacto',
+            'hatches' => 'Hatchback Compacto',
             'sedan' => 'Sedan Médio',
             'suv' => 'SUV',
             'pickup' => 'Picape',
-            'coupe' => 'Cupê',
-            'motocicleta' => 'Motocicleta',
-            'motorcycle_cruiser' => 'Motocicleta Cruiser'
+            'coupe' => 'Cupê'
         ];
 
         return $segmentMap[$category] ?? 'Automóvel';
     }
 
     /**
-     * Processa dados SEO específicos para carros
+     * Processa dados SEO específicos
      */
     private function processSeoData(): array
     {
         $vehicleFullName = $this->getVehicleFullName();
-        $mainPressure = $this->getMainPressureDisplay();
         $vehicleInfo = $this->article->extracted_entities ?? [];
+        $seoData = $this->article->seo_data ?? [];
 
         return [
-            'title' => $this->article->title ?? "Pressão Ideal para Pneus do {$vehicleFullName} – Tabela Completa",
-            'meta_description' => $this->article->meta_description ?? "Tabela completa de pressão dos pneus do {$vehicleFullName}. Valores oficiais em PSI: {$mainPressure}. Guia prático com conversões e dicas de calibragem.",
-            'keywords' => $this->article->seo_keywords ?? [],
-            'focus_keyword' => "pressão ideal pneus {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$vehicleInfo['ano']}",
+            'title' => $seoData['page_title'] ?? "Pressão Ideal para Pneus do {$vehicleFullName} – Tabela Completa",
+            'meta_description' => $seoData['meta_description'] ?? "Tabela completa de pressão dos pneus do {$vehicleFullName}. Valores oficiais em PSI, conversões e dicas de calibragem para o Brasil.",
+            'keywords' => $seoData['secondary_keywords'] ?? [],
+            'focus_keyword' => $seoData['primary_keyword'] ?? "pressão ideal pneus {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$vehicleInfo['ano']}",
             'canonical_url' => $this->getCanonicalUrl(),
+            'h1' => $seoData['h1'] ?? "Pressão Ideal para Pneus do {$vehicleFullName} – Tabela Completa",
+            'h2_tags' => $seoData['h2_tags'] ?? [],
             'og_title' => "Pressão Ideal para Pneus do {$vehicleFullName} – Tabela Oficial",
             'og_description' => "Tabela completa com pressões oficiais em PSI para {$vehicleFullName}. Conversões, dicas e localização da etiqueta.",
-            'og_image' => $this->processedData['vehicle_info']['image_url'],
+            'og_image' => $this->processedData['vehicle_info']['image_url'] ?? '',
             'og_type' => 'article',
             'twitter_card' => 'summary_large_image'
         ];
-    }
-
-    /**
-     * Obtém pressão principal para exibição
-     */
-    private function getMainPressureDisplay(): string
-    {
-        $versions = $this->processedData['pressure_table']['versions'] ?? [];
-
-        if (!empty($versions[0])) {
-            $front = $versions[0]['front_normal'] ?? '';
-            $rear = $versions[0]['rear_normal'] ?? '';
-            return "{$front} (dianteira) / {$rear} (traseira)";
-        }
-
-        return '';
     }
 
     /**
@@ -627,10 +525,8 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         ];
 
         if (!empty($vehicleData['marca']) && !empty($vehicleData['modelo'])) {
-            $vehicleSchemaType = ($vehicleData['tipo_veiculo'] ?? '') === 'motorcycle' ? 'Motorcycle' : 'Car';
-
             $structuredData['mainEntity'] = [
-                '@type' => $vehicleSchemaType,
+                '@type' => 'Car',
                 'name' => 'Pressão ideal para ' . $vehicleData['marca'] . ' ' . $vehicleData['modelo'],
                 'brand' => $vehicleData['marca'],
                 'model' => $vehicleData['modelo']
@@ -683,7 +579,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             ],
             [
                 'name' => $this->article->title,
-                'url' => route('info.article.show', $this->article->slug), // URL para evitar erro
+                'url' => route('info.article.show', $this->article->slug),
                 'position' => 4
             ],
         ];
@@ -704,5 +600,4 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     {
         return $this->processedData;
     }
-
 }

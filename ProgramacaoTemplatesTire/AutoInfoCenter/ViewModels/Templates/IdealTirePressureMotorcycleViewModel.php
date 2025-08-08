@@ -22,18 +22,22 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         $this->processedData['introduction'] = $content['introducao'] ?? '';
         $this->processedData['tire_specifications'] = $this->processMotorcycleTireSpecifications($content['especificacoes_pneus'] ?? []);
         $this->processedData['pressure_table'] = $this->processMotorcyclePressureTable($content['tabela_pressoes'] ?? []);
-        $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
         $this->processedData['information_location'] = $this->processInformationLocation($content['localizacao_informacoes'] ?? []);
-        $this->processedData['calibration_benefits'] = $this->processMotorcycleCalibrationBenefits($content['beneficios_calibragem'] ?? []);
+        $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
         $this->processedData['special_considerations'] = $this->processSpecialConsiderations($content['consideracoes_especiais'] ?? []);
+        $this->processedData['calibration_benefits'] = $this->processMotorcycleCalibrationBenefits($content['beneficios_calibragem'] ?? []);
         $this->processedData['maintenance_tips'] = $this->processMotorcycleMaintenanceTips($content['dicas_manutencao'] ?? []);
         $this->processedData['critical_alerts'] = $this->processCriticalAlerts($content['alertas_criticos'] ?? []);
         $this->processedData['calibration_procedure'] = $this->processCalibrationProcedure($content['procedimento_calibragem'] ?? []);
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
+        
+        // Dados auxiliares
         $this->processedData['vehicle_info'] = $this->processMotorcycleVehicleInfo();
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
+        $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
+        $this->processedData['canonical_url'] = $this->getCanonicalUrl();
     }
 
     /**
@@ -53,7 +57,8 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
                 'load_index' => $specs['pneu_dianteiro']['indice_carga'] ?? '',
                 'speed_rating' => $specs['pneu_dianteiro']['indice_velocidade'] ?? '',
                 'construction' => $specs['pneu_dianteiro']['tipo_construcao'] ?? '',
-                'original_brands' => $specs['pneu_dianteiro']['marca_original'] ?? ''
+                'original_brands' => $specs['pneu_dianteiro']['marca_original'] ?? '',
+                'alternative_brands' => $specs['pneu_dianteiro']['alternativas_recomendadas'] ?? []
             ];
         }
 
@@ -63,9 +68,12 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
                 'load_index' => $specs['pneu_traseiro']['indice_carga'] ?? '',
                 'speed_rating' => $specs['pneu_traseiro']['indice_velocidade'] ?? '',
                 'construction' => $specs['pneu_traseiro']['tipo_construcao'] ?? '',
-                'original_brands' => $specs['pneu_traseiro']['marca_original'] ?? ''
+                'original_brands' => $specs['pneu_traseiro']['marca_original'] ?? '',
+                'alternative_brands' => $specs['pneu_traseiro']['alternativas_recomendadas'] ?? []
             ];
         }
+
+        $processed['observation'] = $specs['observacao'] ?? '';
 
         return $processed;
     }
@@ -75,11 +83,16 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
      */
     private function processMotorcyclePressureTable(array $table): array
     {
+        if (empty($table)) {
+            return [];
+        }
+
         $processed = [
             'official_pressures' => [],
             'special_conditions' => []
         ];
 
+        // Processa pressões oficiais
         if (!empty($table['pressoes_oficiais'])) {
             $processed['official_pressures'] = [
                 'solo_rider' => [
@@ -95,6 +108,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             ];
         }
 
+        // Processa condições especiais
         if (!empty($table['condicoes_especiais']) && is_array($table['condicoes_especiais'])) {
             foreach ($table['condicoes_especiais'] as $condition) {
                 if (!empty($condition['situacao'])) {
@@ -116,10 +130,46 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
+     * Processa localização das informações
+     */
+    private function processInformationLocation(array $location): array
+    {
+        if (empty($location)) {
+            return [];
+        }
+
+        $processed = [];
+
+        if (!empty($location['manual_proprietario'])) {
+            $processed['owner_manual'] = [
+                'location' => $location['manual_proprietario']['localizacao'] ?? '',
+                'section' => $location['manual_proprietario']['secao'] ?? '',
+                'approximate_page' => $location['manual_proprietario']['pagina_aproximada'] ?? ''
+            ];
+        }
+
+        if (!empty($location['etiqueta_moto'])) {
+            $processed['motorcycle_label'] = [
+                'main_location' => $location['etiqueta_moto']['localizacao_principal'] ?? '',
+                'alternative_locations' => $location['etiqueta_moto']['localizacoes_alternativas'] ?? []
+            ];
+        }
+
+        $processed['important_tip'] = $location['dica_importante'] ?? '';
+        $processed['visual_guide'] = $this->generateMotorcycleVisualGuide($location);
+
+        return $processed;
+    }
+
+    /**
      * Processa tabela de conversão de unidades
      */
     private function processUnitConversion(array $conversion): array
     {
+        if (empty($conversion)) {
+            return [];
+        }
+
         $processed = [
             'conversion_table' => [],
             'observation' => $conversion['observacao'] ?? ''
@@ -133,60 +183,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
                     'bar' => $row['bar'] ?? '',
                     'is_recommended' => $this->isRecommendedMotorcyclePressure($row['psi'] ?? ''),
                     'highlight_class' => $this->getMotorcyclePressureHighlightClass($row['psi'] ?? '')
-                ];
-            }
-        }
-
-        return $processed;
-    }
-
-    /**
-     * Processa localização das informações
-     */
-    private function processInformationLocation(array $location): array
-    {
-        if (empty($location)) {
-            return [];
-        }
-
-        return [
-            'owner_manual' => [
-                'location' => $location['manual_proprietario']['localizacao'] ?? '',
-                'section' => $location['manual_proprietario']['secao'] ?? '',
-                'approximate_page' => $location['manual_proprietario']['pagina_aproximada'] ?? ''
-            ],
-            'motorcycle_label' => [
-                'main_location' => $location['etiqueta_moto']['localizacao_principal'] ?? '',
-                'alternative_locations' => $location['etiqueta_moto']['localizacoes_alternativas'] ?? []
-            ],
-            'important_tip' => $location['dica_importante'] ?? '',
-            'visual_guide' => $this->generateMotorcycleVisualGuide($location)
-        ];
-    }
-
-    /**
-     * Processa benefícios da calibragem específicos para motos
-     */
-    private function processMotorcycleCalibrationBenefits(array $benefits): array
-    {
-        if (empty($benefits)) {
-            return [];
-        }
-
-        $processed = [];
-
-        foreach ($benefits as $key => $benefit) {
-            if (!empty($benefit['titulo'])) {
-                $processed[] = [
-                    'category' => $key,
-                    'title' => $benefit['titulo'],
-                    'description' => $benefit['descricao'] ?? '',
-                    'aspects' => $benefit['aspectos'] ?? [],
-                    'financial_impact' => $benefit['impacto_financeiro'] ?? '',
-                    'estimated_savings' => $benefit['economia_estimada'] ?? '',
-                    'icon_class' => $this->getMotorcycleBenefitIconClass($key),
-                    'color_class' => $this->getMotorcycleBenefitColorClass($key),
-                    'priority' => $this->getMotorcycleBenefitPriority($key)
                 ];
             }
         }
@@ -216,6 +212,36 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
                     'types' => $consideration['tipos'] ?? [],
                     'icon_class' => $this->getConsiderationIconClass($key),
                     'importance' => $this->getConsiderationImportance($key)
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Processa benefícios da calibragem específicos para motos
+     */
+    private function processMotorcycleCalibrationBenefits(array $benefits): array
+    {
+        if (empty($benefits)) {
+            return [];
+        }
+
+        $processed = [];
+
+        foreach ($benefits as $key => $benefit) {
+            if (!empty($benefit['titulo'])) {
+                $processed[] = [
+                    'category' => $key,
+                    'title' => $benefit['titulo'],
+                    'description' => $benefit['descricao'] ?? '',
+                    'aspects' => $benefit['aspectos'] ?? [],
+                    'financial_impact' => $benefit['impacto_financeiro'] ?? '',
+                    'estimated_savings' => $benefit['economia_estimada'] ?? '',
+                    'icon_class' => $this->getMotorcycleBenefitIconClass($key),
+                    'color_class' => $this->getMotorcycleBenefitColorClass($key),
+                    'priority' => $this->getMotorcycleBenefitPriority($key)
                 ];
             }
         }
@@ -326,7 +352,10 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             'is_sport' => $this->isSportMotorcycle(),
             'is_naked' => $this->isNakedMotorcycle(),
             'is_touring' => $this->isTouringMotorcycle(),
-            'engine_size_category' => $this->getEngineSizeCategory()
+            'engine_size_category' => $this->getEngineSizeCategory(),
+            'slug' => $this->generateSlug($vehicleInfo),
+            'is_premium' => $this->isPremiumMotorcycle(),
+            'segment' => $this->getMotorcycleSegment()
         ];
     }
 
@@ -353,6 +382,10 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             return 'moto-situation-rain';
         }
 
+        if (str_contains($situation, 'pesado') || str_contains($situation, 'piloto')) {
+            return 'moto-situation-weight';
+        }
+
         return 'moto-situation-default';
     }
 
@@ -363,10 +396,11 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     {
         $situation = strtolower($situation);
 
-        if (str_contains($situation, 'urbana')) return 'home';
-        if (str_contains($situation, 'rodoviária')) return 'map';
-        if (str_contains($situation, 'esportiva')) return 'zap';
-        if (str_contains($situation, 'chuva')) return 'cloud-rain';
+        if (str_contains($situation, 'urbana') || str_contains($situation, 'cidade')) return 'home';
+        if (str_contains($situation, 'rodoviária') || str_contains($situation, 'viagem')) return 'map';
+        if (str_contains($situation, 'esportiva') || str_contains($situation, 'curva')) return 'zap';
+        if (str_contains($situation, 'chuva') || str_contains($situation, 'molhado')) return 'cloud-rain';
+        if (str_contains($situation, 'pesado') || str_contains($situation, 'piloto')) return 'user';
 
         return 'navigation';
     }
@@ -376,7 +410,8 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
      */
     private function isRecommendedMotorcyclePressure(string $psi): bool
     {
-        $recommendedPressures = ['36', '42'];
+        // Pressões padrão para MT-03: 33 PSI (dianteiro) e 36 PSI (traseiro)
+        $recommendedPressures = ['33', '36'];
         return in_array($psi, $recommendedPressures);
     }
 
@@ -411,6 +446,34 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
                 ]
             ]
         ];
+    }
+
+    /**
+     * Obtém classe de ícone para consideração
+     */
+    private function getConsiderationIconClass(string $category): string
+    {
+        $iconMap = [
+            'temperatura' => 'thermometer',
+            'carga' => 'package',
+            'estilo_pilotagem' => 'target'
+        ];
+
+        return $iconMap[$category] ?? 'info';
+    }
+
+    /**
+     * Obtém importância da consideração
+     */
+    private function getConsiderationImportance(string $category): string
+    {
+        $importanceMap = [
+            'temperatura' => 'crítica',
+            'carga' => 'alta',
+            'estilo_pilotagem' => 'média'
+        ];
+
+        return $importanceMap[$category] ?? 'normal';
     }
 
     /**
@@ -456,34 +519,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         ];
 
         return $priorityMap[$benefit] ?? 'normal';
-    }
-
-    /**
-     * Obtém classe de ícone para consideração
-     */
-    private function getConsiderationIconClass(string $category): string
-    {
-        $iconMap = [
-            'temperatura' => 'thermometer',
-            'carga' => 'package',
-            'estilo_pilotagem' => 'target'
-        ];
-
-        return $iconMap[$category] ?? 'info';
-    }
-
-    /**
-     * Obtém importância da consideração
-     */
-    private function getConsiderationImportance(string $category): string
-    {
-        $importanceMap = [
-            'temperatura' => 'crítica',
-            'carga' => 'alta',
-            'estilo_pilotagem' => 'média'
-        ];
-
-        return $importanceMap[$category] ?? 'normal';
     }
 
     /**
@@ -669,6 +704,17 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
+     * Verifica se é motocicleta premium
+     */
+    private function isPremiumMotorcycle(): bool
+    {
+        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
+        $premiumBrands = ['ducati', 'bmw', 'triumph', 'ktm', 'harley-davidson'];
+
+        return in_array($make, $premiumBrands);
+    }
+
+    /**
      * Obtém categoria do tamanho do motor
      */
     private function getEngineSizeCategory(): string
@@ -687,27 +733,59 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
+     * Obtém segmento da motocicleta
+     */
+    private function getMotorcycleSegment(): string
+    {
+        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
+
+        $segmentMap = [
+            'naked' => 'Naked',
+            'sport' => 'Esportiva',
+            'touring' => 'Turismo',
+            'adventure' => 'Adventure',
+            'cruiser' => 'Cruiser'
+        ];
+
+        return $segmentMap[$category] ?? 'Motocicleta';
+    }
+
+    /**
+     * Gera slug baseado nos dados do veículo
+     */
+    private function generateSlug(array $vehicleInfo): string
+    {
+        $make = strtolower($vehicleInfo['marca'] ?? '');
+        $model = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
+
+        return "{$make}-{$model}";
+    }
+
+    /**
      * Processa dados SEO específicos para motocicletas
      */
     private function processSeoData(): array
     {
         $vehicleFullName = $this->getMotorcycleFullName();
+        $vehicleInfo = $this->article->extracted_entities ?? [];
+        $seoData = $this->article->seo_data ?? [];
+
+        // Obtém pressões dos dados processados
         $frontPressure = $this->processedData['pressure_table']['official_pressures']['solo_rider']['front'] ?? '';
         $rearPressure = $this->processedData['pressure_table']['official_pressures']['solo_rider']['rear'] ?? '';
-
-        $pressureDisplay = $frontPressure && $rearPressure ? "{$frontPressure} (dianteira) / {$rearPressure} (traseira)" : '';
-
-        $vehicleInfo = $this->article->extracted_entities ?? [];
+        $pressureDisplay = $frontPressure && $rearPressure ? "{$frontPressure}/{$rearPressure}" : '';
 
         return [
-            'title' => $this->article->title ?? "Pressão Ideal para Pneus da {$vehicleFullName} - Guia Completo",
-            'meta_description' => $this->article->meta_description ?? "Pressões ideais para pneus da {$vehicleFullName}. Solo/garupa: {$pressureDisplay}. Dicas específicas para motociclistas e tabela de conversão PSI.",
-            'keywords' => $this->article->seo_keywords ?? [],
-            'focus_keyword' => "pressão ideal pneus {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$vehicleInfo['ano']}",
+            'title' => $seoData['page_title'] ?? "Pressão Ideal para Pneus da {$vehicleFullName} - Guia Completo",
+            'meta_description' => $seoData['meta_description'] ?? "Pressões ideais para pneus da {$vehicleFullName}. Solo/garupa: {$pressureDisplay}. Dicas específicas para motociclistas e tabela de conversão PSI.",
+            'keywords' => $seoData['secondary_keywords'] ?? [],
+            'focus_keyword' => $seoData['primary_keyword'] ?? "pressão ideal pneus {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$vehicleInfo['ano']}",
             'canonical_url' => $this->getCanonicalUrl(),
-            'og_title' => "Pressão Ideal para Pneus da {$vehicleFullName} - Motocicleta",
-            'og_description' => "Guia específico para motociclistas: pressões ideais, dicas de segurança e calibragem da {$vehicleFullName}.",
-            'og_image' => $this->processedData['vehicle_info']['image_url'],
+            'h1' => $seoData['h1'] ?? "Pressão Ideal para Pneus da {$vehicleFullName} – Guia Completo",
+            'h2_tags' => $seoData['h2_tags'] ?? [],
+            'og_title' => $seoData['og_title'] ?? "Pressão Ideal para Pneus da {$vehicleFullName} - Motocicleta",
+            'og_description' => $seoData['og_description'] ?? "Guia específico para motociclistas: pressões ideais, dicas de segurança e calibragem da {$vehicleFullName}.",
+            'og_image' => $seoData['og_image'] ?? $this->processedData['vehicle_info']['image_url'] ?? '',
             'og_type' => 'article',
             'twitter_card' => 'summary_large_image'
         ];
@@ -766,6 +844,10 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             if (!empty($vehicleData['ano'])) {
                 $structuredData['mainEntity']['modelDate'] = (string) $vehicleData['ano'];
             }
+
+            if (!empty($vehicleData['motorizacao'])) {
+                $structuredData['mainEntity']['engineDisplacement'] = $vehicleData['motorizacao'];
+            }
         }
 
         return $structuredData;
@@ -810,7 +892,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             ],
             [
                 'name' => $this->article->title,
-                'url' => route('info.article.show', $this->article->slug), // URL para evitar erro
+                'url' => route('info.article.show', $this->article->slug),
                 'position' => 4
             ],
         ];

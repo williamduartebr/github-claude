@@ -1,271 +1,395 @@
 {
-    "title": "Pressão Ideal dos Pneus Yamaha MT-03 2019: Manual Técnico",
-    "slug": "pressao-ideal-pneus-yamaha-mt03-2019",
-    "template": "ideal_tire_pressure_motorcycle",
-    "category_id": 30,
-    "category_name": "Pneus e Rodas",
-    "category_slug": "pneus-rodas",
-    "content": {
-        "introducao": "A Yamaha MT-03 2019 é uma naked que combina agilidade urbana com versatilidade rodoviária, e a pressão correta dos pneus é crucial para extrair o máximo de sua performance e segurança. Com características únicas de motocicletas, onde pneus dianteiro e traseiro têm funções distintas, cada PSI influencia diretamente na estabilidade, frenagem e comportamento em curvas. Este guia técnico apresenta as especificações oficiais da Yamaha e orientações específicas para manter sua MT-03 sempre nas condições ideais de pilotagem.",
-        "especificacoes_pneus": {
-            "pneu_dianteiro": {
-                "medida_original": "110/70-17 M/C 54H",
-                "indice_carga": "54 (212kg)",
-                "indice_velocidade": "H (até 210 km/h)",
-                "pressao_recomendada": "36 PSI (2.5 bar)",
-                "pressao_maxima": "51 PSI (3.5 bar)",
-                "tipo_construcao": "Radial tubeless"
-            },
-            "pneu_traseiro": {
-                "medida_original": "140/70-17 M/C 66H",
-                "indice_carga": "66 (300kg)",
-                "indice_velocidade": "H (até 210 km/h)",
-                "pressao_recomendada": "42 PSI (2.9 bar)",
-                "pressao_maxima": "51 PSI (3.5 bar)",
-                "tipo_construcao": "Radial tubeless"
-            }
-        },
-        "tabela_pressoes": [
-            {
-                "situacao": "Piloto Solo - Uso Urbano",
-                "dianteiro": "34 PSI",
-                "traseiro": "40 PSI",
-                "aplicacao": "Cidade, trânsito, percursos curtos",
-                "observacao": "Melhor conforto e aderência urbana"
-            },
-            {
-                "situacao": "Piloto Solo - Uso Rodoviário",
-                "dianteiro": "36 PSI",
-                "traseiro": "42 PSI",
-                "aplicacao": "Estradas, velocidades constantes",
-                "observacao": "Especificação oficial Yamaha"
-            },
-            {
-                "situacao": "Com Garupa - Qualquer Uso",
-                "dianteiro": "36 PSI",
-                "traseiro": "42 PSI",
-                "aplicacao": "Piloto + passageiro",
-                "observacao": "Mesma pressão - distribuição equilibrada"
-            },
-            {
-                "situacao": "Carga Adicional (bagagem)",
-                "dianteiro": "38 PSI",
-                "traseiro": "44 PSI",
-                "aplicacao": "Viagens com bagageiro carregado",
-                "observacao": "Compensar peso extra"
-            },
-            {
-                "situacao": "Uso Esportivo",
-                "dianteiro": "38 PSI",
-                "traseiro": "40 PSI",
-                "aplicacao": "Pilotagem mais agressiva",
-                "observacao": "Maior área de contato em curvas"
-            }
-        ],
-        "conversao_unidades": {
-            "psi_para_bar": {
-                "34_psi": "2.3 bar",
-                "36_psi": "2.5 bar",
-                "38_psi": "2.6 bar",
-                "40_psi": "2.8 bar",
-                "42_psi": "2.9 bar",
-                "44_psi": "3.0 bar"
-            },
-            "psi_para_kpa": {
-                "34_psi": "234 kPa",
-                "36_psi": "248 kPa",
-                "40_psi": "276 kPa",
-                "42_psi": "290 kPa"
-            },
-            "formula_conversao": "PSI × 0.069 = bar | PSI × 6.895 = kPa"
-        },
-        "localizacao_manual": {
-            "manual_proprietario": "Página 6-2 - Especificações",
-            "etiqueta_chassi": "Lado direito do chassi próximo ao motor",
-            "adesivo_balanco": "Braço oscilante traseiro",
-            "dica_visual": "Informações gravadas na própria roda (lateral interna)"
-        },
-        "beneficios_calibragem": [
-            {
-                "beneficio": "Estabilidade em Curvas",
-                "impacto": "Controle preciso",
-                "descricao": "Pressão correta garante área de contato ideal para inclinações",
-                "especifico_moto": true
-            },
-            {
-                "beneficio": "Frenagem Eficiente",
-                "impacto": "Redução de 20% na distância",
-                "descricao": "Aderência otimizada do pneu dianteiro para frenagem",
-                "especifico_moto": true
-            },
-            {
-                "beneficio": "Economia de Combustível",
-                "impacto": "Até 5% de economia",
-                "descricao": "Menor resistência ao rolamento com pressão adequada"
-            },
-            {
-                "beneficio": "Vida Útil dos Pneus",
-                "impacto": "Até 30% mais durabilidade",
-                "descricao": "Evita desgaste irregular típico de motocicletas"
-            },
-            {
-                "beneficio": "Conforto de Pilotagem",
-                "impacto": "Absorção otimizada",
-                "descricao": "Pressão equilibrada melhora absorção de irregularidades"
-            }
-        ],
-        "cuidados_especiais_moto": [
-            {
-                "categoria": "Verificação Específica",
-                "cuidados": [
-                    "Verifique pressão com moto no cavalete central",
-                    "Pneus devem estar frios (3+ horas parados)",
-                    "Use calibrador próprio para motocicletas (bico reto)",
-                    "Verifique válvulas - são mais expostas que em carros"
-                ]
-            },
-            {
-                "categoria": "Diferenças Dianteiro/Traseiro",
-                "cuidados": [
-                    "Pneu dianteiro: responsável por direção e frenagem",
-                    "Pneu traseiro: transmite potência e sustenta peso",
-                    "Nunca iguale as pressões - cada um tem função específica",
-                    "Traseiro sempre com pressão maior que dianteiro"
-                ]
-            },
-            {
-                "categoria": "Condições Especiais",
-                "cuidados": [
-                    "Chuva: reduza 2 PSI para maior aderência",
-                    "Track day: consulte instrutor para ajuste específico",
-                    "Viagem longa: aumente 2 PSI no traseiro",
-                    "Pista de terra: reduza pressões conforme terreno"
-                ]
-            }
-        ],
-        "alertas_seguranca": [
-            {
-                "tipo": "Crítico",
-                "titulo": "Pressão Muito Baixa",
-                "descricao": "Pode causar instabilidade severa e perda de controle",
-                "acao": "Parar imediatamente e calibrar",
-                "risco_moto": "Alto risco de queda em curvas"
-            },
-            {
-                "tipo": "Crítico",
-                "titulo": "Pressão Excessiva",
-                "descricao": "Reduz área de contato e compromete frenagem",
-                "acao": "Ajustar imediatamente",
-                "risco_moto": "Perda de aderência em piso molhado"
-            },
-            {
-                "tipo": "Atenção",
-                "titulo": "Diferença Entre Pneus",
-                "descricao": "Variação maior que 3 PSI entre pneus do mesmo eixo",
-                "acao": "Verificar vazamento ou dano",
-                "risco_moto": "Comportamento imprevisível"
-            },
-            {
-                "tipo": "Preventivo",
-                "titulo": "Aquecimento dos Pneus",
-                "descricao": "Pressão aumenta com temperatura",
-                "acao": "Não reduza pressão com pneus quentes",
-                "risco_moto": "Pressão insuficiente quando esfriar"
-            }
-        ],
-        "perguntas_frequentes": [
-            {
-                "pergunta": "Qual a pressão ideal para a Yamaha MT-03 2019?",
-                "resposta": "Para uso normal: 36 PSI no dianteiro e 42 PSI no traseiro. Para uso urbano mais confortável: 34 PSI no dianteiro e 40 PSI no traseiro."
-            },
-            {
-                "pergunta": "Por que a pressão do pneu traseiro é maior?",
-                "resposta": "O pneu traseiro suporta mais peso (piloto + motor + transmissão) e transmite toda a potência. A pressão maior compensa essa carga adicional."
-            },
-            {
-                "pergunta": "Posso usar a mesma pressão nos dois pneus?",
-                "resposta": "Não recomendado. Cada pneu tem função específica e a pressão diferenciada otimiza desempenho, segurança e durabilidade."
-            },
-            {
-                "pergunta": "Com que frequência verificar a pressão?",
-                "resposta": "Semanalmente ou antes de cada pilotagem longa. Motocicletas perdem pressão mais rapidamente que carros."
-            },
-            {
-                "pergunta": "Preciso ajustar a pressão para chuva?",
-                "resposta": "Para chuva intensa, pode reduzir 2 PSI em cada pneu para aumentar a área de contato e melhorar aderência."
-            }
-        ],
-        "consideracoes_finais": "A pressão correta dos pneus da sua Yamaha MT-03 2019 é fundamental para uma pilotagem segura e prazerosa. Diferente dos carros, onde pequenas variações podem passar despercebidas, em motocicletas cada PSI impacta diretamente na estabilidade, frenagem e comportamento em curvas. Os 36/42 PSI recomendados pela Yamaha são resultado de extensivos testes para garantir o equilíbrio perfeito entre performance, segurança e conforto. Mantenha verificações regulares, use equipamentos adequados e lembre-se: em duas rodas, a manutenção preventiva não é apenas economia - é questão de vida. Pilote sempre com responsabilidade e pneus perfeitamente calibrados."
+  "_id": "mock_ideal_motorcycle_yamaha_mt03",
+  "title": "Pressão Ideal para Pneus da Yamaha MT-03 2019 – Guia Completo",
+  "slug": "pressao-ideal-pneus-yamaha-mt03-2019",
+  "template": "ideal_tire_pressure_motorcycle",
+  "category_name": "Calibragem de Pneus",
+  "category_slug": "calibragem-pneus",
+  "canonical_url": "https://mercadoveiculos.com.br/info/calibragem/yamaha-mt03-2019.html",
+  "created_at": "2024-07-17T10:00:00Z",
+  "updated_at": "2025-07-17T10:00:00Z",
+  "extracted_entities": {
+    "marca": "Yamaha",
+    "modelo": "MT-03",
+    "ano": "2019",
+    "categoria": "naked",
+    "motorizacao": "321cc",
+    "combustivel": "Gasolina",
+    "versao": "Standard"
+  },
+  "vehicle_data": {
+    "peso_seco": "168kg",
+    "capacidade_combustivel": "14L",
+    "altura_assento": "780mm",
+    "distancia_eixos": "1380mm"
+  },
+  "seo_data": {
+    "page_title": "Pressão Ideal para Pneus Yamaha MT-03 2019 - Guia Completo | Mercado Veículos",
+    "meta_description": "Guia completo sobre calibragem de pneus para Yamaha MT-03 2019. Pressões ideais em PSI para piloto solo e garupa, dicas de segurança para motociclistas brasileiros.",
+    "primary_keyword": "pressão ideal pneus Yamaha MT-03 2019",
+    "secondary_keywords": [
+      "calibragem pneus MT-03",
+      "pressão PSI Yamaha MT-03",
+      "manutenção pneus motocicleta",
+      "Yamaha MT-03 2019 especificações"
+    ],
+    "h1": "Pressão Ideal para Pneus da Yamaha MT-03 2019 – Guia Completo",
+    "h2_tags": [
+      "Especificações dos Pneus Originais",
+      "Tabela de Pressão dos Pneus (PSI - Yamaha MT-03)",
+      "Ajustes para Condições Especiais",
+      "Conversão de Unidades",
+      "Cuidados Específicos para Motocicletas",
+      "Problemas Comuns e Soluções"
+    ],
+    "og_title": "Pressão Ideal para Pneus Yamaha MT-03 2019 - Guia Completo",
+    "og_description": "Guia completo sobre calibragem de pneus para Yamaha MT-03 2019. Pressões ideais em PSI para piloto solo e garupa, dicas de segurança para motociclistas.",
+    "og_image": "https://mercadoveiculos.com.br/images/yamaha-mt03-2019.jpg"
+  },
+  "content": {
+    "introducao": "A calibragem correta dos pneus da sua Yamaha MT-03 2019 é crucial para a segurança, desempenho e durabilidade. Esta naked de 321cc, conhecida por sua agilidade urbana e facilidade de pilotagem, exige atenção especial à pressão dos pneus para manter suas características originais. Este guia apresenta as pressões ideais em PSI para diferentes condições de uso, peso do piloto e garupa, com valores oficiais da Yamaha e dicas específicas para o clima brasileiro.",
+    
+    "especificacoes_pneus": {
+      "pneu_dianteiro": {
+        "medida_original": "110/70 R17",
+        "indice_carga": "54",
+        "indice_velocidade": "H",
+        "tipo_construcao": "Radial",
+        "marca_original": "Michelin Pilot Street",
+        "alternativas_recomendadas": ["Pirelli Diablo Rosso II", "Bridgestone Battlax BT-45", "Continental ContiRoadAttack 3"]
+      },
+      "pneu_traseiro": {
+        "medida_original": "140/70 R17",
+        "indice_carga": "66",
+        "indice_velocidade": "H",
+        "tipo_construcao": "Radial",
+        "marca_original": "Michelin Pilot Street",
+        "alternativas_recomendadas": ["Pirelli Diablo Rosso II", "Bridgestone Battlax BT-45", "Continental ContiRoadAttack 3"]
+      },
+      "observacao": "Use sempre pneus radiais com especificação H (210 km/h). Pneus diagonais não são adequados para a MT-03 e podem comprometer a estabilidade."
     },
-    "extracted_entities": {
-        "marca": "Yamaha",
-        "modelo": "MT-03",
-        "ano": 2019,
-        "motorizacao": "321cc",
-        "versao": "Standard",
-        "tipo_veiculo": "motorcycle",
-        "categoria": "Naked",
-        "combustivel": "gasolina"
+    
+    "tabela_pressoes": {
+      "pressoes_oficiais": {
+        "piloto_solo": {
+          "dianteira": "33 PSI",
+          "traseira": "36 PSI",
+          "observacao": "Para piloto até 80kg + equipamentos"
+        },
+        "piloto_garupa": {
+          "dianteira": "33 PSI",
+          "traseira": "36 PSI",
+          "observacao": "Carga total até 150kg (piloto + garupa + bagagem)"
+        }
+      },
+      "condicoes_especiais": [
+        {
+          "situacao": "Uso urbano",
+          "terreno": "Cidade/trânsito",
+          "pressao_dianteira": "33 PSI",
+          "pressao_traseira": "36 PSI",
+          "temperatura_ideal": "Pneus frios (manhã)",
+          "observacao": "Ideal para uso diário na cidade, oferece boa aderência e conforto."
+        },
+        {
+          "situacao": "Viagem rodoviária",
+          "terreno": "Rodovias",
+          "pressao_dianteira": "35 PSI",
+          "pressao_traseira": "38 PSI",
+          "temperatura_ideal": "Pneus frios",
+          "observacao": "Para viagens longas acima de 100 km/h, aumenta estabilidade e reduz aquecimento."
+        },
+        {
+          "situacao": "Pilotagem esportiva",
+          "terreno": "Curvas/montanha",
+          "pressao_dianteira": "31 PSI",
+          "pressao_traseira": "34 PSI",
+          "temperatura_ideal": "Conforme aquecimento",
+          "observacao": "Somente para pilotos experientes. Maior área de contato para curvas."
+        },
+        {
+          "situacao": "Chuva leve",
+          "terreno": "Piso molhado",
+          "pressao_dianteira": "32 PSI",
+          "pressao_traseira": "35 PSI",
+          "temperatura_ideal": "Pneus frios",
+          "observacao": "Redução sutil para aumentar área de contato. Apenas para pilotagem defensiva."
+        },
+        {
+          "situacao": "Piloto pesado",
+          "terreno": "Todos",
+          "pressao_dianteira": "34 PSI",
+          "pressao_traseira": "38 PSI",
+          "temperatura_ideal": "Pneus frios",
+          "observacao": "Para pilotos acima de 90kg. Evita deformação excessiva dos pneus."
+        }
+      ]
     },
-    "seo_data": {
-        "page_title": "Pressão Ideal Pneus Yamaha MT-03 2019 - Manual Técnico Completo",
-        "meta_description": "Pressões oficiais dos pneus da Yamaha MT-03 2019. Especificações técnicas, tabela por uso, conversões e cuidados especiais para motocicletas.",
-        "url_slug": "pressao-ideal-pneus-yamaha-mt03-2019",
-        "h1": "Pressão Ideal dos Pneus Yamaha MT-03 2019: Manual Técnico",
-        "h2_tags": [
-            "Especificações dos Pneus",
-            "Tabela de Pressões por Situação",
-            "Conversão de Unidades",
-            "Localização das Informações",
-            "Benefícios da Calibragem Correta",
-            "Cuidados Especiais para Motocicletas",
-            "Alertas de Segurança"
-        ],
-        "primary_keyword": "pressão ideal pneus Yamaha MT-03 2019",
-        "secondary_keywords": [
-            "calibragem MT-03",
-            "pressão pneus MT03",
-            "especificações Yamaha",
-            "PSI MT-03 2019"
-        ],
-        "meta_robots": "index,follow",
-        "canonical_url": "https://mercadoveiculos.com/info/pressao-ideal-pneus-yamaha-mt03-2019",
-        "schema_type": "Article",
-        "focus_keywords": [
-            "pressão ideal pneus moto",
-            "calibragem motocicleta",
-            "segurança pilotagem",
-            "Yamaha MT-03"
+    
+    "localizacao_informacoes": {
+      "manual_proprietario": {
+        "localizacao": "Seção Especificações Técnicas",
+        "secao": "Rodas e Pneus",
+        "pagina_aproximada": "Página 8-2"
+      },
+      "etiqueta_moto": {
+        "localizacao_principal": "Braço da suspensão traseira (swing arm)",
+        "localizacoes_alternativas": [
+          "Próximo ao número do chassi (lado direito)",
+          "Manual do proprietário (compartimento sob o assento)"
         ]
+      },
+      "dica_importante": "A MT-03 2019 tem etiqueta com pressões em kgf/cm². Use conversão: 1 kgf/cm² ≈ 14,22 PSI."
     },
-    "vehicle_data": {
-        "vehicle_full_name": "Yamaha MT-03 2019",
-        "vehicle_brand": "Yamaha",
-        "vehicle_model": "MT-03",
-        "vehicle_year": 2019,
-        "vehicle_category": "Naked",
-        "vehicle_type": "motorcycle",
-        "tire_size": "110/70-17 (dianteiro) 140/70-17 (traseiro)",
-        "pressures": {
-            "empty_front": 36,
-            "empty_rear": 42,
-            "loaded_front": 36,
-            "loaded_rear": 42,
-            "max_front": 51,
-            "max_rear": 51,
-            "urban_front": 34,
-            "urban_rear": 40
+    
+    "conversao_unidades": {
+      "tabela_conversao": [
+        {
+          "psi": "31",
+          "kgf_cm2": "2,18",
+          "bar": "2,14"
         },
-        "pressure_display": "36/42 PSI",
-        "pressure_loaded_display": "36/42 PSI",
-        "is_motorcycle": true,
-        "is_premium": false,
-        "has_tpms": false,
-        "vehicle_segment": "A"
+        {
+          "psi": "32",
+          "kgf_cm2": "2,25",
+          "bar": "2,21"
+        },
+        {
+          "psi": "33",
+          "kgf_cm2": "2,32",
+          "bar": "2,28"
+        },
+        {
+          "psi": "34",
+          "kgf_cm2": "2,39",
+          "bar": "2,34"
+        },
+        {
+          "psi": "35",
+          "kgf_cm2": "2,46",
+          "bar": "2,41"
+        },
+        {
+          "psi": "36",
+          "kgf_cm2": "2,53",
+          "bar": "2,48"
+        },
+        {
+          "psi": "38",
+          "kgf_cm2": "2,67",
+          "bar": "2,62"
+        }
+      ],
+      "observacao": "No Brasil, PSI é o padrão usado nos postos de combustível e calibradores. Use sempre PSI como referência principal."
     },
-    "metadata": [],
-    "status": "published",
-    "created_at": "2025-08-05T12:10:00.000000Z",
-    "updated_at": "2025-08-05T12:10:00.000000Z",
-    "id": "mock_ideal_motorcycle_001"
+    
+    "consideracoes_especiais": {
+      "temperatura": {
+        "titulo": "Impacto da Temperatura",
+        "descricao": "A MT-03 é sensível a variações de temperatura devido ao seu peso leve.",
+        "fatores": [
+          "No calor brasileiro (35°C+), pressão pode aumentar 4-5 PSI",
+          "Sempre calibre com pneus frios (manhã ou após 3h parado)",
+          "Em dias de 40°C+, evite viagens longas no horário mais quente",
+          "Pneus quentes podem mostrar até 6 PSI a mais que o real"
+        ]
+      },
+      "carga": {
+        "titulo": "Ajustes por Carga e Peso",
+        "descricao": "O peso influencia significativamente a calibragem na MT-03.",
+        "tipos": [
+          "Piloto leve (≤65kg): reduzir 1 PSI no traseiro",
+          "Piloto médio (66-85kg): usar pressões padrão",
+          "Piloto pesado (≥86kg): aumentar 2 PSI no traseiro",
+          "Com garupa: sempre usar pressões para 'piloto + garupa'",
+          "Bagagem pesada: considerar +1 PSI no traseiro"
+        ]
+      },
+      "estilo_pilotagem": {
+        "titulo": "Estilo de Pilotagem",
+        "descricao": "Ajustes conforme o tipo de uso da motocicleta.",
+        "orientacoes": [
+          "Pilotagem urbana defensiva: usar pressões padrão",
+          "Pilotagem esportiva: reduzir 2 PSI (somente experientes)",
+          "Viagens longas: aumentar 2 PSI para estabilidade",
+          "Track day: consultar instrutor especializado"
+        ]
+      }
+    },
+    
+    "beneficios_calibragem": {
+      "seguranca": {
+        "titulo": "Segurança Máxima",
+        "descricao": "Pressão correta é fundamental para estabilidade e frenagem.",
+        "aspectos": [
+          "Aderência otimizada em curvas e frenagens",
+          "Estabilidade em altas velocidades",
+          "Redução do risco de derrapagem",
+          "Comportamento previsível da motocicleta"
+        ],
+        "impacto_financeiro": "Previne acidentes que podem custar milhares em danos",
+        "economia_estimada": "Valor inestimável - sua vida"
+      },
+      "performance": {
+        "titulo": "Performance Ideal",
+        "descricao": "A MT-03 entrega todo seu potencial com pressões corretas.",
+        "aspectos": [
+          "Melhor aceleração e retomadas",
+          "Curvas mais precisas e seguras",
+          "Frenagem mais eficiente",
+          "Aproveitamento total dos 42 CV"
+        ],
+        "impacto_financeiro": "Melhora experiência de pilotagem",
+        "economia_estimada": "Satisfação e prazer de pilotar"
+      },
+      "economia": {
+        "titulo": "Economia de Combustível",
+        "descricao": "Pressão correta reduz consumo e custos operacionais.",
+        "aspectos": [
+          "Redução de 10-15% no consumo com pressão ideal",
+          "Menos resistência ao rolamento",
+          "Motor trabalha com menos esforço",
+          "Maior autonomia por tanque"
+        ],
+        "impacto_financeiro": "Economia direta no combustível",
+        "economia_estimada": "R$ 200-300 por ano em combustível"
+      },
+      "durabilidade": {
+        "titulo": "Vida Útil dos Pneus",
+        "descricao": "Pressão adequada maximiza durabilidade dos pneus.",
+        "aspectos": [
+          "Desgaste uniforme e controlado",
+          "Vida útil 30% maior com calibragem correta",
+          "Menos trocas desnecessárias",
+          "Aproveitamento máximo do investimento"
+        ],
+        "impacto_financeiro": "Economia na troca de pneus",
+        "economia_estimada": "R$ 400-600 por conjunto de pneus"
+      }
+    },
+    
+    "dicas_manutencao": [
+      {
+        "categoria": "Verificação Semanal",
+        "frequencia": "A cada 7 dias ou 300km",
+        "importancia": "crítica",
+        "itens": [
+          "Verificar pressão com pneus frios",
+          "Inspecionar desgaste visual dos pneus",
+          "Checar se válvulas estão bem fechadas",
+          "Observar rachaduras ou objetos cravados",
+          "Medir profundidade do sulco (mínimo 1,6mm)"
+        ]
+      },
+      {
+        "categoria": "Condições Ideais de Calibragem",
+        "frequencia": "A cada calibragem",
+        "importancia": "alta",
+        "itens": [
+          "Sempre pela manhã ou pneus frios",
+          "Usar calibradores digitais quando possível",
+          "Ambiente com sombra e temperatura amena",
+          "Moto em superfície plana e nivelada",
+          "Verificar ambos os pneus no mesmo momento"
+        ]
+      },
+      {
+        "categoria": "Equipamentos Recomendados",
+        "frequencia": "Investimento único",
+        "importancia": "recomendada",
+        "itens": [
+          "Calibrador digital portátil",
+          "Mini compressor 12V para emergências",
+          "Kit reparo tubeless de qualidade",
+          "Medidor de profundidade de sulco",
+          "Bomba manual de backup para viagens"
+        ]
+      }
+    ],
+    
+    "alertas_criticos": [
+      {
+        "tipo": "crítico",
+        "titulo": "Verificação Semanal Obrigatória",
+        "descricao": "Motocicletas perdem pressão mais rapidamente que carros.",
+        "consequencia": "Pneus com 5 PSI baixos podem causar instabilidade fatal a 80 km/h."
+      },
+      {
+        "tipo": "importante",
+        "titulo": "Nunca Calibrar com Pneus Quentes",
+        "descricao": "Calibrar após pilotagem resulta em subcalibragem perigosa.",
+        "consequencia": "Quando esfriam, ficam muito baixos, causando risco de acidente."
+      },
+      {
+        "tipo": "atenção",
+        "titulo": "Diferenças Dianteiro/Traseiro",
+        "descricao": "Nunca use mesma pressão nos dois pneus.",
+        "consequencia": "Compromete estabilidade, frenagem e vida útil dos pneus."
+      }
+    ],
+    
+    "procedimento_calibragem": {
+      "titulo": "Como Calibrar Corretamente",
+      "passos": [
+        {
+          "numero": 1,
+          "titulo": "Preparação",
+          "descricao": "Verifique sempre com pneus frios",
+          "detalhes": [
+            "Moto parada há pelo menos 3 horas",
+            "Ou menos de 2 km rodados",
+            "Preferencialmente pela manhã",
+            "Em local com sombra"
+          ]
+        },
+        {
+          "numero": 2,
+          "titulo": "Verificação",
+          "descricao": "Use calibrador confiável",
+          "detalhes": [
+            "Prefira calibradores digitais",
+            "Retire a tampa da válvula",
+            "Encaixe firmemente o calibrador",
+            "Anote a pressão atual"
+          ]
+        },
+        {
+          "numero": 3,
+          "titulo": "Ajuste",
+          "descricao": "Calibre conforme necessidade",
+          "detalhes": [
+            "Dianteiro: 33 PSI (uso normal)",
+            "Traseiro: 36 PSI (uso normal)",
+            "Ajuste conforme condições especiais",
+            "Recoloque as tampas das válvulas"
+          ]
+        }
+      ]
+    },
+    
+    "perguntas_frequentes": [
+      {
+        "pergunta": "Qual a pressão exata da Yamaha MT-03 2019 em PSI?",
+        "resposta": "Para uso normal: 33 PSI no pneu dianteiro (110/70 R17) e 36 PSI no traseiro (140/70 R17). Com garupa: mantenha mesma pressão. Viagens longas: 35 PSI dianteiro e 38 PSI traseiro. Sempre verificar com pneus frios."
+      },
+      {
+        "pergunta": "Com que frequência devo verificar a pressão na MT-03?",
+        "resposta": "Semanalmente é obrigatório! Motocicletas perdem pressão mais rápido que carros. No clima brasileiro, verifique a cada 300km ou antes de qualquer viagem. Uma queda de 3-4 PSI já compromete a segurança. A MT-03, sendo leve, é ainda mais sensível a variações de pressão."
+      },
+      {
+        "pergunta": "Posso usar a mesma pressão nos dois pneus da MT-03?",
+        "resposta": "NUNCA! O pneu traseiro deve ter sempre 3 PSI a mais que o dianteiro (36 vs 33 PSI). O traseiro suporta mais peso, transmite potência e precisa de maior pressão para estabilidade. Usar pressões iguais pode causar instabilidade perigosa."
+      },
+      {
+        "pergunta": "Meu peso influencia na pressão dos pneus da MT-03?",
+        "resposta": "Sim! Piloto leve (≤65kg): reduza 1 PSI no traseiro. Piloto pesado (≥86kg): aumente 2 PSI no traseiro. Lembre-se que o peso inclui equipamentos (capacete, jaqueta = +3-5kg). A MT-03 suporta até 150kg de carga total."
+      },
+      {
+        "pergunta": "Que tipo de pneu usar na MT-03 2019?",
+        "resposta": "Use SEMPRE pneus radiais com índice H (210 km/h). Original: 110/70 R17 (dianteiro) e 140/70 R17 (traseiro). Marcas recomendadas: Michelin Pilot Street (original), Pirelli Diablo Rosso II, Bridgestone Battlax BT-45. NUNCA use pneus diagonais."
+      }
+    ],
+    
+    "consideracoes_finais": "A pressão correta dos pneus da Yamaha MT-03 2019 é fundamental para aproveitar todo o potencial desta excelente naked de entrada. Diferente dos carros, nas motos a margem de erro é muito menor - alguns PSI podem fazer a diferença entre uma pilotagem segura e prazerosa ou um acidente grave.\n\nNo clima brasileiro, com temperaturas elevadas, a verificação semanal não é opcional - é questão de sobrevivência. A MT-03, por ser uma moto leve e ágil, responde muito bem à calibragem correta, oferecendo economia, performance e segurança.\n\nLembre-se: 33 PSI dianteiro, 36 PSI traseiro para uso normal. Ajuste conforme seu peso e condições de uso. Sua segurança vale mais que alguns minutos checando a pressão dos pneus."
+  }
 }
