@@ -708,29 +708,24 @@
         <p>{{ $article->introduction }}</p>
         @endif
         
-        <!-- Destaque da Pressão Ideal -->
-        @if(!empty($article->ideal_pressure))
+        <!-- ✅ CORREÇÃO: Destaque da Pressão Ideal usando dados corretos -->
+        @if(!empty($article->tire_specifications_by_version) && count($article->tire_specifications_by_version) > 0)
+        @php $mainVersion = $article->tire_specifications_by_version[0] @endphp
         <div class="ideal-pressure-highlight">
             <div class="ideal-pressure-title">Pressão Ideal para {{ $article->vehicle_info['full_name'] ?? 'seu veículo' }}</div>
             <div class="pressure-values-grid">
-                @if(!empty($article->ideal_pressure['front_pressure']))
                 <div class="pressure-value-card">
                     <div class="pressure-position">🔄 Pneus Dianteiros</div>
-                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['front_pressure']) }}</div>
+                    <div class="pressure-value">{{ str_replace(' PSI', '', $mainVersion['front_normal']) }}</div>
                     <div class="pressure-unit">PSI (libras por pol²)</div>
                 </div>
-                @endif
-                @if(!empty($article->ideal_pressure['rear_pressure']))
                 <div class="pressure-value-card">
                     <div class="pressure-position">🔙 Pneus Traseiros</div>
-                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['rear_pressure']) }}</div>
+                    <div class="pressure-value">{{ str_replace(' PSI', '', $mainVersion['rear_normal']) }}</div>
                     <div class="pressure-unit">PSI (libras por pol²)</div>
                 </div>
-                @endif
             </div>
-            @if(!empty($article->ideal_pressure['observation']))
-            <p style="margin-top: 16px; color: #1e40af; font-weight: 500; font-size: 14px;">{{ $article->ideal_pressure['observation'] }}</p>
-            @endif
+            <p style="margin-top: 16px; color: #1e40af; font-weight: 500; font-size: 14px;">Pressões para uso normal. Ajuste conforme carga e condições.</p>
         </div>
         @endif
         
@@ -747,49 +742,39 @@
             </amp-ad>
         </div>
         
-        <!-- Especificações por Versão -->
-        @if(!empty($article->vehicle_versions))
+        <!-- ✅ CORREÇÃO: Especificações por Versão usando dados corretos -->
+        @if(!empty($article->tire_specifications_by_version))
         <h2>🚗 Especificações por Versão</h2>
         
         <div class="version-specs-grid">
-            @foreach($article->vehicle_versions as $version)
+            @foreach($article->tire_specifications_by_version as $version)
             <div class="version-card">
-                <div class="version-header">{{ $version['name'] }}</div>
+                <div class="version-header">{{ $version['version'] }}</div>
                 <div class="version-body">
-                    @if(!empty($version['tire_size']))
                     <div class="spec-item">
                         <span class="spec-label">Medida dos Pneus:</span>
                         <span class="spec-value">{{ $version['tire_size'] }}</span>
                     </div>
-                    @endif
-                    @if(!empty($version['front_pressure']))
                     <div class="spec-item">
-                        <span class="spec-label">Pressão Dianteira:</span>
-                        <span class="spec-value">{{ $version['front_pressure'] }}</span>
+                        <span class="spec-label">Pressão Dianteira (Normal):</span>
+                        <span class="spec-value">{{ $version['front_normal'] }}</span>
                     </div>
-                    @endif
-                    @if(!empty($version['rear_pressure']))
                     <div class="spec-item">
-                        <span class="spec-label">Pressão Traseira:</span>
-                        <span class="spec-value">{{ $version['rear_pressure'] }}</span>
+                        <span class="spec-label">Pressão Traseira (Normal):</span>
+                        <span class="spec-value">{{ $version['rear_normal'] }}</span>
                     </div>
-                    @endif
-                    @if(!empty($version['engine']))
                     <div class="spec-item">
-                        <span class="spec-label">Motor:</span>
-                        <span class="spec-value">{{ $version['engine'] }}</span>
+                        <span class="spec-label">Pressão Dianteira (Carregado):</span>
+                        <span class="spec-value">{{ $version['front_loaded'] }}</span>
                     </div>
-                    @endif
-                    @if(!empty($version['fuel_type']))
                     <div class="spec-item">
-                        <span class="spec-label">Combustível:</span>
-                        <span class="spec-value">{{ $version['fuel_type'] }}</span>
+                        <span class="spec-label">Pressão Traseira (Carregado):</span>
+                        <span class="spec-value">{{ $version['rear_loaded'] }}</span>
                     </div>
-                    @endif
-                    @if(!empty($version['weight']))
+                    @if(!empty($version['load_speed_index']))
                     <div class="spec-item">
-                        <span class="spec-label">Peso:</span>
-                        <span class="spec-value">{{ $version['weight'] }}</span>
+                        <span class="spec-label">Índice de Carga/Vel.:</span>
+                        <span class="spec-value">{{ $version['load_speed_index'] }}</span>
                     </div>
                     @endif
                 </div>
@@ -798,7 +783,7 @@
         </div>
         @endif
         
-        <!-- Localização da Etiqueta -->
+        <!-- ✅ CORREÇÃO: Localização da Etiqueta usando dados corretos -->
         @if(!empty($article->label_location))
         <h2>📍 Onde Encontrar a Etiqueta de Pressão</h2>
         
@@ -807,65 +792,46 @@
                 <span class="label-location-icon">🔍</span>
                 Localizações Mais Comuns
             </div>
-            <p style="color: #0c4a6e; margin-bottom: 16px;">{{ $article->label_location['description'] ?? 'A etiqueta com as pressões recomendadas está localizada em um destes locais:' }}</p>
+            <p style="color: #0c4a6e; margin-bottom: 16px;">{{ $article->label_location['description'] }}</p>
             
-            @if(!empty($article->label_location['locations']))
-            <div class="location-options">
-                @foreach($article->label_location['locations'] as $location)
-                <div class="location-option">
-                    <div class="location-priority">{{ $location['priority'] ?? 'Comum' }}</div>
-                    <div class="location-description">{{ $location['location'] }}</div>
-                </div>
-                @endforeach
-            </div>
-            @else
             <div class="location-options">
                 <div class="location-option">
                     <div class="location-priority">Principal</div>
-                    <div class="location-description">Batente da porta do motorista</div>
+                    <div class="location-description">{{ $article->label_location['main_location'] }}</div>
                 </div>
+                @foreach($article->label_location['alternative_locations'] ?? [] as $index => $location)
                 <div class="location-option">
-                    <div class="location-priority">Alternativo</div>
-                    <div class="location-description">Coluna B (entre as portas)</div>
+                    <div class="location-priority">{{ $index == 0 ? 'Alternativo' : ($index == 1 ? 'Manual' : 'Outro') }}</div>
+                    <div class="location-description">{{ $location }}</div>
                 </div>
-                <div class="location-option">
-                    <div class="location-priority">Raro</div>
-                    <div class="location-description">Porta do combustível</div>
-                </div>
-                <div class="location-option">
-                    <div class="location-priority">Manual</div>
-                    <div class="location-description">Manual do proprietário</div>
-                </div>
+                @endforeach
             </div>
-            @endif
             
-            @if(!empty($article->label_location['tip']))
+            @if(!empty($article->label_location['note']))
             <div class="info-note" style="margin-top: 16px;">
-                <strong>💡 Dica:</strong> {{ $article->label_location['tip'] }}
+                <strong>💡 Dica:</strong> {{ $article->label_location['note'] }}
             </div>
             @endif
         </div>
         @endif
         
-        <!-- Condições Especiais de Uso -->
-        @if(!empty($article->special_conditions) && is_array($article->special_conditions))
+        <!-- ✅ CORREÇÃO: Condições Especiais de Uso usando dados corretos -->
+        @if(!empty($article->special_conditions))
         <h2>⚖️ Condições Especiais de Uso</h2>
         
         <div class="special-conditions-grid">
             @foreach($article->special_conditions as $condition)
             <div class="condition-card">
-                <div class="condition-header">{{ $condition['condition'] ?? 'Condição Especial' }}</div>
+                <div class="condition-header">{{ $condition['condition'] }}</div>
                 <div class="condition-body">
                     <div class="condition-pressure">
-                        <div class="condition-pressure-label">Pressão Recomendada</div>
-                        <div class="condition-pressure-value">{{ $condition['recommended_pressure'] ?? 'Consulte manual' }}</div>
+                        <div class="condition-pressure-label">Ajuste Recomendado</div>
+                        <div class="condition-pressure-value">{{ $condition['recommended_adjustment'] }}</div>
                     </div>
-                    <div class="condition-description">{{ $condition['description'] ?? '' }}</div>
-                    @if(!empty($condition['warning']))
-                    <div class="info-note" style="margin-top: 12px;">
-                        <strong>⚠️ Atenção:</strong> {{ $condition['warning'] }}
+                    <div class="condition-description">
+                        <strong>Aplicação:</strong> {{ $condition['application'] }}<br>
+                        <strong>Justificativa:</strong> {{ $condition['justification'] }}
                     </div>
-                    @endif
                 </div>
             </div>
             @endforeach
@@ -885,93 +851,111 @@
             </amp-ad>
         </div>
         
-        <!-- Conversor de Unidades -->
-        @if(!empty($article->unit_conversion) && is_array($article->unit_conversion))
+        <!-- ✅ CORREÇÃO: Conversor de Unidades usando dados corretos -->
+        @if(!empty($article->unit_conversion))
         <h2>🔄 Conversão de Unidades</h2>
         
         <div class="unit-converter">
-            <div class="converter-title">Tabela de Conversão para {{ $article->ideal_pressure['front_pressure'] ?? '32 PSI' }}</div>
+            @php $firstVersion = !empty($article->tire_specifications_by_version) ? $article->tire_specifications_by_version[0] : null @endphp
+            <div class="converter-title">Tabela de Conversão para {{ $firstVersion['front_normal'] ?? '32 PSI' }}</div>
             <div class="conversion-grid">
-                @foreach($article->unit_conversion as $unit)
-                <div class="conversion-item">
-                    <div class="conversion-unit">{{ $unit['unit'] ?? 'N/A' }}</div>
-                    <div class="conversion-value">{{ $unit['value'] ?? 'N/A' }}</div>
-                </div>
-                @endforeach
+                @if(!empty($article->unit_conversion['conversion_table']))
+                    @foreach($article->unit_conversion['conversion_table'] as $conversion)
+                    <div class="conversion-item">
+                        <div class="conversion-unit">{{ $conversion['psi'] }} PSI</div>
+                        <div class="conversion-value">{{ $conversion['kgf_cm2'] }} kgf/cm²</div>
+                    </div>
+                    <div class="conversion-item">
+                        <div class="conversion-unit">{{ $conversion['psi'] }} PSI</div>
+                        <div class="conversion-value">{{ $conversion['bar'] }} Bar</div>
+                    </div>
+                    @endforeach
+                @else
+                    <div class="conversion-item">
+                        <div class="conversion-unit">PSI (Brasil)</div>
+                        <div class="conversion-value">32</div>
+                    </div>
+                    <div class="conversion-item">
+                        <div class="conversion-unit">kgf/cm²</div>
+                        <div class="conversion-value">2.25</div>
+                    </div>
+                    <div class="conversion-item">
+                        <div class="conversion-unit">Bar</div>
+                        <div class="conversion-value">2.21</div>
+                    </div>
+                @endif
             </div>
             <div class="conversion-note">
-                *Use sempre a unidade especificada no seu manômetro
+                {{ $article->unit_conversion['note'] ?? '*Use sempre a unidade especificada no seu manômetro' }}
             </div>
         </div>
         @endif
         
-        <!-- Impacto no Desempenho -->
-        @if(!empty($article->performance_impact) && is_array($article->performance_impact))
-        <h2>📊 Impacto da Pressão Correta no Desempenho</h2>
+        <!-- ✅ CORREÇÃO: Impacto no Desempenho usando dados corretos -->
+        @if(!empty($article->pressure_impact))
+        <h2>📊 Impacto da Pressão no Desempenho</h2>
         
         <div class="performance-impact-grid">
-            @foreach($article->performance_impact as $impact)
-            <div class="impact-card {{ strtolower($impact['category'] ?? 'general') }}">
-                <div class="impact-title">{{ $impact['title'] ?? 'Benefício' }}</div>
-                <div class="impact-percentage {{ $impact['trend'] ?? 'neutral' }}">
-                    {{ $impact['percentage'] ?? '0%' }}
+            @foreach($article->pressure_impact as $impact)
+            <div class="impact-card {{ $impact['type'] }}">
+                <div class="impact-title">{{ $impact['title'] }}</div>
+                <div class="impact-percentage {{ $impact['color'] === 'green' ? 'positive' : ($impact['color'] === 'red' ? 'negative' : 'neutral') }}">
+                    @switch($impact['type'])
+                        @case('subcalibrado')
+                            ⚠️ RISCO
+                            @break
+                        @case('ideal')
+                            ✅ IDEAL
+                            @break
+                        @case('sobrecalibrado')
+                            ⚡ ATENÇÃO
+                            @break
+                        @default
+                            📊 INFO
+                    @endswitch
                 </div>
-                <div class="impact-description">{{ $impact['description'] ?? '' }}</div>
+                <div class="impact-description">
+                    @foreach($impact['items'] as $item)
+                        • {{ $item }}<br>
+                    @endforeach
+                </div>
             </div>
             @endforeach
-        </div>
-        
-        <div class="info-note">
-            <strong>📈 Economia comprovada:</strong> Manter a pressão correta pode gerar economia de até R$ 800 por ano em combustível e aumentar a vida útil dos pneus em até 40%.
         </div>
         @endif
         
         <!-- Alertas de Segurança -->
-        @if(!empty($article->safety_alerts))
-        <h2>⚠️ Alertas Importantes</h2>
-        
-        @foreach($article->safety_alerts as $alert)
-        <div class="safety-alert {{ strtolower($alert['type']) }}">
-            <div class="alert-title">
-                @switch(strtolower($alert['type']))
-                    @case('crítico')
-                        🚨 {{ $alert['title'] }}
-                        @break
-                    @case('importante')
-                        ⚠️ {{ $alert['title'] }}
-                        @break
-                    @default
-                        ℹ️ {{ $alert['title'] }}
-                @endswitch
-            </div>
-            <p>{{ $alert['description'] ?? '' }}</p>
-            @if(!empty($alert['consequence']))
-            <p><strong>Consequência:</strong> {{ $alert['consequence'] }}</p>
-            @endif
+        <div class="safety-alert critical">
+            <div class="alert-title">🚨 Segurança Crítica</div>
+            <p>Pneus com pressão incorreta podem causar acidentes graves. No Brasil, com temperaturas altas, a verificação deve ser ainda mais frequente.</p>
         </div>
-        @endforeach
-        @endif
         
         <!-- Procedimento Rápido de Verificação -->
-        @if(!empty($article->quick_procedure))
         <h2>⚡ Procedimento Rápido de Verificação</h2>
         
         <div class="quick-procedure">
-            @foreach($article->quick_procedure as $step)
             <div class="procedure-step">
-                <div class="step-number">{{ $step['number'] }}</div>
+                <div class="step-number">1</div>
                 <div class="step-content">
-                    <h3>{{ $step['title'] }}</h3>
-                    <p>{{ $step['description'] }}</p>
+                    <h3>Preparação</h3>
+                    <p>Estacione em local plano e seguro. Aguarde pelo menos 3 horas após dirigir (pneus frios).</p>
                 </div>
             </div>
-            @endforeach
+            <div class="procedure-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Verificação</h3>
+                    <p>Use calibrador confiável. Meça a pressão de todos os pneus, incluindo o estepe.</p>
+                </div>
+            </div>
+            <div class="procedure-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Ajuste</h3>
+                    <p>Calibre conforme necessidade. Confirme as pressões e finalize o procedimento.</p>
+                </div>
+            </div>
         </div>
-        
-        <div class="info-note">
-            <strong>⏰ Frequência recomendada:</strong> Verifique a pressão dos pneus pelo menos uma vez por mês, sempre com os pneus frios (antes de rodar ou após 3 horas parado).
-        </div>
-        @endif
         
         <!-- 🥈 ANÚNCIO 3: Após procedimento -->
         <div class="ad-container">
@@ -986,42 +970,19 @@
             </amp-ad>
         </div>
         
-        <!-- Cuidados Específicos para o Brasil -->
-        @if(!empty($article->brazil_specific_care))
+        <!-- ✅ CORREÇÃO: Cuidados Específicos usando dados corretos -->
+        @if(!empty($article->care_recommendations))
         <h2>🇧🇷 Cuidados Específicos para o Brasil</h2>
         
-        @foreach($article->brazil_specific_care as $careGroup)
+        @foreach($article->care_recommendations as $care)
         <div class="safety-alert info">
-            <div class="alert-title">{{ $careGroup['title'] }}</div>
-            <p>{{ $careGroup['description'] ?? '' }}</p>
-            @if(!empty($careGroup['tips']))
-            <ul style="margin: 12px 0; padding-left: 20px;">
-                @foreach($careGroup['tips'] as $tip)
-                <li style="margin-bottom: 6px; color: #1e40af;">{{ $tip }}</li>
-                @endforeach
-            </ul>
-            @endif
+            <div class="alert-title">{{ $care['category'] }}</div>
+            <p>{{ $care['description'] }}</p>
         </div>
         @endforeach
         @endif
         
-        <!-- Quando Ajustar a Pressão -->
-        @if(!empty($article->pressure_adjustment_guide))
-        <h2>🎯 Quando e Como Ajustar a Pressão</h2>
-        
-        @foreach($article->pressure_adjustment_guide as $guide)
-        <div class="safety-alert {{ strtolower($guide['type'] ?? 'info') }}">
-            <div class="alert-title">{{ $guide['situation'] }}</div>
-            <p><strong>Ação:</strong> {{ $guide['action'] ?? '' }}</p>
-            <p><strong>Pressão:</strong> {{ $guide['recommended_pressure'] ?? '' }}</p>
-            @if(!empty($guide['explanation']))
-            <p><strong>Por quê:</strong> {{ $guide['explanation'] }}</p>
-            @endif
-        </div>
-        @endforeach
-        @endif
-        
-        <!-- Perguntas Frequentes -->
+        <!-- ✅ CORREÇÃO: Perguntas Frequentes usando dados corretos -->
         @if(!empty($article->faq))
         <h2>❓ Perguntas Frequentes sobre {{ $article->vehicle_info['full_name'] ?? 'Pressão dos Pneus' }}</h2>
         
@@ -1037,51 +998,11 @@
         </amp-accordion>
         @endif
         
-        <!-- Resumo das Vantagens -->
-        @if(!empty($article->benefits_summary))
-        <h2>✅ Resumo dos Benefícios da Pressão Correta</h2>
-        
-        <div class="performance-impact-grid">
-            @foreach($article->benefits_summary as $benefit)
-            <div class="impact-card {{ strtolower($benefit['category']) }}">
-                <div class="impact-title">{{ $benefit['title'] }}</div>
-                <div class="impact-percentage positive">{{ $benefit['value'] }}</div>
-                <div class="impact-description">{{ $benefit['description'] }}</div>
-            </div>
-            @endforeach
-        </div>
-        @endif
-        
-        <!-- Ferramentas Recomendadas -->
-        @if(!empty($article->recommended_tools))
-        <h2>🛠️ Ferramentas Recomendadas</h2>
-        
-        <div class="special-conditions-grid">
-            @foreach($article->recommended_tools as $tool)
-            <div class="condition-card">
-                <div class="condition-header">{{ $tool['name'] }}</div>
-                <div class="condition-body">
-                    <div class="condition-pressure">
-                        <div class="condition-pressure-label">Preço Médio</div>
-                        <div class="condition-pressure-value">{{ $tool['price_range'] }}</div>
-                    </div>
-                    <div class="condition-description">{{ $tool['description'] ?? '' }}</div>
-                    @if(!empty($tool['recommendation']))
-                    <div class="info-note" style="margin-top: 12px;">
-                        <strong>💡 Nossa recomendação:</strong> {{ $tool['recommendation'] }}
-                    </div>
-                    @endif
-                </div>
-            </div>
-            @endforeach
-        </div>
-        @endif
-        
-        <!-- Considerações Finais -->
+        <!-- ✅ CORREÇÃO: Considerações Finais usando dados corretos -->
         @if(!empty($article->final_considerations))
         <h2>📝 Considerações Finais</h2>
         <div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb;">
-            <p style="color: #1e40af; line-height: 1.7; font-weight: 500;">{{ $article->final_considerations }}</p>
+            <p style="color: #1e40af; line-height: 1.7; font-weight: 500;">{!! nl2br(e($article->final_considerations)) !!}</p>
         </div>
         @endif
         
@@ -1096,14 +1017,11 @@
             </div>
         </div>
         
-        <!-- Footer info -->
-        <div class="article-footer">
-            @if(!empty($article->formated_updated_at))
-            <p><strong>Atualizado em:</strong> {{ $article->formated_updated_at }}</p>
-            @endif
-            <p><strong>Por:</strong> Equipe Editorial Mercado Veículos</p>
-            <p><a href="{{ route('info.article.show', $article->slug) }}">Ver versão completa do artigo</a></p>
-        </div>
+        <!-- Nota informativa -->
+        @include('auto-info-center::article.partials.info_note_manual')
+        
+        <!-- Footer do artigo -->
+        @include('auto-info-center::article.partials.article_footer')
     </article>
 </div>
 @endsection

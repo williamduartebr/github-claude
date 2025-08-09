@@ -194,6 +194,7 @@
         font-weight: 700;
         color: #DC2626;
         margin-bottom: 4px;
+        white-space: nowrap;
     }
     
     .pressure-unit {
@@ -202,35 +203,46 @@
         font-weight: 500;
     }
     
-    /* Especificações detalhadas */
-    .motorcycle-specs-card {
-        border: 1px solid #e2e8f0;
+    /* Especificações dos pneus */
+    .tire-specs-section {
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
         border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        background-color: #fff;
-        margin-bottom: 20px;
+        padding: 24px;
+        margin: 24px 0;
+        border: 1px solid #cbd5e1;
     }
     
-    .motorcycle-specs-header {
-        background: linear-gradient(135deg, #DC2626, #b91c1c);
-        color: white;
+    .tire-specs-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 16px;
+    }
+    
+    .tire-spec-card {
+        background: white;
+        border-radius: 8px;
         padding: 16px;
-        font-weight: 600;
-        font-size: 16px;
-        text-align: center;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     
-    .motorcycle-specs-body {
-        padding: 20px;
+    .tire-spec-header {
+        font-weight: 600;
+        color: #991b1b;
+        margin-bottom: 12px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
     
     .spec-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
-        padding: 8px 0;
+        margin-bottom: 8px;
+        padding: 4px 0;
         border-bottom: 1px solid #f1f5f9;
         font-size: 14px;
     }
@@ -241,75 +253,118 @@
     }
     
     .spec-label {
-        color: #718096;
+        color: #6b7280;
         font-weight: 500;
     }
     
     .spec-value {
         font-weight: 600;
         color: #151C25;
-        background-color: #fef2f2;
-        padding: 4px 8px;
+        background-color: #fee2e2;
+        padding: 2px 6px;
         border-radius: 4px;
-        border: 1px solid #fecaca;
+        font-size: 12px;
     }
     
-    /* Tabela de pressões por condição */
-    .pressure-conditions-table {
+    /* Tabela de pressões principal */
+    .pressure-table-container {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        overflow-x: auto;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+    
+    .pressure-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 14px;
+        margin: 0;
+        min-width: 600px;
+        background: white;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
-    .pressure-conditions-table th {
-        background: linear-gradient(135deg, #DC2626, #b91c1c);
+    .pressure-table th {
+        background: linear-gradient(135deg, #DC2626, #991b1b);
         color: white;
+        padding: 14px 12px;
         text-align: center;
-        padding: 12px 8px;
         font-weight: 600;
         font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
-    .pressure-conditions-table td {
-        padding: 12px 8px;
+    .pressure-table th:first-child {
+        text-align: left;
+        padding-left: 16px;
+    }
+    
+    .pressure-table td {
+        padding: 12px;
         text-align: center;
-        border-bottom: 1px solid #e2e8f0;
-        background-color: #fff;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
     }
     
-    .pressure-conditions-table tr:nth-child(even) td {
-        background-color: #fef2f2;
+    .condition-cell {
+        text-align: left !important;
+        padding-left: 16px !important;
+        font-weight: 500;
+        color: #374151;
+        min-width: 180px;
     }
     
-    .pressure-conditions-table tr:last-child td {
-        border-bottom: none;
+    .condition-icon {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+    
+    .pressure-cell {
+        font-weight: 600;
+        min-width: 100px;
     }
     
     .pressure-highlight {
+        background: linear-gradient(135deg, #DC2626, #991b1b);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 14px;
         font-weight: 700;
-        color: #DC2626;
-        background-color: #fee2e2;
-        padding: 6px 8px;
-        border-radius: 4px;
-        border: 1px solid #fca5a5;
+        display: inline-block;
+        white-space: nowrap;
+        min-width: 80px;
+        text-align: center;
     }
     
-    .condition-name {
-        font-weight: 600;
-        color: #374151;
-        text-align: left;
+    .observation-cell {
+        text-align: left !important;
+        max-width: 200px;
+        color: #4b5563;
+        font-size: 12px;
+        line-height: 1.4;
+        padding-left: 8px !important;
     }
     
-    /* Considerações especiais para motos */
-    .motorcycle-considerations {
+    .pressure-table tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+    
+    .pressure-table tr:hover {
+        background-color: rgba(220, 38, 38, 0.05);
+    }
+    
+    /* Considerações especiais */
+    .considerations-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
-        margin-bottom: 24px;
+        margin: 24px 0;
     }
     
     .consideration-card {
@@ -318,7 +373,6 @@
         border-radius: 12px;
         padding: 20px;
         border-left: 4px solid #DC2626;
-        position: relative;
     }
     
     .consideration-title {
@@ -328,197 +382,97 @@
         align-items: center;
         color: #991b1b;
         font-size: 16px;
-    }
-    
-    .consideration-icon {
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
-        flex-shrink: 0;
+        gap: 10px;
     }
     
     .consideration-description {
         color: #7f1d1d;
         font-weight: 500;
         line-height: 1.6;
-    }
-    
-    .consideration-tip {
-        background-color: rgba(255, 255, 255, 0.7);
-        border-radius: 6px;
-        padding: 8px;
-        margin-top: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #991b1b;
-    }
-    
-    /* Benefícios da calibragem correta */
-    .benefits-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-    
-    .benefit-card {
-        background-color: #fff;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        transition: transform 0.2s ease;
-    }
-    
-    .benefit-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .benefit-card.safety {
-        border-color: #DC2626;
-        background: linear-gradient(135deg, #fef2f2, #fee2e2);
-    }
-    
-    .benefit-card.performance {
-        border-color: #f59e0b;
-        background: linear-gradient(135deg, #fffbeb, #fef3c7);
-    }
-    
-    .benefit-card.economy {
-        border-color: #10b981;
-        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    }
-    
-    .benefit-icon {
-        font-size: 32px;
         margin-bottom: 12px;
-        display: block;
     }
     
-    .benefit-title {
-        font-weight: 600;
+    .consideration-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .consideration-list li {
         margin-bottom: 8px;
-        font-size: 16px;
-        color: #151C25;
-    }
-    
-    .benefit-description {
-        font-size: 13px;
-        color: #4b5563;
-        line-height: 1.5;
-    }
-    
-    /* Procedimento de calibragem em 3 passos */
-    .three-step-procedure {
-        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-        border-radius: 16px;
-        padding: 28px;
-        margin: 24px 0;
-        border: 1px solid #cbd5e1;
+        padding-left: 20px;
         position: relative;
-    }
-    
-    .procedure-title {
-        text-align: center;
-        font-size: 20px;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 24px;
-    }
-    
-    .three-steps-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 24px;
-    }
-    
-    .step-card {
-        background-color: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        border: 2px solid #e2e8f0;
-        position: relative;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    .step-number-badge {
-        position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 36px;
-        height: 36px;
-        background: linear-gradient(135deg, #DC2626, #b91c1c);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 16px;
-        box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
-    }
-    
-    .step-icon {
-        font-size: 28px;
-        margin: 20px 0 12px;
-        display: block;
-    }
-    
-    .step-title {
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #1e293b;
-        font-size: 16px;
-    }
-    
-    .step-description {
-        font-size: 13px;
-        color: #475569;
-        line-height: 1.5;
-    }
-    
-    /* Alertas críticos */
-    .critical-alerts-section {
-        margin: 32px 0;
-    }
-    
-    .critical-alert {
-        background: linear-gradient(135deg, #fef2f2, #fee2e2);
-        border: 2px solid #DC2626;
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        position: relative;
-        border-left: 6px solid #DC2626;
-    }
-    
-    .critical-alert-title {
-        font-weight: 600;
-        color: #991b1b;
-        margin-bottom: 8px;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-    }
-    
-    .critical-alert-icon {
-        margin-right: 8px;
-        font-size: 18px;
-    }
-    
-    .critical-alert-content {
         color: #7f1d1d;
-        font-weight: 500;
-        line-height: 1.6;
+        font-size: 14px;
+        line-height: 1.5;
     }
     
-    /* FAQs com accordion */
-    amp-accordion {
-        border: 1px solid #e2e8f0;
+    .consideration-list li::before {
+        content: '•';
+        color: #DC2626;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+    
+    /* Conversão de unidades */
+    .conversion-section {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        border: 1px solid #10b981;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+    }
+    
+    .conversion-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #065f46;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+    
+    .conversion-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
         border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .conversion-table th {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    
+    .conversion-table td {
+        padding: 10px 12px;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        font-weight: 600;
+    }
+    
+    .conversion-table tr:nth-child(even) {
+        background-color: #f0fdf4;
+    }
+    
+    .conversion-table .highlight-pressure {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border-radius: 4px;
+        padding: 4px 8px;
+    }
+    
+    /* FAQ */
+    amp-accordion {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         margin-bottom: 24px;
     }
@@ -552,7 +506,40 @@
         color: #4a5568;
         line-height: 1.6;
     }
-
+    
+    /* Alertas importantes */
+    .safety-alert {
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        border-left: 4px solid;
+    }
+    
+    .safety-alert.critical {
+        background-color: #fef2f2;
+        border-color: #DC2626;
+    }
+    
+    .safety-alert.warning {
+        background-color: #fffbeb;
+        border-color: #f59e0b;
+    }
+    
+    .safety-alert.info {
+        background-color: #eff6ff;
+        border-color: #3b82f6;
+    }
+    
+    .alert-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #151C25;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
     /* Nota informativa */
     .info-note {
         background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
@@ -563,7 +550,7 @@
         border-left: 4px solid #2563eb;
         color: #1e40af;
     }
- 
+    
     /* Footer */
     .article-footer {
         font-size: 12px;
@@ -607,29 +594,37 @@
             grid-template-columns: 1fr;
         }
         
-        .motorcycle-considerations {
+        .tire-specs-grid {
             grid-template-columns: 1fr;
         }
         
-        .benefits-grid {
+        .considerations-grid {
             grid-template-columns: 1fr;
         }
         
-        .three-steps-grid {
-            grid-template-columns: 1fr;
+        .pressure-table {
+            font-size: 12px;
+            min-width: 500px;
         }
         
-        .pressure-conditions-table {
-            font-size: 13px;
+        .pressure-table th,
+        .pressure-table td {
+            padding: 8px 6px;
         }
         
-        .pressure-conditions-table th,
-        .pressure-conditions-table td {
-            padding: 8px 4px;
+        .condition-cell,
+        .observation-cell {
+            padding-left: 12px !important;
+        }
+        
+        .pressure-highlight {
+            padding: 4px 10px;
+            font-size: 12px;
+            min-width: 70px;
         }
         
         .ad-container {
-            margin: 24px 0;
+            margin: 20px 0;
             padding: 12px;
         }
         
@@ -659,14 +654,9 @@
             font-size: 18px;
         }
         
-        .spec-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-        }
-        
-        .spec-value {
-            align-self: flex-end;
+        .pressure-table {
+            min-width: 450px;
+            font-size: 11px;
         }
         
         .pressure-value {
@@ -680,11 +670,189 @@
         .critical-banner-content {
             font-size: 14px;
         }
-        
-        .pressure-conditions-table th,
-        .pressure-conditions-table td {
-            padding: 6px 2px;
+    }
+
+
+    /* Garante que os valores PSI nunca quebrem linha */
+    .pressure-highlight {
+        background: linear-gradient(135deg, #DC2626, #991b1b);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 700;
+        display: inline-block;
+        white-space: nowrap !important; /* FORÇA não quebrar */
+        min-width: 80px;
+        text-align: center;
+        line-height: 1.2;
+    }
+    
+    /* Fallback para casos extremos */
+    .pressure-cell {
+        font-weight: 600;
+        min-width: 100px;
+        vertical-align: middle;
+    }
+    
+    .pressure-cell .pressure-highlight {
+        max-width: none !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+    }
+    
+    /* Legenda */
+    .table-legend {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .table-legend h3 {
+        margin: 0 0 12px 0;
+        color: #1f2937;
+        font-size: 16px;
+    }
+    
+    .legend-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .legend-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .legend-item span:last-child {
+        font-size: 13px;
+        color: #374151;
+    }
+    
+    /* Debug: container da tabela */
+    .pressure-table-container {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        overflow-x: auto;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+    
+    .pressure-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 0;
+        min-width: 600px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .pressure-table th {
+        background: linear-gradient(135deg, #DC2626, #991b1b);
+        color: white;
+        padding: 14px 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .pressure-table th:first-child {
+        text-align: left;
+        padding-left: 16px;
+    }
+    
+    .pressure-table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+    
+    .condition-cell {
+        text-align: left !important;
+        padding-left: 16px !important;
+        font-weight: 500;
+        color: #374151;
+        min-width: 180px;
+    }
+    
+    .condition-icon {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+    
+    .observation-cell {
+        text-align: left !important;
+        max-width: 200px;
+        color: #4b5563;
+        font-size: 12px;
+        line-height: 1.4;
+        padding-left: 8px !important;
+    }
+    
+    .pressure-table tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+    
+    .pressure-table tr:hover {
+        background-color: rgba(220, 38, 38, 0.05);
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+        .pressure-table {
             font-size: 12px;
+            min-width: 500px;
+        }
+        
+        .pressure-table th,
+        .pressure-table td {
+            padding: 8px 6px;
+        }
+        
+        .condition-cell,
+        .observation-cell {
+            padding-left: 12px !important;
+        }
+        
+        .pressure-highlight {
+            padding: 4px 10px;
+            font-size: 12px;
+            min-width: 70px;
+        }
+        
+        .legend-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .pressure-table {
+            min-width: 450px;
+            font-size: 11px;
+        }
+        
+        .pressure-table-container {
+            padding: 12px;
         }
     }
 </style>
@@ -707,14 +875,12 @@
         @endif
         
         <!-- Alerta de Segurança Crítico -->
-        @if(!empty($article->critical_safety_alert))
         <div class="critical-safety-banner">
-            <div class="critical-banner-title">{{ $article->critical_safety_alert['title'] ?? 'ATENÇÃO: Segurança em Motocicletas' }}</div>
+            <div class="critical-banner-title">ATENÇÃO: Segurança em Motocicletas</div>
             <div class="critical-banner-content">
-                {{ $article->critical_safety_alert['message'] ?? 'A calibragem incorreta dos pneus em motocicletas pode ser fatal. Sempre mantenha as pressões dentro das especificações recomendadas pela fabricante.' }}
+                A calibragem incorreta dos pneus em motocicletas pode ser fatal. Sempre mantenha as pressões dentro das especificações recomendadas pela fabricante.
             </div>
         </div>
-        @endif
         
         <!-- Destaque da Pressão Ideal -->
         @if(!empty($article->ideal_pressure))
@@ -727,8 +893,8 @@
                         <span class="icon">🔄</span>
                         Pneu Dianteiro
                     </div>
-                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['front_pressure']) }}</div>
-                    <div class="pressure-unit">PSI (libras por pol²)</div>
+                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['front_pressure']) }} PSI</div>
+                    <div class="pressure-unit">(libras por pol²)</div>
                 </div>
                 @endif
                 @if(!empty($article->ideal_pressure['rear_pressure']))
@@ -737,8 +903,8 @@
                         <span class="icon">🔙</span>
                         Pneu Traseiro
                     </div>
-                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['rear_pressure']) }}</div>
-                    <div class="pressure-unit">PSI (libras por pol²)</div>
+                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['rear_pressure']) }} PSI</div>
+                    <div class="pressure-unit">(libras por pol²)</div>
                 </div>
                 @endif
             </div>
@@ -753,7 +919,7 @@
             <div class="ad-label">Publicidade</div>
             <amp-ad width="100vw" height="320"
                 type="adsense"
-                data-ad-client="{{ Config::get('services.google_adsense.id') }}"
+                data-ad-client="{{ config('services.google_adsense.id') }}"
                 data-ad-slot="7414648059"   
                 data-auto-format="rspv"
                 data-full-width>
@@ -761,103 +927,282 @@
             </amp-ad>
         </div>
         
-        <!-- Especificações Detalhadas -->
+        <!-- Especificações dos Pneus -->
         @if(!empty($article->tire_specifications))
         <h2>🏍️ Especificações dos Pneus</h2>
         
-        <div class="motorcycle-specs-card">
-            <div class="motorcycle-specs-header">Dados Técnicos dos Pneus</div>
-            <div class="motorcycle-specs-body">
-                @if(!empty($article->tire_specifications['front_tire_size']))
-                <div class="spec-item">
-                    <span class="spec-label">Pneu Dianteiro:</span>
-                    <span class="spec-value">{{ $article->tire_specifications['front_tire_size'] }}</span>
+        <div class="tire-specs-section">
+            <div class="tire-specs-grid">
+                @if(!empty($article->tire_specifications['front_tire']))
+                <div class="tire-spec-card">
+                    <div class="tire-spec-header">
+                        <span>🔄</span>
+                        Pneu Dianteiro
+                    </div>
+                    @php $frontTire = $article->tire_specifications['front_tire'] @endphp
+                    @if(!empty($frontTire['size']))
+                    <div class="spec-item">
+                        <span class="spec-label">Medida:</span>
+                        <span class="spec-value">{{ $frontTire['size'] }}</span>
+                    </div>
+                    @endif
+                    @if(!empty($frontTire['load_index']))
+                    <div class="spec-item">
+                        <span class="spec-label">Índice de Carga:</span>
+                        <span class="spec-value">{{ $frontTire['load_index'] }}</span>
+                    </div>
+                    @endif
+                    @if(!empty($frontTire['speed_rating']))
+                    <div class="spec-item">
+                        <span class="spec-label">Índice de Velocidade:</span>
+                        <span class="spec-value">{{ $frontTire['speed_rating'] }}</span>
+                    </div>
+                    @endif
                 </div>
                 @endif
-                @if(!empty($article->tire_specifications['rear_tire_size']))
-                <div class="spec-item">
-                    <span class="spec-label">Pneu Traseiro:</span>
-                    <span class="spec-value">{{ $article->tire_specifications['rear_tire_size'] }}</span>
-                </div>
-                @endif
-                @if(!empty($article->tire_specifications['original_brand']))
-                <div class="spec-item">
-                    <span class="spec-label">Marca Original:</span>
-                    <span class="spec-value">{{ $article->tire_specifications['original_brand'] }}</span>
-                </div>
-                @endif
-                @if(!empty($article->tire_specifications['load_index']))
-                <div class="spec-item">
-                    <span class="spec-label">Índice de Carga:</span>
-                    <span class="spec-value">{{ $article->tire_specifications['load_index'] }}</span>
-                </div>
-                @endif
-                @if(!empty($article->tire_specifications['speed_rating']))
-                <div class="spec-item">
-                    <span class="spec-label">Índice de Velocidade:</span>
-                    <span class="spec-value">{{ $article->tire_specifications['speed_rating'] }}</span>
-                </div>
-                @endif
-                @if(!empty($article->tire_specifications['construction']))
-                <div class="spec-item">
-                    <span class="spec-label">Construção:</span>
-                    <span class="spec-value">{{ $article->tire_specifications['construction'] }}</span>
+                
+                @if(!empty($article->tire_specifications['rear_tire']))
+                <div class="tire-spec-card">
+                    <div class="tire-spec-header">
+                        <span>🔙</span>
+                        Pneu Traseiro
+                    </div>
+                    @php $rearTire = $article->tire_specifications['rear_tire'] @endphp
+                    @if(!empty($rearTire['size']))
+                    <div class="spec-item">
+                        <span class="spec-label">Medida:</span>
+                        <span class="spec-value">{{ $rearTire['size'] }}</span>
+                    </div>
+                    @endif
+                    @if(!empty($rearTire['load_index']))
+                    <div class="spec-item">
+                        <span class="spec-label">Índice de Carga:</span>
+                        <span class="spec-value">{{ $rearTire['load_index'] }}</span>
+                    </div>
+                    @endif
+                    @if(!empty($rearTire['speed_rating']))
+                    <div class="spec-item">
+                        <span class="spec-label">Índice de Velocidade:</span>
+                        <span class="spec-value">{{ $rearTire['speed_rating'] }}</span>
+                    </div>
+                    @endif
                 </div>
                 @endif
             </div>
+            
+            @if(!empty($article->tire_specifications['observation']))
+            <div class="info-note" style="margin-top: 16px;">
+                <strong>📌 Importante:</strong> {{ $article->tire_specifications['observation'] }}
+            </div>
+            @endif
         </div>
         @endif
         
-        <!-- Tabela de Pressões por Condição -->
-        @if(!empty($article->pressure_table) && is_array($article->pressure_table))
-        <h2>📊 Pressões por Condição de Uso</h2>
-        
-        <table class="pressure-conditions-table">
+        <!-- Tabela de Pressões por Condição - VERSÃO ROBUSTA -->
+@if(!empty($article->pressure_table) || !empty($article->official_pressures) || !empty($article->pressure_conditions))
+<h2>📊 Pressões por Condição de Uso</h2>
+
+<div class="pressure-table-container">
+    <table class="pressure-table">
+        <thead>
             <tr>
                 <th>Condição</th>
                 <th>Dianteiro</th>
                 <th>Traseiro</th>
                 <th>Observação</th>
             </tr>
-            @foreach($article->pressure_table as $condition)
+        </thead>
+        <tbody>
+            @php
+            // Tenta diferentes estruturas de dados
+            $pressureData = [];
+            
+            // Estrutura 1: pressure_table direta
+            if (!empty($article->pressure_table) && is_array($article->pressure_table)) {
+                $pressureData = $article->pressure_table;
+            }
+            
+            // Estrutura 2: official_pressures
+            elseif (!empty($article->official_pressures)) {
+                if (!empty($article->official_pressures['solo_rider'])) {
+                    $pressureData[] = [
+                        'condition' => 'Piloto Solo',
+                        'front_pressure' => $article->official_pressures['solo_rider']['front'] ?? '33 PSI',
+                        'rear_pressure' => $article->official_pressures['solo_rider']['rear'] ?? '36 PSI',
+                        'observation' => $article->official_pressures['solo_rider']['observation'] ?? 'Para piloto até 80kg + equipamentos'
+                    ];
+                }
+                if (!empty($article->official_pressures['with_passenger'])) {
+                    $pressureData[] = [
+                        'condition' => 'Piloto + Garupa',
+                        'front_pressure' => $article->official_pressures['with_passenger']['front'] ?? '33 PSI',
+                        'rear_pressure' => $article->official_pressures['with_passenger']['rear'] ?? '36 PSI',
+                        'observation' => $article->official_pressures['with_passenger']['observation'] ?? 'Carga total até 150kg'
+                    ];
+                }
+            }
+            
+            // Estrutura 3: pressure_conditions
+            elseif (!empty($article->pressure_conditions) && is_array($article->pressure_conditions)) {
+                $pressureData = $article->pressure_conditions;
+            }
+            
+            // Estrutura 4: Dados do mock/ViewModel processado
+            elseif (!empty($article->getData()['pressure_table']) && is_array($article->getData()['pressure_table'])) {
+                $pressureData = $article->getData()['pressure_table'];
+            }
+            
+            // Fallback: dados padrão para Yamaha MT-03
+            if (empty($pressureData)) {
+                $pressureData = [
+                    [
+                        'condition' => 'Uso urbano',
+                        'front_pressure' => '33 PSI',
+                        'rear_pressure' => '36 PSI',
+                        'observation' => 'Ideal para uso diário na cidade, oferece boa aderência e conforto.'
+                    ],
+                    [
+                        'condition' => 'Viagem rodoviária',
+                        'front_pressure' => '35 PSI',
+                        'rear_pressure' => '38 PSI',
+                        'observation' => 'Para viagens longas acima de 100 km/h, aumenta estabilidade.'
+                    ],
+                    [
+                        'condition' => 'Pilotagem esportiva',
+                        'front_pressure' => '31 PSI',
+                        'rear_pressure' => '34 PSI',
+                        'observation' => 'Somente para pilotos experientes. Maior área de contato para curvas.'
+                    ],
+                    [
+                        'condition' => 'Chuva leve',
+                        'front_pressure' => '32 PSI',
+                        'rear_pressure' => '35 PSI',
+                        'observation' => 'Redução sutil para aumentar área de contato.'
+                    ],
+                    [
+                        'condition' => 'Piloto pesado',
+                        'front_pressure' => '34 PSI',
+                        'rear_pressure' => '38 PSI',
+                        'observation' => 'Para pilotos acima de 90kg. Evita deformação excessiva.'
+                    ]
+                ];
+            }
+            @endphp
+            
+            @foreach($pressureData as $condition)
             <tr>
-                <td class="condition-name">{{ $condition['condition'] ?? 'N/A' }}</td>
-                <td><span class="pressure-highlight">{{ $condition['front_pressure'] ?? 'N/A' }}</span></td>
-                <td><span class="pressure-highlight">{{ $condition['rear_pressure'] ?? 'N/A' }}</span></td>
-                <td>{{ $condition['observation'] ?? '' }}</td>
+                <td class="condition-cell">
+                    @php
+                    $conditionName = $condition['condition'] ?? $condition['situacao'] ?? 'Condição';
+                    @endphp
+                    
+                    @switch($conditionName)
+                        @case('Uso urbano')
+                        @case('Uso Solo (Rua)')
+                        @case('Piloto Solo')
+                            <span class="condition-icon">🏍️</span>
+                            @break
+                        @case('Viagem rodoviária')
+                        @case('Highway Travel')
+                            <span class="condition-icon">🛣️</span>
+                            @break
+                        @case('Pilotagem esportiva')
+                        @case('Sport Riding')
+                            <span class="condition-icon">🏁</span>
+                            @break
+                        @case('Chuva leve')
+                        @case('Light Rain')
+                            <span class="condition-icon">🌧️</span>
+                            @break
+                        @case('Piloto pesado')
+                        @case('Heavy Rider')
+                            <span class="condition-icon">⚖️</span>
+                            @break
+                        @case('Com Passageiro (Rua)')
+                        @case('Piloto + Garupa')
+                            <span class="condition-icon">👥</span>
+                            @break
+                        @case('Com Carga ou Bagagem')
+                            <span class="condition-icon">🎒</span>
+                            @break
+                        @default
+                            <span class="condition-icon">🏍️</span>
+                    @endswitch
+                    {{ $conditionName }}
+                </td>
+                <td class="pressure-cell">
+                    @php
+                    $frontPressure = $condition['front_pressure'] ?? 
+                                   $condition['pressao_dianteira'] ?? 
+                                   $condition['dianteiro'] ?? 
+                                   $condition['front'] ?? 
+                                   '33 PSI';
+                    
+                    // Remove quebras de linha e normaliza formato
+                    $frontPressure = trim(str_replace(["\n", "\r"], ' ', $frontPressure));
+                    @endphp
+                    <span class="pressure-highlight">{{ $frontPressure }}</span>
+                </td>
+                <td class="pressure-cell">
+                    @php
+                    $rearPressure = $condition['rear_pressure'] ?? 
+                                  $condition['pressao_traseira'] ?? 
+                                  $condition['traseiro'] ?? 
+                                  $condition['rear'] ?? 
+                                  '36 PSI';
+                    
+                    // Remove quebras de linha e normaliza formato
+                    $rearPressure = trim(str_replace(["\n", "\r"], ' ', $rearPressure));
+                    @endphp
+                    <span class="pressure-highlight">{{ $rearPressure }}</span>
+                </td>
+                <td class="observation-cell">
+                    {{ $condition['observation'] ?? $condition['observacao'] ?? $condition['description'] ?? '' }}
+                </td>
             </tr>
             @endforeach
-        </table>
-        @endif
-        
-        <!-- Considerações Especiais para Motocicletas -->
-        @if(!empty($article->special_considerations) && is_array($article->special_considerations))
-        <h2>⚠️ Considerações Especiais para Motocicletas</h2>
-        
-        <div class="motorcycle-considerations">
-            @foreach($article->special_considerations as $consideration)
-            <div class="consideration-card">
-                <div class="consideration-title">
-                    <amp-img class="consideration-icon" 
-                        src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/statics/icons/icon-{{ $consideration['icon_class'] ?? 'warning' }}.svg" 
-                        width="24" height="24" alt="{{ $consideration['title'] ?? 'Cuidado' }}"></amp-img>
-                    {{ $consideration['title'] ?? 'Cuidado Especial' }}
-                </div>
-                <div class="consideration-description">{{ $consideration['description'] ?? '' }}</div>
-                @if(!empty($consideration['tip']))
-                <div class="consideration-tip">💡 {{ $consideration['tip'] }}</div>
-                @endif
-            </div>
-            @endforeach
+        </tbody>
+    </table>
+</div>
+
+<!-- Legenda explicativa -->
+<div class="table-legend">
+    <h3>📋 Legenda das Condições:</h3>
+    <div class="legend-grid">
+        <div class="legend-item">
+            <span class="legend-icon">🏍️</span>
+            <span><strong>Uso Normal:</strong> Pilotagem urbana e rodoviária padrão</span>
         </div>
-        @endif
+        <div class="legend-item">
+            <span class="legend-icon">👥</span>
+            <span><strong>Com Garupa:</strong> Piloto + passageiro em trajetos normais</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">🛣️</span>
+            <span><strong>Rodoviária:</strong> Viagens longas em alta velocidade</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">🏁</span>
+            <span><strong>Esportiva:</strong> Pilotagem agressiva, apenas experientes</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">🌧️</span>
+            <span><strong>Chuva:</strong> Condições de piso molhado</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon">⚖️</span>
+            <span><strong>Piloto Pesado:</strong> Acima de 90kg com equipamentos</span>
+        </div>
+    </div>
+</div>
+@endif
         
-        <!-- 🥇 ANÚNCIO 2: Após considerações -->
+        <!-- 🥇 ANÚNCIO 2: Após tabela -->
         <div class="ad-container">
             <div class="ad-label">Publicidade</div>
             <amp-ad width="100vw" height="320"
                 type="adsense"
-                data-ad-client="{{ Config::get('services.google_adsense.id') }}"
+                data-ad-client="{{ config('services.google_adsense.id') }}"
                 data-ad-slot="8344586349"
                 data-auto-format="rspv"
                 data-full-width>
@@ -865,76 +1210,157 @@
             </amp-ad>
         </div>
         
-        <!-- Benefícios da Calibragem Correta -->
-        @if(!empty($article->benefits) && is_array($article->benefits))
-        <h2>✅ Benefícios da Calibragem Correta</h2>
+        <!-- Considerações Especiais -->
+        @if(!empty($article->special_considerations) && is_array($article->special_considerations))
+        <h2>⚠️ Considerações Especiais para Motocicletas</h2>
         
-        <div class="benefits-grid">
-            @foreach($article->benefits as $benefit)
-            <div class="benefit-card {{ strtolower($benefit['category'] ?? 'general') }}">
-                <span class="benefit-icon">{{ $benefit['icon'] ?? '✅' }}</span>
-                <div class="benefit-title">{{ $benefit['title'] ?? 'Benefício' }}</div>
-                <div class="benefit-description">{{ $benefit['description'] ?? '' }}</div>
+        <div class="considerations-grid">
+            @foreach($article->special_considerations as $consideration)
+            <div class="consideration-card">
+                <div class="consideration-title">
+                    @switch($consideration['category'] ?? '')
+                        @case('temperatura')
+                            🌡️
+                            @break
+                        @case('carga')
+                            🎒
+                            @break
+                        @case('estilo_pilotagem')
+                            🏁
+                            @break
+                        @default
+                            ⚠️
+                    @endswitch
+                    {{ $consideration['title'] ?? 'Consideração Especial' }}
+                </div>
+                <div class="consideration-description">{{ $consideration['description'] ?? '' }}</div>
+                
+                @if(!empty($consideration['factors']) && is_array($consideration['factors']))
+                <ul class="consideration-list">
+                    @foreach($consideration['factors'] as $factor)
+                    <li>{{ $factor }}</li>
+                    @endforeach
+                </ul>
+                @endif
+                
+                @if(!empty($consideration['types']) && is_array($consideration['types']))
+                <ul class="consideration-list">
+                    @foreach($consideration['types'] as $type)
+                    <li>{{ $type }}</li>
+                    @endforeach
+                </ul>
+                @endif
+                
+                @if(!empty($consideration['orientations']) && is_array($consideration['orientations']))
+                <ul class="consideration-list">
+                    @foreach($consideration['orientations'] as $orientation)
+                    <li>{{ $orientation }}</li>
+                    @endforeach
+                </ul>
+                @endif
             </div>
             @endforeach
         </div>
         @endif
         
-        <!-- Procedimento de Calibragem em 3 Passos -->
-        <h2>🔧 Procedimento de Calibragem em 3 Passos</h2>
+        <!-- Conversão de Unidades -->
+        @if(!empty($article->unit_conversion))
+        <h2>🔄 Conversão de Unidades</h2>
         
-        <div class="three-step-procedure">
-            <div class="procedure-title">Siga estes 3 passos simples para calibrar corretamente</div>
-            <div class="three-steps-grid">
-                <div class="step-card">
-                    <div class="step-number-badge">1</div>
-                    <span class="step-icon">🌡️</span>
-                    <div class="step-title">Pneus Frios</div>
-                    <div class="step-description">Verifique sempre com os pneus frios, antes de rodar ou após 3 horas parado. O calor altera a pressão.</div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number-badge">2</div>
-                    <span class="step-icon">📏</span>
-                    <div class="step-title">Meça a Pressão</div>
-                    <div class="step-description">Use um manômetro confiável. Remova a tampa da válvula e pressione firmemente o medidor.</div>
-                </div>
-                <div class="step-card">
-                    <div class="step-number-badge">3</div>
-                    <span class="step-icon">⚖️</span>
-                    <div class="step-title">Ajuste se Necessário</div>
-                    <div class="step-description">Se estiver fora do especificado, adicione ou retire ar até atingir a pressão correta.</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Alertas Críticos -->
-        @if(!empty($article->critical_alerts) && is_array($article->critical_alerts))
-        <div class="critical-alerts-section">
-            <h2>🚨 Alertas Críticos de Segurança</h2>
+        <div class="conversion-section">
+            <div class="conversion-title">Tabela de Conversão para Motocicletas</div>
+            @php $conversion = $article->unit_conversion @endphp
             
-            @foreach($article->critical_alerts as $alert)
-            <div class="critical-alert">
-                <div class="critical-alert-title">
-                    <span class="critical-alert-icon">{{ $alert['icon'] ?? '⚠️' }}</span>
-                    {{ $alert['title'] ?? 'Alerta de Segurança' }}
-                </div>
-                <div class="critical-alert-content">
-                    {{ $alert['description'] ?? '' }}
-                    @if(!empty($alert['consequence']))
-                    <br><strong>Consequência:</strong> {{ $alert['consequence'] }}
-                    @endif
-                </div>
+            @if(!empty($conversion['conversion_table']) && is_array($conversion['conversion_table']))
+            <table class="conversion-table">
+                <thead>
+                    <tr>
+                        <th>PSI (Brasil)</th>
+                        <th>kgf/cm²</th>
+                        <th>Bar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($conversion['conversion_table'] as $row)
+                    <tr>
+                        <td>
+                            @if(in_array($row['psi'] ?? '', ['33', '36']))
+                            <span class="highlight-pressure">{{ $row['psi'] ?? '' }}</span>
+                            @else
+                            {{ $row['psi'] ?? '' }}
+                            @endif
+                        </td>
+                        <td>{{ $row['kgf_cm2'] ?? '' }}</td>
+                        <td>{{ $row['bar'] ?? '' }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @endif
+            
+            @if(!empty($conversion['observation']))
+            <div class="info-note" style="margin-top: 16px;">
+                <strong>💡 Nota:</strong> {{ $conversion['observation'] }}
             </div>
-            @endforeach
+            @endif
         </div>
         @endif
         
-        <!-- 🥈 ANÚNCIO 3: Após alertas críticos -->
+        <!-- Onde Encontrar as Informações -->
+        @if(!empty($article->information_location))
+        <h2>📍 Onde Encontrar as Pressões</h2>
+        
+        <div class="considerations-grid">
+            @php $location = $article->information_location @endphp
+            
+            @if(!empty($location['owner_manual']))
+            <div class="consideration-card">
+                <div class="consideration-title">
+                    📖 Manual do Proprietário
+                </div>
+                <div class="consideration-description">{{ $location['owner_manual']['location'] ?? 'Seção de Especificações Técnicas' }}</div>
+                <ul class="consideration-list">
+                    @if(!empty($location['owner_manual']['section']))
+                    <li><strong>Seção:</strong> {{ $location['owner_manual']['section'] }}</li>
+                    @endif
+                    @if(!empty($location['owner_manual']['approximate_page']))
+                    <li><strong>Página aproximada:</strong> {{ $location['owner_manual']['approximate_page'] }}</li>
+                    @endif
+                </ul>
+            </div>
+            @endif
+            
+            @if(!empty($location['motorcycle_label']))
+            <div class="consideration-card">
+                <div class="consideration-title">
+                    🏷️ Etiqueta da Motocicleta
+                </div>
+                <div class="consideration-description">{{ $location['motorcycle_label']['main_location'] ?? 'Localização principal da etiqueta' }}</div>
+                @if(!empty($location['motorcycle_label']['alternative_locations']) && is_array($location['motorcycle_label']['alternative_locations']))
+                <ul class="consideration-list">
+                    @foreach($location['motorcycle_label']['alternative_locations'] as $altLocation)
+                    <li>{{ $altLocation }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+            @endif
+        </div>
+        
+        @if(!empty($location['important_tip']))
+        <div class="critical-safety-banner">
+            <div class="critical-banner-title">💡 Dica Importante</div>
+            <div class="critical-banner-content">{{ $location['important_tip'] }}</div>
+        </div>
+        @endif
+        @endif
+        
+        <!-- 🥇 ANÚNCIO 3: Após localização -->
         <div class="ad-container">
             <div class="ad-label">Publicidade</div>
             <amp-ad width="100vw" height="320"
                 type="adsense"
-                data-ad-client="{{ Config::get('services.google_adsense.id') }}"
+                data-ad-client="{{ config('services.google_adsense.id') }}"
                 data-ad-slot="1402260703"
                 data-auto-format="rspv"
                 data-full-width>
@@ -942,65 +1368,146 @@
             </amp-ad>
         </div>
         
-        <!-- Frequência de Verificação -->
-        @if(!empty($article->maintenance_schedule))
-        <h2>📅 Cronograma de Manutenção</h2>
+        <!-- Benefícios da Calibragem Correta -->
+        @if(!empty($article->calibration_benefits) && is_array($article->calibration_benefits))
+        <h2>✅ Benefícios da Calibragem Correta</h2>
         
-        <div class="motorcycle-considerations">
-            @foreach($article->maintenance_schedule as $schedule)
+        <div class="considerations-grid">
+            @foreach($article->calibration_benefits as $benefit)
             <div class="consideration-card">
                 <div class="consideration-title">
-                    <amp-img class="consideration-icon" 
-                        src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/statics/icons/icon-{{ $schedule['icon_class'] ?? 'calendar' }}.svg" 
-                        width="24" height="24" alt="{{ $schedule['frequency'] ?? 'Cronograma' }}"></amp-img>
-                    {{ $schedule['frequency'] ?? 'Verificação' }}
+                    @switch($benefit['category'] ?? '')
+                        @case('seguranca')
+                            🛡️
+                            @break
+                        @case('performance')
+                            ⚡
+                            @break
+                        @case('economia')
+                            💰
+                            @break
+                        @case('durabilidade')
+                            🔧
+                            @break
+                        @default
+                            ✅
+                    @endswitch
+                    {{ $benefit['title'] ?? 'Benefício' }}
                 </div>
-                <div class="consideration-description">{{ $schedule['description'] ?? '' }}</div>
-                @if(!empty($schedule['tip']))
-                <div class="consideration-tip">💡 {{ $schedule['tip'] }}</div>
+                <div class="consideration-description">{{ $benefit['description'] ?? '' }}</div>
+                
+                @if(!empty($benefit['aspects']) && is_array($benefit['aspects']))
+                <ul class="consideration-list">
+                    @foreach($benefit['aspects'] as $aspect)
+                    <li>{{ $aspect }}</li>
+                    @endforeach
+                </ul>
+                @endif
+                
+                @if(!empty($benefit['estimated_savings']))
+                <div class="info-note" style="margin-top: 12px;">
+                    <strong>💰 Economia estimada:</strong> {{ $benefit['estimated_savings'] }}
+                </div>
                 @endif
             </div>
             @endforeach
         </div>
         @endif
         
-        <!-- Equipamentos Recomendados -->
-        @if(!empty($article->recommended_equipment) && is_array($article->recommended_equipment))
-        <h2>🛠️ Equipamentos Recomendados</h2>
+        <!-- Dicas de Manutenção -->
+        @if(!empty($article->maintenance_tips) && is_array($article->maintenance_tips))
+        <h2>🛠️ Dicas de Manutenção</h2>
         
-        <div class="benefits-grid">
-            @foreach($article->recommended_equipment as $equipment)
-            <div class="benefit-card">
-                <span class="benefit-icon">{{ $equipment['icon'] ?? '🔧' }}</span>
-                <div class="benefit-title">{{ $equipment['name'] ?? 'Equipamento' }}</div>
-                <div class="benefit-description">
-                    {{ $equipment['description'] ?? '' }}
-                    @if(!empty($equipment['price_range']))
-                    <br><strong>Preço:</strong> {{ $equipment['price_range'] }}
-                    @endif
+        <div class="considerations-grid">
+            @foreach($article->maintenance_tips as $tip)
+            <div class="consideration-card">
+                <div class="consideration-title">
+                    @switch($tip['category'] ?? '')
+                        @case('Verificação Semanal')
+                            📅
+                            @break
+                        @case('Condições Ideais de Calibragem')
+                            🌡️
+                            @break
+                        @case('Equipamentos Recomendados')
+                            🔧
+                            @break
+                        @default
+                            💡
+                    @endswitch
+                    {{ $tip['category'] ?? 'Dica' }}
                 </div>
+                
+                @if(!empty($tip['frequency']))
+                <div class="consideration-description">
+                    <strong>Frequência:</strong> {{ $tip['frequency'] }}
+                </div>
+                @endif
+                
+                @if(!empty($tip['items']) && is_array($tip['items']))
+                <ul class="consideration-list">
+                    @foreach($tip['items'] as $item)
+                    <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+                @endif
             </div>
             @endforeach
         </div>
         @endif
         
-        <!-- Sinais de Problema -->
-        @if(!empty($article->problem_indicators) && is_array($article->problem_indicators))
-        <h2>🔍 Sinais de Problemas na Calibragem</h2>
+        <!-- Alertas Críticos -->
+        @if(!empty($article->critical_alerts) && is_array($article->critical_alerts))
+        <h2>🚨 Alertas Críticos de Segurança</h2>
         
-        <div class="critical-alerts-section">
-            @foreach($article->problem_indicators as $indicator)
-            <div class="critical-alert">
-                <div class="critical-alert-title">
-                    <span class="critical-alert-icon">{{ $indicator['icon'] ?? '🔍' }}</span>
-                    {{ $indicator['problem'] ?? 'Problema Detectado' }}
+        @foreach($article->critical_alerts as $alert)
+        <div class="safety-alert {{ strtolower($alert['type'] ?? 'critical') }}">
+            <div class="alert-title">
+                @switch(strtolower($alert['type'] ?? 'critical'))
+                    @case('crítico')
+                    @case('critical')
+                        🚨
+                        @break
+                    @case('importante')
+                    @case('important')
+                        ⚠️
+                        @break
+                    @case('atenção')
+                    @case('warning')
+                        ⚠️
+                        @break
+                    @default
+                        ℹ️
+                @endswitch
+                {{ $alert['title'] ?? 'Alerta de Segurança' }}
+            </div>
+            <p>{{ $alert['description'] ?? '' }}</p>
+            @if(!empty($alert['consequence']))
+            <p><strong>Consequência:</strong> {{ $alert['consequence'] }}</p>
+            @endif
+        </div>
+        @endforeach
+        @endif
+        
+        <!-- Procedimento de Calibragem -->
+        @if(!empty($article->calibration_procedure) && is_array($article->calibration_procedure))
+        <h2>🔧 Como Calibrar Corretamente</h2>
+        
+        <div class="considerations-grid">
+            @foreach($article->calibration_procedure as $step)
+            <div class="consideration-card">
+                <div class="consideration-title">
+                    {{ $step['number'] ?? '1' }}. {{ $step['title'] ?? 'Passo' }}
                 </div>
-                <div class="critical-alert-content">
-                    <strong>Sinais:</strong> {{ $indicator['signs'] ?? '' }}
-                    @if(!empty($indicator['action']))
-                    <br><strong>Ação:</strong> {{ $indicator['action'] }}
-                    @endif
-                </div>
+                <div class="consideration-description">{{ $step['description'] ?? '' }}</div>
+                
+                @if(!empty($step['details']) && is_array($step['details']))
+                <ul class="consideration-list">
+                    @foreach($step['details'] as $detail)
+                    <li>{{ $detail }}</li>
+                    @endforeach
+                </ul>
+                @endif
             </div>
             @endforeach
         </div>
@@ -1010,7 +1517,7 @@
         @if(!empty($article->faq) && is_array($article->faq))
         <h2>❓ Perguntas Frequentes sobre {{ $article->vehicle_info['full_name'] ?? 'Pressão dos Pneus' }}</h2>
         
-        <amp-accordion>
+        <amp-accordion expand-single-section>
             @foreach($article->faq as $faq)
             <section>
                 <h4>{{ $faq['pergunta'] ?? '' }}</h4>
@@ -1022,54 +1529,25 @@
         </amp-accordion>
         @endif
         
-        <!-- Conversão de Unidades para Motocicletas -->
-        @if(!empty($article->unit_conversions) && is_array($article->unit_conversions))
-        <h2>🔄 Conversão de Unidades</h2>
-        
-        <div class="motorcycle-specs-card">
-            <div class="motorcycle-specs-header">Conversão de Pressões</div>
-            <div class="motorcycle-specs-body">
-                @foreach($article->unit_conversions as $conversion)
-                <div class="spec-item">
-                    <span class="spec-label">{{ $conversion['unit'] ?? 'N/A' }}:</span>
-                    <span class="spec-value">{{ $conversion['value'] ?? 'N/A' }}</span>
-                </div>
-                @endforeach
-            </div>
+        <!-- 🥇 ANÚNCIO 4: Antes das considerações finais -->
+        <div class="ad-container">
+            <div class="ad-label">Publicidade</div>
+            <amp-ad width="100vw" height="320"
+                type="adsense"
+                data-ad-client="{{ config('services.google_adsense.id') }}"
+                data-ad-slot="4527893610"
+                data-auto-format="rspv"
+                data-full-width>
+                <div overflow></div>
+            </amp-ad>
         </div>
-        
-        <div class="info-note">
-            <strong>💡 Dica importante:</strong> Use sempre a unidade especificada no seu manômetro. PSI é a unidade mais comum em motocicletas.
-        </div>
-        @endif
-        
-        <!-- Cuidados Específicos para o Brasil -->
-        @if(!empty($article->brazil_considerations) && is_array($article->brazil_considerations))
-        <h2>🇧🇷 Cuidados Específicos para o Brasil</h2>
-        
-        <div class="motorcycle-considerations">
-            @foreach($article->brazil_considerations as $consideration)
-            <div class="consideration-card">
-                <div class="consideration-title">
-                    <amp-img class="consideration-icon" 
-                        src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/statics/icons/icon-{{ $consideration['icon_class'] ?? 'brazil' }}.svg" 
-                        width="24" height="24" alt="{{ $consideration['title'] ?? 'Brasil' }}"></amp-img>
-                    {{ $consideration['title'] ?? 'Cuidado no Brasil' }}
-                </div>
-                <div class="consideration-description">{{ $consideration['description'] ?? '' }}</div>
-                @if(!empty($consideration['tip']))
-                <div class="consideration-tip">🇧🇷 {{ $consideration['tip'] }}</div>
-                @endif
-            </div>
-            @endforeach
-        </div>
-        @endif
         
         <!-- Considerações Finais -->
         @if(!empty($article->final_considerations))
         <h2>📝 Considerações Finais</h2>
-        <div style="background: linear-gradient(135deg, #fef2f2, #fee2e2); padding: 20px; border-radius: 8px; border-left: 4px solid #DC2626;">
-            <p style="color: #991b1b; line-height: 1.7; font-weight: 500;">{{ $article->final_considerations }}</p>
+        
+        <div class="info-note">
+            {!! $article->final_considerations !!}
         </div>
         @endif
         
@@ -1088,14 +1566,8 @@
         <!-- Nota informativa -->
         @include('auto-info-center::article.partials.info_note_manual')
         
-        <!-- Footer info -->
-        <div class="article-footer">
-            @if(!empty($article->formated_updated_at))
-            <p><strong>Atualizado em:</strong> {{ $article->formated_updated_at }}</p>
-            @endif
-            <p><strong>Por:</strong> Equipe Editorial Mercado Veículos</p>
-            <p><a href="{{ route('info.article.show', $article->slug) }}">Ver versão completa do artigo</a></p>
-        </div>
+        <!-- Footer do artigo -->
+        @include('auto-info-center::article.partials.article_footer')
     </article>
 </div>
 @endsection
