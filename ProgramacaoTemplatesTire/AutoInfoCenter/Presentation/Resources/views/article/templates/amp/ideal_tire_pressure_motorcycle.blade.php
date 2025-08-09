@@ -576,6 +576,47 @@
         text-decoration: underline;
     }
     
+    /* Legenda */
+    .table-legend {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .table-legend h3 {
+        margin: 0 0 12px 0;
+        color: #1f2937;
+        font-size: 16px;
+    }
+    
+    .legend-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .legend-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .legend-item span:last-child {
+        font-size: 13px;
+        color: #374151;
+    }
+    
     /* Responsivo */
     @media (max-width: 768px) {
         .container {
@@ -643,6 +684,10 @@
         .critical-banner-content {
             padding-left: 30px;
         }
+        
+        .legend-grid {
+            grid-template-columns: 1fr;
+        }
     }
     
     @media (max-width: 480px) {
@@ -670,186 +715,6 @@
         .critical-banner-content {
             font-size: 14px;
         }
-    }
-
-
-    /* Garante que os valores PSI nunca quebrem linha */
-    .pressure-highlight {
-        background: linear-gradient(135deg, #DC2626, #991b1b);
-        color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 700;
-        display: inline-block;
-        white-space: nowrap !important; /* FORÇA não quebrar */
-        min-width: 80px;
-        text-align: center;
-        line-height: 1.2;
-    }
-    
-    /* Fallback para casos extremos */
-    .pressure-cell {
-        font-weight: 600;
-        min-width: 100px;
-        vertical-align: middle;
-    }
-    
-    .pressure-cell .pressure-highlight {
-        max-width: none !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
-    }
-    
-    /* Legenda */
-    .table-legend {
-        background: #f8fafc;
-        border-radius: 8px;
-        padding: 16px;
-        margin-top: 16px;
-        border: 1px solid #e2e8f0;
-    }
-    
-    .table-legend h3 {
-        margin: 0 0 12px 0;
-        color: #1f2937;
-        font-size: 16px;
-    }
-    
-    .legend-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 12px;
-    }
-    
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px;
-        background: white;
-        border-radius: 6px;
-        border: 1px solid #e5e7eb;
-    }
-    
-    .legend-icon {
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-    
-    .legend-item span:last-child {
-        font-size: 13px;
-        color: #374151;
-    }
-    
-    /* Debug: container da tabela */
-    .pressure-table-container {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
-        border-radius: 12px;
-        padding: 20px;
-        margin: 24px 0;
-        overflow-x: auto;
-        border: 1px solid rgba(220, 38, 38, 0.2);
-    }
-    
-    .pressure-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-        margin: 0;
-        min-width: 600px;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .pressure-table th {
-        background: linear-gradient(135deg, #DC2626, #991b1b);
-        color: white;
-        padding: 14px 12px;
-        text-align: center;
-        font-weight: 600;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .pressure-table th:first-child {
-        text-align: left;
-        padding-left: 16px;
-    }
-    
-    .pressure-table td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #f1f5f9;
-        vertical-align: middle;
-    }
-    
-    .condition-cell {
-        text-align: left !important;
-        padding-left: 16px !important;
-        font-weight: 500;
-        color: #374151;
-        min-width: 180px;
-    }
-    
-    .condition-icon {
-        margin-right: 8px;
-        font-size: 16px;
-    }
-    
-    .observation-cell {
-        text-align: left !important;
-        max-width: 200px;
-        color: #4b5563;
-        font-size: 12px;
-        line-height: 1.4;
-        padding-left: 8px !important;
-    }
-    
-    .pressure-table tr:nth-child(even) {
-        background-color: #f8fafc;
-    }
-    
-    .pressure-table tr:hover {
-        background-color: rgba(220, 38, 38, 0.05);
-    }
-    
-    /* Responsivo */
-    @media (max-width: 768px) {
-        .pressure-table {
-            font-size: 12px;
-            min-width: 500px;
-        }
-        
-        .pressure-table th,
-        .pressure-table td {
-            padding: 8px 6px;
-        }
-        
-        .condition-cell,
-        .observation-cell {
-            padding-left: 12px !important;
-        }
-        
-        .pressure-highlight {
-            padding: 4px 10px;
-            font-size: 12px;
-            min-width: 70px;
-        }
-        
-        .legend-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .pressure-table {
-            min-width: 450px;
-            font-size: 11px;
-        }
         
         .pressure-table-container {
             padding: 12px;
@@ -862,16 +727,16 @@
 <div class="container">
     <article>
         <!-- Cabeçalho -->
-        <h1>{{ $article->title }}</h1>
+        <h1>{{ $article->getData()['seo_data']['h1'] ?? $article->getData()['title'] ?? $article->title }}</h1>
         <div class="article-meta">
-            @if(!empty($article->formated_updated_at))
-            <p>Atualizado em: {{ $article->formated_updated_at }}</p>
+            @if(!empty($article->getData()['formated_updated_at']))
+            <p>Atualizado em: {{ $article->getData()['formated_updated_at'] }}</p>
             @endif
         </div>
         
         <!-- Introdução -->
-        @if(!empty($article->introduction))
-        <p>{{ $article->introduction }}</p>
+        @if(!empty($article->getData()['introduction']))
+        <p>{{ $article->getData()['introduction'] }}</p>
         @endif
         
         <!-- Alerta de Segurança Crítico -->
@@ -882,39 +747,7 @@
             </div>
         </div>
         
-        <!-- Destaque da Pressão Ideal -->
-        @if(!empty($article->ideal_pressure))
-        <div class="motorcycle-pressure-highlight">
-            <div class="motorcycle-pressure-title">Pressão Ideal para {{ $article->vehicle_info['full_name'] ?? 'sua motocicleta' }}</div>
-            <div class="motorcycle-pressure-grid">
-                @if(!empty($article->ideal_pressure['front_pressure']))
-                <div class="motorcycle-pressure-card">
-                    <div class="pressure-position">
-                        <span class="icon">🔄</span>
-                        Pneu Dianteiro
-                    </div>
-                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['front_pressure']) }} PSI</div>
-                    <div class="pressure-unit">(libras por pol²)</div>
-                </div>
-                @endif
-                @if(!empty($article->ideal_pressure['rear_pressure']))
-                <div class="motorcycle-pressure-card">
-                    <div class="pressure-position">
-                        <span class="icon">🔙</span>
-                        Pneu Traseiro
-                    </div>
-                    <div class="pressure-value">{{ str_replace(' PSI', '', $article->ideal_pressure['rear_pressure']) }} PSI</div>
-                    <div class="pressure-unit">(libras por pol²)</div>
-                </div>
-                @endif
-            </div>
-            @if(!empty($article->ideal_pressure['observation']))
-            <p style="margin-top: 16px; color: #991b1b; font-weight: 500; font-size: 14px;">{{ $article->ideal_pressure['observation'] }}</p>
-            @endif
-        </div>
-        @endif
-        
-        <!-- 🥇 ANÚNCIO 1: Após pressão ideal -->
+        <!-- 🥇 ANÚNCIO 1: Após introdução -->
         <div class="ad-container">
             <div class="ad-label">Publicidade</div>
             <amp-ad width="100vw" height="320"
@@ -928,18 +761,18 @@
         </div>
         
         <!-- Especificações dos Pneus -->
-        @if(!empty($article->tire_specifications))
+        @if(!empty($article->getData()['tire_specifications']))
         <h2>🏍️ Especificações dos Pneus</h2>
         
         <div class="tire-specs-section">
             <div class="tire-specs-grid">
-                @if(!empty($article->tire_specifications['front_tire']))
+                @if(!empty($article->getData()['tire_specifications']['front_tire']))
                 <div class="tire-spec-card">
                     <div class="tire-spec-header">
                         <span>🔄</span>
                         Pneu Dianteiro
                     </div>
-                    @php $frontTire = $article->tire_specifications['front_tire'] @endphp
+                    @php $frontTire = $article->getData()['tire_specifications']['front_tire'] @endphp
                     @if(!empty($frontTire['size']))
                     <div class="spec-item">
                         <span class="spec-label">Medida:</span>
@@ -961,13 +794,13 @@
                 </div>
                 @endif
                 
-                @if(!empty($article->tire_specifications['rear_tire']))
+                @if(!empty($article->getData()['tire_specifications']['rear_tire']))
                 <div class="tire-spec-card">
                     <div class="tire-spec-header">
                         <span>🔙</span>
                         Pneu Traseiro
                     </div>
-                    @php $rearTire = $article->tire_specifications['rear_tire'] @endphp
+                    @php $rearTire = $article->getData()['tire_specifications']['rear_tire'] @endphp
                     @if(!empty($rearTire['size']))
                     <div class="spec-item">
                         <span class="spec-label">Medida:</span>
@@ -990,212 +823,149 @@
                 @endif
             </div>
             
-            @if(!empty($article->tire_specifications['observation']))
+            @if(!empty($article->getData()['tire_specifications']['observation']))
             <div class="info-note" style="margin-top: 16px;">
-                <strong>📌 Importante:</strong> {{ $article->tire_specifications['observation'] }}
+                <strong>📌 Importante:</strong> {{ $article->getData()['tire_specifications']['observation'] }}
             </div>
             @endif
         </div>
         @endif
         
-        <!-- Tabela de Pressões por Condição - VERSÃO ROBUSTA -->
-@if(!empty($article->pressure_table) || !empty($article->official_pressures) || !empty($article->pressure_conditions))
-<h2>📊 Pressões por Condição de Uso</h2>
+        <!-- Tabela de Pressão - CORRIGIDA PARA REPLICAR O TEMPLATE NORMAL -->
+        @if(!empty($article->getData()['pressure_table']))
+        <h2>📊 Tabela de Pressão dos Pneus (PSI - {{ $article->getData()['vehicle_info']['full_name'] ?? 'Motocicleta' }})</h2>
 
-<div class="pressure-table-container">
-    <table class="pressure-table">
-        <thead>
-            <tr>
-                <th>Condição</th>
-                <th>Dianteiro</th>
-                <th>Traseiro</th>
-                <th>Observação</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-            // Tenta diferentes estruturas de dados
-            $pressureData = [];
+        <div class="pressure-table-container">
+            @php $pressureTable = $article->getData()['pressure_table'] @endphp
             
-            // Estrutura 1: pressure_table direta
-            if (!empty($article->pressure_table) && is_array($article->pressure_table)) {
-                $pressureData = $article->pressure_table;
-            }
-            
-            // Estrutura 2: official_pressures
-            elseif (!empty($article->official_pressures)) {
-                if (!empty($article->official_pressures['solo_rider'])) {
-                    $pressureData[] = [
-                        'condition' => 'Piloto Solo',
-                        'front_pressure' => $article->official_pressures['solo_rider']['front'] ?? '33 PSI',
-                        'rear_pressure' => $article->official_pressures['solo_rider']['rear'] ?? '36 PSI',
-                        'observation' => $article->official_pressures['solo_rider']['observation'] ?? 'Para piloto até 80kg + equipamentos'
-                    ];
-                }
-                if (!empty($article->official_pressures['with_passenger'])) {
-                    $pressureData[] = [
-                        'condition' => 'Piloto + Garupa',
-                        'front_pressure' => $article->official_pressures['with_passenger']['front'] ?? '33 PSI',
-                        'rear_pressure' => $article->official_pressures['with_passenger']['rear'] ?? '36 PSI',
-                        'observation' => $article->official_pressures['with_passenger']['observation'] ?? 'Carga total até 150kg'
-                    ];
-                }
-            }
-            
-            // Estrutura 3: pressure_conditions
-            elseif (!empty($article->pressure_conditions) && is_array($article->pressure_conditions)) {
-                $pressureData = $article->pressure_conditions;
-            }
-            
-            // Estrutura 4: Dados do mock/ViewModel processado
-            elseif (!empty($article->getData()['pressure_table']) && is_array($article->getData()['pressure_table'])) {
-                $pressureData = $article->getData()['pressure_table'];
-            }
-            
-            // Fallback: dados padrão para Yamaha MT-03
-            if (empty($pressureData)) {
-                $pressureData = [
-                    [
-                        'condition' => 'Uso urbano',
-                        'front_pressure' => '33 PSI',
-                        'rear_pressure' => '36 PSI',
-                        'observation' => 'Ideal para uso diário na cidade, oferece boa aderência e conforto.'
-                    ],
-                    [
-                        'condition' => 'Viagem rodoviária',
-                        'front_pressure' => '35 PSI',
-                        'rear_pressure' => '38 PSI',
-                        'observation' => 'Para viagens longas acima de 100 km/h, aumenta estabilidade.'
-                    ],
-                    [
-                        'condition' => 'Pilotagem esportiva',
-                        'front_pressure' => '31 PSI',
-                        'rear_pressure' => '34 PSI',
-                        'observation' => 'Somente para pilotos experientes. Maior área de contato para curvas.'
-                    ],
-                    [
-                        'condition' => 'Chuva leve',
-                        'front_pressure' => '32 PSI',
-                        'rear_pressure' => '35 PSI',
-                        'observation' => 'Redução sutil para aumentar área de contato.'
-                    ],
-                    [
-                        'condition' => 'Piloto pesado',
-                        'front_pressure' => '34 PSI',
-                        'rear_pressure' => '38 PSI',
-                        'observation' => 'Para pilotos acima de 90kg. Evita deformação excessiva.'
-                    ]
-                ];
-            }
-            @endphp
-            
-            @foreach($pressureData as $condition)
-            <tr>
-                <td class="condition-cell">
-                    @php
-                    $conditionName = $condition['condition'] ?? $condition['situacao'] ?? 'Condição';
-                    @endphp
+            <table class="pressure-table">
+                <thead>
+                    <tr>
+                        <th>Condição de Uso</th>
+                        <th>Pneu Dianteiro<br>{{ $article->getData()['tire_specifications']['front_tire']['size'] ?? '110/70 R17' }}</th>
+                        <th>Pneu Traseiro<br>{{ $article->getData()['tire_specifications']['rear_tire']['size'] ?? '140/70 R17' }}</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Pressões Oficiais -->
+                    @if(!empty($pressureTable['official_pressures']))
+                    @php $official = $pressureTable['official_pressures'] @endphp
                     
-                    @switch($conditionName)
-                        @case('Uso urbano')
-                        @case('Uso Solo (Rua)')
-                        @case('Piloto Solo')
+                    @if(!empty($official['solo_rider']))
+                    <tr style="background-color: white;">
+                        <td class="condition-cell">
                             <span class="condition-icon">🏍️</span>
-                            @break
-                        @case('Viagem rodoviária')
-                        @case('Highway Travel')
-                            <span class="condition-icon">🛣️</span>
-                            @break
-                        @case('Pilotagem esportiva')
-                        @case('Sport Riding')
-                            <span class="condition-icon">🏁</span>
-                            @break
-                        @case('Chuva leve')
-                        @case('Light Rain')
-                            <span class="condition-icon">🌧️</span>
-                            @break
-                        @case('Piloto pesado')
-                        @case('Heavy Rider')
-                            <span class="condition-icon">⚖️</span>
-                            @break
-                        @case('Com Passageiro (Rua)')
-                        @case('Piloto + Garupa')
+                            <strong>Piloto Solo</strong><br>
+                            <small style="font-size: 12px; color: #6b7280;">{{ $official['solo_rider']['observation'] ?? 'Uso normal' }}</small>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $official['solo_rider']['front'] }}</span>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $official['solo_rider']['rear'] }}</span>
+                        </td>
+                        <td class="observation-cell">Uso diário</td>
+                    </tr>
+                    @endif
+
+                    @if(!empty($official['with_passenger']))
+                    <tr style="background-color: #f8fafc;">
+                        <td class="condition-cell">
                             <span class="condition-icon">👥</span>
-                            @break
-                        @case('Com Carga ou Bagagem')
-                            <span class="condition-icon">🎒</span>
-                            @break
-                        @default
-                            <span class="condition-icon">🏍️</span>
-                    @endswitch
-                    {{ $conditionName }}
-                </td>
-                <td class="pressure-cell">
-                    @php
-                    $frontPressure = $condition['front_pressure'] ?? 
-                                   $condition['pressao_dianteira'] ?? 
-                                   $condition['dianteiro'] ?? 
-                                   $condition['front'] ?? 
-                                   '33 PSI';
-                    
-                    // Remove quebras de linha e normaliza formato
-                    $frontPressure = trim(str_replace(["\n", "\r"], ' ', $frontPressure));
-                    @endphp
-                    <span class="pressure-highlight">{{ $frontPressure }}</span>
-                </td>
-                <td class="pressure-cell">
-                    @php
-                    $rearPressure = $condition['rear_pressure'] ?? 
-                                  $condition['pressao_traseira'] ?? 
-                                  $condition['traseiro'] ?? 
-                                  $condition['rear'] ?? 
-                                  '36 PSI';
-                    
-                    // Remove quebras de linha e normaliza formato
-                    $rearPressure = trim(str_replace(["\n", "\r"], ' ', $rearPressure));
-                    @endphp
-                    <span class="pressure-highlight">{{ $rearPressure }}</span>
-                </td>
-                <td class="observation-cell">
-                    {{ $condition['observation'] ?? $condition['observacao'] ?? $condition['description'] ?? '' }}
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+                            <strong>Piloto + Garupa</strong><br>
+                            <small style="font-size: 12px; color: #6b7280;">{{ $official['with_passenger']['observation'] ?? 'Com passageiro' }}</small>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $official['with_passenger']['front'] }}</span>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $official['with_passenger']['rear'] }}</span>
+                        </td>
+                        <td class="observation-cell">Carga dupla</td>
+                    </tr>
+                    @endif
+                    @endif
 
-<!-- Legenda explicativa -->
-<div class="table-legend">
-    <h3>📋 Legenda das Condições:</h3>
-    <div class="legend-grid">
-        <div class="legend-item">
-            <span class="legend-icon">🏍️</span>
-            <span><strong>Uso Normal:</strong> Pilotagem urbana e rodoviária padrão</span>
+                    <!-- Condições Especiais -->
+                    @if(!empty($pressureTable['special_conditions']))
+                    @foreach($pressureTable['special_conditions'] as $condition)
+                    <tr style="background-color: {{ $loop->even ? '#f8fafc' : 'white' }};">
+                        <td class="condition-cell">
+                            @switch($condition['icon_class'])
+                                @case('home')
+                                    <span class="condition-icon">🏙️</span>
+                                    @break
+                                @case('map')
+                                    <span class="condition-icon">🛣️</span>
+                                    @break
+                                @case('zap')
+                                    <span class="condition-icon">🏁</span>
+                                    @break
+                                @case('cloud-rain')
+                                    <span class="condition-icon">🌧️</span>
+                                    @break
+                                @case('user')
+                                    <span class="condition-icon">⚖️</span>
+                                    @break
+                                @default
+                                    <span class="condition-icon">📍</span>
+                            @endswitch
+                            <strong>{{ $condition['situation'] }}</strong>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $condition['front_pressure'] }}</span>
+                        </td>
+                        <td class="pressure-cell">
+                            <span class="pressure-highlight">{{ $condition['rear_pressure'] }}</span>
+                        </td>
+                        <td class="observation-cell">{{ $condition['observation'] }}</td>
+                    </tr>
+                    @endforeach
+                    @endif
+                </tbody>
+            </table>
+
+            <!-- Nota importante no final da tabela -->
+            <div style="background: #f8fafc; padding: 16px; margin-top: 16px; border-radius: 8px; border-left: 4px solid #DC2626;">
+                <p style="margin: 0; font-size: 14px; color: #374151;">
+                    <span style="font-weight: 600;">⚠️ Importante:</span> 
+                    Sempre verifique com pneus frios (pelo menos 3 horas parados). No calor brasileiro (35°C+), a pressão pode aumentar 4-6 PSI durante a pilotagem.
+                </p>
+            </div>
         </div>
-        <div class="legend-item">
-            <span class="legend-icon">👥</span>
-            <span><strong>Com Garupa:</strong> Piloto + passageiro em trajetos normais</span>
+
+        <!-- Legenda das Condições -->
+        <div class="table-legend">
+            <h3>📋 Legenda das Condições:</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="legend-icon">🏍️</span>
+                    <span><strong>Uso Normal:</strong> Pilotagem urbana e rodoviária padrão</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">👥</span>
+                    <span><strong>Com Garupa:</strong> Piloto + passageiro em trajetos normais</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🛣️</span>
+                    <span><strong>Rodoviária:</strong> Viagens longas em alta velocidade</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🏁</span>
+                    <span><strong>Esportiva:</strong> Pilotagem agressiva, apenas experientes</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">🌧️</span>
+                    <span><strong>Chuva:</strong> Condições de piso molhado</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">⚖️</span>
+                    <span><strong>Piloto Pesado:</strong> Acima de 90kg com equipamentos</span>
+                </div>
+            </div>
         </div>
-        <div class="legend-item">
-            <span class="legend-icon">🛣️</span>
-            <span><strong>Rodoviária:</strong> Viagens longas em alta velocidade</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-icon">🏁</span>
-            <span><strong>Esportiva:</strong> Pilotagem agressiva, apenas experientes</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-icon">🌧️</span>
-            <span><strong>Chuva:</strong> Condições de piso molhado</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-icon">⚖️</span>
-            <span><strong>Piloto Pesado:</strong> Acima de 90kg com equipamentos</span>
-        </div>
-    </div>
-</div>
-@endif
+        @endif
         
         <!-- 🥇 ANÚNCIO 2: Após tabela -->
         <div class="ad-container">
@@ -1211,21 +981,21 @@
         </div>
         
         <!-- Considerações Especiais -->
-        @if(!empty($article->special_considerations) && is_array($article->special_considerations))
-        <h2>⚠️ Considerações Especiais para Motocicletas</h2>
+        @if(!empty($article->getData()['special_considerations']))
+        <h2>⚠️ Ajustes para Condições Especiais</h2>
         
         <div class="considerations-grid">
-            @foreach($article->special_considerations as $consideration)
+            @foreach($article->getData()['special_considerations'] as $consideration)
             <div class="consideration-card">
                 <div class="consideration-title">
-                    @switch($consideration['category'] ?? '')
-                        @case('temperatura')
+                    @switch($consideration['icon_class'])
+                        @case('thermometer')
                             🌡️
                             @break
-                        @case('carga')
+                        @case('package')
                             🎒
                             @break
-                        @case('estilo_pilotagem')
+                        @case('target')
                             🏁
                             @break
                         @default
@@ -1264,12 +1034,12 @@
         @endif
         
         <!-- Conversão de Unidades -->
-        @if(!empty($article->unit_conversion))
+        @if(!empty($article->getData()['unit_conversion']))
         <h2>🔄 Conversão de Unidades</h2>
         
         <div class="conversion-section">
             <div class="conversion-title">Tabela de Conversão para Motocicletas</div>
-            @php $conversion = $article->unit_conversion @endphp
+            @php $conversion = $article->getData()['unit_conversion'] @endphp
             
             @if(!empty($conversion['conversion_table']) && is_array($conversion['conversion_table']))
             <table class="conversion-table">
@@ -1284,7 +1054,7 @@
                     @foreach($conversion['conversion_table'] as $row)
                     <tr>
                         <td>
-                            @if(in_array($row['psi'] ?? '', ['33', '36']))
+                            @if($row['is_recommended'] ?? false)
                             <span class="highlight-pressure">{{ $row['psi'] ?? '' }}</span>
                             @else
                             {{ $row['psi'] ?? '' }}
@@ -1307,11 +1077,11 @@
         @endif
         
         <!-- Onde Encontrar as Informações -->
-        @if(!empty($article->information_location))
+        @if(!empty($article->getData()['information_location']))
         <h2>📍 Onde Encontrar as Pressões</h2>
         
         <div class="considerations-grid">
-            @php $location = $article->information_location @endphp
+            @php $location = $article->getData()['information_location'] @endphp
             
             @if(!empty($location['owner_manual']))
             <div class="consideration-card">
@@ -1368,25 +1138,67 @@
             </amp-ad>
         </div>
         
+        <!-- Cuidados Específicos para Motos -->
+        @if(!empty($article->getData()['maintenance_tips']))
+        <h2>🛠️ Cuidados Específicos para Motocicletas</h2>
+        
+        <div class="considerations-grid">
+            @foreach($article->getData()['maintenance_tips'] as $tip)
+            <div class="consideration-card">
+                <div class="consideration-title">
+                    @switch($tip['icon_class'])
+                        @case('calendar')
+                            📅
+                            @break
+                        @case('sun')
+                            🌡️
+                            @break
+                        @case('tool')
+                            🔧
+                            @break
+                        @default
+                            💡
+                    @endswitch
+                    {{ $tip['category'] ?? 'Dica' }}
+                </div>
+                
+                @if(!empty($tip['frequency']))
+                <div class="consideration-description">
+                    <strong>Frequência:</strong> {{ $tip['frequency'] }}
+                </div>
+                @endif
+                
+                @if(!empty($tip['items']) && is_array($tip['items']))
+                <ul class="consideration-list">
+                    @foreach($tip['items'] as $item)
+                    <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+            @endforeach
+        </div>
+        @endif
+        
         <!-- Benefícios da Calibragem Correta -->
-        @if(!empty($article->calibration_benefits) && is_array($article->calibration_benefits))
+        @if(!empty($article->getData()['calibration_benefits']))
         <h2>✅ Benefícios da Calibragem Correta</h2>
         
         <div class="considerations-grid">
-            @foreach($article->calibration_benefits as $benefit)
+            @foreach($article->getData()['calibration_benefits'] as $benefit)
             <div class="consideration-card">
                 <div class="consideration-title">
-                    @switch($benefit['category'] ?? '')
-                        @case('seguranca')
+                    @switch($benefit['icon_class'])
+                        @case('shield')
                             🛡️
                             @break
-                        @case('performance')
+                        @case('zap')
                             ⚡
                             @break
-                        @case('economia')
+                        @case('dollar-sign')
                             💰
                             @break
-                        @case('durabilidade')
+                        @case('clock')
                             🔧
                             @break
                         @default
@@ -1414,40 +1226,22 @@
         </div>
         @endif
         
-        <!-- Dicas de Manutenção -->
-        @if(!empty($article->maintenance_tips) && is_array($article->maintenance_tips))
-        <h2>🛠️ Dicas de Manutenção</h2>
+        <!-- Procedimento de Calibragem -->
+        @if(!empty($article->getData()['calibration_procedure']))
+        <h2>🔧 Como Calibrar Corretamente</h2>
         
         <div class="considerations-grid">
-            @foreach($article->maintenance_tips as $tip)
+            @foreach($article->getData()['calibration_procedure'] as $step)
             <div class="consideration-card">
                 <div class="consideration-title">
-                    @switch($tip['category'] ?? '')
-                        @case('Verificação Semanal')
-                            📅
-                            @break
-                        @case('Condições Ideais de Calibragem')
-                            🌡️
-                            @break
-                        @case('Equipamentos Recomendados')
-                            🔧
-                            @break
-                        @default
-                            💡
-                    @endswitch
-                    {{ $tip['category'] ?? 'Dica' }}
+                    {{ $step['number'] ?? '1' }}. {{ $step['title'] ?? 'Passo' }}
                 </div>
+                <div class="consideration-description">{{ $step['description'] ?? '' }}</div>
                 
-                @if(!empty($tip['frequency']))
-                <div class="consideration-description">
-                    <strong>Frequência:</strong> {{ $tip['frequency'] }}
-                </div>
-                @endif
-                
-                @if(!empty($tip['items']) && is_array($tip['items']))
+                @if(!empty($step['details']) && is_array($step['details']))
                 <ul class="consideration-list">
-                    @foreach($tip['items'] as $item)
-                    <li>{{ $item }}</li>
+                    @foreach($step['details'] as $detail)
+                    <li>{{ $detail }}</li>
                     @endforeach
                 </ul>
                 @endif
@@ -1457,10 +1251,10 @@
         @endif
         
         <!-- Alertas Críticos -->
-        @if(!empty($article->critical_alerts) && is_array($article->critical_alerts))
+        @if(!empty($article->getData()['critical_alerts']))
         <h2>🚨 Alertas Críticos de Segurança</h2>
         
-        @foreach($article->critical_alerts as $alert)
+        @foreach($article->getData()['critical_alerts'] as $alert)
         <div class="safety-alert {{ strtolower($alert['type'] ?? 'critical') }}">
             <div class="alert-title">
                 @switch(strtolower($alert['type'] ?? 'critical'))
@@ -1489,36 +1283,12 @@
         @endforeach
         @endif
         
-        <!-- Procedimento de Calibragem -->
-        @if(!empty($article->calibration_procedure) && is_array($article->calibration_procedure))
-        <h2>🔧 Como Calibrar Corretamente</h2>
-        
-        <div class="considerations-grid">
-            @foreach($article->calibration_procedure as $step)
-            <div class="consideration-card">
-                <div class="consideration-title">
-                    {{ $step['number'] ?? '1' }}. {{ $step['title'] ?? 'Passo' }}
-                </div>
-                <div class="consideration-description">{{ $step['description'] ?? '' }}</div>
-                
-                @if(!empty($step['details']) && is_array($step['details']))
-                <ul class="consideration-list">
-                    @foreach($step['details'] as $detail)
-                    <li>{{ $detail }}</li>
-                    @endforeach
-                </ul>
-                @endif
-            </div>
-            @endforeach
-        </div>
-        @endif
-        
         <!-- Perguntas Frequentes -->
-        @if(!empty($article->faq) && is_array($article->faq))
-        <h2>❓ Perguntas Frequentes sobre {{ $article->vehicle_info['full_name'] ?? 'Pressão dos Pneus' }}</h2>
+        @if(!empty($article->getData()['faq']))
+        <h2>❓ Perguntas Frequentes sobre {{ $article->getData()['vehicle_info']['full_name'] ?? 'Pressão dos Pneus' }}</h2>
         
         <amp-accordion expand-single-section>
-            @foreach($article->faq as $faq)
+            @foreach($article->getData()['faq'] as $faq)
             <section>
                 <h4>{{ $faq['pergunta'] ?? '' }}</h4>
                 <div class="faq-content">
@@ -1543,11 +1313,11 @@
         </div>
         
         <!-- Considerações Finais -->
-        @if(!empty($article->final_considerations))
+        @if(!empty($article->getData()['final_considerations']))
         <h2>📝 Considerações Finais</h2>
         
         <div class="info-note">
-            {!! $article->final_considerations !!}
+            {{ $article->getData()['final_considerations'] }}
         </div>
         @endif
         
