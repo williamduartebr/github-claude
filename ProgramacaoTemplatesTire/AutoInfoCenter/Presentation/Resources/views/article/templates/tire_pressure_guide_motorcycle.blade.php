@@ -1,40 +1,12 @@
 @extends('auto-info-center::layouts.app')
 
 @push('head')
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5108844086542870"
-    crossorigin="anonymous"></script>
+<link rel="amphtml" href="{{ route('info.article.show.amp', $article->slug) }}">
+<link rel="canonical" href="{{ route('info.article.show', $article->slug) }}">
 
-<title>{{ $article->getData()['seo_data']['title'] ?? $article->getData()['title'] }}</title>
-<meta name="description" content="{{ $article->getData()['seo_data']['meta_description'] ?? '' }}">
-
-<!-- Canonical e Idiomas -->
-<link rel="canonical" href="{{ $article->getData()['canonical_url'] ?? '' }}" />
-<link rel="alternate" hreflang="pt-BR" href="{{ $article->getData()['canonical_url'] ?? '' }}" />
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="article" />
-<meta property="og:title" content="{{ $article->getData()['seo_data']['og_title'] ?? $article->getData()['title'] }}" />
-<meta property="og:description" content="{{ $article->getData()['seo_data']['og_description'] ?? '' }}" />
-<meta property="og:image" content="{{ $article->getData()['seo_data']['og_image'] ?? '' }}" />
-<meta property="og:url" content="{{ $article->getData()['canonical_url'] ?? '' }}" />
-<meta property="og:site_name" content="Mercado Veículos" />
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $article->getData()['seo_data']['og_title'] ?? $article->getData()['title'] }}">
-<meta name="twitter:description" content="{{ $article->getData()['seo_data']['og_description'] ?? '' }}">
-<meta name="twitter:image" content="{{ $article->getData()['seo_data']['og_image'] ?? '' }}">
-
-<!-- Preload de recursos críticos -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos-write.svg" as="image">
-
-@if(!empty($article->getData()['structured_data']))
 <script type="application/ld+json">
-{!! json_encode($article->getData()['structured_data'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    {!! json_encode($article->structured_data) !!}
 </script>
-@endif
 @endpush
 
 @section('content')

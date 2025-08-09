@@ -21,6 +21,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
         $this->processedData['introduction'] = $content['introducao'] ?? '';
         $this->processedData['tire_specifications_by_version'] = $this->processTireSpecificationsByVersion($content['especificacoes_por_versao'] ?? []);
+        $this->processedData['full_load_table'] = $this->processFullLoadTable($content['tabela_carga_completa'] ?? []); // 🆕 NOVO
         $this->processedData['label_location'] = $this->processLabelLocation($content['localizacao_etiqueta'] ?? []);
         $this->processedData['special_conditions'] = $this->processSpecialConditions($content['condicoes_especiais'] ?? []);
         $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
@@ -36,6 +37,59 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         $this->processedData['seo_data'] = $this->processSeoData();
         $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
+    }
+
+    /**
+     * 🆕 NOVO: Processa tabela de carga completa
+     */
+    private function processFullLoadTable(array $table): array
+    {
+        if (empty($table)) {
+            return [];
+        }
+
+        $processed = [
+            'title' => $table['titulo'] ?? 'Pressões para Carga Completa',
+            'description' => $table['descricao'] ?? 'Valores recomendados para veículo carregado',
+            'conditions' => []
+        ];
+
+        if (!empty($table['condicoes']) && is_array($table['condicoes'])) {
+            foreach ($table['condicoes'] as $condition) {
+                if (!empty($condition['versao'])) {
+                    $processed['conditions'][] = [
+                        'version' => $condition['versao'],
+                        'occupants' => $condition['ocupantes'] ?? '',
+                        'luggage' => $condition['bagagem'] ?? '',
+                        'front_pressure' => $condition['pressao_dianteira'] ?? '',
+                        'rear_pressure' => $condition['pressao_traseira'] ?? '',
+                        'observation' => $condition['observacao'] ?? '',
+                        'css_class' => $this->getLoadConditionCssClass($condition['versao'])
+                    ];
+                }
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * 🆕 NOVO: Obtém classe CSS para condições de carga
+     */
+    private function getLoadConditionCssClass(string $version): string
+    {
+        $cleanVersion = strtolower($version);
+        
+        if (str_contains($cleanVersion, 'mpi')) {
+            return 'bg-blue-50 border-blue-200';
+        }
+        
+        if (str_contains($cleanVersion, 'gts')) {
+            return 'bg-red-50 border-red-200';
+        }
+        
+        // TSI Comfortline/Highline
+        return 'bg-green-50 border-green-200';
     }
 
     /**
@@ -68,24 +122,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa localização da etiqueta
-     */
-    private function processLabelLocation(array $location): array
-    {
-        if (empty($location)) {
-            return [];
-        }
-
-        return [
-            'main_location' => $location['local_principal'] ?? '',
-            'description' => $location['descricao'] ?? '',
-            'alternative_locations' => $location['locais_alternativos'] ?? [],
-            'note' => $location['observacao'] ?? '',
-            'visual_guide' => $this->generateVisualGuide($location)
-        ];
-    }
-
-    /**
      * Processa condições especiais de uso
      */
     private function processSpecialConditions(array $conditions): array
@@ -103,12 +139,40 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
                     'recommended_adjustment' => $condition['ajuste_recomendado'] ?? '',
                     'application' => $condition['aplicacao'] ?? '',
                     'justification' => $condition['justificativa'] ?? '',
-                    'icon_class' => $this->getConditionIconClass($condition['condicao'])
+                    'icon_class' => $this->getConditionIconClass($condition['condicao']),
+                    'has_load_table_reference' => $this->hasLoadTableReference($condition['ajuste_recomendado'] ?? '')
                 ];
             }
         }
 
         return $processed;
+    }
+
+    /**
+     * 🆕 NOVO: Verifica se a condição referencia a tabela de carga
+     */
+    private function hasLoadTableReference(string $adjustment): bool
+    {
+        return str_contains(strtolower($adjustment), 'tabela') && 
+               str_contains(strtolower($adjustment), 'carga');
+    }
+
+    /**
+     * Processa localização da etiqueta
+     */
+    private function processLabelLocation(array $location): array
+    {
+        if (empty($location)) {
+            return [];
+        }
+
+        return [
+            'main_location' => $location['local_principal'] ?? '',
+            'description' => $location['descricao'] ?? '',
+            'alternative_locations' => $location['locais_alternativos'] ?? [],
+            'note' => $location['observacao'] ?? '',
+            'visual_guide' => $this->generateVisualGuide($location)
+        ];
     }
 
     /**

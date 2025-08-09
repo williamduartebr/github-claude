@@ -154,6 +154,63 @@
         font-weight: 500;
     }
     
+    /* 🆕 Tabela de Carga Completa */
+    .load-table-highlight {
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border: 2px solid #0284c7;
+        border-radius: 16px;
+        padding: 24px;
+        margin: 24px 0;
+        position: relative;
+    }
+    
+    .load-table-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0c4a6e;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+    
+    .load-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .load-table th {
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: white;
+        padding: 12px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+    }
+    
+    .load-table td {
+        padding: 12px 8px;
+        font-size: 12px;
+        text-align: center;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .load-table tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    .pressure-badge {
+        background-color: #dbeafe;
+        color: #1e40af;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 11px;
+    }
+    
     /* Especificações por versão */
     .version-specs-grid {
         display: grid;
@@ -318,10 +375,34 @@
         color: #4f46e5;
     }
     
+    .condition-pressure-value.table-reference {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+    
+    .table-reference-note {
+        font-size: 11px;
+        color: #2563eb;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+    
     .condition-description {
         font-size: 13px;
         color: #4b5563;
         line-height: 1.6;
+    }
+    
+    /* 🆕 Indicador de referência à tabela */
+    .table-reference-indicator {
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+        border-radius: 6px;
+        padding: 8px;
+        margin-top: 12px;
+        color: #1e40af;
+        font-size: 12px;
+        font-weight: 500;
     }
     
     /* Conversor de unidades */
@@ -656,6 +737,12 @@
             left: 12px;
             font-size: 24px;
         }
+        
+        .load-table th,
+        .load-table td {
+            padding: 8px 4px;
+            font-size: 11px;
+        }
     }
     
     @media (max-width: 480px) {
@@ -687,6 +774,15 @@
         
         .impact-percentage {
             font-size: 28px;
+        }
+        
+        .load-table {
+            font-size: 10px;
+        }
+        
+        .load-table th,
+        .load-table td {
+            padding: 6px 2px;
         }
     }
 </style>
@@ -783,6 +879,49 @@
         </div>
         @endif
         
+        <!-- 🆕 NOVA SEÇÃO: Tabela de Carga Completa para AMP -->
+        @if(!empty($article->full_load_table) && !empty($article->full_load_table['conditions']))
+        <h2>📊 {{ $article->full_load_table['title'] ?? 'Tabela de Carga Completa' }}</h2>
+        
+        <div class="load-table-highlight">
+            <div class="load-table-title">
+                🚗 {{ $article->full_load_table['title'] ?? 'Pressões para Carga Completa' }}
+            </div>
+            <p style="color: #0c4a6e; margin-bottom: 16px; text-align: center; font-size: 14px;">
+                {{ $article->full_load_table['description'] ?? 'Use estes valores quando o veículo estiver com lotação máxima e bagagem.' }}
+            </p>
+            
+            <table class="load-table">
+                <thead>
+                    <tr>
+                        <th>Versão</th>
+                        <th>Ocupantes</th>
+                        <th>Bagagem</th>
+                        <th>Dianteiros</th>
+                        <th>Traseiros</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($article->full_load_table['conditions'] as $condition)
+                    <tr>
+                        <td style="font-weight: 600;">{{ $condition['version'] }}</td>
+                        <td>{{ $condition['occupants'] }}</td>
+                        <td>{{ $condition['luggage'] }}</td>
+                        <td><span class="pressure-badge">{{ $condition['front_pressure'] }}</span></td>
+                        <td><span class="pressure-badge">{{ $condition['rear_pressure'] }}</span></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 16px; padding: 12px; background-color: rgba(255, 243, 205, 0.8); border-radius: 8px; border: 1px solid #f59e0b;">
+                <p style="color: #92400e; font-size: 12px; margin: 0; font-weight: 500;">
+                    ⚠️ <strong>Importante:</strong> Use estas pressões apenas quando o veículo estiver com carga máxima (4-5 pessoas + bagagem). Para uso normal, utilize os valores da tabela principal.
+                </p>
+            </div>
+        </div>
+        @endif
+        
         <!-- ✅ CORREÇÃO: Localização da Etiqueta usando dados corretos -->
         @if(!empty($article->label_location))
         <h2>📍 Onde Encontrar a Etiqueta de Pressão</h2>
@@ -826,12 +965,31 @@
                 <div class="condition-body">
                     <div class="condition-pressure">
                         <div class="condition-pressure-label">Ajuste Recomendado</div>
+                        
+                        {{-- 🆕 LÓGICA CONDICIONAL PARA AMP --}}
+                        @if(str_contains(strtolower($condition['recommended_adjustment'] ?? ''), 'tabela'))
+                        <div class="condition-pressure-value table-reference">
+                            {{ $condition['recommended_adjustment'] }}
+                        </div>
+                        <div class="table-reference-note">
+                            📊 Ver tabela detalhada acima
+                        </div>
+                        @else
                         <div class="condition-pressure-value">{{ $condition['recommended_adjustment'] }}</div>
+                        @endif
                     </div>
+                    
                     <div class="condition-description">
                         <strong>Aplicação:</strong> {{ $condition['application'] }}<br>
                         <strong>Justificativa:</strong> {{ $condition['justification'] }}
                     </div>
+                    
+                    {{-- 🆕 INDICADOR VISUAL PARA AMP --}}
+                    @if(str_contains(strtolower($condition['recommended_adjustment'] ?? ''), 'tabela'))
+                    <div class="table-reference-indicator">
+                        💡 <strong>Dica:</strong> Consulte a tabela de carga completa no início do artigo para valores específicos por versão.
+                    </div>
+                    @endif
                 </div>
             </div>
             @endforeach
