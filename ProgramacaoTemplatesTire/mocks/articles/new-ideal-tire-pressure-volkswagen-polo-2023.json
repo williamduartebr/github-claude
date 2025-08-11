@@ -1,0 +1,252 @@
+{
+    "title": "Pressão Ideal para Pneus do Volkswagen Polo 2023 – Tabela Completa",
+    "slug": "pressao-ideal-pneus-volkswagen-polo-2023",
+    "template": "ideal_tire_pressure_car",
+    "seo_data": {
+        "page_title": "Pressão Ideal para Pneus do Volkswagen Polo 2023 – Tabela Completa",
+        "meta_description": "Tabela completa de pressão dos pneus do Volkswagen Polo 2023. Dianteiros: 30 PSI / Traseiros: 28 PSI. Conversões e dicas de calibragem para o Brasil.",
+        "h1": "Pressão Ideal para Pneus do Volkswagen Polo 2023 – Tabela Completa",
+        "primary_keyword": "pressão ideal pneus Volkswagen Polo 2023",
+        "secondary_keywords": [
+            "calibragem pneus Polo",
+            "pressão PSI Polo 2023",
+            "tabela pressão Volkswagen"
+        ],
+        "og_title": "Pressão Ideal para Pneus do Volkswagen Polo 2023 – Tabela Oficial",
+        "og_description": "Tabela completa com pressões oficiais em PSI para Volkswagen Polo 2023. Dianteiros: 30 PSI / Traseiros: 28 PSI.",
+        "canonical_url": "https://mercadoveiculos.com.br/info/pressao-ideal-pneus-volkswagen-polo-2023/"
+    },
+    "vehicle_data": {
+        "make": "Volkswagen",
+        "model": "Polo",
+        "year": 2023,
+        "tire_size": "185/65 R15",
+        "main_category": "car_compact",
+        "vehicle_segment": "B",
+        "vehicle_type": "car",
+        "pressure_specifications": {
+            "pressure_empty_front": 30,
+            "pressure_empty_rear": 28,
+            "pressure_light_front": 30,
+            "pressure_light_rear": 28,
+            "pressure_max_front": 32,
+            "pressure_max_rear": 35,
+            "pressure_spare": 36,
+            "pressure_display": "Dianteiros: 30 PSI / Traseiros: 28 PSI",
+            "empty_pressure_display": "30/28 PSI",
+            "loaded_pressure_display": "32/35 PSI"
+        },
+        "tire_specifications": {
+            "tire_size": "185/65 R15",
+            "recommended_brands": [
+                "Continental",
+                "Michelin",
+                "Bridgestone",
+                "Goodyear"
+            ],
+            "seasonal_recommendations": [
+                "ContiPremiumContact 6",
+                "Michelin Energy Saver+"
+            ]
+        },
+        "vehicle_features": {
+            "vehicle_full_name": "Volkswagen Polo 2023",
+            "url_slug": "volkswagen-polo-2023",
+            "category_normalized": "Hatchback Compacto",
+            "recommended_oil": "5W30 Sintético"
+        },
+        "is_premium": false,
+        "has_tpms": false,
+        "is_motorcycle": false,
+        "is_electric": false,
+        "is_hybrid": false,
+        "data_quality_score": 9
+    },
+    "extracted_entities": {
+        "marca": "Volkswagen",
+        "modelo": "Polo",
+        "ano": "2023",
+        "categoria": "hatches",
+        "motorizacao": "1.0 MPI",
+        "versao": "200 TSI",
+        "combustivel": "Flex"
+    },
+    "content": {
+        "introducao": "Manter os pneus do seu Volkswagen Polo 2023 com a pressão correta é fundamental para garantir segurança, economia de combustível e prolongar a vida útil dos pneus. O Polo é um hatchback compacto que exige cuidados específicos na calibragem para manter seu excelente desempenho urbano.",
+        "especificacoes_por_versao": [
+            {
+                "versao": "Polo 200 TSI",
+                "medida_pneus": "185/65 R15",
+                "indice_carga_velocidade": "88H",
+                "pressao_dianteiro_normal": "30 PSI",
+                "pressao_traseiro_normal": "28 PSI",
+                "pressao_dianteiro_carregado": "32 PSI",
+                "pressao_traseiro_carregado": "35 PSI"
+            },
+            {
+                "versao": "Polo GTS",
+                "medida_pneus": "195/55 R16",
+                "indice_carga_velocidade": "87V",
+                "pressao_dianteiro_normal": "32 PSI",
+                "pressao_traseiro_normal": "30 PSI",
+                "pressao_dianteiro_carregado": "34 PSI",
+                "pressao_traseiro_carregado": "36 PSI"
+            }
+        ],
+        "tabela_carga_completa": {
+            "titulo": "Pressões para Carga Completa",
+            "descricao": "Valores recomendados quando o veículo estiver com 4-5 passageiros e bagagem",
+            "condicoes": [
+                {
+                    "versao": "Polo 200 TSI",
+                    "ocupantes": "4-5 pessoas",
+                    "bagagem": "Porta-malas cheio",
+                    "pressao_dianteira": "32 PSI",
+                    "pressao_traseira": "35 PSI",
+                    "observacao": "Ideal para viagens familiares"
+                },
+                {
+                    "versao": "Polo GTS",
+                    "ocupantes": "4-5 pessoas",
+                    "bagagem": "Porta-malas cheio",
+                    "pressao_dianteira": "34 PSI",
+                    "pressao_traseira": "36 PSI",
+                    "observacao": "Performance mantida mesmo carregado"
+                }
+            ]
+        },
+        "localizacao_etiqueta": {
+            "local_principal": "Coluna da porta do motorista",
+            "descricao": "A etiqueta oficial de pressão dos pneus do Volkswagen Polo 2023 está localizada na coluna da porta do motorista, visível quando a porta está aberta.",
+            "locais_alternativos": [
+                "Manual do proprietário na seção \"Especificações Técnicas\"",
+                "Tampa do tanque de combustível",
+                "Porta-luvas"
+            ],
+            "observacao": "Sempre utilize os valores oficiais da etiqueta em PSI como referência principal."
+        },
+        "condicoes_especiais": [
+            {
+                "condicao": "Viagens em Rodovias",
+                "ajuste_recomendado": "+3 PSI",
+                "aplicacao": "Velocidades sustentadas acima de 110 km/h",
+                "justificativa": "Compensa o aquecimento dos pneus em altas velocidades."
+            },
+            {
+                "condicao": "Carga Máxima",
+                "ajuste_recomendado": "Ver tabela carga completa",
+                "aplicacao": "4 ou 5 passageiros e bagagem",
+                "justificativa": "Utilize sempre os valores da coluna carga completa para manter estabilidade."
+            },
+            {
+                "condicao": "Uso Urbano Intenso",
+                "ajuste_recomendado": "Pressão padrão",
+                "aplicacao": "Trânsito de cidade, velocidades baixas",
+                "justificativa": "Pressões normais oferecem melhor conforto e aderência urbana."
+            }
+        ],
+        "conversao_unidades": {
+            "tabela_conversao": [
+                {
+                    "psi": "28",
+                    "kgf_cm2": "1,97",
+                    "bar": "1,93"
+                },
+                {
+                    "psi": "30",
+                    "kgf_cm2": "2,11",
+                    "bar": "2,07"
+                },
+                {
+                    "psi": "32",
+                    "kgf_cm2": "2,25",
+                    "bar": "2,21"
+                },
+                {
+                    "psi": "35",
+                    "kgf_cm2": "2,46",
+                    "bar": "2,41"
+                },
+                {
+                    "psi": "36",
+                    "kgf_cm2": "2,53",
+                    "bar": "2,48"
+                }
+            ],
+            "formulas": {
+                "psi_para_kgf": "kgf/cm² = PSI ÷ 14,22",
+                "kgf_para_psi": "PSI = kgf/cm² × 14,22",
+                "psi_para_bar": "Bar = PSI ÷ 14,5"
+            },
+            "observacao": "No Brasil, PSI é o padrão usado nos postos de combustível e calibradores."
+        },
+        "cuidados_recomendacoes": [
+            {
+                "categoria": "Verificação Mensal",
+                "descricao": "Verifique a pressão dos pneus pelo menos uma vez por mês e sempre antes de viagens longas."
+            },
+            {
+                "categoria": "Pneus Frios",
+                "descricao": "Calibre sempre com os pneus frios, preferencialmente pela manhã ou após 3 horas parado."
+            },
+            {
+                "categoria": "Calibradores Confiáveis",
+                "descricao": "Use calibradores digitais quando possível. Equipamentos analógicos podem ter margem de erro."
+            },
+            {
+                "categoria": "Rodízio de Pneus",
+                "descricao": "Faça o rodízio a cada 10.000 km. Após o rodízio, ajuste a pressão conforme a nova posição."
+            }
+        ],
+        "impacto_pressao": {
+            "subcalibrado": {
+                "titulo": "Pneu Subcalibrado",
+                "problemas": [
+                    "Maior consumo de combustível (+10% a 15%)",
+                    "Desgaste acelerado nas bordas",
+                    "Menor estabilidade em curvas",
+                    "Alto risco de estouro no calor brasileiro"
+                ]
+            },
+            "ideal": {
+                "titulo": "Calibragem Correta (PSI)",
+                "beneficios": [
+                    "Consumo otimizado de combustível",
+                    "Desgaste uniforme e vida útil máxima",
+                    "Aderência e comportamento previsíveis",
+                    "Distâncias de frenagem otimizadas"
+                ]
+            },
+            "sobrecalibrado": {
+                "titulo": "Pneu Sobrecalibrado",
+                "problemas": [
+                    "Desgaste excessivo no centro",
+                    "Menor área de contato com o solo",
+                    "Redução na aderência em piso molhado",
+                    "Maior rigidez, reduzindo o conforto"
+                ]
+            }
+        },
+        "perguntas_frequentes": [
+            {
+                "pergunta": "Qual a pressão ideal do Volkswagen Polo 2023 em PSI?",
+                "resposta": "Para o Volkswagen Polo 2023, use 30 PSI no pneu dianteiro e 28 PSI no traseiro para uso normal. Com carga completa, use 32 PSI na frente e 35 PSI atrás. Sempre verifique com pneus frios."
+            },
+            {
+                "pergunta": "Com que frequência verificar a pressão no Polo?",
+                "resposta": "Verifique mensalmente e sempre antes de viagens. O Polo, sendo um hatchback compacto, é sensível a variações de pressão que afetam economia e dirigibilidade."
+            },
+            {
+                "pergunta": "Posso usar pneus 195/55 R16 no Polo 200 TSI?",
+                "resposta": "O Polo 200 TSI vem originalmente com 185/65 R15. Pneus 195/55 R16 são da versão GTS. Consulte um especialista antes de alterar, pois as pressões recomendadas são diferentes."
+            },
+            {
+                "pergunta": "O Polo tem sensor de pressão (TPMS)?",
+                "resposta": "O Volkswagen Polo 2023 não possui sistema TPMS de fábrica no Brasil. Por isso, a verificação manual mensal é ainda mais importante para manter a segurança."
+            }
+        ],
+        "consideracoes_finais": "O Volkswagen Polo 2023 é um hatchback confiável que recompensa o cuidado adequado com os pneus. Manter a pressão correta (30/28 PSI para uso normal) garante economia, segurança e durabilidade. Lembre-se: a verificação mensal é simples e evita problemas maiores. Para o motorista brasileiro, que enfrenta calor intenso e trânsito pesado, essa atenção aos pneus faz toda a diferença no dia a dia."
+    },
+    "formated_updated_at": "15 de janeiro de 2024",
+    "canonical_url": "https://mercadoveiculos.com.br/info/pressao-ideal-pneus-volkswagen-polo-2023/"
+}
