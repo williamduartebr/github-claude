@@ -12,7 +12,7 @@
     {!! MetaTag::tag('article:author') !!}
     {!! MetaTag::tag('article:section') !!}
     {!! MetaTag::tag('article:published_time') !!}
-    {!! MetaTag::tag('article:modified_time') !!} 
+    {!! MetaTag::tag('article:modified_time') !!}
     <link rel="canonical" href="{{ route('info.article.show', $article->slug) }}">
     {!! MetaTag::tag('robots') !!}
     {!! generate_meta_favicon() !!}
@@ -80,21 +80,6 @@
         }
     </style>
 
-    <style amp-custom>
-        /* Nota informativa */
-        .info-note-manual {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            margin: 24px 0;
-            border-left: 4px solid #DC2626;
-            color: #991b1b;
-        }
-    </style>
-    
-    </style>
-
     <noscript>
         <style amp-boilerplate>
             body {
@@ -106,6 +91,12 @@
         </style>
     </noscript>
 
+    @if(!empty($article->structured_data))
+    <script type="application/ld+json">
+        {!! json_encode($article->structured_data) !!}
+    </script>
+    @endif
+    
     @yield('amp-head')
 </head>
 
@@ -114,7 +105,7 @@
     <!-- Analytics -->
     <x-g-tag-amp />
     @production
-        <x-g-tag-amp />  
+    <x-g-tag-amp />
     @endproduction
 
 </body>

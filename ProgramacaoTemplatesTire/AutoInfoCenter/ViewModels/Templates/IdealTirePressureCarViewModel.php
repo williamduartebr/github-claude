@@ -4,9 +4,12 @@ namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Illuminate\Support\Str;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\VehicleDataProcessingTrait;
 
 class IdealTirePressureCarViewModel extends TemplateViewModel
 {
+    use VehicleDataProcessingTrait;
+
     /**
      * Nome do template a ser utilizado
      */
@@ -21,7 +24,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
 
         $this->processedData['introduction'] = $content['introducao'] ?? '';
         $this->processedData['tire_specifications_by_version'] = $this->processTireSpecificationsByVersion($content['especificacoes_por_versao'] ?? []);
-        $this->processedData['full_load_table'] = $this->processFullLoadTable($content['tabela_carga_completa'] ?? []); // 🆕 NOVO
+        $this->processedData['full_load_table'] = $this->processFullLoadTable($content['tabela_carga_completa'] ?? []);
         $this->processedData['label_location'] = $this->processLabelLocation($content['localizacao_etiqueta'] ?? []);
         $this->processedData['special_conditions'] = $this->processSpecialConditions($content['condicoes_especiais'] ?? []);
         $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades'] ?? []);
@@ -31,7 +34,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
         $this->processedData['related_topics'] = $this->getRelatedTopics();
         
-        // Dados auxiliares
+        // Dados auxiliares usando o trait
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
@@ -40,7 +43,44 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * 🆕 NOVO: Processa tabela de carga completa
+     * Determina o tipo de veículo para construção da URL da imagem
+     */
+    protected function getVehicleTypeForImage(): string
+    {
+        return 'vehicles';
+    }
+
+    /**
+     * Verifica se é veículo premium
+     */
+    protected function isPremiumVehicle(): bool
+    {
+        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
+        $premiumBrands = ['audi', 'bmw', 'mercedes', 'lexus', 'volvo', 'porsche'];
+
+        return in_array($make, $premiumBrands);
+    }
+
+    /**
+     * Obtém segmento do veículo
+     */
+    protected function getVehicleSegment(): string
+    {
+        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
+
+        $segmentMap = [
+            'hatches' => 'Hatchback Compacto',
+            'sedan' => 'Sedan Médio',
+            'suv' => 'SUV',
+            'pickup' => 'Picape',
+            'coupe' => 'Cupê'
+        ];
+
+        return $segmentMap[$category] ?? 'Automóvel';
+    }
+
+    /**
+     * Processa tabela de carga completa
      */
     private function processFullLoadTable(array $table): array
     {
@@ -74,7 +114,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * 🆕 NOVO: Obtém classe CSS para condições de carga
+     * Obtém classe CSS para condições de carga
      */
     private function getLoadConditionCssClass(string $version): string
     {
@@ -88,7 +128,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             return 'bg-red-50 border-red-200';
         }
         
-        // TSI Comfortline/Highline
         return 'bg-green-50 border-green-200';
     }
 
@@ -149,7 +188,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * 🆕 NOVO: Verifica se a condição referencia a tabela de carga
+     * Verifica se a condição referencia a tabela de carga
      */
     private function hasLoadTableReference(string $adjustment): bool
     {
@@ -190,7 +229,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             'note' => $conversion['observacao'] ?? ''
         ];
 
-        // Processa tabela de conversão
         if (!empty($conversion['tabela_conversao']) && is_array($conversion['tabela_conversao'])) {
             foreach ($conversion['tabela_conversao'] as $row) {
                 $processed['conversion_table'][] = [
@@ -201,7 +239,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             }
         }
 
-        // Processa fórmulas
         if (!empty($conversion['formulas'])) {
             $processed['formulas'] = [
                 'psi_para_kgf' => $conversion['formulas']['psi_para_kgf'] ?? '',
@@ -265,25 +302,36 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa informações do veículo
+     * Obtém tópicos relacionados
      */
-    private function processVehicleInfo(): array
+    private function getRelatedTopics(): array
     {
         $vehicleInfo = $this->article->extracted_entities ?? [];
+        $make = strtolower($vehicleInfo['marca'] ?? '');
+        $model = strtolower($vehicleInfo['modelo'] ?? '');
+        $year = $vehicleInfo['ano'] ?? '';
 
         return [
-            'full_name' => $this->getVehicleFullName(),
-            'make' => $vehicleInfo['marca'] ?? '',
-            'model' => $vehicleInfo['modelo'] ?? '',
-            'year' => $vehicleInfo['ano'] ?? '',
-            'category' => $vehicleInfo['categoria'] ?? '',
-            'engine' => $vehicleInfo['motorizacao'] ?? '',
-            'version' => $vehicleInfo['versao'] ?? '',
-            'fuel' => $vehicleInfo['combustivel'] ?? '',
-            'image_url' => $this->getVehicleImageUrl(),
-            'slug' => $this->generateSlug($vehicleInfo),
-            'is_premium' => $this->isPremiumVehicle(),
-            'segment' => $this->getVehicleSegment()
+            [
+                'title' => "Melhores Pneus para {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$year}",
+                'description' => 'Descubra os pneus ideais para seu veículo',
+                'url' => "/info/pneus-recomendados/{$make}-{$model}-{$year}/"
+            ],
+            [
+                'title' => "Guia de Rodízio de Pneus do {$vehicleInfo['marca']} {$vehicleInfo['modelo']}",
+                'description' => 'Como fazer o rodízio correto dos pneus',
+                'url' => "/info/rodizio-pneus/{$make}-{$model}-{$year}/"
+            ],
+            [
+                'title' => "Consumo Real do {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$year}",
+                'description' => 'Dados reais de consumo de combustível',
+                'url' => "/info/consumo/{$make}-{$model}-{$year}/"
+            ],
+            [
+                'title' => "Cronograma de Revisões do {$vehicleInfo['marca']} {$vehicleInfo['modelo']}",
+                'description' => 'Plano de manutenção preventiva',
+                'url' => "/info/revisoes/{$make}-{$model}-{$year}/"
+            ]
         ];
     }
 
@@ -417,111 +465,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Obtém tópicos relacionados
-     */
-    private function getRelatedTopics(): array
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-        $make = strtolower($vehicleInfo['marca'] ?? '');
-        $model = strtolower($vehicleInfo['modelo'] ?? '');
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return [
-            [
-                'title' => "Melhores Pneus para {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$year}",
-                'description' => 'Descubra os pneus ideais para seu veículo',
-                'url' => "/info/pneus-recomendados/{$make}-{$model}-{$year}/"
-            ],
-            [
-                'title' => "Guia de Rodízio de Pneus do {$vehicleInfo['marca']} {$vehicleInfo['modelo']}",
-                'description' => 'Como fazer o rodízio correto dos pneus',
-                'url' => "/info/rodizio-pneus/{$make}-{$model}-{$year}/"
-            ],
-            [
-                'title' => "Consumo Real do {$vehicleInfo['marca']} {$vehicleInfo['modelo']} {$year}",
-                'description' => 'Dados reais de consumo de combustível',
-                'url' => "/info/consumo/{$make}-{$model}-{$year}/"
-            ],
-            [
-                'title' => "Cronograma de Revisões do {$vehicleInfo['marca']} {$vehicleInfo['modelo']}",
-                'description' => 'Plano de manutenção preventiva',
-                'url' => "/info/revisoes/{$make}-{$model}-{$year}/"
-            ]
-        ];
-    }
-
-    /**
-     * Obtém nome completo do veículo
-     */
-    private function getVehicleFullName(): string
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-
-        if (empty($vehicleInfo['marca']) || empty($vehicleInfo['modelo'])) {
-            return '';
-        }
-
-        $make = $vehicleInfo['marca'] ?? '';
-        $model = $vehicleInfo['modelo'] ?? '';
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return trim("{$make} {$model} {$year}");
-    }
-
-    /**
-     * Obtém URL da imagem do veículo
-     */
-    private function getVehicleImageUrl(): string
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-        $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
-        $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return "https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/vehicles/{$makeSlug}-{$modelSlug}-{$year}.jpg";
-    }
-
-    /**
-     * Gera slug baseado nos dados do veículo
-     */
-    private function generateSlug(array $vehicleInfo): string
-    {
-        $make = strtolower($vehicleInfo['marca'] ?? '');
-        $model = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
-
-        return "{$make}-{$model}";
-    }
-
-    /**
-     * Verifica se é veículo premium
-     */
-    private function isPremiumVehicle(): bool
-    {
-        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
-        $premiumBrands = ['audi', 'bmw', 'mercedes', 'lexus', 'volvo', 'porsche'];
-
-        return in_array($make, $premiumBrands);
-    }
-
-    /**
-     * Obtém segmento do veículo
-     */
-    private function getVehicleSegment(): string
-    {
-        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-
-        $segmentMap = [
-            'hatches' => 'Hatchback Compacto',
-            'sedan' => 'Sedan Médio',
-            'suv' => 'SUV',
-            'pickup' => 'Picape',
-            'coupe' => 'Cupê'
-        ];
-
-        return $segmentMap[$category] ?? 'Automóvel';
-    }
-
-    /**
      * Processa dados SEO específicos
      */
     private function processSeoData(): array
@@ -562,7 +505,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
             'description' => "Tabela completa de pressões ideais para os pneus do {$vehicleFullName}, incluindo todas as versões e condições de uso.",
             'image' => [
                 '@type' => 'ImageObject',
-                'url' => $vehicleInfo['image_url'] ?? $this->getDefaultCarImage(),
+                'url' => $vehicleInfo['image_url'] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/pressao-ideal-carro.jpg',
                 'width' => 1200,
                 'height' => 630
             ],
@@ -602,51 +545,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         }
 
         return $structuredData;
-    }
-
-    /**
-     * Obtém URL canônica do artigo
-     */
-    private function getCanonicalUrl(): string
-    {
-        return $this->article->canonical_url ?? route('info.article.show', $this->article->slug);
-    }
-
-    /**
-     * Obtém imagem padrão para carros
-     */
-    private function getDefaultCarImage(): string
-    {
-        return 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/pressao-ideal-carro.jpg';
-    }
-
-    /**
-     * Processa breadcrumbs para navegação
-     */
-    public function getBreadcrumbs(): array
-    {
-        return [
-            [
-                'name' => 'Início',
-                'url' => route('home'),
-                'position' => 1
-            ],
-            [
-                'name' => 'Informações',
-                'url' => route('info.category.index'),
-                'position' => 2
-            ],
-            [
-                'name' => Str::title($this->article->category_name ?? 'Calibragem de Pneus'),
-                'url' => route('info.category.show', $this->article->category_slug ?? 'calibragem-pneus'),
-                'position' => 3
-            ],
-            [
-                'name' => $this->article->title,
-                'url' => route('info.article.show', $this->article->slug),
-                'position' => 4
-            ],
-        ];
     }
 
     /**

@@ -219,9 +219,16 @@
                         <tbody>
                             @if(!empty($article->specifications['capacidade_oleo']))
                             <tr class="border-b border-gray-200 bg-white">
-                                <td class="py-3 px-4 text-sm">Capacidade de Óleo</td>
+                                <td class="py-3 px-4 text-sm">Capacidade de Óleo (com filtro)</td>
                                 <td class="py-3 px-4 text-sm font-medium">{{ $article->specifications['capacidade_oleo'] }}</td>
-                                <td class="py-3 px-4 text-sm">{{ $article->specifications['capacidade_sem_filtro'] ?? 'Incluindo filtro' }}</td>
+                                <td class="py-3 px-4 text-sm">Capacidade total do sistema</td>
+                            </tr>
+                            @endif
+                            @if(!empty($article->specifications['capacidade_sem_filtro']))
+                            <tr class="border-b border-gray-200 bg-gray-50">
+                                <td class="py-3 px-4 text-sm">Capacidade sem Filtro</td>
+                                <td class="py-3 px-4 text-sm font-medium">{{ $article->specifications['capacidade_sem_filtro'] }}</td>
+                                <td class="py-3 px-4 text-sm">Apenas troca de óleo</td>
                             </tr>
                             @endif
                             @if(!empty($article->specifications['viscosidade']))

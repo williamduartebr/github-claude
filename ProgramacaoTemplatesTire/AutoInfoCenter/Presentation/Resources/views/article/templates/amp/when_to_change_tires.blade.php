@@ -746,6 +746,17 @@
         color: #1e3a8a;
     }
 
+    /* Nota Manual */
+    .info-note-manual {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
+        padding: 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        margin: 24px 0;
+        border-left: 4px solid #DC2626;
+        color: #991b1b;
+    }
+
     /* Footer */
     .article-footer {
         font-size: 12px;

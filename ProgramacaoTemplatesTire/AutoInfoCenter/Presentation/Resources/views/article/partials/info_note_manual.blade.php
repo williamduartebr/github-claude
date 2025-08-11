@@ -15,7 +15,7 @@
 
 <!-- Nota informativa -->
 <div class="info-note-manual">
-    <strong>💡 Importante:</strong> Sempre siga as especificações do fabricante encontradas no manual do
-    proprietário ou na etiqueta da porta do motorista. Este guia serve como referência complementar às
+    <strong>Importante:</strong> Sempre siga as especificações do fabricante encontradas no manual do
+    proprietário. Este guia serve como referência complementar às
     orientações oficiais.
 </div>

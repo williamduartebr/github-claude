@@ -4,9 +4,12 @@ namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Illuminate\Support\Str;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\VehicleDataProcessingTrait;
 
 class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 {
+    use VehicleDataProcessingTrait;
+
     /**
      * Nome do template a ser utilizado
      */
@@ -32,12 +35,65 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
         
-        // Dados auxiliares
-        $this->processedData['vehicle_info'] = $this->processMotorcycleVehicleInfo();
+        // Dados auxiliares usando o trait
+        $this->processedData['vehicle_info'] = $this->processVehicleInfo();
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
         $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
+    }
+
+    /**
+     * Determina o tipo de veículo para construção da URL da imagem
+     */
+    protected function getVehicleTypeForImage(): string
+    {
+        return 'motorcycles';
+    }
+
+    /**
+     * Verifica se é motocicleta premium
+     */
+    protected function isPremiumVehicle(): bool
+    {
+        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
+        $premiumBrands = ['ducati', 'bmw', 'triumph', 'ktm', 'harley-davidson'];
+
+        return in_array($make, $premiumBrands);
+    }
+
+    /**
+     * Obtém segmento da motocicleta
+     */
+    protected function getVehicleSegment(): string
+    {
+        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
+
+        $segmentMap = [
+            'naked' => 'Naked',
+            'sport' => 'Esportiva',
+            'touring' => 'Turismo',
+            'adventure' => 'Adventure',
+            'cruiser' => 'Cruiser'
+        ];
+
+        return $segmentMap[$category] ?? 'Motocicleta';
+    }
+
+    /**
+     * Estende informações do veículo com dados específicos de motocicletas
+     */
+    protected function extendVehicleInfo(array $baseInfo, array $vehicleInfo): array
+    {
+        return array_merge($baseInfo, [
+            'displacement' => $vehicleInfo['motorizacao'] ?? '',
+            'type' => $vehicleInfo['categoria'] ?? '',
+            'category' => 'motocicleta',
+            'is_sport' => $this->isSportMotorcycle(),
+            'is_naked' => $this->isNakedMotorcycle(),
+            'is_touring' => $this->isTouringMotorcycle(),
+            'engine_size_category' => $this->getEngineSizeCategory()
+        ]);
     }
 
     /**
@@ -334,29 +390,48 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa informações do veículo (motocicleta)
+     * Verifica se é moto esportiva
      */
-    private function processMotorcycleVehicleInfo(): array
+    private function isSportMotorcycle(): bool
     {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
+        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
+        return str_contains($type, 'sport') || str_contains($type, 'esportiva');
+    }
 
-        return [
-            'full_name' => $this->getMotorcycleFullName(),
-            'make' => $vehicleInfo['marca'] ?? '',
-            'model' => $vehicleInfo['modelo'] ?? '',
-            'year' => $vehicleInfo['ano'] ?? '',
-            'displacement' => $vehicleInfo['motorizacao'] ?? '',
-            'type' => $vehicleInfo['categoria'] ?? '',
-            'category' => 'motocicleta',
-            'image_url' => $this->getMotorcycleImageUrl(),
-            'is_sport' => $this->isSportMotorcycle(),
-            'is_naked' => $this->isNakedMotorcycle(),
-            'is_touring' => $this->isTouringMotorcycle(),
-            'engine_size_category' => $this->getEngineSizeCategory(),
-            'slug' => $this->generateSlug($vehicleInfo),
-            'is_premium' => $this->isPremiumMotorcycle(),
-            'segment' => $this->getMotorcycleSegment()
-        ];
+    /**
+     * Verifica se é moto naked
+     */
+    private function isNakedMotorcycle(): bool
+    {
+        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
+        return str_contains($type, 'naked') || str_contains($type, 'street');
+    }
+
+    /**
+     * Verifica se é moto touring
+     */
+    private function isTouringMotorcycle(): bool
+    {
+        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
+        return str_contains($type, 'touring') || str_contains($type, 'viagem');
+    }
+
+    /**
+     * Obtém categoria do tamanho do motor
+     */
+    private function getEngineSizeCategory(): string
+    {
+        $motorizacao = $this->article->extracted_entities['motorizacao'] ?? '';
+
+        preg_match('/(\d+)/', $motorizacao, $matches);
+        $displacement = isset($matches[1]) ? intval($matches[1]) : 0;
+
+        if ($displacement <= 150) return 'pequeno';
+        if ($displacement <= 300) return 'médio';
+        if ($displacement <= 600) return 'grande';
+        if ($displacement <= 1000) return 'super';
+
+        return 'premium';
     }
 
     /**
@@ -410,7 +485,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
      */
     private function isRecommendedMotorcyclePressure(string $psi): bool
     {
-        // Pressões padrão para MT-03: 33 PSI (dianteiro) e 36 PSI (traseiro)
         $recommendedPressures = ['33', '36'];
         return in_array($psi, $recommendedPressures);
     }
@@ -646,131 +720,14 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * Obtém nome completo da motocicleta
-     */
-    private function getMotorcycleFullName(): string
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-
-        if (empty($vehicleInfo['marca']) || empty($vehicleInfo['modelo'])) {
-            return '';
-        }
-
-        $make = $vehicleInfo['marca'] ?? '';
-        $model = $vehicleInfo['modelo'] ?? '';
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return trim("{$make} {$model} {$year}");
-    }
-
-    /**
-     * Obtém URL da imagem da motocicleta
-     */
-    private function getMotorcycleImageUrl(): string
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-        $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
-        $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return "https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/motorcycles/{$makeSlug}-{$modelSlug}-{$year}.jpg";
-    }
-
-    /**
-     * Verifica se é moto esportiva
-     */
-    private function isSportMotorcycle(): bool
-    {
-        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        return str_contains($type, 'sport') || str_contains($type, 'esportiva');
-    }
-
-    /**
-     * Verifica se é moto naked
-     */
-    private function isNakedMotorcycle(): bool
-    {
-        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        return str_contains($type, 'naked') || str_contains($type, 'street');
-    }
-
-    /**
-     * Verifica se é moto touring
-     */
-    private function isTouringMotorcycle(): bool
-    {
-        $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        return str_contains($type, 'touring') || str_contains($type, 'viagem');
-    }
-
-    /**
-     * Verifica se é motocicleta premium
-     */
-    private function isPremiumMotorcycle(): bool
-    {
-        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
-        $premiumBrands = ['ducati', 'bmw', 'triumph', 'ktm', 'harley-davidson'];
-
-        return in_array($make, $premiumBrands);
-    }
-
-    /**
-     * Obtém categoria do tamanho do motor
-     */
-    private function getEngineSizeCategory(): string
-    {
-        $motorizacao = $this->article->extracted_entities['motorizacao'] ?? '';
-
-        preg_match('/(\d+)/', $motorizacao, $matches);
-        $displacement = isset($matches[1]) ? intval($matches[1]) : 0;
-
-        if ($displacement <= 150) return 'pequeno';
-        if ($displacement <= 300) return 'médio';
-        if ($displacement <= 600) return 'grande';
-        if ($displacement <= 1000) return 'super';
-
-        return 'premium';
-    }
-
-    /**
-     * Obtém segmento da motocicleta
-     */
-    private function getMotorcycleSegment(): string
-    {
-        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-
-        $segmentMap = [
-            'naked' => 'Naked',
-            'sport' => 'Esportiva',
-            'touring' => 'Turismo',
-            'adventure' => 'Adventure',
-            'cruiser' => 'Cruiser'
-        ];
-
-        return $segmentMap[$category] ?? 'Motocicleta';
-    }
-
-    /**
-     * Gera slug baseado nos dados do veículo
-     */
-    private function generateSlug(array $vehicleInfo): string
-    {
-        $make = strtolower($vehicleInfo['marca'] ?? '');
-        $model = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
-
-        return "{$make}-{$model}";
-    }
-
-    /**
      * Processa dados SEO específicos para motocicletas
      */
     private function processSeoData(): array
     {
-        $vehicleFullName = $this->getMotorcycleFullName();
+        $vehicleFullName = $this->getVehicleFullName();
         $vehicleInfo = $this->article->extracted_entities ?? [];
         $seoData = $this->article->seo_data ?? [];
 
-        // Obtém pressões dos dados processados
         $frontPressure = $this->processedData['pressure_table']['official_pressures']['solo_rider']['front'] ?? '';
         $rearPressure = $this->processedData['pressure_table']['official_pressures']['solo_rider']['rear'] ?? '';
         $pressureDisplay = $frontPressure && $rearPressure ? "{$frontPressure}/{$rearPressure}" : '';
@@ -807,7 +764,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             'description' => "Guia específico de pressões ideais para a motocicleta {$vehicleFullName}, incluindo condições especiais e dicas de segurança.",
             'image' => [
                 '@type' => 'ImageObject',
-                'url' => $vehicleInfo['image_url'] ?? $this->getDefaultMotorcycleImage(),
+                'url' => $vehicleInfo['image_url'] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/pressao-ideal-moto.jpg',
                 'width' => 1200,
                 'height' => 630
             ],
@@ -851,51 +808,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         }
 
         return $structuredData;
-    }
-
-    /**
-     * Obtém URL canônica do artigo
-     */
-    private function getCanonicalUrl(): string
-    {
-        return $this->article->canonical_url ?? route('info.article.show', $this->article->slug);
-    }
-
-    /**
-     * Obtém imagem padrão para motocicletas
-     */
-    private function getDefaultMotorcycleImage(): string
-    {
-        return 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/pressao-ideal-moto.jpg';
-    }
-
-    /**
-     * Processa breadcrumbs para navegação
-     */
-    public function getBreadcrumbs(): array
-    {
-        return [
-            [
-                'name' => 'Início',
-                'url' => route('home'),
-                'position' => 1
-            ],
-            [
-                'name' => 'Informações',
-                'url' => route('info.category.index'),
-                'position' => 2
-            ],
-            [
-                'name' => Str::title($this->article->category_name ?? 'Calibragem de Pneus'),
-                'url' => route('info.category.show', $this->article->category_slug ?? 'calibragem-pneus'),
-                'position' => 3
-            ],
-            [
-                'name' => $this->article->title,
-                'url' => route('info.article.show', $this->article->slug),
-                'position' => 4
-            ],
-        ];
     }
 
     /**

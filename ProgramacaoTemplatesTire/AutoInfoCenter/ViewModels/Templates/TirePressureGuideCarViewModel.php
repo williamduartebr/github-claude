@@ -4,9 +4,12 @@ namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Illuminate\Support\Str;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\VehicleDataProcessingTrait;
 
 class TirePressureGuideCarViewModel extends TemplateViewModel
 {
+    use VehicleDataProcessingTrait;
+
     /**
      * Nome do template a ser utilizado
      */
@@ -19,7 +22,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
-        // Dados básicos processados
         $this->processedData['introduction'] = $content['introducao'] ?? '';
         $this->processedData['tire_specifications'] = $this->processTireSpecifications($content['especificacoes_oficiais'] ?? []);
         $this->processedData['pressure_table'] = $this->processPressureTable($content['tabela_pressoes'] ?? []);
@@ -32,14 +34,62 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
         $this->processedData['impact_comparison'] = $this->processImpactComparison($content['comparativo_impacto'] ?? []);
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-        
-        // Dados auxiliares
+
+        // Dados auxiliares usando o trait
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
         $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
         $this->processedData['related_topics'] = $this->getRelatedTopics();
+    }
+
+    /**
+     * Determina o tipo de veículo para construção da URL da imagem
+     */
+    protected function getVehicleTypeForImage(): string
+    {
+        return 'vehicles';
+    }
+
+    /**
+     * Verifica se é veículo premium
+     */
+    protected function isPremiumVehicle(): bool
+    {
+        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
+        $premiumBrands = ['audi', 'bmw', 'mercedes', 'lexus', 'volvo', 'porsche'];
+
+        return in_array($make, $premiumBrands);
+    }
+
+    /**
+     * Obtém segmento do veículo
+     */
+    protected function getVehicleSegment(): string
+    {
+        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
+
+        $segmentMap = [
+            'hatches' => 'Hatchback Compacto',
+            'sedan' => 'Sedan Médio',
+            'suv' => 'SUV',
+            'pickup' => 'Picape',
+            'coupe' => 'Cupê'
+        ];
+
+        return $segmentMap[$category] ?? 'Automóvel';
+    }
+
+    /**
+     * Estende informações do veículo com dados específicos de carros
+     */
+    protected function extendVehicleInfo(array $baseInfo, array $vehicleInfo): array
+    {
+        return array_merge($baseInfo, [
+            'is_electric' => $this->isElectricVehicle(),
+            'is_hybrid' => $this->isHybridVehicle()
+        ]);
     }
 
     /**
@@ -55,31 +105,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             'versions' => []
         ];
 
-        // Versão LX (Aro 16)
-        if (!empty($specs['versao_lx_aro16'])) {
-            $processed['versions'][] = [
-                'name' => 'Versão LX (Aro 16)',
-                'size' => $specs['versao_lx_aro16']['medida_original'] ?? '',
-                'type' => $specs['versao_lx_aro16']['tipo'] ?? '',
-                'brand' => $specs['versao_lx_aro16']['marca_original'] ?? '',
-                'load_index' => $specs['versao_lx_aro16']['indice_carga'] ?? '',
-                'speed_rating' => $specs['versao_lx_aro16']['indice_velocidade'] ?? ''
-            ];
-        }
-
-        // Versão XEi/XRS (Aro 17)
-        if (!empty($specs['versao_xei_aro17'])) {
-            $processed['versions'][] = [
-                'name' => 'Versão XEi/XRS (Aro 17)',
-                'size' => $specs['versao_xei_aro17']['medida_original'] ?? '',
-                'type' => $specs['versao_xei_aro17']['tipo'] ?? '',
-                'brand' => $specs['versao_xei_aro17']['marca_original'] ?? '',
-                'load_index' => $specs['versao_xei_aro17']['indice_carga'] ?? '',
-                'speed_rating' => $specs['versao_xei_aro17']['indice_velocidade'] ?? ''
-            ];
-        }
-
-        // Estepe
         if (!empty($specs['pneu_estepe'])) {
             $processed['spare_tire'] = [
                 'size' => $specs['pneu_estepe']['medida'] ?? '',
@@ -317,41 +342,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa informações do veículo
-     */
-    private function processVehicleInfo(): array
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-
-        return [
-            'full_name' => $this->getVehicleFullName(),
-            'make' => $vehicleInfo['marca'] ?? '',
-            'model' => $vehicleInfo['modelo'] ?? '',
-            'year' => $vehicleInfo['ano'] ?? '',
-            'category' => $vehicleInfo['categoria'] ?? '',
-            'engine' => $vehicleInfo['motorizacao'] ?? '',
-            'fuel' => $vehicleInfo['combustivel'] ?? '',
-            'image_url' => $this->getVehicleImageUrl(),
-            'is_electric' => $this->isElectricVehicle(),
-            'is_hybrid' => $this->isHybridVehicle()
-        ];
-    }
-
-    /**
-     * Obtém nome completo do veículo
-     */
-    private function getVehicleFullName(): string
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-
-        $make = $vehicleInfo['marca'] ?? '';
-        $model = $vehicleInfo['modelo'] ?? '';
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return trim("{$make} {$model} {$year}");
-    }
-
-    /**
      * Obtém tópicos relacionados
      */
     private function getRelatedTopics(): array
@@ -400,19 +390,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
     {
         $fuel = $this->article->extracted_entities['combustivel'] ?? '';
         return str_contains(strtolower($fuel), 'híbrido') || str_contains(strtolower($fuel), 'hibrido');
-    }
-
-    /**
-     * Obtém URL da imagem do veículo
-     */
-    private function getVehicleImageUrl(): string
-    {
-        $vehicleInfo = $this->article->extracted_entities ?? [];
-        $makeSlug = strtolower($vehicleInfo['marca'] ?? '');
-        $modelSlug = strtolower(str_replace(' ', '-', $vehicleInfo['modelo'] ?? ''));
-        $year = $vehicleInfo['ano'] ?? '';
-
-        return "https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/vehicles/{$makeSlug}-{$modelSlug}-{$year}.jpg";
     }
 
     /**
@@ -590,7 +567,7 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             'category' => 'Manutenção Automotiva',
             'image' => [
                 '@type' => 'ImageObject',
-                'url' => $vehicleInfo['image_url'] ?? $this->getDefaultCarImage(),
+                'url' => $vehicleInfo['image_url'] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/calibragem-carro.jpg',
                 'width' => 1200,
                 'height' => 630
             ],
@@ -609,51 +586,6 @@ class TirePressureGuideCarViewModel extends TemplateViewModel
             ],
             'datePublished' => $this->article->created_at?->toISOString(),
             'dateModified' => $this->article->updated_at?->toISOString()
-        ];
-    }
-
-    /**
-     * Obtém URL canônica do artigo
-     */
-    private function getCanonicalUrl(): string
-    {
-        return $this->article->canonical_url ?? "https://mercadoveiculos.com/info/calibragem/{$this->article->slug}.html";
-    }
-
-    /**
-     * Obtém imagem padrão para carros
-     */
-    private function getDefaultCarImage(): string
-    {
-        return 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/calibragem-carro.jpg';
-    }
-
-    /**
-     * Processa breadcrumbs para navegação
-     */
-    public function getBreadcrumbs(): array
-    {
-        return [
-            [
-                'name' => 'Início',
-                'url' => route('home'),
-                'position' => 1
-            ],
-            [
-                'name' => 'Informações',
-                'url' => route('info.category.index'),
-                'position' => 2
-            ],
-            [
-                'name' => Str::title($this->article->category_name ?? 'Calibragem de Pneus'),
-                'url' => route('info.category.show', $this->article->category_slug ?? 'calibragem-pneus'),
-                'position' => 3
-            ],
-            [
-                'name' => $this->article->title,
-                'url' => route('info.article.show', $this->article->slug), // URL para evitar erro
-                'position' => 4
-            ],
         ];
     }
 
