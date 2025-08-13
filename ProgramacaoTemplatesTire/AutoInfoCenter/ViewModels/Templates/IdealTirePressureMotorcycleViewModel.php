@@ -751,7 +751,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     /**
      * Verifica se é moto esportiva
      */
-    private function isSportMotorcycle(): bool
+    public function isSportMotorcycle(): bool
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
         $mainCategory = $vehicleInfo['main_category'] ?? '';
