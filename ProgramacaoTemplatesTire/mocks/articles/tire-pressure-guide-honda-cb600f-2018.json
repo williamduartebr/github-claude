@@ -2,12 +2,12 @@
     "title": "Como Calibrar os Pneus da Honda CB600F 2018: Guia Completo",
     "slug": "como-calibrar-pneus-honda-cb600f-2018",
     "template": "tire_pressure_guide_motorcycle",
-    "category_id": 30,
-    "category_name": "Pneus e Rodas",
-    "category_slug": "pneus-rodas",
+    "category_id": 1,
+    "category_name": "Calibragem de Pneus",
+    "category_slug": "calibragem-pneus",
     "content": {
         "introducao": "Calibrar corretamente os pneus da sua Honda CB600F 2018 é uma habilidade fundamental que todo motociclista deve dominar. Diferente dos carros, onde pequenos erros podem passar despercebidos, em motocicletas cada PSI impacta diretamente na estabilidade, frenagem e comportamento em curvas. A CB600F, com seus 599cc de potência e vocação esportiva, exige atenção especial às pressões para entregar toda sua performance com segurança. Neste guia prático, você aprenderá o procedimento completo, desde a preparação até os ajustes finais, garantindo que sua Hornet sempre esteja nas condições ideais para uma pilotagem segura e prazerosa.",
-        
+
         "especificacoes_oficiais": {
             "pneu_dianteiro": {
                 "medida_original": "120/70 ZR17 M/C (58W)",
@@ -28,7 +28,7 @@
                 "pressao_maxima": "51 PSI (3.5 bar)"
             }
         },
-        
+
         "tabela_pressoes": {
             "condicoes_uso": [
                 {
@@ -65,7 +65,7 @@
                 }
             ]
         },
-        
+
         "procedimento_calibragem": {
             "passos": [
                 {
@@ -125,7 +125,7 @@
                 }
             ]
         },
-        
+
         "recomendacoes_uso": [
             {
                 "categoria": "Uso Urbano",
@@ -152,7 +152,7 @@
                 "dica_tecnica": "Adicione aproximadamente 2 PSI à calibragem traseira para cada 20kg adicionais de carga. O ajuste é crucial para manter a geometria correta da moto."
             }
         ],
-        
+
         "comparativo_impacto": {
             "subcalibrado": {
                 "desgaste": 85,
@@ -173,7 +173,7 @@
                 "conforto": 25
             }
         },
-        
+
         "equipamentos_necessarios": [
             {
                 "item": "Calibrador Digital para Motos",
@@ -197,7 +197,7 @@
                 "recomendacao": "Para pequenos furos em emergências"
             }
         ],
-        
+
         "cuidados_especiais": [
             {
                 "categoria": "Diferenças Entre Pneus",
@@ -227,7 +227,7 @@
                 ]
             }
         ],
-        
+
         "sinais_problemas": {
             "subcalibrado": [
                 "Desgaste excessivo nas bordas laterais do pneu",
@@ -244,7 +244,7 @@
                 "Maior suscetibilidade a danos por impactos (pedras, buracos)"
             ]
         },
-        
+
         "pneus_alternativos": [
             {
                 "categoria": "Pneus Esportivos",
@@ -268,7 +268,7 @@
                 "tags": ["Conforto urbano", "Durabilidade", "Custo-benefício"]
             }
         ],
-        
+
         "perguntas_frequentes": [
             {
                 "pergunta": "Qual a pressão ideal para a Honda CB600F 2018?",
@@ -295,7 +295,7 @@
                 "resposta": "Para chuva intensa, pode reduzir 2 PSI em cada pneu para aumentar a área de contato e melhorar aderência em piso molhado."
             }
         ],
-        
+
         "consideracoes_finais": "Dominar a calibragem dos pneus da sua Honda CB600F 2018 é uma habilidade que vai além da manutenção básica - é questão de segurança e performance. Em motocicletas, onde cada componente impacta diretamente na estabilidade e controle, manter as pressões corretas (36/42 PSI) não é opcional, é fundamental. A CB600F foi projetada para entregar performance e prazer de pilotagem, mas isso só é possível com manutenção adequada. Invista tempo nesta verificação semanal e sua Hornet retribuirá com milhares de quilômetros de pilotagem segura, estável e prazerosa. Lembre-se: em duas rodas, a prevenção não é apenas economia - é vida. Pilote sempre com responsabilidade e pneus perfeitamente calibrados."
     },
     "extracted_entities": {

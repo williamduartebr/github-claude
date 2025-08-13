@@ -919,7 +919,7 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     /**
      * Verifica se tem sistema TPMS
      */
-    private function hasTpmsSystem(): bool
+    public function hasTpmsSystem(): bool
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
         return $vehicleInfo['has_tpms'] ?? false;

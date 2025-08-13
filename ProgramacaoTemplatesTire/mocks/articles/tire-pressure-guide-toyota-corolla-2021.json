@@ -2,12 +2,12 @@
     "title": "Como Calibrar os Pneus do Toyota Corolla 2021: Guia Passo a Passo",
     "slug": "como-calibrar-pneus-toyota-corolla-2021",
     "template": "tire_pressure_guide_car",
-    "category_id": 30,
-    "category_name": "Pneus e Rodas",
-    "category_slug": "pneus-rodas",
+    "category_id": 1,
+    "category_name": "Calibragem de Pneus",
+    "category_slug": "calibragem-pneus",
     "content": {
         "introducao": "Calibrar corretamente os pneus do seu Toyota Corolla 2021 é uma habilidade essencial que todo proprietário deve dominar. Mais do que uma simples manutenção, é um procedimento que impacta diretamente na segurança, economia e desempenho do veículo. Com as tecnologias avançadas do Corolla, incluindo o sistema TPMS, uma calibragem adequada maximiza todos os benefícios que este sedan oferece. Neste guia prático, você aprenderá o procedimento completo, desde a preparação até os ajustes finais, garantindo que seu Corolla sempre esteja nas condições ideais de rodagem.",
-        
+
         "especificacoes_oficiais": {
             "versao_lx_aro16": {
                 "medida_original": "205/55 R16 91V",
@@ -30,7 +30,7 @@
                 "distancia_maxima": "80 km"
             }
         },
-        
+
         "tabela_pressoes": {
             "condicoes_uso": [
                 {
@@ -67,7 +67,7 @@
                 }
             ]
         },
-        
+
         "procedimento_calibragem": {
             "passos": [
                 {
@@ -116,7 +116,7 @@
                 }
             ]
         },
-        
+
         "sistema_tpms": {
             "tem_tpms": true,
             "tipo": "TPMS Direto com sensores nas válvulas",
@@ -140,7 +140,7 @@
                 "Pressione e mantenha \"Reset\" por 3 segundos"
             ]
         },
-        
+
         "impactos_calibragem": {
             "sub_calibrado": {
                 "consumo": "Aumento do consumo de combustível em até 8%",
@@ -164,7 +164,7 @@
                 "durabilidade": "Máxima durabilidade e performance"
             }
         },
-        
+
         "dicas_manutencao": [
             {
                 "categoria": "Frequência de Verificação",
@@ -194,7 +194,7 @@
                 ]
             }
         ],
-        
+
         "alertas_seguranca": [
             {
                 "tipo": "Crítico",
@@ -218,7 +218,7 @@
                 "acao_imediata": "Verificação profissional recomendada"
             }
         ],
-        
+
         "recomendacoes_uso": [
             {
                 "categoria": "Uso Urbano Diário",
@@ -245,7 +245,7 @@
                 "dica_tecnica": "O Corolla tem limite de carga no porta-malas de 470 litros. Para cargas próximas ao limite, sempre ajuste a pressão antes da viagem e verifique novamente após 50 km rodados."
             }
         ],
-        
+
         "comparativo_impacto": {
             "subcalibrado_menos20": {
                 "estabilidade": -30,
@@ -266,7 +266,7 @@
                 "desgaste": 15
             }
         },
-        
+
         "perguntas_frequentes": [
             {
                 "pergunta": "Com que frequência devo calibrar os pneus do Corolla 2021?",
@@ -289,7 +289,7 @@
                 "resposta": "Sim, mensalmente. O estepe temporário do Corolla deve estar sempre em 60 PSI, pois não é usado regularmente e pode perder pressão."
             }
         ],
-        
+
         "consideracoes_finais": "Dominar a calibragem dos pneus do seu Toyota Corolla 2021 é uma habilidade fundamental que impacta diretamente na sua experiência de condução. O procedimento simples, quando realizado corretamente e com regularidade, garante que você aproveite ao máximo a engenharia Toyota: economia de combustível, segurança avançada e conforto superior. O sistema TPMS do Corolla é seu aliado nesta tarefa, mas não substitui a verificação manual regular. Lembre-se que os 32 PSI recomendados não são apenas números - representam o equilíbrio perfeito calculado pela Toyota para entregar a melhor experiência possível. Invista alguns minutos semanais nesta manutenção preventiva e seu Corolla retribuirá com anos de condução segura e econômica."
     },
     "extracted_entities": {
