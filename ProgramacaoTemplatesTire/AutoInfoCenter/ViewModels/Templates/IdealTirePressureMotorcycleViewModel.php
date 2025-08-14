@@ -22,6 +22,8 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
+        // dd($content);
+
         $this->processedData['introduction'] = $content['introducao'] ?? '';
         $this->processedData['tire_specifications'] = $this->processMotorcycleTireSpecifications($content['especificacoes_pneus'] ?? []);
         $this->processedData['pressure_table'] = $this->processMotorcyclePressureTable($content['tabela_pressoes'] ?? []);
@@ -145,7 +147,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * Processa tabela de pressões para motocicletas OTIMIZADA
+     * Processa tabela de pressões para motocicletas CORRIGIDA
      */
     private function processMotorcyclePressureTable(array $table): array
     {
@@ -155,20 +157,38 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
 
         $processed = [
             'official_pressures' => [],
-            'conditional_adjustments' => []
+            'conditional_adjustments' => [],
+            'special_conditions' => []
         ];
 
+        // ✅ CORRIGIDO: Usar 'dianteira' e 'traseira' (como nos mocks)
         if (!empty($table['pressoes_oficiais'])) {
             foreach ($table['pressoes_oficiais'] as $condition => $pressures) {
                 $processed['official_pressures'][$condition] = [
                     'condition' => $condition,
-                    'front' => $pressures['dianteiro'] ?? '',
-                    'rear' => $pressures['traseiro'] ?? '',
+                    'front' => $pressures['dianteira'] ?? '',  // ✅ CORRIGIDO
+                    'rear' => $pressures['traseira'] ?? '',    // ✅ CORRIGIDO
                     'observation' => $pressures['observacao'] ?? ''
                 ];
             }
         }
 
+        // ✅ ADICIONADO: Processar condições especiais
+        if (!empty($table['condicoes_especiais'])) {
+            foreach ($table['condicoes_especiais'] as $condition) {
+                $processed['special_conditions'][] = [
+                    'situation' => $condition['situacao'] ?? '',
+                    'terrain' => $condition['terreno'] ?? '',
+                    'front_pressure' => $condition['pressao_dianteira'] ?? '',
+                    'rear_pressure' => $condition['pressao_traseira'] ?? '',
+                    'ideal_temperature' => $condition['temperatura_ideal'] ?? '',
+                    'observation' => $condition['observacao'] ?? '',
+                    'icon_class' => $this->getConditionIconClass($condition['terreno'] ?? '')
+                ];
+            }
+        }
+
+        // Processar ajustes condicionais (se existir)
         if (!empty($table['ajustes_condicionais'])) {
             foreach ($table['ajustes_condicionais'] as $adjustment) {
                 $processed['conditional_adjustments'][] = [
@@ -181,6 +201,26 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         }
 
         return $processed;
+    }
+
+    /**
+     * Obtém classe de ícone baseada no terreno/condição
+     */
+    private function getConditionIconClass(string $terrain): string
+    {
+        $iconMap = [
+            'Cidade/trânsito' => 'home',
+            'Estradas municipais' => 'map',
+            'Rodovias' => 'map',
+            'Curvas/montanha' => 'zap',
+            'Pista/autódromo' => 'zap',
+            'Piso molhado' => 'cloud-rain',
+            'Chuva' => 'cloud-rain',
+            'Uso geral' => 'user',
+            'Delivery/trabalho' => 'package'
+        ];
+
+        return $iconMap[$terrain] ?? 'map';
     }
 
     /**

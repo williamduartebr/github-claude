@@ -47,13 +47,14 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
             </div>
             @endif
 
-            <!-- Destaque da Pressão Ideal - USANDO PARTIAL MODULAR -->
-            @include('auto-info-center::article.partials.tire-pressure.shared.vehicle-data')
-
             <!-- Banner de Anúncio 1 -->
             <div class="my-8">
                 [ADSENSE-ARTICLE-1]
             </div>
+
+            <!-- Destaque da Pressão Ideal - USANDO PARTIAL MODULAR -->
+            @include('auto-info-center::article.partials.tire-pressure.shared.vehicle-data')
+
 
             <!-- Especificações dos Pneus Originais e Localização da Etiqueta -->
             <section class="mb-12">
