@@ -345,6 +345,5 @@ trait VehicleDataProcessingTrait
 
     // Métodos abstratos que devem ser implementados nas ViewModels específicas
     abstract protected function getVehicleTypeForImage(): string;
-    abstract protected function isPremiumVehicle(): bool;
     abstract protected function getVehicleSegment(): string;
 }

@@ -58,17 +58,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * Verifica se é motocicleta premium
-     */
-    protected function isPremiumVehicle(): bool
-    {
-        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
-        $premiumBrands = ['ducati', 'bmw', 'triumph', 'ktm', 'harley-davidson', 'mv agusta', 'aprilia', 'yamaha', 'honda'];
-
-        return in_array($make, $premiumBrands);
-    }
-
-    /**
      * Obtém segmento da motocicleta
      */
     protected function getVehicleSegment(): string

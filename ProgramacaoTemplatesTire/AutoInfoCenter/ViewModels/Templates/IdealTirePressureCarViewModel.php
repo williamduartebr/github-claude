@@ -55,17 +55,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Verifica se é veículo premium
-     */
-    protected function isPremiumVehicle(): bool
-    {
-        $make = strtolower($this->article->extracted_entities['marca'] ?? '');
-        $premiumBrands = ['audi', 'bmw', 'mercedes', 'mercedes-benz', 'lexus', 'volvo', 'porsche', 'jaguar', 'land rover', 'infiniti', 'acura', 'cadillac', 'tesla'];
-
-        return in_array($make, $premiumBrands);
-    }
-
-    /**
      * Obtém segmento do veículo
      */
     protected function getVehicleSegment(): string
