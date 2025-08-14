@@ -1,13 +1,13 @@
-{{-- 
-Partial: tire-pressure/motorcycle/tire-specifications.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/tire-specifications.blade.php
 Especificações dos pneus por versão da motocicleta
 Otimizado para características específicas de motos
 --}}
 
 @php
-    $tireSpecs = $article->getData()['tire_specifications'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $motorcycleCategory = $vehicleInfo['category'] ?? 'standard';
+$tireSpecs = $article->getData()['tire_specifications'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$motorcycleCategory = $vehicleInfo['category'] ?? 'standard';
 @endphp
 
 @if(!empty($tireSpecs))
@@ -57,15 +57,18 @@ Otimizado para características específicas de motos
                                 <div class="w-3 h-3 bg-[#DC2626] rounded-full mr-2" title="Versão principal"></div>
                                 Padrão
                                 @if($motorcycleCategory === 'sport')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                                <span
+                                    class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
                                     Sport
                                 </span>
                                 @elseif($motorcycleCategory === 'touring')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                <span
+                                    class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                     Touring
                                 </span>
                                 @elseif($motorcycleCategory === 'naked')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                                <span
+                                    class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                     Naked
                                 </span>
                                 @endif
@@ -74,14 +77,16 @@ Otimizado para características específicas de motos
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
                             <div class="space-y-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
                                     Consulte manual
                                 </span>
                             </div>
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
                             <div class="space-y-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
                                     Consulte manual
                                 </span>
                             </div>
@@ -120,18 +125,21 @@ Otimizado para características específicas de motos
                                 <div class="w-3 h-3 bg-gray-300 rounded-full mr-2"></div>
                                 @endif
                                 {{ $spec['version'] ?? 'Padrão' }}
-                                
+
                                 <!-- Badge de categoria -->
                                 @if($motorcycleCategory === 'sport')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                                <span
+                                    class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
                                     Sport
                                 </span>
                                 @elseif($motorcycleCategory === 'touring')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                <span
+                                    class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                     Touring
                                 </span>
                                 @elseif($motorcycleCategory === 'naked')
-                                <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                                <span
+                                    class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                     Naked
                                 </span>
                                 @endif
@@ -144,7 +152,8 @@ Otimizado para características específicas de motos
                         <!-- Pneu Dianteiro -->
                         <td class="py-4 px-4 text-sm text-center">
                             <div class="space-y-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
                                     {{ $spec['front_tire_size'] ?? 'N/A' }}
                                 </span>
                                 @if(!empty($spec['front_tire_type']))
@@ -156,7 +165,8 @@ Otimizado para características específicas de motos
                         <!-- Pneu Traseiro -->
                         <td class="py-4 px-4 text-sm text-center">
                             <div class="space-y-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
                                     {{ $spec['rear_tire_size'] ?? 'N/A' }}
                                 </span>
                                 @if(!empty($spec['rear_tire_type']))
@@ -225,7 +235,8 @@ Otimizado para características específicas de motos
                 <div class="ml-3">
                     <h4 class="text-sm font-semibold text-red-800">Dica para Motos Esportivas</h4>
                     <p class="text-sm text-red-700 mt-1">
-                        Para track days ou uso esportivo, considere aumentar 2-3 PSI. Sempre aqueça os pneus gradualmente.
+                        Para track days ou uso esportivo, considere aumentar 2-3 PSI. Sempre aqueça os pneus
+                        gradualmente.
                     </p>
                 </div>
             </div>

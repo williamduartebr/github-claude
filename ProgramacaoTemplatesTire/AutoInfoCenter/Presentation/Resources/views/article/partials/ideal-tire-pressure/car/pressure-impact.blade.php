@@ -1,11 +1,11 @@
-{{-- 
-Partial: tire-pressure/car/pressure-impact.blade.php
+{{--
+Partial: ideal-tire-pressure/car/pressure-impact.blade.php
 Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenho
 --}}
 
 @php
-    $pressureImpact = $article->getData()['pressure_impact'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$pressureImpact = $article->getData()['pressure_impact'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 @endphp
 
 @if(!empty($pressureImpact))
@@ -20,7 +20,8 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                 </div>
                 <div>
@@ -62,7 +63,8 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                 <svg class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 Comparação: Pressão Baixa vs Ideal vs Alta
             </h3>
@@ -80,50 +82,51 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
                     </div>
 
                     @foreach($pressureImpact as $category => $impacts)
-                        @if($category === 'safety')
-                        <div class="mb-4">
-                            <h5 class="font-semibold text-red-700 text-sm mb-2">🛡️ Segurança:</h5>
-                            <ul class="space-y-1 text-xs text-red-600">
-                                <li>• Distância de frenagem aumenta {{ $impacts['low_pressure']['braking_distance'] ?? '+15%' }}</li>
-                                <li>• Aderência reduzida {{ $impacts['low_pressure']['grip'] ?? '-25%' }}</li>
-                                <li>• Risco de aquaplanagem maior</li>
-                                <li>• Possibilidade de estouro do pneu</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'safety')
+                    <div class="mb-4">
+                        <h5 class="font-semibold text-red-700 text-sm mb-2">🛡️ Segurança:</h5>
+                        <ul class="space-y-1 text-xs text-red-600">
+                            <li>• Distância de frenagem aumenta {{ $impacts['low_pressure']['braking_distance'] ??
+                                '+15%' }}</li>
+                            <li>• Aderência reduzida {{ $impacts['low_pressure']['grip'] ?? '-25%' }}</li>
+                            <li>• Risco de aquaplanagem maior</li>
+                            <li>• Possibilidade de estouro do pneu</li>
+                        </ul>
+                    </div>
+                    @endif
 
-                        @if($category === 'economy')
-                        <div class="mb-4">
-                            <h5 class="font-semibold text-red-700 text-sm mb-2">⛽ Economia:</h5>
-                            <ul class="space-y-1 text-xs text-red-600">
-                                <li>• Consumo aumenta {{ $impacts['low_pressure']['fuel_consumption'] ?? '+10%' }}</li>
-                                <li>• Vida útil do pneu reduz {{ $impacts['low_pressure']['tire_life'] ?? '-30%' }}</li>
-                                <li>• Desgaste irregular nas bordas</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'economy')
+                    <div class="mb-4">
+                        <h5 class="font-semibold text-red-700 text-sm mb-2">⛽ Economia:</h5>
+                        <ul class="space-y-1 text-xs text-red-600">
+                            <li>• Consumo aumenta {{ $impacts['low_pressure']['fuel_consumption'] ?? '+10%' }}</li>
+                            <li>• Vida útil do pneu reduz {{ $impacts['low_pressure']['tire_life'] ?? '-30%' }}</li>
+                            <li>• Desgaste irregular nas bordas</li>
+                        </ul>
+                    </div>
+                    @endif
 
-                        @if($category === 'performance')
-                        <div class="mb-4">
-                            <h5 class="font-semibold text-red-700 text-sm mb-2">🏁 Performance:</h5>
-                            <ul class="space-y-1 text-xs text-red-600">
-                                <li>• Dirigibilidade comprometida</li>
-                                <li>• Resposta lenta da direção</li>
-                                <li>• Instabilidade em curvas</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'performance')
+                    <div class="mb-4">
+                        <h5 class="font-semibold text-red-700 text-sm mb-2">🏁 Performance:</h5>
+                        <ul class="space-y-1 text-xs text-red-600">
+                            <li>• Dirigibilidade comprometida</li>
+                            <li>• Resposta lenta da direção</li>
+                            <li>• Instabilidade em curvas</li>
+                        </ul>
+                    </div>
+                    @endif
 
-                        @if($category === 'comfort')
-                        <div>
-                            <h5 class="font-semibold text-red-700 text-sm mb-2">😌 Conforto:</h5>
-                            <ul class="space-y-1 text-xs text-red-600">
-                                <li>• Mais ruído de rodagem</li>
-                                <li>• Sensação de "pneu mole"</li>
-                                <li>• Maior vibração</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'comfort')
+                    <div>
+                        <h5 class="font-semibold text-red-700 text-sm mb-2">😌 Conforto:</h5>
+                        <ul class="space-y-1 text-xs text-red-600">
+                            <li>• Mais ruído de rodagem</li>
+                            <li>• Sensação de "pneu mole"</li>
+                            <li>• Maior vibração</li>
+                        </ul>
+                    </div>
+                    @endif
                     @endforeach
                 </div>
 
@@ -185,50 +188,52 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
                     </div>
 
                     @foreach($pressureImpact as $category => $impacts)
-                        @if($category === 'safety')
-                        <div class="mb-4">
-                            <h5 class="font-semibold text-yellow-700 text-sm mb-2">🛡️ Segurança:</h5>
-                            <ul class="space-y-1 text-xs text-yellow-600">
-                                <li>• Área de contato reduzida {{ $impacts['high_pressure']['contact_area'] ?? '-20%' }}</li>
-                                <li>• Aderência comprometida em piso molhado</li>
-                                <li>• Maior rigidez lateral</li>
-                                <li>• Sensibilidade a irregularidades</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'safety')
+                    <div class="mb-4">
+                        <h5 class="font-semibold text-yellow-700 text-sm mb-2">🛡️ Segurança:</h5>
+                        <ul class="space-y-1 text-xs text-yellow-600">
+                            <li>• Área de contato reduzida {{ $impacts['high_pressure']['contact_area'] ?? '-20%' }}
+                            </li>
+                            <li>• Aderência comprometida em piso molhado</li>
+                            <li>• Maior rigidez lateral</li>
+                            <li>• Sensibilidade a irregularidades</li>
+                        </ul>
+                    </div>
+                    @endif
 
-                        @if($category === 'economy')
-                        <div class="mb-4">
-                            <h5 class="font-semibold text-yellow-700 text-sm mb-2">⛽ Economia:</h5>
-                            <ul class="space-y-1 text-xs text-yellow-600">
-                                <li>• Consumo ligeiramente menor {{ $impacts['high_pressure']['fuel_consumption'] ?? '-2%' }}</li>
-                                <li>• Desgaste no centro do pneu</li>
-                                <li>• Vida útil reduzida {{ $impacts['high_pressure']['tire_life'] ?? '-15%' }}</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'economy')
+                    <div class="mb-4">
+                        <h5 class="font-semibold text-yellow-700 text-sm mb-2">⛽ Economia:</h5>
+                        <ul class="space-y-1 text-xs text-yellow-600">
+                            <li>• Consumo ligeiramente menor {{ $impacts['high_pressure']['fuel_consumption'] ?? '-2%'
+                                }}</li>
+                            <li>• Desgaste no centro do pneu</li>
+                            <li>• Vida útil reduzida {{ $impacts['high_pressure']['tire_life'] ?? '-15%' }}</li>
+                        </ul>
+                    </div>
+                    @endif
 
-                        @if($category === 'performance')
-                        <div class="mb-4">
-                            <h5 class="font-semibold text-yellow-700 text-sm mb-2">🏁 Performance:</h5>
-                            <ul class="space-y-1 text-xs text-yellow-600">
-                                <li>• Direção mais "nervosa"</li>
-                                <li>• Menor aderência lateral</li>
-                                <li>• Resposta mais abrupta</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'performance')
+                    <div class="mb-4">
+                        <h5 class="font-semibold text-yellow-700 text-sm mb-2">🏁 Performance:</h5>
+                        <ul class="space-y-1 text-xs text-yellow-600">
+                            <li>• Direção mais "nervosa"</li>
+                            <li>• Menor aderência lateral</li>
+                            <li>• Resposta mais abrupta</li>
+                        </ul>
+                    </div>
+                    @endif
 
-                        @if($category === 'comfort')
-                        <div>
-                            <h5 class="font-semibold text-yellow-700 text-sm mb-2">😌 Conforto:</h5>
-                            <ul class="space-y-1 text-xs text-yellow-600">
-                                <li>• Conforto reduzido</li>
-                                <li>• Mais impactos sentidos</li>
-                                <li>• Suspensão mais rígida</li>
-                            </ul>
-                        </div>
-                        @endif
+                    @if($category === 'comfort')
+                    <div>
+                        <h5 class="font-semibold text-yellow-700 text-sm mb-2">😌 Conforto:</h5>
+                        <ul class="space-y-1 text-xs text-yellow-600">
+                            <li>• Conforto reduzido</li>
+                            <li>• Mais impactos sentidos</li>
+                            <li>• Suspensão mais rígida</li>
+                        </ul>
+                    </div>
+                    @endif
                     @endforeach
                 </div>
             </div>
@@ -239,7 +244,8 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
     <div class="mt-6 bg-gray-50 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
             <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Impactos Quantificados
         </h3>
@@ -363,7 +369,8 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
     <div class="mt-6 bg-white border border-gray-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             Impactos em Situações Específicas
         </h3>
@@ -428,7 +435,8 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
     <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-green-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z"/>
+                <path
+                    d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
             </svg>
             Impacto na Autonomia Elétrica
         </h3>
@@ -462,7 +470,7 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
 
         <div class="mt-4 bg-yellow-100 border border-yellow-300 rounded-lg p-3">
             <p class="text-yellow-800 text-sm">
-                <strong>⚠️ Atenção:</strong> Em veículos elétricos, cada quilômetro de autonomia é valioso. 
+                <strong>⚠️ Atenção:</strong> Em veículos elétricos, cada quilômetro de autonomia é valioso.
                 Manter pressões ideais pode significar a diferença entre chegar ao destino ou precisar recarregar.
             </p>
         </div>
@@ -473,7 +481,8 @@ Seção sobre como a pressão dos pneus impacta diferentes aspectos do desempenh
     <div class="mt-6 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-indigo-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-indigo-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Resumo e Recomendações
         </h3>

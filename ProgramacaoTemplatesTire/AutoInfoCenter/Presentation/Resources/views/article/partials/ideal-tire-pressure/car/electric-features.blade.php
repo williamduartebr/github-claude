@@ -1,14 +1,14 @@
-{{-- 
-Partial: tire-pressure/car/electric-features.blade.php
+{{--
+Partial: ideal-tire-pressure/car/electric-features.blade.php
 Seção específica para veículos elétricos e híbridos
 Só é exibida quando o veículo é elétrico ou híbrido
 --}}
 
 @php
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $isElectric = $vehicleInfo['is_electric'] ?? false;
-    $isHybrid = $vehicleInfo['is_hybrid'] ?? false;
-    $electricInfo = $article->getData()['electric_info'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$isElectric = $vehicleInfo['is_electric'] ?? false;
+$isHybrid = $vehicleInfo['is_hybrid'] ?? false;
+$electricInfo = $article->getData()['electric_info'] ?? [];
 @endphp
 
 <section class="mb-12">
@@ -16,9 +16,9 @@ Só é exibida quando o veículo é elétrico ou híbrido
         <!-- Ícone decorativo -->
         <div class="absolute top-4 right-4 text-6xl opacity-20">
             @if($isElectric)
-                🔋
+            🔋
             @else
-                ⚡
+            ⚡
             @endif
         </div>
 
@@ -26,21 +26,23 @@ Só é exibida quando o veículo é elétrico ou híbrido
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
                     @if($isElectric)
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z"/>
-                        </svg>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+                    </svg>
                     @else
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                     @endif
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold">
                         @if($isElectric)
-                            Veículo 100% Elétrico
+                        Veículo 100% Elétrico
                         @else
-                            Veículo Híbrido
+                        Veículo Híbrido
                         @endif
                     </h2>
                     <p class="text-green-100 text-sm">
@@ -90,7 +92,8 @@ Só é exibida quando o veículo é elétrico ou híbrido
     <div class="mt-6 bg-white border border-gray-200 rounded-lg p-6">
         <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
             <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             Impacto das Pressões na Autonomia
         </h3>
@@ -148,7 +151,8 @@ Só é exibida quando o veículo é elétrico ou híbrido
     <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-blue-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                <path
+                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
             Dicas Premium para Veículos Elétricos
         </h3>
@@ -198,7 +202,7 @@ Só é exibida quando o veículo é elétrico ou híbrido
     <div class="mt-6 bg-purple-50 border border-purple-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-purple-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             Dicas para Veículos Híbridos
         </h3>
@@ -247,7 +251,9 @@ Só é exibida quando o veículo é elétrico ou híbrido
     <div class="mt-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
         <div class="flex items-start">
             <svg class="w-5 h-5 text-orange-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
             </svg>
             <div class="text-sm">
                 <p class="font-medium text-orange-800 mb-1">🌡️ Atenção à Temperatura:</p>

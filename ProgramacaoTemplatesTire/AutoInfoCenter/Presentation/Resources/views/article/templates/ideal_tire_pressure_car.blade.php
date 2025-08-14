@@ -1,4 +1,4 @@
-{{-- 
+{{--
 Template Desktop Otimizado: ideal_tire_pressure_car.blade.php
 Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura existente
 --}}
@@ -53,7 +53,7 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
             </div>
 
             <!-- Destaque da Pressão Ideal - USANDO PARTIAL MODULAR -->
-            @include('auto-info-center::article.partials.tire-pressure.shared.vehicle-data')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.shared.vehicle-data')
 
 
             <!-- Especificações dos Pneus Originais e Localização da Etiqueta -->
@@ -67,7 +67,8 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                     @if(!empty($article->getData()['tire_specifications_by_version']))
                     <div class="bg-white rounded-lg border border-gray-200 p-5">
                         <div class="flex items-center mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/15 flex items-center justify-center mr-3">
+                            <div
+                                class="h-12 w-12 rounded-full bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/15 flex items-center justify-center mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#0E368A]" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -100,7 +101,9 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
 
                         <div class="mt-4 pt-4 border-t border-gray-200">
                             <p class="text-xs text-gray-700">
-                                <span class="font-medium">Observação:</span> Para veículos equipados com rodas diferentes das originais, consulte o manual do proprietário ou a etiqueta de calibragem na coluna da porta do motorista.
+                                <span class="font-medium">Observação:</span> Para veículos equipados com rodas
+                                diferentes das originais, consulte o manual do proprietário ou a etiqueta de calibragem
+                                na coluna da porta do motorista.
                             </p>
                         </div>
                     </div>
@@ -110,7 +113,8 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                     @if(!empty($article->getData()['label_location']))
                     <div class="bg-white rounded-lg border border-gray-200 p-5">
                         <div class="flex items-center mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/15 flex items-center justify-center mr-3">
+                            <div
+                                class="h-12 w-12 rounded-full bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/15 flex items-center justify-center mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#0E368A]" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -123,7 +127,8 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                         @php $location = $article->getData()['label_location'] @endphp
                         <div class="space-y-4">
                             <div class="flex items-start">
-                                <div class="h-6 w-6 rounded-full bg-[#0E368A]/10 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                                <div
+                                    class="h-6 w-6 rounded-full bg-[#0E368A]/10 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
                                     <span class="text-xs font-semibold text-[#0E368A]">1</span>
                                 </div>
                                 <p class="text-sm text-gray-700">{{ $location['description'] }}</p>
@@ -131,7 +136,8 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
 
                             @foreach($location['alternative_locations'] ?? [] as $index => $altLocation)
                             <div class="flex items-start">
-                                <div class="h-6 w-6 rounded-full bg-[#0E368A]/10 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                                <div
+                                    class="h-6 w-6 rounded-full bg-[#0E368A]/10 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
                                     <span class="text-xs font-semibold text-[#0E368A]">{{ $index + 2 }}</span>
                                 </div>
                                 <p class="text-sm text-gray-700">{{ $altLocation }}</p>
@@ -158,12 +164,12 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
 
             <!-- Tabela de Pressão por Versão - USANDO PARTIAL MODULAR -->
             @if(!empty($article->getData()['tire_specifications_by_version']))
-                @include('auto-info-center::article.partials.tire-pressure.car.specifications-by-version')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.car.specifications-by-version')
             @endif
 
             <!-- Tabela de Carga Completa - USANDO PARTIAL MODULAR -->
             @if(!empty($article->getData()['full_load_table']['conditions']))
-                @include('auto-info-center::article.partials.tire-pressure.car.full-load-table')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.car.full-load-table')
             @endif
 
             <!-- Banner de Anúncio 2 -->
@@ -173,26 +179,26 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
 
             <!-- Condições Especiais - USANDO PARTIAL MODULAR -->
             @if(!empty($article->getData()['special_conditions']))
-                @include('auto-info-center::article.partials.tire-pressure.car.special-conditions')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.car.special-conditions')
             @endif
 
             <!-- Sistema TPMS (condicional) - USANDO PARTIAL MODULAR -->
             @if($article->getData()['vehicle_info']['has_tpms'] ?? false)
-                @include('auto-info-center::article.partials.tire-pressure.car.tpms-section')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.car.tpms-section')
             @endif
 
             <!-- Características Elétricas (condicional) - USANDO PARTIAL MODULAR -->
             @if($article->getData()['vehicle_info']['is_electric'] ?? false)
-                @include('auto-info-center::article.partials.tire-pressure.car.electric-features')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.car.electric-features')
             @endif
 
             <!-- Conversão de Unidades - USANDO PARTIAL MODULAR -->
             @if(!empty($article->getData()['unit_conversion']))
-                @include('auto-info-center::article.partials.tire-pressure.shared.pressure-conversion')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.shared.pressure-conversion')
             @endif
 
             <!-- 🆕 EQUIPAMENTO DE EMERGÊNCIA - NOVA SEÇÃO CONDICIONAL -->
-            @include('auto-info-center::article.partials.tire-pressure.shared.emergency-equipment')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.shared.emergency-equipment')
 
             <!-- Cuidados e Recomendações -->
             @if(!empty($article->getData()['care_recommendations']))
@@ -204,48 +210,51 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         @php $recommendations = $article->getData()['care_recommendations'] @endphp
-                        @php $chunkedRecommendations = array_chunk($recommendations, ceil(count($recommendations) / 2)) @endphp
-                        
+                        @php $chunkedRecommendations = array_chunk($recommendations, ceil(count($recommendations) / 2))
+                        @endphp
+
                         @foreach($chunkedRecommendations as $column)
                         <div class="space-y-5">
                             @foreach($column as $recommendation)
                             <div class="flex items-start">
-                                <div class="h-8 w-8 rounded-full bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/15 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                                <div
+                                    class="h-8 w-8 rounded-full bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/15 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#0E368A]" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         @switch($recommendation['icon_class'])
-                                            @case('clock')
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                @break
-                                            @case('thermometer')
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                                                @break
-                                            @case('tool')
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                @break
-                                            @case('sun')
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                                                @break
-                                            @case('cloud-rain')
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M4 14l4-4 4 4m-4-4v12m8-8l-4-4m4 4h-4" />
-                                                @break
-                                            @case('rotate-cw')
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                                @break
-                                            @default
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        @case('clock')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        @break
+                                        @case('thermometer')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                        @break
+                                        @case('tool')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        @break
+                                        @case('sun')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        @break
+                                        @case('cloud-rain')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M4 14l4-4 4 4m-4-4v12m8-8l-4-4m4 4h-4" />
+                                        @break
+                                        @case('rotate-cw')
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        @break
+                                        @default
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         @endswitch
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-md font-medium text-gray-900 mb-1">{{ $recommendation['category'] }}</h3>
+                                    <h3 class="text-md font-medium text-gray-900 mb-1">{{ $recommendation['category'] }}
+                                    </h3>
                                     <p class="text-sm text-gray-700">{{ $recommendation['description'] }}</p>
                                 </div>
                             </div>
@@ -267,7 +276,9 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                             <div>
                                 <h3 class="text-md font-medium text-[#E06600] mb-1">Pressão e Segurança</h3>
                                 <p class="text-sm text-gray-700">
-                                    Pneus com 5 PSI abaixo do recomendado aumentam o consumo em 10% e reduzem a vida útil em até 30%. No calor brasileiro, pneus subcalibrados têm maior risco de estouro.
+                                    Pneus com 5 PSI abaixo do recomendado aumentam o consumo em 10% e reduzem a vida
+                                    útil em até 30%. No calor brasileiro, pneus subcalibrados têm maior risco de
+                                    estouro.
                                 </p>
                             </div>
                         </div>
@@ -283,11 +294,11 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
 
             <!-- Impacto no Desempenho - USANDO PARTIAL MODULAR -->
             @if(!empty($article->getData()['pressure_impact']))
-                @include('auto-info-center::article.partials.tire-pressure.car.pressure-impact')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.car.pressure-impact')
             @endif
 
             <!-- Ajustes Climáticos - USANDO PARTIAL MODULAR -->
-            @include('auto-info-center::article.partials.tire-pressure.shared.climate-adjustments')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.shared.climate-adjustments')
 
             <!-- Conclusão -->
             @if(!empty($article->getData()['final_considerations']))
@@ -309,30 +320,32 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @foreach($article->getData()['related_topics'] as $topic)
                     <a href="{{ $topic['url'] }}" class="group">
-                        <div class="h-32 rounded-lg bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/10 border border-gray-200 flex items-center justify-center mb-2 hover:shadow-md transition-all">
+                        <div
+                            class="h-32 rounded-lg bg-gradient-to-br from-[#0E368A]/5 to-[#0E368A]/10 border border-gray-200 flex items-center justify-center mb-2 hover:shadow-md transition-all">
                             <div class="text-center px-4">
                                 <div class="mb-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-[#0E368A]"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         @if(str_contains($topic['title'], 'Pneus'))
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         @elseif(str_contains($topic['title'], 'Rodízio'))
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                         @elseif(str_contains($topic['title'], 'Consumo'))
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                         @else
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                         @endif
                                     </svg>
                                 </div>
                                 <span class="font-medium text-[#151C25]">{{ explode(' ', $topic['title'])[0] }}</span>
                             </div>
                         </div>
-                        <h3 class="font-medium text-[#0E368A] group-hover:text-[#0A2868] group-hover:underline transition-colors">
+                        <h3
+                            class="font-medium text-[#0E368A] group-hover:text-[#0A2868] group-hover:underline transition-colors">
                             {{ $topic['title'] }}
                         </h3>
                     </a>
@@ -351,10 +364,11 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                 <div class="space-y-4">
                     @foreach($article->getData()['faq'] as $faq)
                     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                        <button class="flex justify-between items-center w-full px-5 py-4 text-left text-gray-900 font-medium focus:outline-none hover:bg-gray-50 faq-toggle">
+                        <button
+                            class="flex justify-between items-center w-full px-5 py-4 text-left text-gray-900 font-medium focus:outline-none hover:bg-gray-50 faq-toggle">
                             <span>{{ $faq['pergunta'] }}</span>
-                            <svg class="h-5 w-5 text-[#0E368A] faq-icon transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                fill="currentColor">
+                            <svg class="h-5 w-5 text-[#0E368A] faq-icon transition-transform"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd"
                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                     clip-rule="evenodd" />
@@ -370,7 +384,7 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
             @endif
 
             <!-- Nota informativa -->
-            @include('auto-info-center::article.partials.info_note_manual')    
+            @include('auto-info-center::article.partials.info_note_manual')
 
             <!-- Créditos e Atualização -->
             @include('auto-info-center::article.partials.update_content')
@@ -386,7 +400,7 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
 
 <!-- JavaScript para FAQ Toggle e Navegação -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // FAQ Toggle Functionality
     const faqToggles = document.querySelectorAll('.faq-toggle');
     

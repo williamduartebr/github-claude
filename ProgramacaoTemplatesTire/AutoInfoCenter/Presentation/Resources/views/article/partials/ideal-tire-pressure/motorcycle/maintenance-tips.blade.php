@@ -1,13 +1,13 @@
-{{-- 
-Partial: tire-pressure/motorcycle/maintenance-tips.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/maintenance-tips.blade.php
 Dicas de manutenção específicas para motocicletas
 Focado em inspeção visual, desgaste e cuidados preventivos
 --}}
 
 @php
-    $maintenanceTips = $article->getData()['maintenance_tips'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $motorcycleCategory = $vehicleInfo['category'] ?? 'standard';
+$maintenanceTips = $article->getData()['maintenance_tips'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$motorcycleCategory = $vehicleInfo['category'] ?? 'standard';
 @endphp
 
 @if(!empty($maintenanceTips))
@@ -38,16 +38,19 @@ Focado em inspeção visual, desgaste e cuidados preventivos
                     <h4 class="font-semibold text-green-800">O que Verificar:</h4>
                     <div class="space-y-3">
                         <div class="flex items-start">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <div
+                                class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                                 <span class="text-sm text-green-600">💨</span>
                             </div>
                             <div>
                                 <h5 class="font-medium text-green-800">Aspecto Geral</h5>
-                                <p class="text-sm text-green-700">Pneu "murcho" ou muito rígido? Deformações visíveis?</p>
+                                <p class="text-sm text-green-700">Pneu "murcho" ou muito rígido? Deformações visíveis?
+                                </p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <div
+                                class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                                 <span class="text-sm text-blue-600">🔍</span>
                             </div>
                             <div>
@@ -56,7 +59,8 @@ Focado em inspeção visual, desgaste e cuidados preventivos
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <div
+                                class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                                 <span class="text-sm text-red-600">⚡</span>
                             </div>
                             <div>
@@ -105,14 +109,16 @@ Focado em inspeção visual, desgaste e cuidados preventivos
             @if(empty($maintenanceTips))
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Desgaste Central -->
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-3">
                         <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
                             <span class="text-lg text-red-600">🎯</span>
                         </div>
                         <h4 class="font-semibold text-gray-900">Desgaste Central</h4>
                     </div>
-                    <p class="text-sm text-gray-700 mb-3 text-center">Desgaste excessivo no centro da banda de rodagem</p>
+                    <p class="text-sm text-gray-700 mb-3 text-center">Desgaste excessivo no centro da banda de rodagem
+                    </p>
                     <div class="space-y-2">
                         <h5 class="text-xs font-semibold text-gray-800 uppercase">Possíveis Causas:</h5>
                         <div class="flex items-start text-xs text-gray-600">
@@ -132,7 +138,8 @@ Focado em inspeção visual, desgaste e cuidados preventivos
                 </div>
 
                 <!-- Desgaste nas Bordas -->
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-3">
                         <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
                             <span class="text-lg text-orange-600">↔️</span>
@@ -159,7 +166,8 @@ Focado em inspeção visual, desgaste e cuidados preventivos
                 </div>
 
                 <!-- Desgaste Irregular -->
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-3">
                         <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
                             <span class="text-lg text-purple-600">🌊</span>
@@ -189,16 +197,20 @@ Focado em inspeção visual, desgaste e cuidados preventivos
             <!-- Seção com dados específicos da ViewModel -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($maintenanceTips as $tip)
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-3">
-                        <div class="w-12 h-12 bg-{{ $tip['color'] ?? 'gray' }}-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <span class="text-lg text-{{ $tip['color'] ?? 'gray' }}-600">{{ $tip['icon'] ?? '🔧' }}</span>
+                        <div
+                            class="w-12 h-12 bg-{{ $tip['color'] ?? 'gray' }}-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <span class="text-lg text-{{ $tip['color'] ?? 'gray' }}-600">{{ $tip['icon'] ?? '🔧'
+                                }}</span>
                         </div>
                         <h4 class="font-semibold text-gray-900">{{ $tip['title'] ?? 'Dica de Manutenção' }}</h4>
                     </div>
-                    
-                    <p class="text-sm text-gray-700 mb-3 text-center">{{ $tip['description'] ?? 'Descrição não disponível' }}</p>
-                    
+
+                    <p class="text-sm text-gray-700 mb-3 text-center">{{ $tip['description'] ?? 'Descrição não
+                        disponível' }}</p>
+
                     @if(!empty($tip['causes']))
                     <div class="space-y-2">
                         <h5 class="text-xs font-semibold text-gray-800 uppercase">Possíveis Causas:</h5>
@@ -212,7 +224,8 @@ Focado em inspeção visual, desgaste e cuidados preventivos
                     @endif
 
                     @if(!empty($tip['action']))
-                    <div class="mt-3 p-2 bg-{{ $tip['color'] ?? 'gray' }}-50 rounded border border-{{ $tip['color'] ?? 'gray' }}-200">
+                    <div
+                        class="mt-3 p-2 bg-{{ $tip['color'] ?? 'gray' }}-50 rounded border border-{{ $tip['color'] ?? 'gray' }}-200">
                         <p class="text-xs text-{{ $tip['color'] ?? 'gray' }}-700">
                             <strong>Ação:</strong> {{ $tip['action'] }}
                         </p>
@@ -230,7 +243,7 @@ Focado em inspeção visual, desgaste e cuidados preventivos
                 <span class="text-purple-600 mr-2">🎯</span>
                 Cuidados Específicos por Categoria
             </h3>
-            
+
             @if($motorcycleCategory === 'sport')
             <div class="bg-red-50 border border-red-200 rounded-lg p-6">
                 <h4 class="font-bold text-red-800 mb-3 flex items-center">

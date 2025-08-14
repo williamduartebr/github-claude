@@ -1,13 +1,13 @@
-{{-- 
-Partial: tire-pressure/motorcycle/pressure-table.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/pressure-table.blade.php
 Tabela principal de pressões para motocicletas (piloto solo vs com garupa)
 Focado nas características específicas de duas rodas
 --}}
 
 @php
-    $pressureTable = $article->getData()['pressure_table'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
+$pressureTable = $article->getData()['pressure_table'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
 @endphp
 
 @if(!empty($pressureTable) || !empty($pressureSpecs))
@@ -67,17 +67,21 @@ Focado nas características específicas de duas rodas
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
-                                {{ $pressureSpecs['front_solo'] ?? $pressureTable['solo']['front'] ?? 'Consulte manual' }}
+                            <div
+                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
+                                {{ $pressureSpecs['front_solo'] ?? $pressureTable['solo']['front'] ?? 'Consulte manual'
+                                }}
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
+                            <div
+                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
                                 {{ $pressureSpecs['rear_solo'] ?? $pressureTable['solo']['rear'] ?? 'Consulte manual' }}
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                 Configuração padrão
                             </span>
                         </td>
@@ -97,17 +101,22 @@ Focado nas características específicas de duas rodas
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
-                                {{ $pressureSpecs['front_passenger'] ?? $pressureTable['passenger']['front'] ?? 'Consulte manual' }}
+                            <div
+                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
+                                {{ $pressureSpecs['front_passenger'] ?? $pressureTable['passenger']['front'] ??
+                                'Consulte manual' }}
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
-                                {{ $pressureSpecs['rear_passenger'] ?? $pressureTable['passenger']['rear'] ?? 'Consulte manual' }}
+                            <div
+                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
+                                {{ $pressureSpecs['rear_passenger'] ?? $pressureTable['passenger']['rear'] ?? 'Consulte
+                                manual' }}
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
                                 Pressão elevada no traseiro
                             </span>
                         </td>
@@ -128,17 +137,20 @@ Focado nas características específicas de duas rodas
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-orange-100 text-orange-800">
+                            <div
+                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-orange-100 text-orange-800">
                                 {{ $pressureTable['long_trip']['front'] ?? 'N/A' }}
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-orange-100 text-orange-800">
+                            <div
+                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-orange-100 text-orange-800">
                                 {{ $pressureTable['long_trip']['rear'] ?? 'N/A' }}
                             </div>
                         </td>
                         <td class="py-6 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
                                 Máximo recomendado
                             </span>
                         </td>
@@ -160,15 +172,18 @@ Focado nas características específicas de duas rodas
                     <div class="space-y-3 text-sm text-gray-700">
                         <div class="flex items-start">
                             <div class="w-1 h-1 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                            <span><strong>Centro de gravidade:</strong> O garupa altera drasticamente o equilíbrio da moto</span>
+                            <span><strong>Centro de gravidade:</strong> O garupa altera drasticamente o equilíbrio da
+                                moto</span>
                         </div>
                         <div class="flex items-start">
                             <div class="w-1 h-1 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                            <span><strong>Distribuição de peso:</strong> Mais peso no traseiro exige maior pressão</span>
+                            <span><strong>Distribuição de peso:</strong> Mais peso no traseiro exige maior
+                                pressão</span>
                         </div>
                         <div class="flex items-start">
                             <div class="w-1 h-1 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                            <span><strong>Estabilidade:</strong> Pressões incorretas podem causar oscilações perigosas</span>
+                            <span><strong>Estabilidade:</strong> Pressões incorretas podem causar oscilações
+                                perigosas</span>
                         </div>
                     </div>
                 </div>

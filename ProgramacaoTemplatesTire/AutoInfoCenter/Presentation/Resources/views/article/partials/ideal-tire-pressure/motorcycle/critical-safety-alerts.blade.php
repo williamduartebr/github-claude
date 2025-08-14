@@ -1,12 +1,12 @@
-{{-- 
-Partial: tire-pressure/motorcycle/critical-safety-alerts.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/critical-safety-alerts.blade.php
 Alertas críticos de segurança específicos para motocicletas
 Enfoque na importância da calibragem correta para segurança em duas rodas
 --}}
 
 @php
-    $criticalAlerts = $article->getData()['critical_alerts'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$criticalAlerts = $article->getData()['critical_alerts'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 @endphp
 
 @if(!empty($criticalAlerts))
@@ -31,7 +31,8 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
             <!-- Alertas padrão caso não tenha dados específicos -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Alerta de Pressão Baixa -->
-                <div class="critical-alert bg-gradient-to-br from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="critical-alert bg-gradient-to-br from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -43,7 +44,8 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
                                 Pressão Baixa = Risco de Morte
                             </h3>
                             <p class="text-sm text-red-700 mb-3 leading-relaxed">
-                                Pressão insuficiente pode causar instabilidade fatal, especialmente em curvas e frenagens de emergência.
+                                Pressão insuficiente pode causar instabilidade fatal, especialmente em curvas e
+                                frenagens de emergência.
                             </p>
                             <div class="space-y-2">
                                 <h4 class="text-sm font-semibold text-red-800">Consequências:</h4>
@@ -64,14 +66,16 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
                             </div>
                             <div class="mt-4 p-3 bg-white rounded border border-red-200">
                                 <h4 class="text-sm font-semibold text-green-800 mb-2">Como Prevenir:</h4>
-                                <p class="text-xs text-green-700">Verificação quinzenal obrigatória com manômetro de qualidade</p>
+                                <p class="text-xs text-green-700">Verificação quinzenal obrigatória com manômetro de
+                                    qualidade</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Alerta de Pressão Alta -->
-                <div class="critical-alert bg-gradient-to-br from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="critical-alert bg-gradient-to-br from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -83,7 +87,8 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
                                 Pressão Alta = Perda de Aderência
                             </h3>
                             <p class="text-sm text-red-700 mb-3 leading-relaxed">
-                                Excesso de pressão reduz drasticamente a área de contato, causando perda de aderência fatal.
+                                Excesso de pressão reduz drasticamente a área de contato, causando perda de aderência
+                                fatal.
                             </p>
                             <div class="space-y-2">
                                 <h4 class="text-sm font-semibold text-red-800">Consequências:</h4>
@@ -104,7 +109,8 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
                             </div>
                             <div class="mt-4 p-3 bg-white rounded border border-red-200">
                                 <h4 class="text-sm font-semibold text-green-800 mb-2">Como Prevenir:</h4>
-                                <p class="text-xs text-green-700">Nunca exceda as pressões recomendadas pelo fabricante</p>
+                                <p class="text-xs text-green-700">Nunca exceda as pressões recomendadas pelo fabricante
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -114,25 +120,26 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
             <!-- Alertas específicos da ViewModel -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @foreach($criticalAlerts as $alert)
-                <div class="critical-alert bg-gradient-to-br from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="critical-alert bg-gradient-to-br from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                                 @switch($alert['type'] ?? 'danger')
-                                    @case('death_risk')
-                                        <span class="text-lg text-red-600">💀</span>
-                                        @break
-                                    @case('instability')
-                                        <span class="text-lg text-red-600">⚡</span>
-                                        @break
-                                    @case('tire_failure')
-                                        <span class="text-lg text-red-600">💥</span>
-                                        @break
-                                    @case('handling')
-                                        <span class="text-lg text-red-600">🌪️</span>
-                                        @break
-                                    @default
-                                        <span class="text-lg text-red-600">⚠️</span>
+                                @case('death_risk')
+                                <span class="text-lg text-red-600">💀</span>
+                                @break
+                                @case('instability')
+                                <span class="text-lg text-red-600">⚡</span>
+                                @break
+                                @case('tire_failure')
+                                <span class="text-lg text-red-600">💥</span>
+                                @break
+                                @case('handling')
+                                <span class="text-lg text-red-600">🌪️</span>
+                                @break
+                                @default
+                                <span class="text-lg text-red-600">⚠️</span>
                                 @endswitch
                             </div>
                         </div>
@@ -143,7 +150,7 @@ Enfoque na importância da calibragem correta para segurança em duas rodas
                             <p class="text-sm text-red-700 mb-3 leading-relaxed">
                                 {{ $alert['description'] ?? 'Atenção aos riscos específicos de motocicletas.' }}
                             </p>
-                            
+
                             @if(!empty($alert['consequences']))
                             <div class="space-y-2">
                                 <h4 class="text-sm font-semibold text-red-800">Consequências:</h4>

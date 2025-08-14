@@ -1,12 +1,12 @@
-{{-- 
-Partial: tire-pressure/motorcycle/pressure-conversion.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/pressure-conversion.blade.php
 Conversão de unidades específica para motocicletas
 Com valores e exemplos adequados para motos
 --}}
 
 @php
-    $conversionData = $article->getData()['unit_conversion'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$conversionData = $article->getData()['unit_conversion'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 @endphp
 
 <section class="mb-12" id="pressure-conversion">
@@ -54,17 +54,19 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center">179</td>
                         <td class="py-3 px-4 text-center">1.8</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                 Motos pequenas (125cc)
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 28 PSI -->
                     <tr class="hover:bg-green-50 bg-green-25">
                         <td class="py-3 px-4 font-semibold text-gray-900">
                             28 PSI
-                            <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                            <span
+                                class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                 Comum
                             </span>
                         </td>
@@ -72,17 +74,19 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center font-semibold">193</td>
                         <td class="py-3 px-4 text-center font-semibold">2.0</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                 Motos urbanas (150-250cc)
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 30 PSI -->
                     <tr class="hover:bg-green-50 bg-green-25">
                         <td class="py-3 px-4 font-semibold text-gray-900">
                             30 PSI
-                            <span class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                            <span
+                                class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                 Comum
                             </span>
                         </td>
@@ -90,12 +94,13 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center font-semibold">207</td>
                         <td class="py-3 px-4 text-center font-semibold">2.1</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
                                 Motos médias (300-500cc)
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 32 PSI -->
                     <tr class="hover:bg-gray-50">
                         <td class="py-3 px-4 font-semibold text-gray-900">32 PSI</td>
@@ -103,12 +108,13 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center">221</td>
                         <td class="py-3 px-4 text-center">2.2</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                 Motos médias/grandes
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 34 PSI -->
                     <tr class="hover:bg-gray-50">
                         <td class="py-3 px-4 font-semibold text-gray-900">34 PSI</td>
@@ -116,12 +122,13 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center">234</td>
                         <td class="py-3 px-4 text-center">2.4</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
                                 Motos grandes (600cc+)
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 36 PSI -->
                     <tr class="hover:bg-gray-50">
                         <td class="py-3 px-4 font-semibold text-gray-900">36 PSI</td>
@@ -129,12 +136,13 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center">248</td>
                         <td class="py-3 px-4 text-center">2.5</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
                                 Touring/Esportivas
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 38 PSI -->
                     <tr class="hover:bg-gray-50">
                         <td class="py-3 px-4 font-semibold text-gray-900">38 PSI</td>
@@ -142,12 +150,13 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center">262</td>
                         <td class="py-3 px-4 text-center">2.7</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
                                 Com garupa/bagagem
                             </span>
                         </td>
                     </tr>
-                    
+
                     <!-- 40 PSI -->
                     <tr class="hover:bg-gray-50">
                         <td class="py-3 px-4 font-semibold text-gray-900">40 PSI</td>
@@ -155,7 +164,8 @@ Com valores e exemplos adequados para motos
                         <td class="py-3 px-4 text-center">276</td>
                         <td class="py-3 px-4 text-center">2.8</td>
                         <td class="py-3 px-4 text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
                                 Carga máxima
                             </span>
                         </td>
@@ -173,20 +183,21 @@ Com valores e exemplos adequados para motos
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">PSI (Brasil)</label>
-                    <input type="number" 
-                           class="pressure-conversion-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                           data-from="psi" 
-                           placeholder="Ex: 30">
+                    <input type="number"
+                        class="pressure-conversion-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        data-from="psi" placeholder="Ex: 30">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">kgf/cm² (Antigo)</label>
-                    <div id="kgf-result" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-900">
+                    <div id="kgf-result"
+                        class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-900">
                         -
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">BAR (Europa)</label>
-                    <div id="bar-result" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-900">
+                    <div id="bar-result"
+                        class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-900">
                         -
                     </div>
                 </div>

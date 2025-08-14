@@ -1,17 +1,17 @@
-{{-- 
-Partial: tire-pressure/shared/pressure-conversion.blade.php
+{{--
+Partial: ideal-tire-pressure/shared/pressure-conversion.blade.php
 Componente reutilizável para conversão de unidades de pressão
 Usado tanto em templates de carros quanto motos
 --}}
 
 @php
-    $unitConversion = $article->getData()['unit_conversion'] ?? [];
-    $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    
-    // Valores de exemplo para conversão (usa a primeira versão disponível)
-    $frontPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $mainTireSpec['front_normal']) : 30;
-    $rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $mainTireSpec['rear_normal']) : 28;
+$unitConversion = $article->getData()['unit_conversion'] ?? [];
+$mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+
+// Valores de exemplo para conversão (usa a primeira versão disponível)
+$frontPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $mainTireSpec['front_normal']) : 30;
+$rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $mainTireSpec['rear_normal']) : 28;
 @endphp
 
 <section class="mb-12">
@@ -25,7 +25,8 @@ Usado tanto em templates de carros quanto motos
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                 </div>
                 <div>
@@ -38,8 +39,9 @@ Usado tanto em templates de carros quanto motos
 
             <!-- Conversor Interativo -->
             <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <h3 class="font-semibold text-lg mb-4">🎯 Pressões do {{ $vehicleInfo['full_name'] ?? 'Seu Veículo' }}:</h3>
-                
+                <h3 class="font-semibold text-lg mb-4">🎯 Pressões do {{ $vehicleInfo['full_name'] ?? 'Seu Veículo' }}:
+                </h3>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Pneus Dianteiros -->
                     <div class="space-y-4">
@@ -102,7 +104,8 @@ Usado tanto em templates de carros quanto motos
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                 <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
                 Tabela de Conversão Completa
             </h3>
@@ -112,35 +115,40 @@ Usado tanto em templates de carros quanto motos
             <table class="min-w-full border-collapse">
                 <thead>
                     <tr class="bg-green-600 text-white">
-                        <th class="py-3 px-4 text-left font-medium text-sm">PSI<br><span class="text-xs opacity-75">(Brasil)</span></th>
-                        <th class="py-3 px-4 text-center font-medium text-sm">Bar<br><span class="text-xs opacity-75">(Europa)</span></th>
-                        <th class="py-3 px-4 text-center font-medium text-sm">kPa<br><span class="text-xs opacity-75">(Técnico)</span></th>
-                        <th class="py-3 px-4 text-center font-medium text-sm">kgf/cm²<br><span class="text-xs opacity-75">(Antigo)</span></th>
+                        <th class="py-3 px-4 text-left font-medium text-sm">PSI<br><span
+                                class="text-xs opacity-75">(Brasil)</span></th>
+                        <th class="py-3 px-4 text-center font-medium text-sm">Bar<br><span
+                                class="text-xs opacity-75">(Europa)</span></th>
+                        <th class="py-3 px-4 text-center font-medium text-sm">kPa<br><span
+                                class="text-xs opacity-75">(Técnico)</span></th>
+                        <th class="py-3 px-4 text-center font-medium text-sm">kgf/cm²<br><span
+                                class="text-xs opacity-75">(Antigo)</span></th>
                         <th class="py-3 px-4 text-center font-medium text-sm">Uso Comum</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach([26, 28, 30, 32, 34, 36, 38, 40, 42, 44] as $psi)
-                    <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors {{ ($psi == $frontPressurePSI || $psi == $rearPressurePSI) ? 'bg-green-50 border-green-200' : '' }}">
-                        <td class="py-3 px-4 text-sm font-semibold {{ ($psi == $frontPressurePSI || $psi == $rearPressurePSI) ? 'text-green-800' : 'text-gray-900' }}">
+                    <tr
+                        class="border-b border-gray-200 hover:bg-gray-50 transition-colors {{ ($psi == $frontPressurePSI || $psi == $rearPressurePSI) ? 'bg-green-50 border-green-200' : '' }}">
+                        <td
+                            class="py-3 px-4 text-sm font-semibold {{ ($psi == $frontPressurePSI || $psi == $rearPressurePSI) ? 'text-green-800' : 'text-gray-900' }}">
                             {{ $psi }} PSI
                             @if($psi == $frontPressurePSI || $psi == $rearPressurePSI)
                             <span class="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded">Seu carro</span>
                             @endif
                         </td>
-                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * 0.0689, 1) }}</td>
+                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * 0.0689, 1) }}
+                        </td>
                         <td class="py-3 px-4 text-sm text-center text-gray-700">{{ round($psi * 6.895) }}</td>
-                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * 0.0703, 1) }}</td>
+                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * 0.0703, 1) }}
+                        </td>
                         <td class="py-3 px-4 text-sm text-center text-gray-600">
-                            @if($psi <= 28)
-                                <span class="text-blue-600">Carros pequenos</span>
-                            @elseif($psi <= 32)
-                                <span class="text-green-600">Carros médios</span>
-                            @elseif($psi <= 36)
-                                <span class="text-orange-600">SUVs/Carregado</span>
-                            @else
-                                <span class="text-red-600">Carga pesada</span>
-                            @endif
+                            @if($psi <= 28) <span class="text-blue-600">Carros pequenos</span>
+                                @elseif($psi <= 32) <span class="text-green-600">Carros médios</span>
+                                    @elseif($psi <= 36) <span class="text-orange-600">SUVs/Carregado</span>
+                                        @else
+                                        <span class="text-red-600">Carga pesada</span>
+                                        @endif
                         </td>
                     </tr>
                     @endforeach
@@ -212,7 +220,8 @@ Usado tanto em templates de carros quanto motos
     <div class="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 002 2z" />
             </svg>
             Fórmulas de Conversão Rápida
         </h3>
@@ -260,13 +269,15 @@ Usado tanto em templates de carros quanto motos
     <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <div class="flex items-start">
             <svg class="w-5 h-5 text-yellow-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
             </svg>
             <div class="text-sm">
                 <p class="font-medium text-yellow-800 mb-1">💡 Dica Prática:</p>
                 <p class="text-yellow-700">
-                    No Brasil, a maioria dos calibradores usa PSI. Se encontrar um equipamento em Bar ou kPa, 
-                    use a tabela acima para converter. Lembre-se: <strong>sempre calibre com pneus frios</strong> 
+                    No Brasil, a maioria dos calibradores usa PSI. Se encontrar um equipamento em Bar ou kPa,
+                    use a tabela acima para converter. Lembre-se: <strong>sempre calibre com pneus frios</strong>
                     para medições precisas, independente da unidade usada.
                 </p>
             </div>

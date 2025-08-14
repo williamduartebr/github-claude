@@ -1,33 +1,34 @@
-{{-- 
-Partial: tire-pressure/motorcycle/vehicle-data.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/vehicle-data.blade.php
 Dados principais do veículo específicos para motocicletas
 Formatação adequada para categorias e tipos de motos
 --}}
 
 @php
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
-    
-    // Formatação específica para categoria de moto
-    $categoryDisplayMap = [
-        'motorcycle_street' => 'Motocicleta Street',
-        'motorcycle_naked' => 'Motocicleta Naked', 
-        'motorcycle_sport' => 'Motocicleta Esportiva',
-        'motorcycle_touring' => 'Motocicleta Touring',
-        'motorcycle_adventure' => 'Motocicleta Adventure',
-        'motorcycle_cruiser' => 'Motocicleta Cruiser',
-        'motorcycle_scooter' => 'Scooter',
-        'naked' => 'Naked',
-        'sport' => 'Esportiva',
-        'street' => 'Street',
-        'touring' => 'Touring',
-        'adventure' => 'Adventure',
-        'cruiser' => 'Cruiser',
-        'scooter' => 'Scooter'
-    ];
-    
-    $categoryRaw = $vehicleInfo['category'] ?? $vehicleInfo['main_category'] ?? 'street';
-    $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? ucfirst(str_replace(['_', 'motorcycle'], [' ', ''], $categoryRaw));
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
+
+// Formatação específica para categoria de moto
+$categoryDisplayMap = [
+'motorcycle_street' => 'Motocicleta Street',
+'motorcycle_naked' => 'Motocicleta Naked',
+'motorcycle_sport' => 'Motocicleta Esportiva',
+'motorcycle_touring' => 'Motocicleta Touring',
+'motorcycle_adventure' => 'Motocicleta Adventure',
+'motorcycle_cruiser' => 'Motocicleta Cruiser',
+'motorcycle_scooter' => 'Scooter',
+'naked' => 'Naked',
+'sport' => 'Esportiva',
+'street' => 'Street',
+'touring' => 'Touring',
+'adventure' => 'Adventure',
+'cruiser' => 'Cruiser',
+'scooter' => 'Scooter'
+];
+
+$categoryRaw = $vehicleInfo['category'] ?? $vehicleInfo['main_category'] ?? 'street';
+$categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? ucfirst(str_replace(['_', 'motorcycle'], [' ', ''],
+$categoryRaw));
 @endphp
 
 <!-- Dados Técnicos do Veículo -->
@@ -53,19 +54,19 @@ Formatação adequada para categorias e tipos de motos
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Marca:</h3>
                 <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['make'] ?? 'N/D' }}</p>
             </div>
-            
+
             <!-- Modelo -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Modelo:</h3>
                 <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['model'] ?? 'N/D' }}</p>
             </div>
-            
+
             <!-- Ano -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Ano:</h3>
                 <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['year'] ?? 'N/D' }}</p>
             </div>
-            
+
             <!-- Categoria -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Categoria:</h3>
@@ -110,14 +111,16 @@ Formatação adequada para categorias e tipos de motos
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Dianteiro</div>
                         <div class="text-2xl font-bold">
-                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['front_solo'] ?? $pressureSpecs['pressure_empty_front'] ?? 'Consulte manual') }}
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['front_solo'] ??
+                            $pressureSpecs['pressure_empty_front'] ?? 'Consulte manual') }}
                         </div>
                         <div class="text-xs text-red-200">PSI</div>
                     </div>
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Traseiro</div>
                         <div class="text-2xl font-bold">
-                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['rear_solo'] ?? $pressureSpecs['pressure_empty_rear'] ?? 'Consulte manual') }}
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['rear_solo'] ??
+                            $pressureSpecs['pressure_empty_rear'] ?? 'Consulte manual') }}
                         </div>
                         <div class="text-xs text-red-200">PSI</div>
                     </div>
@@ -139,14 +142,16 @@ Formatação adequada para categorias e tipos de motos
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Dianteiro</div>
                         <div class="text-2xl font-bold">
-                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['front_passenger'] ?? $pressureSpecs['pressure_max_front'] ?? 'Consulte manual') }}
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['front_passenger'] ??
+                            $pressureSpecs['pressure_max_front'] ?? 'Consulte manual') }}
                         </div>
                         <div class="text-xs text-red-200">PSI</div>
                     </div>
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Traseiro</div>
                         <div class="text-2xl font-bold">
-                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['rear_passenger'] ?? $pressureSpecs['pressure_max_rear'] ?? 'Consulte manual') }}
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['rear_passenger'] ??
+                            $pressureSpecs['pressure_max_rear'] ?? 'Consulte manual') }}
                         </div>
                         <div class="text-xs text-red-200">PSI</div>
                     </div>
@@ -159,7 +164,8 @@ Formatação adequada para categorias e tipos de motos
             <div class="flex items-center">
                 <span class="text-yellow-300 mr-3 text-xl">⚠️</span>
                 <p class="text-yellow-100 text-sm">
-                    <strong>Importante:</strong> Sempre calibre com pneus frios. Em motocicletas, pressões incorretas podem ser fatais.
+                    <strong>Importante:</strong> Sempre calibre com pneus frios. Em motocicletas, pressões incorretas
+                    podem ser fatais.
                 </p>
             </div>
         </div>

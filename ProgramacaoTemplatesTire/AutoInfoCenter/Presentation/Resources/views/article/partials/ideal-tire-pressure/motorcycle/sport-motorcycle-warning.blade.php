@@ -1,13 +1,13 @@
-{{-- 
-Partial: tire-pressure/motorcycle/sport-motorcycle-warning.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/sport-motorcycle-warning.blade.php
 Avisos específicos para motocicletas esportivas
 Só exibido quando $article->isSportMotorcycle() retorna true
 --}}
 
 @php
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $sportWarnings = $article->getData()['sport_warnings'] ?? [];
-    $trackDayTips = $article->getData()['track_day_tips'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$sportWarnings = $article->getData()['sport_warnings'] ?? [];
+$trackDayTips = $article->getData()['track_day_tips'] ?? [];
 @endphp
 
 <section class="mb-12" id="sport-motorcycle-warnings">
@@ -35,16 +35,19 @@ Só exibido quando $article->isSportMotorcycle() retorna true
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
                     <div class="flex items-start">
-                        <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <div
+                            class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span class="text-sm text-orange-600">🎯</span>
                         </div>
                         <div>
                             <h4 class="font-semibold text-gray-900">Maior Potência</h4>
-                            <p class="text-sm text-gray-700">Aceleração e velocidades mais altas exigem pressões precisas</p>
+                            <p class="text-sm text-gray-700">Aceleração e velocidades mais altas exigem pressões
+                                precisas</p>
                         </div>
                     </div>
                     <div class="flex items-start">
-                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <div
+                            class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span class="text-sm text-red-600">🌪️</span>
                         </div>
                         <div>
@@ -55,7 +58,8 @@ Só exibido quando $article->isSportMotorcycle() retorna true
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-start">
-                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <div
+                            class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span class="text-sm text-yellow-600">🔥</span>
                         </div>
                         <div>
@@ -64,7 +68,8 @@ Só exibido quando $article->isSportMotorcycle() retorna true
                         </div>
                     </div>
                     <div class="flex items-start">
-                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <div
+                            class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <span class="text-sm text-purple-600">⚖️</span>
                         </div>
                         <div>
@@ -197,17 +202,21 @@ Só exibido quando $article->isSportMotorcycle() retorna true
                     <h3 class="text-lg font-bold mb-2">Aviso Legal e de Segurança</h3>
                     <div class="text-red-100 text-sm space-y-2">
                         <p>
-                            <strong>Track Days:</strong> Sempre consulte os instrutores da pista e fabricante dos pneus para pressões específicas.
+                            <strong>Track Days:</strong> Sempre consulte os instrutores da pista e fabricante dos pneus
+                            para pressões específicas.
                         </p>
                         <p>
-                            <strong>Segurança:</strong> Pilotagem esportiva deve ser praticada apenas em ambientes controlados (pistas fechadas).
+                            <strong>Segurança:</strong> Pilotagem esportiva deve ser praticada apenas em ambientes
+                            controlados (pistas fechadas).
                         </p>
                         <p>
-                            <strong>Responsabilidade:</strong> O uso dessas informações é por sua conta e risco. Sempre priorize a segurança.
+                            <strong>Responsabilidade:</strong> O uso dessas informações é por sua conta e risco. Sempre
+                            priorize a segurança.
                         </p>
                     </div>
                     <div class="mt-4">
-                        <button id="sport-calibration-guide" class="bg-white text-red-600 px-4 py-2 rounded font-semibold hover:bg-red-50 transition-colors">
+                        <button id="sport-calibration-guide"
+                            class="bg-white text-red-600 px-4 py-2 rounded font-semibold hover:bg-red-50 transition-colors">
                             Ver Guia de Calibragem Específico →
                         </button>
                     </div>

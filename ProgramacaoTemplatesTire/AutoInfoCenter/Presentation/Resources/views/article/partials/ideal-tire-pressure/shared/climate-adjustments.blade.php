@@ -1,12 +1,12 @@
-{{-- 
-Partial: tire-pressure/shared/climate-adjustments.blade.php
+{{--
+Partial: ideal-tire-pressure/shared/climate-adjustments.blade.php
 Componente para ajustes de pressão conforme clima e temperatura
 Usado tanto em templates de carros quanto motos
 --}}
 
 @php
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $climateInfo = $article->getData()['climate_adjustments'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$climateInfo = $article->getData()['climate_adjustments'] ?? [];
 @endphp
 
 <section class="mb-12">
@@ -20,7 +20,8 @@ Usado tanto em templates de carros quanto motos
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                     </svg>
                 </div>
                 <div>
@@ -73,7 +74,9 @@ Usado tanto em templates de carros quanto motos
         <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4">
             <h3 class="text-lg font-bold flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
+                        clip-rule="evenodd" />
                 </svg>
                 Ajustes por Temperatura Ambiente
             </h3>
@@ -99,7 +102,8 @@ Usado tanto em templates de carros quanto motos
                             </div>
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                 Calor Extremo
                             </span>
                         </td>
@@ -121,7 +125,8 @@ Usado tanto em templates de carros quanto motos
                             </div>
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                                 Calor Moderado
                             </span>
                         </td>
@@ -143,7 +148,8 @@ Usado tanto em templates de carros quanto motos
                             </div>
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                 Temperatura Ideal
                             </span>
                         </td>
@@ -165,7 +171,8 @@ Usado tanto em templates de carros quanto motos
                             </div>
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Frio Moderado
                             </span>
                         </td>
@@ -187,7 +194,8 @@ Usado tanto em templates de carros quanto motos
                             </div>
                         </td>
                         <td class="py-4 px-4 text-sm text-center">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                            <span
+                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                                 Frio Extremo
                             </span>
                         </td>
@@ -294,13 +302,15 @@ Usado tanto em templates de carros quanto motos
     <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <div class="flex items-start">
             <svg class="w-5 h-5 text-yellow-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
             </svg>
             <div class="text-sm">
                 <p class="font-medium text-yellow-800 mb-1">🇧🇷 Lembre-se:</p>
                 <p class="text-yellow-700">
-                    O Brasil tem dimensões continentais com climas muito variados. Se você vai viajar entre regiões, 
-                    ajuste as pressões conforme o destino. Uma viagem de São Paulo para Fortaleza pode exigir 
+                    O Brasil tem dimensões continentais com climas muito variados. Se você vai viajar entre regiões,
+                    ajuste as pressões conforme o destino. Uma viagem de São Paulo para Fortaleza pode exigir
                     redução de 2-3 PSI para o clima nordestino.
                 </p>
             </div>

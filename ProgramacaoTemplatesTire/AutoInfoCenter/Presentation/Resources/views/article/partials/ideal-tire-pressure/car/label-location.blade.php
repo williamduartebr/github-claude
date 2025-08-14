@@ -1,11 +1,11 @@
-{{-- 
-Partial: tire-pressure/car/label-location.blade.php
+{{--
+Partial: ideal-tire-pressure/car/label-location.blade.php
 Seção sobre localização da etiqueta de pressão dos pneus
 --}}
 
 @php
-    $labelLocation = $article->getData()['label_location'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$labelLocation = $article->getData()['label_location'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 @endphp
 
 @if(!empty($labelLocation))
@@ -20,8 +20,10 @@ Seção sobre localização da etiqueta de pressão dos pneus
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 </div>
                 <div>
@@ -45,7 +47,8 @@ Seção sobre localização da etiqueta de pressão dos pneus
                     {{ $labelLocation['primary_location']['location'] ?? 'Batente da porta do motorista' }}
                 </p>
                 <p class="text-amber-200 text-sm">
-                    {{ $labelLocation['primary_location']['description'] ?? 'Abra a porta do motorista e procure na lateral do batente (parte do chassi)' }}
+                    {{ $labelLocation['primary_location']['description'] ?? 'Abra a porta do motorista e procure na
+                    lateral do batente (parte do chassi)' }}
                 </p>
             </div>
             @endif
@@ -57,7 +60,8 @@ Seção sobre localização da etiqueta de pressão dos pneus
     <div class="mt-6 bg-white border border-gray-200 rounded-lg p-6">
         <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
             <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
             Localizações Alternativas
         </h3>
@@ -79,7 +83,8 @@ Seção sobre localização da etiqueta de pressão dos pneus
                 </p>
                 @if(!empty($location['probability']))
                 <div class="mt-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
+                    <span
+                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
                         {{ $location['probability'] === 'alta' ? 'bg-green-100 text-green-800' : 
                            ($location['probability'] === 'média' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800') }}">
                         Probabilidade {{ $location['probability'] }}
@@ -96,8 +101,10 @@ Seção sobre localização da etiqueta de pressão dos pneus
     <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-blue-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
             Como Identificar a Etiqueta
         </h3>
@@ -202,10 +209,13 @@ Seção sobre localização da etiqueta de pressão dos pneus
     <div class="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
         <div class="flex items-start">
             <svg class="w-5 h-5 text-amber-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
             </svg>
             <div class="text-sm">
-                <p class="font-medium text-amber-800 mb-1">📌 Nota Específica para {{ $vehicleInfo['full_name'] ?? 'este modelo' }}:</p>
+                <p class="font-medium text-amber-800 mb-1">📌 Nota Específica para {{ $vehicleInfo['full_name'] ?? 'este
+                    modelo' }}:</p>
                 <p class="text-amber-700">{{ $labelLocation['note'] }}</p>
             </div>
         </div>
@@ -216,7 +226,8 @@ Seção sobre localização da etiqueta de pressão dos pneus
     <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-red-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             E se não encontrar a etiqueta?
         </h3>

@@ -1,12 +1,12 @@
-{{-- 
-Partial: tire-pressure/motorcycle/calibration-procedure.blade.php
+{{--
+Partial: ideal-tire-pressure/motorcycle/calibration-procedure.blade.php
 Procedimento específico de calibragem para motocicletas
 Considerando características únicas de estabilidade e centro de gravidade
 --}}
 
 @php
-    $calibrationProcedure = $article->getData()['calibration_procedure'] ?? [];
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$calibrationProcedure = $article->getData()['calibration_procedure'] ?? [];
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 @endphp
 
 <section class="mb-12" id="calibration-procedure">
@@ -83,19 +83,22 @@ Considerando características únicas de estabilidade e centro de gravidade
                 <span class="text-indigo-600 mr-2">📝</span>
                 Procedimento Passo a Passo
             </h3>
-            
+
             @if(empty($calibrationProcedure))
             <!-- Procedimento padrão caso não tenha dados específicos -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Passo 1 -->
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="text-2xl font-bold text-white">1</span>
                         </div>
                         <h4 class="text-lg font-semibold text-gray-900">Preparação</h4>
                     </div>
-                    <p class="text-sm text-gray-700 mb-4 text-center">Posicione a moto em local plano com pneus frios (3h parada)</p>
+                    <p class="text-sm text-gray-700 mb-4 text-center">Posicione a moto em local plano com pneus frios
+                        (3h parada)</p>
                     <div class="space-y-2">
                         <div class="flex items-start text-xs text-gray-600 bg-gray-50 rounded p-2">
                             <div class="w-2 h-2 bg-indigo-500 rounded-full mr-2 flex-shrink-0 mt-1"></div>
@@ -109,14 +112,17 @@ Considerando características únicas de estabilidade e centro de gravidade
                 </div>
 
                 <!-- Passo 2 -->
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="text-2xl font-bold text-white">2</span>
                         </div>
                         <h4 class="text-lg font-semibold text-gray-900">Medição Atual</h4>
                     </div>
-                    <p class="text-sm text-gray-700 mb-4 text-center">Verifique a pressão atual com manômetro digital</p>
+                    <p class="text-sm text-gray-700 mb-4 text-center">Verifique a pressão atual com manômetro digital
+                    </p>
                     <div class="space-y-2">
                         <div class="flex items-start text-xs text-gray-600 bg-gray-50 rounded p-2">
                             <div class="w-2 h-2 bg-indigo-500 rounded-full mr-2 flex-shrink-0 mt-1"></div>
@@ -130,14 +136,17 @@ Considerando características únicas de estabilidade e centro de gravidade
                 </div>
 
                 <!-- Passo 3 -->
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="text-2xl font-bold text-white">3</span>
                         </div>
                         <h4 class="text-lg font-semibold text-gray-900">Ajuste Correto</h4>
                     </div>
-                    <p class="text-sm text-gray-700 mb-4 text-center">Calibre para os valores recomendados conforme uso</p>
+                    <p class="text-sm text-gray-700 mb-4 text-center">Calibre para os valores recomendados conforme uso
+                    </p>
                     <div class="space-y-2">
                         <div class="flex items-start text-xs text-gray-600 bg-gray-50 rounded p-2">
                             <div class="w-2 h-2 bg-indigo-500 rounded-full mr-2 flex-shrink-0 mt-1"></div>
@@ -154,16 +163,20 @@ Considerando características únicas de estabilidade e centro de gravidade
             <!-- Procedimento específico da ViewModel -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($calibrationProcedure as $step)
-                <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div
+                    class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="text-2xl font-bold text-white">{{ $step['number'] ?? $loop->iteration }}</span>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900">{{ $step['title'] ?? 'Passo ' . $loop->iteration }}</h4>
+                        <h4 class="text-lg font-semibold text-gray-900">{{ $step['title'] ?? 'Passo ' . $loop->iteration
+                            }}</h4>
                     </div>
-                    
-                    <p class="text-sm text-gray-700 mb-4 text-center">{{ $step['description'] ?? 'Descrição do procedimento' }}</p>
-                    
+
+                    <p class="text-sm text-gray-700 mb-4 text-center">{{ $step['description'] ?? 'Descrição do
+                        procedimento' }}</p>
+
                     @if(!empty($step['details']))
                     <div class="space-y-2">
                         @foreach($step['details'] as $detail)
@@ -203,7 +216,8 @@ Considerando características únicas de estabilidade e centro de gravidade
                             Centro de Gravidade
                         </h4>
                         <p class="text-sm text-orange-700">
-                            Diferente dos carros, o centro de gravidade alto das motos torna a calibragem ainda mais crítica. 
+                            Diferente dos carros, o centro de gravidade alto das motos torna a calibragem ainda mais
+                            crítica.
                             Pressões incorretas afetam diretamente o equilíbrio e a dirigibilidade.
                         </p>
                     </div>
@@ -213,7 +227,8 @@ Considerando características únicas de estabilidade e centro de gravidade
                             Sequência de Calibragem
                         </h4>
                         <p class="text-sm text-red-700">
-                            Sempre calibre primeiro o pneu dianteiro, depois o traseiro. Isso evita alterações no centro de gravidade 
+                            Sempre calibre primeiro o pneu dianteiro, depois o traseiro. Isso evita alterações no centro
+                            de gravidade
                             durante o processo que poderiam afetar a leitura.
                         </p>
                     </div>
@@ -225,7 +240,8 @@ Considerando características únicas de estabilidade e centro de gravidade
                             Sensibilidade Térmica
                         </h4>
                         <p class="text-sm text-blue-700">
-                            Pneus de moto aquecem mais rápido que de carro. Uma diferença de 10°C pode alterar a pressão em 1-2 PSI. 
+                            Pneus de moto aquecem mais rápido que de carro. Uma diferença de 10°C pode alterar a pressão
+                            em 1-2 PSI.
                             Sempre calibre com pneus completamente frios.
                         </p>
                     </div>
@@ -235,7 +251,7 @@ Considerando características únicas de estabilidade e centro de gravidade
                             Precisão Necessária
                         </h4>
                         <p class="text-sm text-purple-700">
-                            A margem de erro em motos é muito menor. Uma diferença de 3-4 PSI pode ser a diferença entre 
+                            A margem de erro em motos é muito menor. Uma diferença de 3-4 PSI pode ser a diferença entre
                             segurança e um acidente grave.
                         </p>
                     </div>

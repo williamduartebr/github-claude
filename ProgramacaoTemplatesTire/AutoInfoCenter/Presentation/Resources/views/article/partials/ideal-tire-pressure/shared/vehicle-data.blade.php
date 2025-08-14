@@ -1,13 +1,13 @@
-{{-- 
-Partial: tire-pressure/shared/vehicle-data.blade.php
+{{--
+Partial: ideal-tire-pressure/shared/vehicle-data.blade.php
 Componente reutilizável para exibir dados principais do veículo e pressão ideal
 Usa dados embarcados das ViewModels
 --}}
 
 @php
-    $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-    $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
-    $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
+$mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
 @endphp
 
 <!-- Destaque Principal da Pressão Ideal -->
@@ -106,12 +106,14 @@ Usa dados embarcados das ViewModels
         <div class="mt-6 bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 relative z-10">
             <div class="flex items-start">
                 <svg class="w-5 h-5 text-yellow-300 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd" />
                 </svg>
                 <div class="text-sm">
                     <p class="font-medium text-yellow-100 mb-1">⚡ Lembrete Importante</p>
                     <p class="text-yellow-200">
-                        Para uso com carga completa ou viagens longas, ajuste conforme a tabela específica abaixo. 
+                        Para uso com carga completa ou viagens longas, ajuste conforme a tabela específica abaixo.
                         Pressões incorretas comprometem segurança e economia.
                     </p>
                 </div>
@@ -126,11 +128,12 @@ Usa dados embarcados das ViewModels
     <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Dados Técnicos do Veículo
         </h3>
-        
+
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             @if(!empty($vehicleInfo['make']))
             <div>

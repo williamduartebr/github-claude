@@ -54,26 +54,26 @@ Estrutura modular com includes específicos para características de motos
             </div>
 
             <!-- Dados Principais do Veículo (Motorcycle Specific) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.vehicle-data')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.vehicle-data')
 
             <!-- Especificações de Pneus por Versão (Motorcycle Specific) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.tire-specifications')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.tire-specifications')
 
             <!-- Tabela Principal de Pressões (Piloto Solo/Garupa) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.pressure-table')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.pressure-table')
 
             <!-- Alertas Críticos de Segurança (Motorcycle Specific) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.critical-safety-alerts')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.critical-safety-alerts')
 
             <!-- Avisos para Motos Esportivas (Conditional) -->
             @if(method_exists($article, 'isSportMotorcycle') && $article->isSportMotorcycle())
-                @include('auto-info-center::article.partials.tire-pressure.motorcycle.sport-motorcycle-warning')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.sport-motorcycle-warning')
             @elseif(($article->getData()['vehicle_info']['category'] ?? '') === 'sport')
-                @include('auto-info-center::article.partials.tire-pressure.motorcycle.sport-motorcycle-warning')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.sport-motorcycle-warning')
             @endif
 
             <!-- Procedimento de Calibragem (Motorcycle Specific) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.calibration-procedure')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.calibration-procedure')
 
             <!-- Banner de Anúncio 2 -->
             <div class="my-10">
@@ -81,13 +81,13 @@ Estrutura modular com includes específicos para características de motos
             </div>
 
             <!-- Conversão de Unidades (Motorcycle Specific) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.pressure-conversion')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.pressure-conversion')
 
             <!-- Ajustes Climáticos (Shared) -->
-            @include('auto-info-center::article.partials.tire-pressure.shared.climate-adjustments')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.shared.climate-adjustments')
 
             <!-- Dicas de Manutenção (Motorcycle Specific) -->
-            @include('auto-info-center::article.partials.tire-pressure.motorcycle.maintenance-tips')
+            @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.maintenance-tips')
 
             <!-- Banner de Anúncio 3 -->
             <div class="my-10">
@@ -137,7 +137,7 @@ Estrutura modular com includes específicos para características de motos
             </div>
 
             <!-- Nota informativa -->
-            @include('auto-info-center::article.partials.info_note_manual')    
+            @include('auto-info-center::article.partials.info_note_manual')
 
             <!-- Créditos e Atualização -->
             @include('auto-info-center::article.partials.update_content')
@@ -156,7 +156,7 @@ Estrutura modular com includes específicos para características de motos
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // Conversão de pressão automática para motos
     const conversionInputs = document.querySelectorAll('.pressure-conversion-input');
     conversionInputs.forEach(input => {
