@@ -2,21 +2,18 @@
 
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
-use Illuminate\Support\Str;
-use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\Traits\VehicleDataProcessingTrait;
-
 class IdealTirePressureCarViewModel extends TemplateViewModel
 {
     use VehicleDataProcessingTrait;
 
-    /**
+        /**
      * Nome do template a ser utilizado
      */
     protected string $templateName = 'ideal_tire_pressure_car';
 
     /**
-     * Processa dados específicos do template de pressão ideal para carros
+     * Processa dados específicos do template
      */
     protected function processTemplateSpecificData(): void
     {
@@ -38,12 +35,322 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
         $this->processedData['pressure_specifications'] = $this->processPressureSpecifications();
         $this->processedData['tire_specs_embedded'] = $this->processTireSpecificationsEmbedded();
         
+        // NOVA LÓGICA: Processa tipo de equipamento de emergência
+        $this->processedData['emergency_equipment'] = $this->processEmergencyEquipment();
+        
         // Dados auxiliares
         $this->processedData['related_topics'] = $this->getRelatedTopics();
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
         $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
+    }
+
+    /**
+     * 🔧 NOVA FUNÇÃO: Processa tipo de equipamento de emergência (estepe vs kit)
+     */
+    private function processEmergencyEquipment(): array
+    {
+        $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
+        $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
+        
+        $sparePressure = $pressureSpecs['pressure_spare'] ?? 0;
+        $hasSpareTire = $sparePressure > 0; // 🎯 LÓGICA PRINCIPAL
+        $isElectric = $vehicleInfo['is_electric'] ?? false;
+        $isHybrid = $vehicleInfo['is_hybrid'] ?? false;
+        $isPremium = $vehicleInfo['is_premium'] ?? false;
+
+        if ($hasSpareTire) {
+            return $this->processSpareTireData($sparePressure, $vehicleInfo);
+        } else {
+            return $this->processRepairKitData($isElectric, $isHybrid, $isPremium, $vehicleInfo);
+        }
+    }
+
+    /**
+     * 🛞 Processa dados do pneu estepe (quando pressure_spare > 0)
+     */
+    private function processSpareTireData(int $sparePressure, array $vehicleInfo): array
+    {
+        $spareType = $this->determineSpareTireType($sparePressure);
+        
+        return [
+            'type' => 'spare_tire',
+            'has_spare' => true,
+            'pressure' => $sparePressure,
+            'spare_type' => $spareType,
+            'spare_type_name' => $this->getSpareTireTypeName($spareType),
+            'max_speed' => $this->getMaxSpeedForSpare($spareType),
+            'max_distance' => $this->getMaxDistanceForSpare($spareType),
+            'recommendations' => $this->getSpareTireRecommendations(),
+            'verification_frequency' => $this->getSpareVerificationFrequency($spareType),
+            'storage_tips' => $this->getSpareStorageTips(),
+            'replacement_interval' => $this->getSpareReplacementInterval($spareType)
+        ];
+    }
+
+    /**
+     * 🧰 Processa dados do kit de reparo (quando pressure_spare = 0)
+     */
+    private function processRepairKitData(bool $isElectric, bool $isHybrid, bool $isPremium, array $vehicleInfo): array
+    {
+        $normalPressure = $this->processedData['pressure_specifications']['pressure_empty_front'] ?? 35;
+        
+        return [
+            'type' => 'repair_kit',
+            'has_spare' => false,
+            'kit_components' => [
+                'sealant' => [
+                    'name' => 'Selante para Pneus',
+                    'description' => 'Para furos até 4mm de diâmetro',
+                    'limitations' => 'Não funciona em furos laterais ou rasgos'
+                ],
+                'compressor' => [
+                    'name' => 'Compressor 12V',
+                    'description' => 'Portátil para inflagem',
+                    'power_source' => 'Tomada 12V do veículo'
+                ]
+            ],
+            'max_speed' => 80, // km/h
+            'max_distance' => 150, // km
+            'normal_pressure' => $normalPressure,
+            'limitations' => [
+                'Reparo temporário apenas',
+                'Não funciona em furos laterais',
+                'Não funciona em rasgos grandes',
+                'Pneu deve ser substituído após uso',
+                'Não usar em pneus run-flat danificados'
+            ],
+            'procedure' => $this->getRepairKitProcedure($normalPressure),
+            'safety_warnings' => $this->getRepairKitSafetyWarnings(),
+            'emergency_contacts' => $isPremium ? $this->getPremiumAssistanceInfo($vehicleInfo) : [],
+            
+            // 🔋 Benefícios específicos por tipo de veículo
+            'electric_benefits' => $isElectric ? [
+                'Mais espaço para bateria (até 50L extras)',
+                'Menor peso total do veículo (-15kg)',
+                'Maior autonomia elétrica',
+                'Melhor distribuição de peso'
+            ] : [],
+            
+            // 🔄 Benefícios para híbridos
+            'hybrid_benefits' => $isHybrid ? [
+                'Otimização do espaço para bateria híbrida',
+                'Menor peso melhora eficiência do sistema',
+                'Mais espaço no porta-malas'
+            ] : [],
+            
+            'why_no_spare' => $this->getWhyNoSpareExplanation($isElectric, $isHybrid, $isPremium)
+        ];
+    }
+
+    /**
+     * 🎯 Determina tipo do pneu estepe baseado na pressão
+     */
+    private function determineSpareTireType(int $pressure): string
+    {
+        if ($pressure >= 50) {
+            return 'temporary'; // Temporário (donut) - alta pressão
+        } elseif ($pressure >= 35) {
+            return 'compact'; // Compacto - pressão moderada
+        } else {
+            return 'full_size'; // Tamanho original - pressão normal
+        }
+    }
+
+    /**
+     * 📛 Nome amigável do tipo de estepe
+     */
+    private function getSpareTireTypeName(string $type): string
+    {
+        return match($type) {
+            'temporary' => 'Estepe Temporário (Donut)',
+            'compact' => 'Estepe Compacto',
+            'full_size' => 'Estepe Tamanho Original',
+            default => 'Estepe Temporário'
+        };
+    }
+
+    /**
+     * 🚗 Velocidade máxima para cada tipo de estepe
+     */
+    private function getMaxSpeedForSpare(string $type): int
+    {
+        return match($type) {
+            'temporary' => 80,  // km/h - muito restritivo
+            'compact' => 100,   // km/h - moderadamente restritivo  
+            'full_size' => 120, // km/h - menos restritivo
+            default => 80
+        };
+    }
+
+    /**
+     * 📏 Distância máxima para cada tipo de estepe
+     */
+    private function getMaxDistanceForSpare(string $type): int
+    {
+        return match($type) {
+            'temporary' => 80,   // km - muito limitado
+            'compact' => 200,    // km - moderadamente limitado
+            'full_size' => 999,  // km - sem limite prático
+            default => 80
+        };
+    }
+
+    /**
+     * 📝 Recomendações para manutenção do estepe
+     */
+    private function getSpareTireRecommendations(): array
+    {
+        return [
+            'Verificar pressão mensalmente',
+            'Inspecionar visualmente a cada 3 meses', 
+            'Verificar fixação e ferramentas',
+            'Limpar área de armazenamento',
+            'Testar macaco e ferramentas semestralmente'
+        ];
+    }
+
+    /**
+     * 🕐 Frequência de verificação do estepe
+     */
+    private function getSpareVerificationFrequency(string $type): string
+    {
+        return match($type) {
+            'temporary' => 'Quinzenal (perde pressão mais rápido)',
+            'compact' => 'Mensal',
+            'full_size' => 'Mensal', 
+            default => 'Mensal'
+        };
+    }
+
+    /**
+     * 📦 Dicas de armazenamento do estepe
+     */
+    private function getSpareStorageTips(): array
+    {
+        return [
+            'Evitar exposição ao sol direto',
+            'Não colocar objetos pesados sobre ele',
+            'Manter área seca e ventilada',
+            'Verificar se está bem fixado',
+            'Proteger de produtos químicos'
+        ];
+    }
+
+    /**
+     * 🔄 Intervalo de substituição do estepe
+     */
+    private function getSpareReplacementInterval(string $type): string
+    {
+        return match($type) {
+            'temporary' => '6-8 anos (mesmo sem uso)',
+            'compact' => '8-10 anos',
+            'full_size' => '10-12 anos',
+            default => '6-8 anos'
+        };
+    }
+
+    /**
+     * 📋 Procedimento detalhado do kit de reparo
+     */
+    private function getRepairKitProcedure(int $normalPressure): array
+    {
+        return [
+            'Pare em local seguro e sinalize o veículo',
+            'Localize o furo e remova objeto (se visível)',
+            'Conecte o tubo do selante à válvula do pneu',
+            'Injete todo o conteúdo do selante',
+            'Conecte o compressor à tomada 12V',
+            "Infle até a pressão normal ({$normalPressure} PSI)",
+            'Dirija por 5km para distribuir o selante',
+            'Verifique pressão novamente',
+            'Dirija até borracharia (máx. 80km/h, 150km)'
+        ];
+    }
+
+    /**
+     * ⚠️ Avisos de segurança para kit de reparo
+     */
+    private function getRepairKitSafetyWarnings(): array
+    {
+        return [
+            'Não usar em pneus run-flat danificados',
+            'Não funciona com furos maiores que 4mm',
+            'Não reparar furos na lateral do pneu',
+            'Não exceder 80 km/h após reparo',
+            'Informar borracheiro sobre uso do selante',
+            'Substituir pneu o mais rápido possível'
+        ];
+    }
+
+    /**
+     * 🆘 Informações de assistência premium
+     */
+    private function getPremiumAssistanceInfo(array $vehicleInfo): array
+    {
+        $make = $vehicleInfo['make'] ?? 'Montadora';
+        
+        return [
+            'service_name' => "{$make} Assistência 24h",
+            'coverage' => 'Reboque até concessionária mais próxima',
+            'phone' => 'Consulte manual do proprietário',
+            'availability' => '24h por dia, 7 dias por semana',
+            'included_services' => [
+                'Reboque gratuito (até 150km)',
+                'Pneu de cortesia (se disponível)', 
+                'Borracharia móvel (em algumas regiões)',
+                'Chaveiro 24h',
+                'Auxílio em pane seca'
+            ],
+            'app_support' => "Aplicativo {$make} Connect disponível"
+        ];
+    }
+
+    /**
+     * 💡 Explica por que o veículo não tem estepe
+     */
+    private function getWhyNoSpareExplanation(bool $isElectric, bool $isHybrid, bool $isPremium): array
+    {
+        $reasons = [];
+        
+        if ($isElectric) {
+            $reasons[] = [
+                'title' => '🔋 Prioridade para Bateria',
+                'description' => 'Espaço dedicado para bateria de maior capacidade, aumentando autonomia.'
+            ];
+            $reasons[] = [
+                'title' => '⚖️ Redução de Peso',
+                'description' => 'Menos peso = maior eficiência energética e autonomia.'
+            ];
+        }
+        
+        if ($isHybrid) {
+            $reasons[] = [
+                'title' => '🔄 Sistema Híbrido Complexo',
+                'description' => 'Espaço otimizado para bateria híbrida e componentes elétricos.'
+            ];
+        }
+        
+        if ($isPremium) {
+            $reasons[] = [
+                'title' => '🛠️ Assistência Premium',
+                'description' => 'Assistência 24h substitui necessidade de estepe.'
+            ];
+            $reasons[] = [
+                'title' => '🎯 Design Moderno',
+                'description' => 'Mais espaço útil no porta-malas para bagagens.'
+            ];
+        }
+        
+        if (empty($reasons)) {
+            $reasons[] = [
+                'title' => '🚗 Tendência Moderna',
+                'description' => 'Muitos veículos modernos priorizam eficiência e espaço.'
+            ];
+        }
+        
+        return $reasons;
     }
 
     /**

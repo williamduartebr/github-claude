@@ -191,8 +191,8 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                 @include('auto-info-center::article.partials.tire-pressure.shared.pressure-conversion')
             @endif
 
-            <!-- Pneu Estepe - USANDO PARTIAL MODULAR -->
-            @include('auto-info-center::article.partials.tire-pressure.car.spare-tire')
+            <!-- 🆕 EQUIPAMENTO DE EMERGÊNCIA - NOVA SEÇÃO CONDICIONAL -->
+            @include('auto-info-center::article.partials.tire-pressure.shared.emergency-equipment')
 
             <!-- Cuidados e Recomendações -->
             @if(!empty($article->getData()['care_recommendations']))
