@@ -262,6 +262,7 @@ h2{font-size:20px}
         </div>
         @endif
 
+
         <!-- TABELA DE PRESSÕES - CORRIGIDA -->
         @if(!empty($pressureTable))
         <div class="content-section">
@@ -281,10 +282,11 @@ h2{font-size:20px}
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- Pressões Oficiais --}}
+                        {{-- 🔥 SEÇÃO CORRIGIDA: Pressões Oficiais --}}
                         @if(!empty($pressureTable['pressoes_oficiais']))
                         @php $oficial = $pressureTable['pressoes_oficiais'] @endphp
                         
+                        {{-- Piloto Solo --}}
                         @if(!empty($oficial['piloto_solo']))
                         <tr style="background: white;">
                             <td style="text-align: left; padding-left: 16px; font-weight: 500;">
@@ -298,6 +300,7 @@ h2{font-size:20px}
                         </tr>
                         @endif
 
+                        {{-- Piloto + Garupa --}}
                         @if(!empty($oficial['piloto_garupa']))
                         <tr style="background: #f8fafc;">
                             <td style="text-align: left; padding-left: 16px; font-weight: 500;">
@@ -312,19 +315,48 @@ h2{font-size:20px}
                         @endif
                         @endif
 
-                        {{-- Condições Especiais --}}
+                        {{-- 🔥 SEÇÃO CORRIGIDA: Condições Especiais --}}
                         @if(!empty($pressureTable['condicoes_especiais']))
                         @foreach($pressureTable['condicoes_especiais'] as $condicao)
                         <tr style="background: {{ $loop->even ? '#f8fafc' : 'white' }};">
                             <td style="text-align: left; padding-left: 16px; font-weight: 500;">
                                 <span style="margin-right: 8px; font-size: 16px;">📍</span>
-                                <strong>{{ $condicao['situacao'] }}</strong>
+                                <strong>{{ $condicao['situacao'] ?? 'Condição Especial' }}</strong>
+                                @if(!empty($condicao['terreno']))
+                                <br><small style="font-size: 12px; color: #6b7280;">{{ $condicao['terreno'] }}</small>
+                                @endif
                             </td>
                             <td><span class="pressure-badge">{{ $condicao['pressao_dianteira'] }}</span></td>
                             <td><span class="pressure-badge">{{ $condicao['pressao_traseira'] }}</span></td>
-                            <td style="text-align: left; max-width: 200px; color: #4b5563; font-size: 12px;">{{ $condicao['observacao'] }}</td>
+                            <td style="text-align: left; max-width: 200px; color: #4b5563; font-size: 12px;">
+                                {{ $condicao['observacao'] ?? '' }}
+                            </td>
                         </tr>
                         @endforeach
+                        @endif
+
+                        {{-- 🔥 FALLBACK: Se não há dados específicos, use pressureSpecs --}}
+                        @if(empty($pressureTable['pressoes_oficiais']) && empty($pressureTable['condicoes_especiais']))
+                        <tr style="background: white;">
+                            <td style="text-align: left; padding-left: 16px; font-weight: 500;">
+                                <span style="margin-right: 8px; font-size: 16px;">🏍️</span>
+                                <strong>Uso Normal</strong><br>
+                                <small style="font-size: 12px; color: #6b7280;">Piloto solo</small>
+                            </td>
+                            <td><span class="pressure-badge">{{ $pressureSpecs['pressure_empty_front'] ?? '33' }} PSI</span></td>
+                            <td><span class="pressure-badge">{{ $pressureSpecs['pressure_empty_rear'] ?? '36' }} PSI</span></td>
+                            <td style="text-align: left; max-width: 200px; color: #4b5563; font-size: 12px;">Uso diário</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="text-align: left; padding-left: 16px; font-weight: 500;">
+                                <span style="margin-right: 8px; font-size: 16px;">👥</span>
+                                <strong>Com Garupa</strong><br>
+                                <small style="font-size: 12px; color: #6b7280;">Piloto + passageiro</small>
+                            </td>
+                            <td><span class="pressure-badge">{{ $pressureSpecs['pressure_max_front'] ?? $pressureSpecs['pressure_empty_front'] ?? '35' }} PSI</span></td>
+                            <td><span class="pressure-badge">{{ $pressureSpecs['pressure_max_rear'] ?? '38' }} PSI</span></td>
+                            <td style="text-align: left; max-width: 200px; color: #4b5563; font-size: 12px;">Carga dupla</td>
+                        </tr>
                         @endif
                     </tbody>
                 </table>
