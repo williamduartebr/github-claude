@@ -50,33 +50,6 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * Determina o tipo de veículo para construção da URL da imagem
-     */
-    protected function getVehicleTypeForImage(): string
-    {
-        return 'motorcycles';
-    }
-
-    /**
-     * Obtém segmento da motocicleta
-     */
-    protected function getVehicleSegment(): string
-    {
-        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-
-        return match($category) {
-            'naked' => 'Motocicletas Naked',
-            'sport' => 'Motocicletas Esportivas', 
-            'street' => 'Motocicletas Street',
-            'adventure' => 'Motocicletas Adventure',
-            'touring' => 'Motocicletas Touring',
-            'cruiser' => 'Motocicletas Cruiser',
-            'scooter' => 'Scooters',
-            default => 'Motocicletas'
-        };
-    }
-
-    /**
      * Processa especificações dos pneus específicas para motocicletas OTIMIZADA
      */
     private function processMotorcycleTireSpecifications(array $specs): array

@@ -1,1444 +1,882 @@
+{{--
+Template AMP: tire_pressure_guide_motorcycle.blade.php
+Guia completo de calibragem para motocicletas - Versão AMP otimizada
+--}}
+
 @extends('auto-info-center::layouts.amp')
 
 @section('amp-head')
 <script async custom-element="amp-accordion" src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"></script>
-<script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
 <style amp-custom>
-    /* Reset e base */
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        background-color: #fff;
-    }
-
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 16px;
-    }
-
-    /* Typography */
-    h1 {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 16px;
-        color: #151C25;
-        line-height: 1.3;
-    }
-
-    h2 {
-        font-size: 22px;
-        font-weight: 600;
-        margin: 32px 0 16px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #DC2626;
-        color: #151C25;
-        position: relative;
-    }
-
-    h2:after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 50px;
-        height: 2px;
-        background-color: #DC2626;
-    }
-
-    h3 {
-        font-size: 18px;
-        font-weight: 600;
-        margin: 20px 0 12px;
-        color: #151C25;
-    }
-
-    p {
-        margin-bottom: 16px;
-        line-height: 1.7;
-    }
-
-    /* Meta info */
-    .article-meta {
-        color: #718096;
-        font-size: 14px;
-        margin-bottom: 20px;
-        padding: 8px 0;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    /* Ad containers */
-    .ad-container {
-        text-align: center;
-        margin: 32px 0;
-        padding: 16px;
-        background-color: #f8fafc;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-    }
-
-    .ad-label {
-        font-size: 11px;
-        color: #999;
-        margin-bottom: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 500;
-    }
-
-    /* Alerta de segurança crítico para motos */
-    .critical-safety-alert {
-        background: linear-gradient(135deg, #fef2f2, #fee2e2);
-        border: 2px solid #DC2626;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 24px 0;
-        position: relative;
-    }
-
-    .critical-safety-alert::before {
-        content: '🚨';
-        font-size: 24px;
-        position: absolute;
-        top: 16px;
-        left: 16px;
-    }
-
-    .critical-alert-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #991b1b;
-        margin-bottom: 12px;
-        padding-left: 40px;
-    }
-
-    .critical-alert-content {
-        color: #7f1d1d;
-        font-weight: 500;
-        padding-left: 40px;
-    }
-
-    /* Especificações dos pneus para motos */
-    .motorcycle-tire-specs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-
-    .tire-spec-card {
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        background-color: #fff;
-    }
-
-    .tire-spec-header {
-        background: linear-gradient(135deg, #DC2626, #b91c1c);
-        color: white;
-        padding: 16px;
-        font-weight: 600;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-    }
-
-    .tire-spec-header .icon {
-        margin-right: 10px;
-        font-size: 18px;
-    }
-
-    .tire-spec-body {
-        padding: 20px;
-    }
-
-    .spec-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-        padding: 8px 0;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 14px;
-    }
-
-    .spec-item:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
-
-    .spec-label {
-        color: #718096;
-        font-weight: 500;
-    }
-
-    .spec-value {
-        font-weight: 600;
-        color: #151C25;
-        background-color: #fef2f2;
-        padding: 4px 8px;
-        border-radius: 4px;
-        border: 1px solid #fecaca;
-    }
-
-    /* Tabela de pressões para motos */
-    .motorcycle-pressure-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        margin-bottom: 24px;
-    }
-
-    .motorcycle-pressure-table th {
-        background: linear-gradient(135deg, #DC2626, #b91c1c);
-        color: white;
-        text-align: center;
-        padding: 12px;
-        font-weight: 600;
-        font-size: 13px;
-    }
-
-    .motorcycle-pressure-table td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #e2e8f0;
-        background-color: #fff;
-    }
-
-    .motorcycle-pressure-table tr:nth-child(even) td {
-        background-color: #fef2f2;
-    }
-
-    .motorcycle-pressure-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .pressure-highlight {
-        font-weight: 700;
-        color: #DC2626;
-        background-color: #fee2e2;
-        padding: 6px 8px;
-        border-radius: 4px;
-    }
-
-    /* Recomendações específicas para motos */
-    .motorcycle-recommendation {
-        background-color: #fef2f2;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-left: 4px solid #DC2626;
-        position: relative;
-    }
-
-    .recommendation-title {
-        font-weight: 600;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        color: #991b1b;
-        font-size: 16px;
-    }
-
-    .recommendation-icon {
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
-        flex-shrink: 0;
-    }
-
-    .recommendation-pressure {
-        background-color: #DC2626;
-        color: white;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-weight: 700;
-        display: inline-block;
-        margin: 8px 0;
-    }
-
-    /* Gráfico de impacto específico para motos */
-    .motorcycle-impact-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-
-    .motorcycle-impact-card {
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
-        background-color: #fff;
-        text-align: center;
-        position: relative;
-    }
-
-    .motorcycle-impact-card.subcalibrado {
-        border-color: #DC2626;
-        background: linear-gradient(135deg, #fef2f2, #fee2e2);
-    }
-
-    .motorcycle-impact-card.ideal {
-        border-color: #059669;
-        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    }
-
-    .motorcycle-impact-card.sobrecalibrado {
-        border-color: #f59e0b;
-        background: linear-gradient(135deg, #fffbeb, #fef3c7);
-    }
-
-    .impact-title {
-        font-weight: 700;
-        margin-bottom: 16px;
-        font-size: 16px;
-    }
-
-    .impact-metric {
-        margin-bottom: 16px;
-    }
-
-    .impact-metric-label {
-        font-size: 12px;
-        color: #6b7280;
-        margin-bottom: 6px;
-        font-weight: 500;
-    }
-
-    .impact-value {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-
-    .impact-description {
-        font-size: 11px;
-        color: #4b5563;
-        line-height: 1.4;
-    }
-
-    /* Pneus alternativos para motos */
-    .alternative-tires-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-
-    .alternative-tire-card {
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        overflow: hidden;
-        background-color: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .alternative-tire-header {
-        background: linear-gradient(135deg, #4b5563, #374151);
-        color: white;
-        padding: 16px;
-        font-weight: 600;
-        font-size: 14px;
-        text-align: center;
-    }
-
-    .alternative-tire-body {
-        padding: 20px;
-    }
-
-    .tire-pressure-display {
-        background-color: #f3f4f6;
-        border-radius: 8px;
-        padding: 12px;
-        margin: 12px 0;
-        text-align: center;
-    }
-
-    .pressure-front-rear {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .pressure-value {
-        font-weight: 700;
-        color: #DC2626;
-        font-size: 14px;
-    }
-
-    .tire-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 12px;
-    }
-
-    .tire-tag {
-        background-color: #e5e7eb;
-        color: #374151;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 500;
-    }
-
-    /* Procedimento de calibragem para motos */
-    .motorcycle-procedure {
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-        border-radius: 12px;
-        padding: 24px;
-        border: 1px solid #e2e8f0;
-        position: relative;
-    }
-
-    .procedure-step {
-        display: flex;
-        margin-bottom: 24px;
-        align-items: flex-start;
-    }
-
-    .procedure-step:last-child {
-        margin-bottom: 0;
-    }
-
-    .step-number {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #DC2626, #b91c1c);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 16px;
-        flex-shrink: 0;
-        font-weight: 700;
-        font-size: 16px;
-        box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
-    }
-
-    .step-content {
-        flex: 1;
-    }
-
-    .step-content h3 {
-        margin: 0 0 8px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #151C25;
-    }
-
-    .step-content p {
-        margin-bottom: 8px;
-        color: #4a5568;
-        line-height: 1.6;
-    }
-
-    .step-tips {
-        background-color: #fef2f2;
-        border-left: 4px solid #DC2626;
-        padding: 12px;
-        margin-top: 12px;
-        border-radius: 4px;
-    }
-
-    .step-tips ul {
-        margin: 0;
-        padding-left: 16px;
-    }
-
-    .step-tips li {
-        font-size: 14px;
-        color: #7f1d1d;
-        margin-bottom: 4px;
-        font-weight: 500;
-    }
-
-    /* Equipamentos necessários para motos */
-    .equipment-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .equipment-card {
-        background-color: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 16px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .equipment-item {
-        font-weight: 600;
-        color: #151C25;
-        margin-bottom: 8px;
-    }
-
-    .equipment-importance {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-    }
-
-    .equipment-importance.essencial {
-        background-color: #fef2f2;
-        color: #991b1b;
-        border: 1px solid #fecaca;
-    }
-
-    .equipment-importance.muito-util {
-        background-color: #fff7ed;
-        color: #c2410c;
-        border: 1px solid #fed7aa;
-    }
-
-    .equipment-importance.recomendado {
-        background-color: #f0fdf4;
-        color: #166534;
-        border: 1px solid #bbf7d0;
-    }
-
-    /* Sinais de problemas para motos */
-    .problem-signs-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-
-    .problem-sign-card {
-        border-left: 4px solid #DC2626;
-        background-color: #fef2f2;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #fecaca;
-    }
-
-    .problem-sign-title {
-        font-weight: 600;
-        color: #991b1b;
-        margin-bottom: 12px;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-    }
-
-    .problem-sign-icon {
-        margin-right: 8px;
-        font-size: 18px;
-    }
-
-    .problem-signs-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .problem-signs-list li {
-        margin-bottom: 8px;
-        padding-left: 20px;
-        position: relative;
-        color: #7f1d1d;
-        font-weight: 500;
-    }
-
-    .problem-signs-list li::before {
-        content: '⚠️';
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-
-    /* FAQs com accordion */
-    amp-accordion {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 24px;
-    }
-
-    amp-accordion section {
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    amp-accordion section:last-child {
-        border-bottom: none;
-    }
-
-    amp-accordion h4 {
-        font-size: 16px;
-        padding: 16px;
-        margin: 0;
-        background-color: #fef2f2;
-        font-weight: 600;
-        color: #151C25;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-
-    amp-accordion h4:hover {
-        background-color: #fee2e2;
-    }
-
-    amp-accordion .faq-content {
-        padding: 16px;
-        background-color: #fff;
-        color: #4a5568;
-        line-height: 1.6;
-    }
-
-    /* Nota informativa */
-    .info-note {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        margin: 24px 0;
-        border-left: 4px solid #2563eb;
-        color: #1e40af;
-    }
-
-    /* Nota Manual */
-    .info-note-manual {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        margin: 24px 0;
-        border-left: 4px solid #DC2626;
-        color: #991b1b;
-    }
-
-    /* Footer */
-    .article-footer {
-        font-size: 12px;
-        color: #718096;
-        margin-top: 32px;
-        padding-top: 16px;
-        border-top: 1px solid #e2e8f0;
-        background-color: #f8fafc;
-        padding: 16px;
-        border-radius: 8px;
-    }
-
-    .article-footer p {
-        margin-bottom: 4px;
-    }
-
-    .article-footer a {
-        color: #DC2626;
-        text-decoration: none;
-    }
-
-    .article-footer a:hover {
-        text-decoration: underline;
-    }
-
-    /* Responsivo */
-    @media (max-width: 768px) {
-        .container {
-            padding: 12px;
-        }
-
-        h1 {
-            font-size: 24px;
-        }
-
-        h2 {
-            font-size: 20px;
-        }
-
-        .motorcycle-tire-specs {
-            grid-template-columns: 1fr;
-        }
-
-        .tire-spec-body,
-        .motorcycle-recommendation {
-            padding: 16px;
-        }
-
-        .motorcycle-pressure-table {
-            font-size: 13px;
-        }
-
-        .motorcycle-pressure-table th,
-        .motorcycle-pressure-table td {
-            padding: 8px 4px;
-        }
-
-        .step-number {
-            width: 36px;
-            height: 36px;
-            font-size: 14px;
-        }
-
-        .motorcycle-impact-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .alternative-tires-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .equipment-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .ad-container {
-            margin: 24px 0;
-            padding: 12px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        h1 {
-            font-size: 22px;
-        }
-
-        h2 {
-            font-size: 18px;
-        }
-
-        .spec-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-        }
-
-        .spec-value {
-            align-self: flex-end;
-        }
-
-        .pressure-front-rear {
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .critical-alert-title,
-        .critical-alert-content {
-            padding-left: 20px;
-        }
-
-        .critical-safety-alert::before {
-            left: 8px;
-        }
-    }
-</style>
-
-<!-- CSS adicional para a tabela (adicionar ao style amp-custom existente) -->
-<style>
-    .pressure-table-container {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.1));
-        border-radius: 12px;
-        padding: 20px;
-        margin: 24px 0;
-        overflow-x: auto;
-        border: 1px solid rgba(220, 38, 38, 0.2);
-    }
-
-    .motorcycle-pressure-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-        margin: 0;
-        min-width: 700px;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .motorcycle-pressure-table th {
-        background: linear-gradient(135deg, #DC2626, #991b1b);
-        color: white;
-        padding: 14px 10px;
-        text-align: center;
-        font-weight: 600;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .motorcycle-pressure-table th:first-child {
-        text-align: left;
-        padding-left: 16px;
-    }
-
-    .motorcycle-pressure-table td {
-        padding: 12px 10px;
-        text-align: center;
-        border-bottom: 1px solid #f1f5f9;
-        vertical-align: middle;
-    }
-
-    .condition-cell {
-        text-align: left !important;
-        padding-left: 16px !important;
-        font-weight: 500;
-        color: #374151;
-    }
-
-    .condition-icon {
-        margin-right: 8px;
-        font-size: 16px;
-    }
-
-    .occupants-cell {
-        text-align: left !important;
-        min-width: 140px;
-    }
-
-    .occupants-text {
-        font-weight: 500;
-        color: #1f2937;
-    }
-
-    .luggage-info {
-        color: #6b7280;
-        font-style: italic;
-    }
-
-    .pressure-cell {
-        font-weight: 600;
-        min-width: 100px;
-    }
-
-    .pressure-highlight {
-        background: linear-gradient(135deg, #DC2626, #991b1b);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 700;
-        display: inline-block;
-        min-width: 80px;
-    }
-
-    .observation-cell {
-        text-align: left !important;
-        max-width: 200px;
-        color: #4b5563;
-        font-size: 12px;
-        line-height: 1.4;
-    }
-
-    .motorcycle-pressure-table tr:nth-child(even) {
-        background-color: #f8fafc;
-    }
-
-    .motorcycle-pressure-table tr:hover {
-        background-color: rgba(220, 38, 38, 0.05);
-    }
-
-    /* Legenda */
-    .table-legend {
-        background: #f8fafc;
-        border-radius: 8px;
-        padding: 16px;
-        margin-top: 16px;
-        border: 1px solid #e2e8f0;
-    }
-
-    .table-legend h3 {
-        margin: 0 0 12px 0;
-        color: #1f2937;
-        font-size: 16px;
-    }
-
-    .legend-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 12px;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px;
-        background: white;
-        border-radius: 6px;
-        border: 1px solid #e5e7eb;
-    }
-
-    .legend-icon {
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-
-    .legend-item span:last-child {
-        font-size: 13px;
-        color: #374151;
-    }
-
-    /* Responsivo */
-    @media (max-width: 768px) {
-        .motorcycle-pressure-table {
-            font-size: 12px;
-            min-width: 600px;
-        }
-
-        .motorcycle-pressure-table th,
-        .motorcycle-pressure-table td {
-            padding: 8px 6px;
-        }
-
-        .condition-cell,
-        .observation-cell {
-            padding-left: 12px !important;
-        }
-
-        .pressure-highlight {
-            padding: 4px 8px;
-            font-size: 11px;
-            min-width: 70px;
-        }
-
-        .legend-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .motorcycle-pressure-table {
-            min-width: 500px;
-            font-size: 11px;
-        }
-
-        .pressure-table-container {
-            padding: 12px;
-        }
-    }
+/* CSS OTIMIZADO PARA GUIA DE CALIBRAGEM MOTOCICLETAS */
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;color:#333;margin:0;background:#fff}
+.container{max-width:800px;margin:0 auto;padding:16px}
+
+/* TYPOGRAPHY */
+h1{font-size:28px;font-weight:700;margin-bottom:16px;color:#151C25;line-height:1.3}
+h2{font-size:22px;font-weight:600;margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid #DC2626;color:#151C25}
+h3{font-size:18px;font-weight:600;margin:20px 0 12px;color:#151C25}
+h4{font-size:16px;font-weight:600;margin:16px 0 8px;color:#1f2937}
+p{margin-bottom:16px;line-height:1.7}
+
+/* SEÇÕES DE CONTEÚDO */
+.content-section{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin:24px 0;box-shadow:0 2px 4px rgba(0,0,0,0.05)}
+.section-header{display:flex;align-items:center;margin-bottom:20px}
+.section-icon{font-size:24px;margin-right:12px}
+.section-title{font-size:18px;font-weight:600;color:#1f2937}
+
+/* ESPECIFICAÇÕES TÉCNICAS MOTOCICLETAS */
+.motorcycle-specs{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+.motorcycle-spec{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:16px;position:relative}
+.motorcycle-spec.front{border-color:#f59e0b;background:#fffbeb}
+.motorcycle-spec.rear{border-color:#dc2626;background:#fef2f2}
+.tire-type{font-size:14px;font-weight:600;color:#DC2626;margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center}
+.tire-type.front{color:#d97706}
+.tire-type.rear{color:#dc2626}
+.spec-row{display:flex;justify-content:space-between;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,0.1)}
+.spec-row:last-child{border-bottom:none;margin-bottom:0}
+.spec-label{font-size:13px;color:#6b7280;font-weight:500}
+.spec-value{font-size:13px;font-weight:600;color:#1f2937}
+.power-indicator{position:absolute;top:-8px;right:12px;background:#dc2626;color:white;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:600}
+
+/* TABELA DE PRESSÕES MOTOCICLETAS */
+.motorcycle-pressure-table{width:100%;border-collapse:collapse;margin:20px 0;border-radius:8px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.motorcycle-pressure-table th{background:linear-gradient(135deg,#DC2626,#b91c1c);color:white;padding:12px 8px;text-align:center;font-size:12px;font-weight:600}
+.motorcycle-pressure-table td{padding:10px 8px;border-bottom:1px solid #f1f5f9;text-align:center;font-size:12px}
+.motorcycle-pressure-table tr:nth-child(even){background:#fef2f2}
+.motorcycle-pressure-table tr.urban{background:#f0fdf4}
+.motorcycle-pressure-table tr.sport{background:#fef2f2}
+.motorcycle-pressure-table tr.touring{background:#eff6ff}
+.pressure-value{background:#fecaca;color:#7f1d1d;padding:4px 8px;border-radius:12px;font-weight:700;font-size:11px;display:inline-block}
+.pressure-value.front{background:#fed7aa;color:#9a3412}
+.pressure-value.rear{background:#fecaca;color:#7f1d1d}
+
+/* PROCEDIMENTO MOTOCICLETAS */
+.motorcycle-procedure{margin:20px 0}
+.motorcycle-step{display:flex;margin-bottom:24px;align-items:flex-start}
+.motorcycle-step-number{flex-shrink:0;width:40px;height:40px;background:linear-gradient(135deg,#DC2626,#b91c1c);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;margin-right:16px}
+.motorcycle-step-content{flex:1}
+.motorcycle-step-title{font-size:16px;font-weight:600;color:#1f2937;margin-bottom:8px}
+.motorcycle-step-desc{font-size:14px;color:#4b5563;margin-bottom:12px}
+.motorcycle-safety-note{background:#fef2f2;border-left:3px solid #dc2626;padding:8px 12px;margin:8px 0;font-size:12px;color:#7f1d1d;font-weight:500}
+.motorcycle-safety-note:before{content:"⚠️ ";font-weight:bold}
+.motorcycle-tips{list-style:none;padding:0;margin:0}
+.motorcycle-tips li{background:#f0f9ff;border-left:3px solid #0EA5E9;padding:8px 12px;margin-bottom:6px;font-size:13px}
+.motorcycle-tips li:before{content:"🏍️";margin-right:8px}
+
+/* RECOMENDAÇÕES DE PILOTAGEM */
+.riding-recommendations{display:grid;grid-template-columns:1fr;gap:16px;margin:20px 0}
+.riding-card{border:1px solid #e5e7eb;border-radius:8px;padding:16px;position:relative;overflow:hidden}
+.riding-card.urban{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#22c55e}
+.riding-card.highway{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#3b82f6}
+.riding-card.sport{background:linear-gradient(135deg,#fef2f2,#fecaca);border-color:#ef4444}
+.riding-card.track{background:linear-gradient(135deg,#fdf2f8,#fce7f3);border-color:#ec4899}
+.riding-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.riding-title{font-size:14px;font-weight:600;color:#1f2937;display:flex;align-items:center}
+.riding-pressure{background:rgba(255,255,255,0.9);color:#1f2937;padding:4px 8px;border-radius:12px;font-weight:700;font-size:12px}
+.riding-desc{font-size:13px;color:#374151;margin-bottom:8px}
+.riding-tip{background:rgba(255,255,255,0.7);padding:8px 12px;border-radius:6px;font-size:12px;color:#1f2937}
+.riding-frequency{font-size:11px;color:#6b7280;margin-top:8px;font-style:italic}
+.safety-level{position:absolute;top:8px;right:8px;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600}
+.safety-level.alto{background:#fecaca;color:#7f1d1d}
+.safety-level.medio{background:#fed7aa;color:#9a3412}
+.safety-level.baixo{background:#d1fae5;color:#14532d}
+
+/* COMPARATIVO DE IMPACTOS */
+.impact-comparison{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:20px 0}
+.impact-scenario{border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center}
+.impact-scenario.baixa{background:#fef2f2;border-color:#fca5a5;color:#7f1d1d}
+.impact-scenario.ideal{background:#f0fdf4;border-color:#86efac;color:#14532d}
+.impact-scenario.alta{background:#fffbeb;border-color:#fcd34d;color:#92400e}
+.impact-icon{font-size:32px;margin-bottom:12px}
+.impact-scenario-title{font-size:14px;font-weight:600;margin-bottom:8px}
+.impact-effects{list-style:none;padding:0;margin:8px 0}
+.impact-effects li{font-size:11px;margin-bottom:4px;padding-left:12px;position:relative}
+.impact-effects li:before{content:"•";position:absolute;left:0;font-weight:bold}
+
+/* PNEUS ALTERNATIVOS MOTOCICLETAS */
+.motorcycle-alternatives{display:grid;grid-template-columns:1fr;gap:16px;margin:20px 0}
+.alternative-category{border:1px solid #e5e7eb;border-radius:8px;padding:16px;background:#fff}
+.alternative-category.sport{background:#fef2f2;border-color:#fca5a5}
+.alternative-category.touring{background:#eff6ff;border-color:#93c5fd}
+.alternative-category.street{background:#f0fdf4;border-color:#86efac}
+.alternative-title{font-size:14px;font-weight:600;color:#1f2937;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center}
+.alternative-brands{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.alternative-brand{background:#f1f5f9;padding:8px 12px;border-radius:6px;text-align:center;font-size:12px;font-weight:500;color:#334155}
+
+/* EQUIPAMENTOS MOTOCICLETAS */
+.motorcycle-equipment{display:grid;grid-template-columns:1fr;gap:12px;margin:20px 0}
+.equipment-item{border:1px solid #e5e7eb;border-radius:8px;padding:16px;background:#f8fafc}
+.equipment-item.motorcycle-specific{background:#fef2f2;border-color:#fca5a5}
+.equipment-header{display:flex;align-items:center;justify-content:between;margin-bottom:8px}
+.equipment-name{font-size:14px;font-weight:600;color:#1f2937;flex:1}
+.equipment-importance{font-size:11px;padding:2px 6px;border-radius:10px;font-weight:600}
+.importance-essential{background:#fecaca;color:#7f1d1d}
+.importance-important{background:#fed7aa;color:#9a3412}
+.importance-recommended{background:#d1fae5;color:#14532d}
+.importance-optional{background:#e5e7eb;color:#374151}
+.equipment-desc{font-size:12px;color:#6b7280;margin-bottom:8px}
+.equipment-price{font-size:11px;color:#059669;font-weight:600}
+.motorcycle-specific-badge{background:#dc2626;color:white;padding:2px 6px;border-radius:10px;font-size:10px;margin-left:8px}
+
+/* CUIDADOS ESPECIAIS */
+.special-care{display:grid;grid-template-columns:1fr;gap:16px;margin:20px 0}
+.care-card{border:1px solid #e5e7eb;border-radius:8px;padding:16px;background:#f8fafc}
+.care-header{display:flex;align-items:center;margin-bottom:12px}
+.care-icon{width:28px;height:28px;border-radius:50%;background:#DC2626;color:white;display:flex;align-items:center;justify-content:center;margin-right:12px;font-size:14px}
+.care-title{font-size:14px;font-weight:600;color:#1f2937}
+.care-frequency{font-size:11px;color:#6b7280;background:#fff;padding:2px 6px;border-radius:10px;margin-left:8px}
+.care-items{list-style:none;padding:0;margin:8px 0 0}
+.care-items li{font-size:12px;color:#374151;margin-bottom:4px;padding-left:12px;position:relative}
+.care-items li:before{content:"🔧";position:absolute;left:0}
+
+/* SINAIS DE PROBLEMAS */
+.problem-signs{display:grid;grid-template-columns:1fr;gap:12px;margin:20px 0}
+.problem-card{border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+.problem-card.alta{background:#fef2f2;border-color:#fca5a5}
+.problem-card.media{background:#fffbeb;border-color:#fcd34d}
+.problem-card.baixa{background:#eff6ff;border-color:#93c5fd}
+.problem-header{display:flex;align-items:center;margin-bottom:8px}
+.problem-icon{margin-right:8px;font-size:16px}
+.problem-symptom{font-size:14px;font-weight:600;color:#1f2937}
+.problem-urgency{font-size:10px;padding:2px 6px;border-radius:10px;margin-left:8px}
+.urgency-alta{background:#fecaca;color:#7f1d1d}
+.urgency-media{background:#fed7aa;color:#9a3412}
+.urgency-baixa{background:#dbeafe;color:#1e40af}
+.problem-desc{font-size:12px;color:#6b7280;margin-bottom:8px}
+.problem-solutions{list-style:none;padding:0;margin:0}
+.problem-solutions li{font-size:11px;margin-bottom:3px;padding-left:12px;position:relative}
+.problem-solutions li:before{content:"→";position:absolute;left:0;font-weight:bold;color:#dc2626}
+
+/* ALERTAS DE SEGURANÇA MOTOCICLETAS */
+.motorcycle-alerts{margin:20px 0}
+.motorcycle-alert{border-radius:8px;padding:16px;margin:16px 0;border-left:4px solid}
+.motorcycle-alert.critico{background:#fef2f2;border-color:#dc2626;color:#7f1d1d}
+.motorcycle-alert.warning{background:#fffbeb;border-color:#f59e0b;color:#92400e}
+.motorcycle-alert.info{background:#eff6ff;border-color:#3b82f6;color:#1e3a8a}
+.alert-title{font-weight:600;margin-bottom:8px;font-size:14px;display:flex;align-items:center}
+.alert-desc{font-size:13px;margin-bottom:8px}
+.alert-consequences{list-style:none;padding:0;margin:8px 0}
+.alert-consequences li{font-size:12px;margin-bottom:4px;padding-left:16px;position:relative}
+.alert-consequences li:before{content:"⚠️";position:absolute;left:0}
+.alert-actions{list-style:none;padding:0;margin:0}
+.alert-actions li{font-size:12px;margin-bottom:4px;padding-left:16px;position:relative}
+.alert-actions li:before{content:"✓";position:absolute;left:0;font-weight:bold;color:#16a34a}
+
+/* MANUTENÇÃO PREVENTIVA */
+.maintenance-grid{display:grid;grid-template-columns:1fr;gap:16px;margin:20px 0}
+.maintenance-card{border:1px solid #e5e7eb;border-radius:8px;padding:16px;background:#f0fdf4;border-color:#86efac}
+.maintenance-header{display:flex;align-items:center;margin-bottom:12px}
+.maintenance-icon{width:28px;height:28px;border-radius:50%;background:#16a34a;color:white;display:flex;align-items:center;justify-content:center;margin-right:12px;font-size:14px}
+.maintenance-title{font-size:14px;font-weight:600;color:#1f2937}
+.maintenance-difficulty{font-size:10px;padding:2px 6px;border-radius:10px;margin-left:8px;background:#d1fae5;color:#14532d}
+.maintenance-tips{list-style:none;padding:0;margin:8px 0 0}
+.maintenance-tips li{font-size:12px;color:#374151;margin-bottom:4px;padding-left:12px;position:relative}
+.maintenance-tips li:before{content:"🔧";position:absolute;left:0}
+
+/* FAQ MOTOCICLETAS */
+.motorcycle-faq amp-accordion section{border-bottom:1px solid #e5e7eb}
+.motorcycle-faq amp-accordion h4{background:#fef2f2;margin:0;padding:16px;font-size:14px;font-weight:600;color:#1f2937;cursor:pointer;border-left:3px solid #dc2626}
+.motorcycle-faq amp-accordion h4:hover{background:#fecaca}
+.faq-content{padding:16px;font-size:13px;color:#374151;line-height:1.6}
+
+/* CONSIDERAÇÕES FINAIS MOTOCICLETAS */
+.motorcycle-final{background:linear-gradient(135deg,#fef2f2,#fecaca);border:1px solid #dc2626;border-radius:12px;padding:24px;margin:24px 0;text-align:center}
+.motorcycle-final-title{font-size:18px;font-weight:700;color:#7f1d1d;margin-bottom:16px}
+.motorcycle-final-text{font-size:14px;color:#991b1b;line-height:1.7}
+
+/* RESPONSIVIDADE MOTOCICLETAS */
+@media (max-width: 480px) {
+    .motorcycle-specs{grid-template-columns:1fr}
+    .motorcycle-pressure-table{font-size:10px}
+    .motorcycle-pressure-table th,.motorcycle-pressure-table td{padding:6px 4px}
+    .impact-comparison{grid-template-columns:1fr}
+    .alternative-brands{grid-template-columns:1fr}
+    .riding-recommendations{grid-template-columns:1fr}
+}
 </style>
 @endsection
 
 @section('content')
+@php
+// Extração de dados das ViewModels para motocicletas
+$vehicleInfo = $article->getData()['vehicle_info'] ?? [];
+$vehicleName = $vehicleInfo['full_name'] ?? 'Motocicleta';
+$introduction = $article->getData()['introduction'] ?? '';
+$tireSpecs = $article->getData()['tire_specifications'] ?? [];
+$pressureTable = $article->getData()['pressure_table'] ?? [];
+$calibrationProcedure = $article->getData()['calibration_procedure'] ?? [];
+$usageRecommendations = $article->getData()['usage_recommendations'] ?? [];
+$impactComparison = $article->getData()['impact_comparison'] ?? [];
+$alternativeTires = $article->getData()['alternative_tires'] ?? [];
+$requiredEquipment = $article->getData()['required_equipment'] ?? [];
+$specialCare = $article->getData()['special_care'] ?? [];
+$problemSigns = $article->getData()['problem_signs'] ?? [];
+$safetyAlerts = $article->getData()['safety_alerts'] ?? [];
+$maintenanceTips = $article->getData()['maintenance_tips'] ?? [];
+$faq = $article->getData()['faq'] ?? [];
+$finalConsiderations = $article->getData()['final_considerations'] ?? '';
+
+// Flags auxiliares para motocicletas
+$isSport = $tireSpecs['is_sport'] ?? false;
+$enginePower = $tireSpecs['engine_power'] ?? '';
+$isPremium = $vehicleInfo['is_premium'] ?? false;
+@endphp
+
 <div class="container">
-    <article>
-        <!-- Cabeçalho -->
-        <h1>{{ $article->title }}</h1>
-        <div class="article-meta">
-            @if(!empty($article->formated_updated_at))
-            <p>Atualizado em: {{ $article->formated_updated_at }}</p>
-            @endif
+    <!-- CABEÇALHO MOTOCICLETAS -->
+    <header>
+        <h1>{{ $article->getData()['seo_data']['h1'] ?? "Como Calibrar Pneus da {$vehicleName} – Guia para Motociclistas" }}</h1>
+        <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">
+            🏍️ Guia especializado para motociclistas | Atualizado em: {{ $article->getData()['formated_updated_at'] ?? '14 de agosto de 2025' }}
+        </p>
+    </header>
+
+    <!-- INTRODUÇÃO -->
+    @if(!empty($introduction))
+    <div style="margin-bottom: 32px;">
+        <p style="font-size: 16px; color: #374151; line-height: 1.7;">
+            {!! nl2br(e($introduction)) !!}
+        </p>
+    </div>
+    @endif
+
+    <!-- ESPECIFICAÇÕES TÉCNICAS DOS PNEUS MOTOCICLETAS -->
+    @if(!empty($tireSpecs))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🔧</span>
+            <span class="section-title">{{ $tireSpecs['title'] ?? 'Especificações Técnicas dos Pneus Originais' }}</span>
         </div>
-
-        <!-- Introdução -->
-        @if(!empty($article->introduction))
-        <p>{{ $article->introduction }}</p>
-        @endif
-
-        <!-- Alerta de Segurança Crítico para Motocicletas -->
-        @if(!empty($article->critical_alerts))
-        @php $criticalAlert = collect($article->critical_alerts)->firstWhere('is_critical', true) @endphp
-        @if($criticalAlert)
-        <div class="critical-safety-alert">
-            <div class="critical-alert-title">{{ $criticalAlert['title'] }}</div>
-            <div class="critical-alert-content">
-                {{ $criticalAlert['description'] }} {{ $criticalAlert['consequence'] }}
-            </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $tireSpecs['description'] ?? '' }}</p>
+        
+        @if(!empty($enginePower))
+        <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
+            <strong style="color: #dc2626;">🏍️ Potência do Motor: {{ $enginePower }}</strong>
         </div>
         @endif
-        @endif
-
-        <!-- 🥇 ANÚNCIO 1: Após introdução -->
-        <div class="ad-container">
-            <div class="ad-label">Publicidade</div>
-            <amp-ad width="100vw" height="320" type="adsense"
-                data-ad-client="{{ Config::get('services.google_adsense.id') }}" data-ad-slot="7414648059"
-                data-auto-format="rspv" data-full-width>
-                <div overflow></div>
-            </amp-ad>
-        </div>
-
-        <!-- Especificações dos Pneus da Motocicleta -->
-        @if(!empty($article->tire_specifications))
-        <h2>🏍️ Especificações dos Pneus Originais</h2>
-
-        <div class="motorcycle-tire-specs">
-            @if(!empty($article->tire_specifications['front_tire']))
-            <div class="tire-spec-card">
-                <div class="tire-spec-header">
-                    <span class="icon">🔄</span>
-                    Pneu Dianteiro
-                </div>
-                <div class="tire-spec-body">
-                    @php $frontTire = $article->tire_specifications['front_tire'] @endphp
-                    @if(!empty($frontTire['size']))
-                    <div class="spec-item">
-                        <span class="spec-label">Medida:</span>
-                        <span class="spec-value">{{ $frontTire['size'] }}</span>
+        
+        <div class="motorcycle-specs">
+            <!-- Pneu Dianteiro -->
+            @if(!empty($tireSpecs['front_tire']))
+            <div class="motorcycle-spec front">
+                @if(!empty($enginePower))
+                <div class="power-indicator">{{ $enginePower }}</div>
+                @endif
+                <div class="tire-type front">🔸 Pneu Dianteiro</div>
+                @foreach([
+                    'size' => 'Medida',
+                    'type' => 'Tipo',
+                    'brand' => 'Marca Original', 
+                    'load_index' => 'Índice Carga',
+                    'speed_rating' => 'Índice Velocidade',
+                    'recommended_pressure' => 'Pressão Recomendada',
+                    'max_pressure' => 'Pressão Máxima'
+                ] as $key => $label)
+                    @if(!empty($tireSpecs['front_tire'][$key]))
+                    <div class="spec-row">
+                        <span class="spec-label">{{ $label }}:</span>
+                        <span class="spec-value">{{ $tireSpecs['front_tire'][$key] }}</span>
                     </div>
                     @endif
-                    @if(!empty($frontTire['load_index']))
-                    <div class="spec-item">
-                        <span class="spec-label">Índice de Carga:</span>
-                        <span class="spec-value">{{ $frontTire['load_index'] }}</span>
-                    </div>
-                    @endif
-                    @if(!empty($frontTire['speed_rating']))
-                    <div class="spec-item">
-                        <span class="spec-label">Índice de Velocidade:</span>
-                        <span class="spec-value">{{ $frontTire['speed_rating'] }}</span>
-                    </div>
-                    @endif
-                    @if(!empty($frontTire['construction']))
-                    <div class="spec-item">
-                        <span class="spec-label">Construção:</span>
-                        <span class="spec-value">{{ $frontTire['construction'] }}</span>
-                    </div>
-                    @endif
-                    @if(!empty($frontTire['original_brands']))
-                    <div class="spec-item">
-                        <span class="spec-label">Marca Original:</span>
-                        <span class="spec-value">{{ $frontTire['original_brands'] }}</span>
-                    </div>
-                    @endif
-                </div>
+                @endforeach
+                @if(!empty($tireSpecs['front_tire']['characteristics']))
+                <p style="font-size: 11px; color: #6b7280; margin-top: 8px; font-style: italic;">
+                    {{ $tireSpecs['front_tire']['characteristics'] }}
+                </p>
+                @endif
             </div>
             @endif
 
-            @if(!empty($article->tire_specifications['rear_tire']))
-            <div class="tire-spec-card">
-                <div class="tire-spec-header">
-                    <span class="icon">🔙</span>
-                    Pneu Traseiro
-                </div>
-                <div class="tire-spec-body">
-                    @php $rearTire = $article->tire_specifications['rear_tire'] @endphp
-                    @if(!empty($rearTire['size']))
-                    <div class="spec-item">
-                        <span class="spec-label">Medida:</span>
-                        <span class="spec-value">{{ $rearTire['size'] }}</span>
+            <!-- Pneu Traseiro -->
+            @if(!empty($tireSpecs['rear_tire']))
+            <div class="motorcycle-spec rear">
+                <div class="tire-type rear">🔻 Pneu Traseiro</div>
+                @foreach([
+                    'size' => 'Medida',
+                    'type' => 'Tipo',
+                    'brand' => 'Marca Original',
+                    'load_index' => 'Índice Carga', 
+                    'speed_rating' => 'Índice Velocidade',
+                    'recommended_pressure' => 'Pressão Recomendada',
+                    'max_pressure' => 'Pressão Máxima'
+                ] as $key => $label)
+                    @if(!empty($tireSpecs['rear_tire'][$key]))
+                    <div class="spec-row">
+                        <span class="spec-label">{{ $label }}:</span>
+                        <span class="spec-value">{{ $tireSpecs['rear_tire'][$key] }}</span>
                     </div>
                     @endif
-                    @if(!empty($rearTire['load_index']))
-                    <div class="spec-item">
-                        <span class="spec-label">Índice de Carga:</span>
-                        <span class="spec-value">{{ $rearTire['load_index'] }}</span>
-                    </div>
-                    @endif
-                    @if(!empty($rearTire['speed_rating']))
-                    <div class="spec-item">
-                        <span class="spec-label">Índice de Velocidade:</span>
-                        <span class="spec-value">{{ $rearTire['speed_rating'] }}</span>
-                    </div>
-                    @endif
-                    @if(!empty($rearTire['construction']))
-                    <div class="spec-item">
-                        <span class="spec-label">Construção:</span>
-                        <span class="spec-value">{{ $rearTire['construction'] }}</span>
-                    </div>
-                    @endif
-                    @if(!empty($rearTire['original_brands']))
-                    <div class="spec-item">
-                        <span class="spec-label">Marca Original:</span>
-                        <span class="spec-value">{{ $rearTire['original_brands'] }}</span>
-                    </div>
-                    @endif
-                </div>
+                @endforeach
+                @if(!empty($tireSpecs['rear_tire']['characteristics']))
+                <p style="font-size: 11px; color: #6b7280; margin-top: 8px; font-style: italic;">
+                    {{ $tireSpecs['rear_tire']['characteristics'] }}
+                </p>
+                @endif
             </div>
             @endif
         </div>
 
-        @if(!empty($article->tire_specifications['observation']))
-        <div class="info-note">
-            <strong>⚠️ Importante:</strong> {{ $article->tire_specifications['observation'] }}
+        @if(!empty($tireSpecs['note']))
+        <div class="motorcycle-alert info">
+            <div class="alert-title">📋 Observação Técnica</div>
+            <div class="alert-desc">{{ $tireSpecs['note'] }}</div>
         </div>
         @endif
+
+        @if($isSport)
+        <div class="motorcycle-alert critico">
+            <div class="alert-title">🏁 Motocicleta Esportiva - Atenção Especial</div>
+            <div class="alert-desc">
+                Para motocicletas esportivas, use APENAS pneus com especificação Z ou W. 
+                Pressão inadequada pode causar perda de aderência a altas velocidades.
+            </div>
+        </div>
         @endif
+    </div>
+    @endif
 
+    <!-- TABELA DE PRESSÕES POR CONDIÇÃO -->
+    @if(!empty($pressureTable['conditions']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">📊</span>
+            <span class="section-title">{{ $pressureTable['title'] ?? 'Tabela de Pressões por Condição de Uso' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $pressureTable['description'] ?? '' }}</p>
 
-        <!-- Tabela de Pressões Recomendadas -->
-        @if(!empty($article->pressure_table))
-        <h2>📊 Pressões Recomendadas</h2>
-
-        <div class="pressure-table-container">
-            <table class="motorcycle-pressure-table">
-                <thead>
-                    <tr>
-                        <th>Condição de Uso</th>
-                        <th>Ocupantes</th>
-                        <th>Dianteiro</th>
-                        <th>Traseiro</th>
-                        <th>Observações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($article->pressure_table as $condition)
-                    <tr class="{{ $condition['css_class'] ?? 'bg-white' }}">
-                        <td class="condition-cell">
-                            @switch($condition['condition'] ?? '')
-                            @case('Uso Solo (Rua)')
-                            <span class="condition-icon">🏍️</span>
-                            @break
-                            @case('Com Passageiro (Rua)')
-                            <span class="condition-icon">👥</span>
-                            @break
-                            @case('Pilotagem Esportiva')
-                            <span class="condition-icon">🏁</span>
-                            @break
-                            @case('Com Carga ou Bagagem')
-                            <span class="condition-icon">🎒</span>
-                            @break
+        <table class="motorcycle-pressure-table">
+            <thead>
+                <tr>
+                    <th>Situação de Pilotagem</th>
+                    <th>Ocupação</th>
+                    <th>Bagagem</th>
+                    <th>Dianteiro</th>
+                    <th>Traseiro</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($pressureTable['conditions'] as $condition)
+                @php
+                $rowClass = '';
+                $situation = strtolower($condition['situation'] ?? '');
+                if (str_contains($situation, 'urbano')) $rowClass = 'urban';
+                elseif (str_contains($situation, 'esportiv')) $rowClass = 'sport';
+                elseif (str_contains($situation, 'viagem')) $rowClass = 'touring';
+                @endphp
+                <tr class="{{ $rowClass }}">
+                    <td style="font-weight: 600;">
+                        @switch($rowClass)
+                            @case('urban')
+                                🏙️ {{ $condition['situation'] ?? '' }}
+                                @break
+                            @case('sport')
+                                🏁 {{ $condition['situation'] ?? '' }}
+                                @break
+                            @case('touring')
+                                🛣️ {{ $condition['situation'] ?? '' }}
+                                @break
                             @default
-                            <span class="condition-icon">🏍️</span>
-                            @endswitch
-                            <strong>{{ $condition['condition'] ?? '' }}</strong>
-                        </td>
-                        <td class="occupants-cell">
-                            <span class="occupants-text">{{ $condition['occupants'] ?? '' }}</span>
-                            @if(!empty($condition['luggage']))
-                            <br><small class="luggage-info">{{ $condition['luggage'] }}</small>
-                            @endif
-                        </td>
-                        <td class="pressure-cell">
-                            <span class="pressure-highlight">{{ $condition['front_pressure'] ?? '' }}</span>
-                        </td>
-                        <td class="pressure-cell">
-                            <span class="pressure-highlight">{{ $condition['rear_pressure'] ?? '' }}</span>
-                        </td>
-                        <td class="observation-cell">
-                            <small>{{ $condition['observation'] ?? '' }}</small>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                🏍️ {{ $condition['situation'] ?? '' }}
+                        @endswitch
+                    </td>
+                    <td>{{ $condition['occupants'] ?? '' }}</td>
+                    <td>{{ $condition['luggage'] ?? '' }}</td>
+                    <td><span class="pressure-value front">{{ $condition['front_pressure'] ?? '' }}</span></td>
+                    <td><span class="pressure-value rear">{{ $condition['rear_pressure'] ?? '' }}</span></td>
+                    <td style="font-size: 11px;">{{ $condition['note'] ?? '' }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
+
+    <!-- PROCEDIMENTO COMPLETO DE CALIBRAGEM MOTOCICLETAS -->
+    @if(!empty($calibrationProcedure['steps']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">📋</span>
+            <span class="section-title">{{ $calibrationProcedure['title'] ?? 'Procedimento Completo de Calibragem' }}</span>
         </div>
-
-        <!-- Legenda da Tabela -->
-        <div class="table-legend">
-            <h3>📋 Legenda:</h3>
-            <div class="legend-grid">
-                <div class="legend-item">
-                    <span class="legend-icon">🏍️</span>
-                    <span><strong>Uso Solo:</strong> Pilotagem urbana e rodoviária normal</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-icon">👥</span>
-                    <span><strong>Com Passageiro:</strong> Piloto + garupa em trajetos normais</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-icon">🏁</span>
-                    <span><strong>Esportiva:</strong> Pilotagem mais agressiva, curvas e acelerações</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-icon">🎒</span>
-                    <span><strong>Com Carga:</strong> Viagens longas ou bagagem pesada</span>
-                </div>
-            </div>
-        </div>
-
-
-        @endif
-
-        <!-- Recomendações por Tipo de Uso -->
-        @if(!empty($article->usage_recommendations))
-        <h2>💡 Recomendações por Tipo de Uso</h2>
-
-        @foreach($article->usage_recommendations as $recommendation)
-        <div class="motorcycle-recommendation">
-            <div class="recommendation-title">
-
-                {{ $recommendation['category'] }}
-            </div>
-            <div class="recommendation-pressure">{{ $recommendation['recommended_pressure'] ?? 'Conforme tabela' }}
-            </div>
-            <p>{{ $recommendation['description'] ?? '' }}</p>
-            @if(!empty($recommendation['technical_tip']))
-            <div class="info-note">
-                <strong>🔧 Dica técnica:</strong> {{ $recommendation['technical_tip'] }}
-            </div>
-            @endif
-        </div>
-        @endforeach
-        @endif
-
-        <!-- 🥇 ANÚNCIO 2: Após recomendações -->
-        <div class="ad-container">
-            <div class="ad-label">Publicidade</div>
-            <amp-ad width="100vw" height="320" type="adsense"
-                data-ad-client="{{ Config::get('services.google_adsense.id') }}" data-ad-slot="8344586349"
-                data-auto-format="rspv" data-full-width>
-                <div overflow></div>
-            </amp-ad>
-        </div>
-
-        <!-- Gráfico de Impacto da Calibragem -->
-        @if(!empty($article->impact_comparison))
-        <h2>📈 Impacto da Calibragem no Desempenho</h2>
-
-        <div class="motorcycle-impact-grid">
-            @php $comparison = $article->impact_comparison @endphp
-
-            <!-- Subcalibrado -->
-            @if(!empty($comparison['under_inflated']))
-            <div class="motorcycle-impact-card subcalibrado">
-                <h3 class="impact-title">❌ Subcalibrado</h3>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Desgaste dos Pneus</div>
-                    <div class="impact-value" style="color: #DC2626;">{{ $comparison['under_inflated']['wear'] }}%</div>
-                    <div class="impact-description">Maior desgaste</div>
-                </div>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Consumo de Combustível</div>
-                    <div class="impact-value" style="color: #DC2626;">+{{ $comparison['under_inflated']['consumption']
-                        }}%</div>
-                    <div class="impact-description">Aumento no consumo</div>
-                </div>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Estabilidade</div>
-                    <div class="impact-value" style="color: #DC2626;">{{
-                        $comparison['under_inflated']['stability_asphalt'] }}%</div>
-                    <div class="impact-description">Redução da estabilidade</div>
-                </div>
-            </div>
-            @endif
-
-            <!-- Calibragem Ideal -->
-            @if(!empty($comparison['ideal']))
-            <div class="motorcycle-impact-card ideal">
-                <h3 class="impact-title">✅ Calibragem Ideal</h3>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Desgaste dos Pneus</div>
-                    <div class="impact-value" style="color: #059669;">{{ $comparison['ideal']['wear'] }}%</div>
-                    <div class="impact-description">Desgaste mínimo</div>
-                </div>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Consumo de Combustível</div>
-                    <div class="impact-value" style="color: #059669;">{{ $comparison['ideal']['consumption'] }}%</div>
-                    <div class="impact-description">Consumo otimizado</div>
-                </div>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Estabilidade</div>
-                    <div class="impact-value" style="color: #059669;">{{ $comparison['ideal']['stability_asphalt'] }}%
-                    </div>
-                    <div class="impact-description">Máxima estabilidade</div>
-                </div>
-            </div>
-            @endif
-
-            <!-- Sobrecalibrado -->
-            @if(!empty($comparison['over_inflated']))
-            <div class="motorcycle-impact-card sobrecalibrado">
-                <h3 class="impact-title">⚠️ Sobrecalibrado</h3>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Desgaste dos Pneus</div>
-                    <div class="impact-value" style="color: #f59e0b;">{{ $comparison['over_inflated']['wear'] }}%</div>
-                    <div class="impact-description">Desgaste no centro</div>
-                </div>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Conforto</div>
-                    <div class="impact-value" style="color: #f59e0b;">{{ $comparison['over_inflated']['comfort'] }}%
-                    </div>
-                    <div class="impact-description">Menor conforto</div>
-                </div>
-                <div class="impact-metric">
-                    <div class="impact-metric-label">Aderência</div>
-                    <div class="impact-value" style="color: #f59e0b;">{{
-                        $comparison['over_inflated']['stability_asphalt'] }}%</div>
-                    <div class="impact-description">Menor área de contato</div>
-                </div>
-            </div>
-            @endif
-        </div>
-
-        <div class="info-note">
-            <strong>⚠️ Importante para motocicletas:</strong> Em motos, pequenas variações de pressão têm impacto muito
-            maior na estabilidade que em carros. Uma diferença de 3-5 PSI pode comprometer seriamente a segurança,
-            especialmente em curvas e frenagens.
-        </div>
-        @endif
-
-        <!-- Adaptações para Pneus Alternativos -->
-        @if(!empty($article->alternative_tires))
-        <h2>🔄 Adaptações para Pneus Alternativos</h2>
-
-        <div class="alternative-tires-grid">
-            @foreach($article->alternative_tires as $alternative)
-            <div class="alternative-tire-card">
-                <div class="alternative-tire-header">{{ $alternative['category'] }}</div>
-                <div class="alternative-tire-body">
-                    <div class="tire-pressure-display">
-                        <div class="pressure-front-rear">
-                            <div>
-                                <strong>Dianteiro:</strong>
-                                <span class="pressure-value">{{ $alternative['front_pressure'] ?? 'N/A' }}</span>
-                            </div>
-                            <div>
-                                <strong>Traseiro:</strong>
-                                <span class="pressure-value">{{ $alternative['rear_pressure'] ?? 'N/A' }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 14px; color: #4b5563;">{{ $alternative['description'] ?? '' }}</p>
-                    @if(!empty($alternative['tags']))
-                    <div class="tire-tags">
-                        @foreach($alternative['tags'] as $tag)
-                        <span class="tire-tag">{{ $tag }}</span>
-                        @endforeach
-                    </div>
-                    @endif
-                </div>
-            </div>
-            @endforeach
-        </div>
-        @endif
-
-        <!-- Procedimento de Calibragem -->
-        @if(!empty($article->calibration_procedure))
-        <h2>🔧 Procedimento de Calibragem Correto</h2>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $calibrationProcedure['description'] ?? '' }}</p>
 
         <div class="motorcycle-procedure">
-            @foreach($article->calibration_procedure as $step)
-            <div class="procedure-step">
-                <div class="step-number">{{ $step['number'] }}</div>
-                <div class="step-content">
-                    <h3>{{ $step['title'] }}</h3>
-                    <p>{{ $step['description'] }}</p>
-                    @if(!empty($step['tips']))
-                    <div class="step-tips">
-                        <ul>
-                            @foreach($step['tips'] as $tip)
-                            <li>{{ $tip }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+            @foreach($calibrationProcedure['steps'] as $step)
+            <div class="motorcycle-step">
+                <div class="motorcycle-step-number">{{ $step['number'] ?? '1' }}</div>
+                <div class="motorcycle-step-content">
+                    <h4 class="motorcycle-step-title">{{ $step['title'] ?? 'Passo' }}</h4>
+                    <p class="motorcycle-step-desc">{{ $step['description'] ?? '' }}</p>
+                    @if(!empty($step['safety_note']))
+                    <div class="motorcycle-safety-note">{{ $step['safety_note'] }}</div>
+                    @endif
+                    @if(!empty($step['tips']) && is_array($step['tips']))
+                    <ul class="motorcycle-tips">
+                        @foreach($step['tips'] as $tip)
+                        <li>{{ $tip }}</li>
+                        @endforeach
+                    </ul>
                     @endif
                 </div>
             </div>
             @endforeach
         </div>
-        @endif
+    </div>
+    @endif
 
-        <!-- 🥈 ANÚNCIO 3: Após procedimento -->
-        <div class="ad-container">
-            <div class="ad-label">Publicidade</div>
-            <amp-ad width="100vw" height="320" type="adsense"
-                data-ad-client="{{ Config::get('services.google_adsense.id') }}" data-ad-slot="1402260703"
-                data-auto-format="rspv" data-full-width>
-                <div overflow></div>
-            </amp-ad>
+    <!-- RECOMENDAÇÕES POR ESTILO DE PILOTAGEM -->
+    @if(!empty($usageRecommendations['categories']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🎯</span>
+            <span class="section-title">{{ $usageRecommendations['title'] ?? 'Recomendações por Estilo de Pilotagem' }}</span>
         </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $usageRecommendations['description'] ?? '' }}</p>
 
-        <!-- Equipamentos Necessários -->
-        @if(!empty($article->required_equipment))
-        <h2>🛠️ Equipamentos Necessários</h2>
-
-        <div class="equipment-grid">
-            @foreach($article->required_equipment as $equipment)
-            <div class="equipment-card">
-                <div class="equipment-item">{{ $equipment['item'] ?? '' }}</div>
-                <div
-                    class="equipment-importance {{ strtolower(str_replace(' ', '-', $equipment['importance'] ?? 'normal')) }}">
-                    {{ $equipment['importance'] ?? 'Normal' }}
+        <div class="riding-recommendations">
+            @foreach($usageRecommendations['categories'] as $usage)
+            @php
+            $ridingClass = 'urban';
+            $category = strtolower($usage['category'] ?? '');
+            if (str_contains($category, 'rodoviário') || str_contains($category, 'estrada')) $ridingClass = 'highway';
+            if (str_contains($category, 'esportiv')) $ridingClass = 'sport';
+            if (str_contains($category, 'track')) $ridingClass = 'track';
+            
+            $safetyLevel = $usage['safety_level'] ?? 'baixo';
+            @endphp
+            <div class="riding-card {{ $ridingClass }}">
+                <div class="riding-header">
+                    <div class="riding-title">
+                        @switch($ridingClass)
+                            @case('urban')
+                                🏙️ {{ $usage['category'] }}
+                                @break
+                            @case('highway')
+                                🛣️ {{ $usage['category'] }}
+                                @break
+                            @case('sport')
+                                🏁 {{ $usage['category'] }}
+                                @break
+                            @case('track')
+                                🏁 {{ $usage['category'] }}
+                                @break
+                            @default
+                                🏍️ {{ $usage['category'] }}
+                        @endswitch
+                    </div>
+                    <div class="riding-pressure">{{ $usage['recommended_pressure'] ?? '' }}</div>
                 </div>
-                @if(!empty($equipment['characteristics']))
-                <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">{{ $equipment['characteristics'] }}</p>
+                <div class="safety-level {{ $safetyLevel }}">
+                    Risco: {{ ucfirst($safetyLevel) }}
+                </div>
+                <p class="riding-desc">{{ $usage['description'] ?? '' }}</p>
+                @if(!empty($usage['technical_tip']))
+                <div class="riding-tip">🔧 {{ $usage['technical_tip'] }}</div>
                 @endif
-                @if(!empty($equipment['average_price']))
-                <p style="font-size: 14px; font-weight: 600; color: #059669;">{{ $equipment['average_price'] }}</p>
-                @endif
-                @if(!empty($equipment['recommendation']))
-                <p style="font-size: 12px; color: #4b5563; font-style: italic;">{{ $equipment['recommendation'] }}</p>
+                @if(!empty($usage['verification_frequency']))
+                <p class="riding-frequency">Verificar: {{ $usage['verification_frequency'] }}</p>
                 @endif
             </div>
             @endforeach
         </div>
-        @endif
+    </div>
+    @endif
 
-        <!-- Cuidados Especiais -->
-        @if(!empty($article->special_care))
-        <h2>⚠️ Cuidados Especiais para Motocicletas</h2>
+    <!-- COMPARATIVO DE IMPACTOS NA PILOTAGEM -->
+    @if(!empty($impactComparison['scenarios']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">⚖️</span>
+            <span class="section-title">{{ $impactComparison['title'] ?? 'Comparativo de Impactos na Pilotagem' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $impactComparison['description'] ?? '' }}</p>
 
-        @foreach($article->special_care as $careGroup)
-        <div class="motorcycle-recommendation">
-            <div class="recommendation-title">
-                {{ $careGroup['category'] }}
-            </div>
-            @if(!empty($careGroup['care_items']))
-            <ul style="margin: 16px 0; padding-left: 20px;">
-                @foreach($careGroup['care_items'] as $item)
-                <li style="margin-bottom: 8px; color: #7f1d1d; font-weight: 500;">{{ $item }}</li>
+        <div class="impact-comparison">
+            @foreach($impactComparison['scenarios'] as $type => $scenario)
+                @if(!empty($scenario))
+                <div class="impact-scenario {{ str_replace('_pressure', '', $type) }}">
+                    <div class="impact-icon">{{ $scenario['icon'] ?? '📊' }}</div>
+                    <h4 class="impact-scenario-title">{{ $scenario['title'] ?? ucfirst($type) }}</h4>
+                    <p style="font-size: 12px; margin-bottom: 8px;">{{ $scenario['description'] ?? '' }}</p>
+                    @if(!empty($scenario['effects']))
+                    <ul class="impact-effects">
+                        @foreach($scenario['effects'] as $effect)
+                        <li>{{ $effect }}</li>
+                        @endforeach
+                    </ul>
+                    @endif
+                </div>
+                @endif
+            @endforeach
+        </div>
+
+        @if(!empty($impactComparison['safety_warnings']))
+        <div class="motorcycle-alert critico">
+            <div class="alert-title">⚠️ Avisos Críticos de Segurança</div>
+            <ul class="alert-consequences">
+                @foreach($impactComparison['safety_warnings'] as $warning)
+                <li>{{ $warning }}</li>
                 @endforeach
             </ul>
-            @endif
         </div>
-        @endforeach
+        @endif
+    </div>
+    @endif
+
+    <!-- PNEUS ALTERNATIVOS PARA MOTOCICLETAS -->
+    @if(!empty($alternativeTires['categories']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🔄</span>
+            <span class="section-title">{{ $alternativeTires['title'] ?? 'Pneus Alternativos para Motocicletas' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $alternativeTires['description'] ?? '' }}</p>
+
+        <div class="motorcycle-alternatives">
+            @foreach($alternativeTires['categories'] as $category => $brands)
+                @if(!empty($brands) && is_array($brands))
+                <div class="alternative-category {{ $category }}">
+                    <div class="alternative-title">
+                        @switch($category)
+                            @case('sport')
+                                🏁 Esportivos
+                                @break
+                            @case('touring')
+                                🛣️ Touring
+                                @break
+                            @case('street')
+                                🏙️ Street
+                                @break
+                            @case('premium')
+                                👑 Premium
+                                @break
+                            @case('budget')
+                                💰 Econômicos
+                                @break
+                            @case('seasonal')
+                                🌦️ Sazonais
+                                @break
+                            @default
+                                {{ ucfirst($category) }}
+                        @endswitch
+                    </div>
+                    <div class="alternative-brands">
+                        @foreach($brands as $brand)
+                        <div class="alternative-brand">{{ $brand }}</div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+            @endforeach
+        </div>
+
+        @if(!empty($alternativeTires['note']))
+        <div class="motorcycle-alert info">
+            <div class="alert-title">📝 Observação Importante</div>
+            <div class="alert-desc">{{ $alternativeTires['note'] }}</div>
+        </div>
         @endif
 
-        <!-- Sinais de Problemas -->
-        @if(!empty($article->problem_signs))
-        <h2>🚨 Sinais de Problemas na Calibragem</h2>
+        @if(!empty($alternativeTires['compatibility_warning']))
+        <div class="motorcycle-alert warning">
+            <div class="alert-title">⚠️ Aviso de Compatibilidade</div>
+            <div class="alert-desc">{{ $alternativeTires['compatibility_warning'] }}</div>
+        </div>
+        @endif
+    </div>
+    @endif
 
-        <div class="problem-signs-grid">
-            @foreach($article->problem_signs as $problem)
-            <div class="problem-sign-card">
-                <div class="problem-sign-title">
-                    <span class="problem-sign-icon">⚠️</span>
-                    {{ $problem['title'] }}
+    <!-- EQUIPAMENTOS ESPECÍFICOS PARA MOTOCICLETAS -->
+    @if(!empty($requiredEquipment['items']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🧰</span>
+            <span class="section-title">{{ $requiredEquipment['title'] ?? 'Equipamentos Específicos para Motocicletas' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $requiredEquipment['description'] ?? '' }}</p>
+
+        <div class="motorcycle-equipment">
+            @foreach($requiredEquipment['items'] as $equipment)
+            <div class="equipment-item {{ $equipment['motorcycle_specific'] ? 'motorcycle-specific' : '' }}">
+                <div class="equipment-header">
+                    <div class="equipment-name">
+                        @php
+                        $item = strtolower($equipment['name'] ?? '');
+                        $icon = '🔧';
+                        if (str_contains($item, 'calibrador') || str_contains($item, 'medidor')) $icon = '📏';
+                        if (str_contains($item, 'compressor')) $icon = '💨';
+                        if (str_contains($item, 'cavalete')) $icon = '🏍️';
+                        if (str_contains($item, 'luva')) $icon = '🧤';
+                        @endphp
+                        {{ $icon }} {{ $equipment['name'] ?? '' }}
+                        @if($equipment['motorcycle_specific'] ?? false)
+                        <span class="motorcycle-specific-badge">MOTO</span>
+                        @endif
+                    </div>
+                    @if(!empty($equipment['importance']))
+                    @php
+                    $importanceClass = 'importance-optional';
+                    $importance = strtolower($equipment['importance']);
+                    if (str_contains($importance, 'essencial')) $importanceClass = 'importance-essential';
+                    elseif (str_contains($importance, 'importante')) $importanceClass = 'importance-important';
+                    elseif (str_contains($importance, 'recomendado')) $importanceClass = 'importance-recommended';
+                    @endphp
+                    <span class="equipment-importance {{ $importanceClass }}">{{ $equipment['importance'] }}</span>
+                    @endif
                 </div>
-                <ul class="problem-signs-list">
-                    @foreach($problem['signs'] as $sign)
-                    <li>{{ $sign }}</li>
+                @if(!empty($equipment['description']))
+                <p class="equipment-desc">{{ $equipment['description'] }}</p>
+                @endif
+                @if(!empty($equipment['estimated_price']))
+                <p class="equipment-price">Preço estimado: {{ $equipment['estimated_price'] }}</p>
+                @endif
+                @if(!empty($equipment['tips']) && is_array($equipment['tips']))
+                <ul style="list-style: none; padding: 0; margin: 8px 0 0;">
+                    @foreach($equipment['tips'] as $tip)
+                    <li style="font-size: 11px; color: #6b7280; margin-bottom: 2px; padding-left: 12px; position: relative;">
+                        <span style="position: absolute; left: 0;">🏍️</span>{{ $tip }}
+                    </li>
                     @endforeach
                 </ul>
+                @endif
             </div>
             @endforeach
         </div>
-        @endif
+    </div>
+    @endif
 
-        <!-- FAQ -->
-        @if(!empty($article->faq))
-        <h2>❓ Perguntas Frequentes</h2>
+    <!-- CUIDADOS ESPECÍFICOS PARA MOTOCICLETAS -->
+    @if(!empty($specialCare['categories']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🛡️</span>
+            <span class="section-title">{{ $specialCare['title'] ?? 'Cuidados Específicos para Motocicletas' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $specialCare['description'] ?? '' }}</p>
+
+        <div class="special-care">
+            @foreach($specialCare['categories'] as $care)
+            <div class="care-card">
+                <div class="care-header">
+                    <div class="care-icon">🔧</div>
+                    <div class="care-title">{{ $care['title'] ?? $care['category'] ?? '' }}</div>
+                    @if(!empty($care['frequency']))
+                    <div class="care-frequency">{{ $care['frequency'] }}</div>
+                    @endif
+                </div>
+                <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">{{ $care['description'] ?? '' }}</p>
+                @if(!empty($care['care_items']) && is_array($care['care_items']))
+                <ul class="care-items">
+                    @foreach($care['care_items'] as $item)
+                    <li>{{ $item }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- SINAIS DE PROBLEMAS NOS PNEUS -->
+    @if(!empty($problemSigns['warning_signs']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🚨</span>
+            <span class="section-title">{{ $problemSigns['title'] ?? 'Sinais de Problemas nos Pneus' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $problemSigns['description'] ?? '' }}</p>
+
+        <div class="problem-signs">
+            @foreach($problemSigns['warning_signs'] as $sign)
+            <div class="problem-card {{ $sign['urgency'] ?? 'media' }}">
+                <div class="problem-header">
+                    <span class="problem-icon">
+                        @switch($sign['urgency'] ?? 'media')
+                            @case('alta')
+                                🚨
+                                @break
+                            @case('media')
+                                ⚠️
+                                @break
+                            @case('baixa')
+                                ℹ️
+                                @break
+                            @default
+                                ⚠️
+                        @endswitch
+                    </span>
+                    <span class="problem-symptom">{{ $sign['symptom'] ?? '' }}</span>
+                    <span class="problem-urgency urgency-{{ $sign['urgency'] ?? 'media' }}">
+                        {{ ucfirst($sign['urgency'] ?? 'Média') }}
+                    </span>
+                </div>
+                <p class="problem-desc">{{ $sign['description'] ?? '' }}</p>
+                @if(!empty($sign['solutions']) && is_array($sign['solutions']))
+                <ul class="problem-solutions">
+                    @foreach($sign['solutions'] as $solution)
+                    <li>{{ $solution }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- ALERTAS CRÍTICOS DE SEGURANÇA PARA MOTOCICLISTAS -->
+    @if(!empty($safetyAlerts['alerts']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">⚠️</span>
+            <span class="section-title">{{ $safetyAlerts['title'] ?? 'Alertas Críticos de Segurança' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $safetyAlerts['description'] ?? '' }}</p>
+
+        <div class="motorcycle-alerts">
+            @foreach($safetyAlerts['alerts'] as $alert)
+            <div class="motorcycle-alert {{ $alert['type'] ?? 'warning' }}">
+                <div class="alert-title">
+                    @switch($alert['type'] ?? 'warning')
+                        @case('critico')
+                        @case('critical')
+                            🚨 {{ $alert['title'] ?? 'Alerta Crítico' }}
+                            @break
+                        @case('warning')
+                        @case('aviso')
+                            ⚠️ {{ $alert['title'] ?? 'Atenção' }}
+                            @break
+                        @default
+                            ℹ️ {{ $alert['title'] ?? 'Informação' }}
+                    @endswitch
+                </div>
+                <div class="alert-desc">{{ $alert['description'] ?? '' }}</div>
+                @if(!empty($alert['consequences']))
+                <p style="font-weight: 600; margin: 8px 0 4px; font-size: 12px;">Consequências para motociclistas:</p>
+                <ul class="alert-consequences">
+                    @foreach($alert['consequences'] as $consequence)
+                    <li>{{ $consequence }}</li>
+                    @endforeach
+                </ul>
+                @endif
+                @if(!empty($alert['actions']))
+                <p style="font-weight: 600; margin: 8px 0 4px; font-size: 12px;">Ações necessárias:</p>
+                <ul class="alert-actions">
+                    @foreach($alert['actions'] as $action)
+                    <li>{{ $action }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- MANUTENÇÃO PREVENTIVA DOS PNEUS -->
+    @if(!empty($maintenanceTips['categories']))
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">🔧</span>
+            <span class="section-title">{{ $maintenanceTips['title'] ?? 'Manutenção Preventiva dos Pneus' }}</span>
+        </div>
+        <p style="color: #6b7280; margin-bottom: 20px;">{{ $maintenanceTips['description'] ?? '' }}</p>
+
+        <div class="maintenance-grid">
+            @foreach($maintenanceTips['categories'] as $tip)
+            <div class="maintenance-card">
+                <div class="maintenance-header">
+                    <div class="maintenance-icon">🔧</div>
+                    <div class="maintenance-title">{{ $tip['title'] ?? $tip['category'] ?? '' }}</div>
+                    @if(!empty($tip['difficulty']))
+                    <div class="maintenance-difficulty">{{ ucfirst($tip['difficulty']) }}</div>
+                    @endif
+                </div>
+                <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">{{ $tip['description'] ?? '' }}</p>
+                @if(!empty($tip['frequency']))
+                <p style="font-size: 11px; color: #16a34a; font-weight: 600; margin-bottom: 8px;">
+                    Frequência: {{ $tip['frequency'] }}
+                </p>
+                @endif
+                @if(!empty($tip['tips']) && is_array($tip['tips']))
+                <ul class="maintenance-tips">
+                    @foreach($tip['tips'] as $tipItem)
+                    <li>{{ $tipItem }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- FAQ COMPLETO PARA MOTOCICLETAS -->
+    @if(!empty($faq))
+    <div class="content-section motorcycle-faq">
+        <div class="section-header">
+            <span class="section-icon">❓</span>
+            <span class="section-title">Perguntas Frequentes sobre {{ $vehicleName }}</span>
+        </div>
         <amp-accordion expand-single-section>
-            @foreach($article->faq as $faq)
+            @foreach($faq as $pergunta)
             <section>
-
-                <h4>
-                    {{ $faq['pergunta'] }}</h4>
+                <h4>🏍️ {{ $pergunta['pergunta'] ?? $pergunta['question'] ?? '' }}</h4>
                 <div class="faq-content">
-                    <p>{{ $faq['resposta'] }}</p>
+                    <p>{{ $pergunta['resposta'] ?? $pergunta['answer'] ?? '' }}</p>
                 </div>
             </section>
             @endforeach
         </amp-accordion>
+    </div>
+    @endif
 
-        @endif
+    <!-- CONSIDERAÇÕES FINAIS PARA MOTOCICLETAS -->
+    @if(!empty($finalConsiderations))
+    <div class="motorcycle-final">
+        <div class="motorcycle-final-title">🏍️ Considerações Finais para Motociclistas</div>
+        <div class="motorcycle-final-text">
+            {!! nl2br(e($finalConsiderations)) !!}
+        </div>
+    </div>
+    @endif
 
-        <!-- Considerações Finais -->
-        @if(!empty($article->final_considerations))
-            <h2>📝 Considerações Finais</h2>
-        
-            <div class="info-note">
-            {!! $article->final_considerations !!}
-            </div>
-        @endif
+    <!-- INFORMAÇÕES DA MOTOCICLETA -->
+    <div class="content-section">
+        <div class="section-header">
+            <span class="section-icon">📋</span>
+            <span class="section-title">Resumo das Informações</span>
+        </div>
+        <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border: 1px solid #fca5a5;">
+            <p style="margin: 0; font-size: 13px; color: #374151;">
+                <strong>Motocicleta:</strong> {{ $vehicleName }}<br>
+                @if(!empty($vehicleInfo['segment']))
+                <strong>Categoria:</strong> {{ $vehicleInfo['segment'] }}<br>
+                @endif
+                @if(!empty($vehicleInfo['fuel_type']))
+                <strong>Combustível:</strong> {{ $vehicleInfo['fuel_type'] }}<br>
+                @endif
+                @if(!empty($enginePower))
+                <strong>Potência:</strong> {{ $enginePower }}<br>
+                @endif
+                <strong>Tipo:</strong> {{ $isSport ? 'Esportiva' : 'Street/Touring' }}<br>
+                <strong>Última atualização:</strong> {{ $article->getData()['formated_updated_at'] ?? '14 de agosto de 2025' }}
+            </p>
+        </div>
+    </div>
 
-        <!-- Nota informativa -->
-        @include('auto-info-center::article.partials.info_note_manual')
-
-        <!-- Footer do artigo -->
-        @include('auto-info-center::article.partials.article_footer')
-    </article>
+    <!-- FOOTER INFORMATIVO MOTOCICLETAS -->
+    <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #e5e7eb; margin-top: 40px;">
+        <p style="font-size: 12px; color: #6b7280; margin: 0;">
+            🏍️ Guia técnico especializado baseado nas especificações oficiais do fabricante.<br>
+            Para motocicletas, sempre priorize a segurança e consulte profissionais qualificados.
+        </p>
+        <p style="font-size: 11px; color: #9ca3af; margin: 8px 0 0;">
+            ⚠️ Pilotagem responsável salva vidas. Use sempre equipamentos de proteção.
+        </p>
+    </footer>
 </div>
 @endsection

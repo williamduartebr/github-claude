@@ -354,34 +354,6 @@ class IdealTirePressureCarViewModel extends TemplateViewModel
     }
 
     /**
-     * Determina o tipo de veículo para construção da URL da imagem
-     */
-    protected function getVehicleTypeForImage(): string
-    {
-        return 'vehicles';
-    }
-
-    /**
-     * Obtém segmento do veículo
-     */
-    protected function getVehicleSegment(): string
-    {
-        $category = strtolower($this->article->extracted_entities['categoria'] ?? '');
-
-        return match($category) {
-            'suv' => 'SUVs',
-            'sedan' => 'Sedans',
-            'hatch' => 'Hatches',
-            'pickup' => 'Pick-ups',
-            'coupe' => 'Coupés',
-            'conversivel' => 'Conversíveis',
-            'wagon' => 'Station Wagons',
-            'minivan' => 'Minivans',
-            default => 'Automóveis'
-        };
-    }
-
-    /**
      * Processa especificações dos pneus por versão OTIMIZADA
      */
     private function processTireSpecificationsByVersion(array $specs): array
