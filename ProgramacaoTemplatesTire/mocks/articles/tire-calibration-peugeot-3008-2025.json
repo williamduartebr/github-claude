@@ -1,0 +1,351 @@
+{
+    "title": "Calibragem do Pneu do Peugeot 3008 2025 – Guia Completo",
+    "slug": "calibragem-pneu-peugeot-3008-2025",
+    "template": "tire_calibration_car",
+    "category_id": 1,
+    "category_name": "Calibragem de Pneus",
+    "category_slug": "calibragem-pneus",
+    "seo_data": {
+        "page_title": "Calibragem do Pneu do Peugeot 3008 2025 – Guia Completo",
+        "meta_description": "Guia completo de calibragem dos pneus do Peugeot 3008 2025. Dianteiros: 35 PSI / Traseiros: 35 PSI. Procedimento específico para SUV premium de vanguarda.",
+        "h1": "Calibragem do Pneu do Peugeot 3008 2025 – Guia Completo",
+        "primary_keyword": "calibragem pneu peugeot 3008 2025",
+        "secondary_keywords": [
+            "como calibrar pneu 3008 2025",
+            "calibragem peugeot suv vanguarda",
+            "calibrar pneu 3008 i-cockpit 3d",
+            "procedimento calibragem 3008 2025"
+        ],
+        "og_title": "Calibragem do Pneu do Peugeot 3008 2025 – Guia Oficial",
+        "og_description": "Procedimento completo de calibragem dos pneus do Peugeot 3008 2025. SUV premium com tecnologias avançadas e TPMS 2.0 com IA.",
+        "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-peugeot-3008-2025"
+    },
+    "vehicle_data": {
+        "make": "Peugeot",
+        "model": "3008",
+        "year": 2025,
+        "tire_size": "235/50 R19",
+        "main_category": "suv",
+        "vehicle_segment": "C",
+        "vehicle_type": "suv",
+        "pressure_specifications": {
+            "pressure_empty_front": 35,
+            "pressure_empty_rear": 35,
+            "pressure_light_front": 35,
+            "pressure_light_rear": 35,
+            "pressure_max_front": 38,
+            "pressure_max_rear": 41,
+            "pressure_spare": 60,
+            "pressure_display": "Dianteiros: 35 PSI / Traseiros: 35 PSI",
+            "empty_pressure_display": "35/35 PSI",
+            "loaded_pressure_display": "38/41 PSI"
+        },
+        "tire_specifications": {
+            "tire_size": "235/50 R19",
+            "recommended_brands": [
+                "Michelin",
+                "Continental",
+                "Pirelli",
+                "Goodyear"
+            ],
+            "seasonal_recommendations": [
+                "Michelin Pilot Sport 4S",
+                "Continental SportContact 7"
+            ]
+        },
+        "vehicle_features": {
+            "vehicle_full_name": "Peugeot 3008 2025",
+            "url_slug": "peugeot-3008-2025",
+            "category_normalized": "SUV Premium Vanguarda",
+            "recommended_oil": "5W30 Sintético"
+        },
+        "is_premium": true,
+        "has_tpms": true,
+        "is_motorcycle": false,
+        "is_electric": false,
+        "is_hybrid": true,
+        "data_quality_score": 10
+    },
+    "extracted_entities": {
+        "marca": "Peugeot",
+        "modelo": "3008",
+        "ano": "2025",
+        "categoria": "suv",
+        "motorizacao": "Híbrido",
+        "versao": "Hybrid Plug-in",
+        "combustivel": "Híbrido"
+    },
+    "content": {
+        "introducao": "A **calibragem adequada dos pneus do Peugeot 3008 2025** é essencial para aproveitar toda a evolução tecnológica desta obra-prima francesa de vanguarda. Como SUV que representa o futuro da mobilidade premium, o 3008 2025 combina i-Cockpit 3D aprimorado, TPMS 2.0 com predição inteligente e a revolucionária versão híbrida plug-in, democratizando tecnologias que antes eram exclusivas de veículos de luxo.\n\nCom motor 1.6 THP turbo avançado e a nova opção híbrida plug-in, conectividade 5G e sistemas preditivos com IA, o 3008 2025 representa a vanguarda francesa. A calibragem correta (35/35 PSI normal, 38/41 PSI carregado, 36/36 PSI híbrido) também preserva os pneus específicos 2025 que custam entre R$ 750-1.000 cada.\n\nNeste guia específico, você aprenderá o procedimento correto de calibragem para SUVs premium de vanguarda, entenderá o funcionamento do TPMS 2.0 com IA e descobrirá como um 3008 bem calibrado oferece a experiência premium completa que representa o futuro da mobilidade sustentável e conectada.",
+
+        "especificacoes_por_versao": [
+            {
+                "versao": "Active Vanguarda (R18)",
+                "motor": "1.6 THP Turbo Avançado",
+                "aro_pneu": "18 polegadas",
+                "medida_pneu": "225/55 R18 98V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "37 PSI",
+                "pressao_cheio_traseiro": "39 PSI",
+                "observacoes": "i-Cockpit 3D e sistemas preditivos básicos"
+            },
+            {
+                "versao": "Allure Premium 2025 (R19)",
+                "motor": "1.6 THP Turbo Vanguarda",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "38 PSI",
+                "pressao_cheio_traseiro": "41 PSI",
+                "observacoes": "TPMS 2.0 com IA e conectividade 5G"
+            },
+            {
+                "versao": "Allure Pack Avançado (R19)",
+                "motor": "1.6 THP Turbo Premium",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "38 PSI",
+                "pressao_cheio_traseiro": "41 PSI",
+                "observacoes": "MyPeugeot 2025 com monitoramento preditivo"
+            },
+            {
+                "versao": "Hybrid Plug-in 2025 (R19)",
+                "motor": "1.6 THP + Motor Elétrico",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "36 PSI",
+                "pressao_vazio_traseiro": "36 PSI",
+                "pressao_cheio_dianteiro": "39 PSI",
+                "pressao_cheio_traseiro": "42 PSI",
+                "observacoes": "Pressões específicas para sistema híbrido otimizado"
+            },
+            {
+                "versao": "GT Vanguarda (R19)",
+                "motor": "1.6 THP Turbo Sport Plus",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "38 PSI",
+                "pressao_cheio_traseiro": "41 PSI",
+                "observacoes": "Todos os sistemas avançados 2025 integrados"
+            }
+        ],
+
+        "tabela_carga_completa": {
+            "titulo": "Pressões por Condição de Uso - Tecnologia Vanguarda 2025",
+            "descricao": "Ajuste conforme ocupação para máximo aproveitamento dos sistemas avançados",
+            "condicoes": [
+                {
+                    "versao": "Uso Premium Vanguarda 2025",
+                    "ocupantes": "1-3 pessoas",
+                    "bagagem": "Bagagem leve a moderada",
+                    "pressao_dianteira": "35 PSI",
+                    "pressao_traseira": "35 PSI",
+                    "observacao": "Sistemas preditivos com IA funcionando perfeitamente",
+                    "css_class": "bg-green-50 border-green-200"
+                },
+                {
+                    "versao": "Família Conectada 5G",
+                    "ocupantes": "4-5 pessoas",
+                    "bagagem": "Porta-malas carregado",
+                    "pressao_dianteira": "38 PSI",
+                    "pressao_traseira": "41 PSI",
+                    "observacao": "Configuração otimizada para tecnologias 2025",
+                    "css_class": "bg-yellow-50 border-yellow-200"
+                },
+                {
+                    "versao": "Modo Híbrido Plug-in",
+                    "ocupantes": "1-4 pessoas",
+                    "bagagem": "Variável",
+                    "pressao_dianteira": "36 PSI",
+                    "pressao_traseira": "36 PSI",
+                    "observacao": "Pressões específicas para máxima eficiência híbrida",
+                    "css_class": "bg-blue-50 border-blue-200"
+                },
+                {
+                    "versao": "Viagem Inteligente Avançada",
+                    "ocupantes": "Variável",
+                    "bagagem": "Bagagem + tecnologia",
+                    "pressao_dianteira": "38 PSI",
+                    "pressao_traseira": "41 PSI",
+                    "observacao": "Assistentes de condução 2025 com IA ativa",
+                    "css_class": "bg-purple-50 border-purple-200"
+                }
+            ]
+        },
+
+        "localizacao_etiqueta": {
+            "localizacao_principal": "Coluna da porta do motorista",
+            "localizacoes_alternativas": [
+                "Manual do proprietário (porta-luvas)",
+                "i-Cockpit 3D aprimorado (visualização 3D)",
+                "App MyPeugeot 2025 (monitoramento com IA)",
+                "Comandos por voz (assistente inteligente)"
+            ],
+            "descricao": "No 3008 2025, o TPMS 2.0 com predição inteligente e reset automático revoluciona o monitoramento",
+            "observacao": "Sistema i-Cockpit 3D aprimorado com tecnologias de vanguarda"
+        },
+
+        "condicoes_especiais": [
+            {
+                "situacao": "Modo Híbrido Plug-in 2025",
+                "ajuste": "36/36 PSI específico para híbrido",
+                "justificativa": "Otimizar eficiência elétrica e regeneração",
+                "cuidado": "Pressões específicas para sistema híbrido avançado"
+            },
+            {
+                "situacao": "Sistemas Preditivos com IA",
+                "ajuste": "Pressões exatas para aprendizado de máquina",
+                "justificativa": "IA aprende padrões baseados em dados precisos",
+                "cuidado": "Dados incorretos comprometem predições inteligentes"
+            },
+            {
+                "situacao": "Conectividade 5G Ativa",
+                "ajuste": "Sincronização em tempo real",
+                "justificativa": "Monitoramento remoto instantâneo",
+                "cuidado": "Pressões incorretas geram alertas falsos"
+            },
+            {
+                "situacao": "Assistentes de Condução 2025",
+                "ajuste": "Calibragem perfeita para IA",
+                "justificativa": "Sistemas autônomos dependem de dados exatos",
+                "cuidado": "Segurança dos assistentes compromettida"
+            }
+        ],
+
+        "conversao_unidades": {
+            "pressao_normal_vanguarda": {
+                "psi": "35 PSI",
+                "bar": "2,41 bar",
+                "kgf_cm2": "2,46 kgf/cm²",
+                "kpa": "241 kPa"
+            },
+            "pressao_hibrida_especifica": {
+                "psi": "36 PSI",
+                "bar": "2,48 bar",
+                "kgf_cm2": "2,53 kgf/cm²",
+                "kpa": "248 kPa"
+            },
+            "pressao_carregado_dianteiro": {
+                "psi": "38 PSI",
+                "bar": "2,62 bar",
+                "kgf_cm2": "2,67 kgf/cm²",
+                "kpa": "262 kPa"
+            },
+            "pressao_carregado_traseiro": {
+                "psi": "41 PSI",
+                "bar": "2,83 bar",
+                "kgf_cm2": "2,88 kgf/cm²",
+                "kpa": "283 kPa"
+            },
+            "pressao_estepe_inteligente": {
+                "psi": "60 PSI",
+                "bar": "4,14 bar",
+                "kgf_cm2": "4,22 kgf/cm²",
+                "kpa": "414 kPa"
+            },
+            "formula_conversao": "PSI × 0,0689 = bar | bar × 14,5 = PSI"
+        },
+
+        "cuidados_recomendacoes": [
+            {
+                "categoria": "TPMS 2.0 com IA",
+                "recomendacao": "Reset automático com predição inteligente",
+                "importancia": "Sistema revolucionário com aprendizado de máquina",
+                "dica": "Recalibração automática em apenas 8-12km"
+            },
+            {
+                "categoria": "i-Cockpit 3D Aprimorado",
+                "recomendacao": "Visualização 3D em tempo real",
+                "importancia": "Interface de vanguarda com dados precisos",
+                "dica": "Realidade aumentada para monitoramento"
+            },
+            {
+                "categoria": "MyPeugeot 2025 com IA",
+                "recomendacao": "Monitoramento preditivo avançado",
+                "importancia": "IA monitora padrões e prevê problemas",
+                "dica": "Alertas por geolocalização e uso inteligente"
+            },
+            {
+                "categoria": "Conectividade 5G Premium",
+                "recomendacao": "Sincronização instantânea em nuvem",
+                "importancia": "Dados em tempo real para assistentes",
+                "dica": "Gratuito por 5 anos (estendido em 2025)"
+            },
+            {
+                "categoria": "Sistema Híbrido Plug-in",
+                "recomendacao": "Pressões específicas para eficiência máxima",
+                "importancia": "Otimizar autonomia elétrica e regeneração",
+                "dica": "Pneus Michelin e-Primacy específicos para híbrido"
+            }
+        ],
+
+        "impacto_pressao": {
+            "subcalibrado": {
+                "titulo": "Pressão Baixa - Compromete Tecnologias Avançadas",
+                "conforto": "Perda do refinamento de vanguarda 2025",
+                "consumo": "Aumento de 10-15% no consumo (híbrido mais sensível)",
+                "sistemas": "TPMS 2.0 com IA e assistentes comprometidos",
+                "conectividade": "Dados incorretos para sistemas preditivos",
+                "hibrido": "Eficiência elétrica drasticamente reduzida"
+            },
+            "sobrecalibrado": {
+                "titulo": "Pressão Alta - Reduz Eficácia dos Sistemas",
+                "conforto": "Compromete refinamento característico premium",
+                "dirigibilidade": "Assistentes autônomos menos precisos",
+                "sistemas": "IA recebe dados distorcidos para aprendizado",
+                "conectividade": "Predições incorretas na nuvem",
+                "hibrido": "Regeneração de energia comprometida"
+            },
+            "calibragem_ideal": {
+                "titulo": "Pressão Correta - Experiência Vanguarda Completa",
+                "conforto": "Máximo refinamento da tecnologia 2025",
+                "consumo": "Eficiência otimizada (híbrido + combustão)",
+                "sistemas": "Funcionamento perfeito de todas as tecnologias",
+                "conectividade": "IA e 5G com dados precisos",
+                "durabilidade": "Vida útil máxima dos sistemas premium"
+            }
+        },
+
+        "perguntas_frequentes": [
+            {
+                "pergunta": "Qual a pressão ideal para calibragem do 3008 2025?",
+                "resposta": "Para uso normal: 35 PSI em todos os pneus. Para carga completa: 38/41 PSI. Para versão híbrida: 36/36 PSI normal, 39/42 PSI carregado. O TPMS 2.0 com IA monitora automaticamente."
+            },
+            {
+                "pergunta": "Como funciona o i-Cockpit 3D aprimorado 2025?",
+                "resposta": "O i-Cockpit 3D aprimorado mostra pressão em tempo real com visualização 3D. O TPMS 2.0 tem predição inteligente e reset automático. Após calibragem, apenas 8-12 km para recalibração total."
+            },
+            {
+                "pergunta": "O 3008 2025 tem versão híbrida? Como calibrar?",
+                "resposta": "Sim! A nova versão Hybrid plug-in 2025 usa pressões específicas: 36/36 PSI normal, 39/42 PSI carregado. Pneus Michelin e-Primacy otimizam a eficiência do sistema híbrido."
+            },
+            {
+                "pergunta": "Posso usar pneus comuns no 3008 2025 premium?",
+                "resposta": "Recomendamos apenas pneus específicos 2025 (Michelin Pilot Sport 4S, Continental SportContact 7) que garantem funcionamento perfeito dos sistemas avançados i-Cockpit."
+            },
+            {
+                "pergunta": "Com que frequência calibrar no 3008 2025?",
+                "resposta": "Quinzenalmente é ideal, mesmo com TPMS 2.0. Os sistemas preditivos facilitam, mas verificação manual garante máxima precisão dos assistentes de condução 2025."
+            },
+            {
+                "pergunta": "O app MyPeugeot 2025 monitora os pneus?",
+                "resposta": "Sim! MyPeugeot 2025 tem monitoramento preditivo com IA, alertas por geolocalização e sincronização total com i-Cockpit. Gratuito por 5 anos (estendido em 2025)."
+            }
+        ],
+
+        "consideracoes_finais": "Dominar a calibragem do Peugeot 3008 2025 é essencial para aproveitar toda a evolução tecnológica desta obra-prima francesa de vanguarda. Com i-Cockpit 3D aprimorado, TPMS 2.0 com predição inteligente e a nova versão híbrida plug-in, o 3008 2025 representa o futuro da mobilidade premium que democratiza tecnologias de luxo. Calibragem correta (35/35 PSI normal, 38/41 PSI carregado, 36/36 PSI híbrido) garante funcionamento perfeito de todos os sistemas avançados. O TPMS 2.0 é revolucionário, mas a verificação quinzenal manual permanece fundamental. Para um SUV desta categoria tecnológica, com sistemas preditivos e assistentes avançados, a calibragem precisa é investimento na experiência premium completa. Lembre-se: o 3008 2025 não é apenas um SUV - é a vanguarda francesa que democratiza tecnologias de luxo, oferecendo o futuro da mobilidade sustentável e conectada hoje, recompensando o cuidado correto com sofisticação e inovação incomparáveis."
+    },
+    "metadata": [],
+    "status": "published",
+    "created_at": "2025-08-15T14:00:00.000000Z",
+    "updated_at": "2025-08-15T14:00:00.000000Z",
+    "formated_updated_at": "15 de agosto de 2025",
+    "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-peugeot-3008-2025",
+    "id": "tire_calibration_car_peugeot_3008_2025"
+}

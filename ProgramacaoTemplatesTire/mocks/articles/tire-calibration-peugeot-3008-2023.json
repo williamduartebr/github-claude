@@ -1,0 +1,318 @@
+{
+    "title": "Calibragem do Pneu do Peugeot 3008 2023 – Guia Completo",
+    "slug": "calibragem-pneu-peugeot-3008-2023",
+    "template": "tire_calibration_car",
+    "category_id": 1,
+    "category_name": "Calibragem de Pneus",
+    "category_slug": "calibragem-pneus",
+    "seo_data": {
+        "page_title": "Calibragem do Pneu do Peugeot 3008 2023 – Guia Completo",
+        "meta_description": "Guia completo de calibragem dos pneus do Peugeot 3008 2023. Dianteiros: 35 PSI / Traseiros: 35 PSI. Procedimento específico para SUV premium consolidado.",
+        "h1": "Calibragem do Pneu do Peugeot 3008 2023 – Guia Completo",
+        "primary_keyword": "calibragem pneu peugeot 3008 2023",
+        "secondary_keywords": [
+            "como calibrar pneu 3008 2023",
+            "calibragem peugeot suv premium",
+            "calibrar pneu 3008 i-cockpit",
+            "procedimento calibragem 3008"
+        ],
+        "og_title": "Calibragem do Pneu do Peugeot 3008 2023 – Guia Oficial",
+        "og_description": "Procedimento completo de calibragem dos pneus do Peugeot 3008 2023. SUV premium com i-Cockpit clássico e TPMS consolidado.",
+        "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-peugeot-3008-2023"
+    },
+    "vehicle_data": {
+        "make": "Peugeot",
+        "model": "3008",
+        "year": 2023,
+        "tire_size": "235/50 R19",
+        "main_category": "suv",
+        "vehicle_segment": "C",
+        "vehicle_type": "suv",
+        "pressure_specifications": {
+            "pressure_empty_front": 35,
+            "pressure_empty_rear": 35,
+            "pressure_light_front": 35,
+            "pressure_light_rear": 35,
+            "pressure_max_front": 38,
+            "pressure_max_rear": 41,
+            "pressure_spare": 60,
+            "pressure_display": "Dianteiros: 35 PSI / Traseiros: 35 PSI",
+            "empty_pressure_display": "35/35 PSI",
+            "loaded_pressure_display": "38/41 PSI"
+        },
+        "tire_specifications": {
+            "tire_size": "235/50 R19",
+            "recommended_brands": [
+                "Michelin",
+                "Continental",
+                "Pirelli",
+                "Goodyear"
+            ],
+            "seasonal_recommendations": [
+                "Michelin Pilot Sport 4",
+                "Continental PremiumContact 6"
+            ]
+        },
+        "vehicle_features": {
+            "vehicle_full_name": "Peugeot 3008 2023",
+            "url_slug": "peugeot-3008-2023",
+            "category_normalized": "SUV Premium",
+            "recommended_oil": "5W30 Sintético"
+        },
+        "is_premium": true,
+        "has_tpms": true,
+        "is_motorcycle": false,
+        "is_electric": false,
+        "is_hybrid": false,
+        "data_quality_score": 8
+    },
+    "extracted_entities": {
+        "marca": "Peugeot",
+        "modelo": "3008",
+        "ano": "2023",
+        "categoria": "suv",
+        "motorizacao": "1.6 THP",
+        "versao": "Allure Pack",
+        "combustivel": "Flex"
+    },
+    "content": {
+        "introducao": "A **calibragem adequada dos pneus do Peugeot 3008 2023** é fundamental para aproveitar toda a maturidade tecnológica deste SUV premium francês consolidado. Como modelo que estabeleceu os padrões da categoria no Brasil, o 3008 2023 representa o equilíbrio perfeito entre inovação francesa e confiabilidade comprovada por milhares de proprietários.\n\nCom motor 1.6 THP turbo (165cv) ou 2.0 aspirado (143cv), i-Cockpit clássico e TPMS tradicional, o 3008 2023 oferece refinamento e eficiência testados. A calibragem correta (35/35 PSI normal, 38/41 PSI carregado) também preserva os pneus premium 235/50 R19 que custam entre R$ 650-900 cada.\n\nNeste guia específico, você aprenderá o procedimento correto de calibragem para SUVs premium consolidados, entenderá o funcionamento do sistema TPMS clássico e descobrirá como um 3008 bem calibrado mantém a sofisticação francesa que definiu os padrões do segmento premium no mercado brasileiro.",
+
+        "especificacoes_por_versao": [
+            {
+                "versao": "Active (R18)",
+                "motor": "1.6 THP Turbo",
+                "aro_pneu": "18 polegadas",
+                "medida_pneu": "225/55 R18 98V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "37 PSI",
+                "pressao_cheio_traseiro": "39 PSI",
+                "observacoes": "Versão de entrada com tecnologias consolidadas"
+            },
+            {
+                "versao": "Allure (R19)",
+                "motor": "1.6 THP Turbo",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "38 PSI",
+                "pressao_cheio_traseiro": "41 PSI",
+                "observacoes": "i-Cockpit clássico e TPMS tradicional consolidado"
+            },
+            {
+                "versao": "Allure Pack (R19)",
+                "motor": "1.6 THP Turbo",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "38 PSI",
+                "pressao_cheio_traseiro": "41 PSI",
+                "observacoes": "Versão intermediária com padrão de qualidade estabelecido"
+            },
+            {
+                "versao": "GT (R19)",
+                "motor": "1.6 THP Turbo",
+                "aro_pneu": "19 polegadas",
+                "medida_pneu": "235/50 R19 99V",
+                "pressao_vazio_dianteiro": "35 PSI",
+                "pressao_vazio_traseiro": "35 PSI",
+                "pressao_cheio_dianteiro": "38 PSI",
+                "pressao_cheio_traseiro": "41 PSI",
+                "observacoes": "Versão esportiva com dirigibilidade testada e aprovada"
+            }
+        ],
+
+        "tabela_carga_completa": {
+            "titulo": "Pressões por Condição de Uso SUV Premium",
+            "descricao": "Ajuste conforme ocupação para máximo aproveitamento do conforto francês",
+            "condicoes": [
+                {
+                    "versao": "Uso Premium Normal 2023",
+                    "ocupantes": "1-3 pessoas",
+                    "bagagem": "Bagagem leve a moderada",
+                    "pressao_dianteira": "35 PSI",
+                    "pressao_traseira": "35 PSI",
+                    "observacao": "Conforto francês consolidado máximo",
+                    "css_class": "bg-green-50 border-green-200"
+                },
+                {
+                    "versao": "Família Completa 2023",
+                    "ocupantes": "4-5 pessoas",
+                    "bagagem": "Porta-malas carregado",
+                    "pressao_dianteira": "38 PSI",
+                    "pressao_traseira": "41 PSI",
+                    "observacao": "Configuração testada por milhares de usuários",
+                    "css_class": "bg-yellow-50 border-yellow-200"
+                },
+                {
+                    "versao": "Viagem Premium 2023",
+                    "ocupantes": "Variável",
+                    "bagagem": "Bagagem + teto",
+                    "pressao_dianteira": "38 PSI",
+                    "pressao_traseira": "41 PSI",
+                    "observacao": "Estabilidade rodoviária comprovada",
+                    "css_class": "bg-blue-50 border-blue-200"
+                }
+            ]
+        },
+
+        "localizacao_etiqueta": {
+            "localizacao_principal": "Coluna da porta do motorista",
+            "localizacoes_alternativas": [
+                "Manual do proprietário (porta-luvas)",
+                "Display i-Cockpit clássico (pressões em tempo real)",
+                "App MyPeugeot 2023 (funcionalidades básicas)"
+            ],
+            "descricao": "No 3008 2023, além da etiqueta física, o TPMS clássico mostra pressões no i-Cockpit",
+            "observacao": "Sistema i-Cockpit clássico consolidado e confiável"
+        },
+
+        "condicoes_especiais": [
+            {
+                "situacao": "Modo Sport GT 2023",
+                "ajuste": "37/37 PSI (+2 PSI sobre normal)",
+                "justificativa": "Otimizar dirigibilidade esportiva madura",
+                "cuidado": "Retornar pressões normais após uso esportivo"
+            },
+            {
+                "situacao": "Suspensão Adaptativa 2023",
+                "ajuste": "Manter pressões padrão",
+                "justificativa": "Sistema adaptativo compensa automaticamente",
+                "cuidado": "Pressão correta é essencial para funcionamento"
+            },
+            {
+                "situacao": "Viagem Premium Longa (>300km)",
+                "ajuste": "Usar pressões de carga completa",
+                "justificativa": "Estabilidade rodoviária comprovada",
+                "cuidado": "Verificar aquecimento em paradas"
+            },
+            {
+                "situacao": "Clima Extremo (>35°C)",
+                "ajuste": "Verificar 2x por semana",
+                "justificativa": "Sistemas premium são sensíveis",
+                "cuidado": "TPMS monitora mas verificação manual importante"
+            }
+        ],
+
+        "conversao_unidades": {
+            "pressao_normal_suv": {
+                "psi": "35 PSI",
+                "bar": "2,41 bar",
+                "kgf_cm2": "2,46 kgf/cm²",
+                "kpa": "241 kPa"
+            },
+            "pressao_carregado_dianteiro": {
+                "psi": "38 PSI",
+                "bar": "2,62 bar",
+                "kgf_cm2": "2,67 kgf/cm²",
+                "kpa": "262 kPa"
+            },
+            "pressao_carregado_traseiro": {
+                "psi": "41 PSI",
+                "bar": "2,83 bar",
+                "kgf_cm2": "2,88 kgf/cm²",
+                "kpa": "283 kPa"
+            },
+            "pressao_estepe_temporario": {
+                "psi": "60 PSI",
+                "bar": "4,14 bar",
+                "kgf_cm2": "4,22 kgf/cm²",
+                "kpa": "414 kPa"
+            },
+            "formula_conversao": "PSI × 0,0689 = bar | bar × 14,5 = PSI"
+        },
+
+        "cuidados_recomendacoes": [
+            {
+                "categoria": "TPMS Clássico Consolidado",
+                "recomendacao": "Reset após calibragem via menu veículo",
+                "importancia": "Sistema tradicional confiável e testado",
+                "dica": "Dirigir 12-15km para recalibração automática"
+            },
+            {
+                "categoria": "i-Cockpit Clássico 2023",
+                "recomendacao": "Monitorar pressões no display central",
+                "importancia": "Visualização clara e consolidada",
+                "dica": "Sistema maduro com interface intuitiva"
+            },
+            {
+                "categoria": "Suspensão Adaptativa",
+                "recomendacao": "Pressão correta essencial para funcionamento",
+                "importancia": "Sistema adapta conforme pressão dos pneus",
+                "dica": "Calibragem incorreta compromete adaptabilidade"
+            },
+            {
+                "categoria": "Qualidade Premium Consolidada",
+                "recomendacao": "Usar apenas pneus premium recomendados",
+                "importancia": "Manter padrão de qualidade estabelecido",
+                "dica": "Michelin, Continental testados e aprovados"
+            }
+        ],
+
+        "impacto_pressao": {
+            "subcalibrado": {
+                "titulo": "Pressão Baixa - Compromete Sofisticação",
+                "conforto": "Perda do refinamento de rodagem francês",
+                "consumo": "Aumento de 8-12% no consumo do THP turbo",
+                "sistemas": "TPMS e suspensão adaptativa comprometidos",
+                "desgaste": "Desgaste irregular dos pneus premium caros",
+                "dirigibilidade": "Perda da precisão característica francesa"
+            },
+            "sobrecalibrado": {
+                "titulo": "Pressão Alta - Reduz Conforto Premium",
+                "conforto": "Compromete o conforto de rodagem premium",
+                "dirigibilidade": "Reduz aderência e estabilidade",
+                "sistemas": "Suspensão adaptativa trabalha incorretamente",
+                "desgaste": "Desgaste central dos pneus premium",
+                "ruido": "Aumento significativo do ruído de rodagem"
+            },
+            "calibragem_ideal": {
+                "titulo": "Pressão Correta - Experiência Premium Total",
+                "conforto": "Máximo refinamento e sofisticação francesa",
+                "consumo": "Eficiência otimizada do motor THP",
+                "sistemas": "Funcionamento perfeito de todos os sistemas",
+                "dirigibilidade": "Precisão e estabilidade características",
+                "durabilidade": "Vida útil máxima dos componentes premium"
+            }
+        },
+
+        "perguntas_frequentes": [
+            {
+                "pergunta": "Qual a pressão ideal para calibragem do 3008 2023?",
+                "resposta": "Para uso normal: 35 PSI em todos os pneus (padrão testado e consolidado). Para carga completa: 38 PSI na frente e 41 PSI atrás (versões R19). O sistema TPMS clássico monitora automaticamente."
+            },
+            {
+                "pergunta": "Como funciona o i-Cockpit clássico 2023?",
+                "resposta": "O i-Cockpit clássico mostra pressão no painel digital consolidado. Após calibragem, reset via Menu > Veículo > Pneus e dirija 12-15 km para recalibração automática testada."
+            },
+            {
+                "pergunta": "Posso usar pneus de outras marcas no 3008 2023?",
+                "resposta": "Recomendamos apenas marcas premium testadas (Michelin, Continental, Pirelli) nas medidas exatas. O 3008 2023 foi calibrado para pneus específicos com performance comprovada."
+            },
+            {
+                "pergunta": "O estepe temporário 2023 precisa de cuidados especiais?",
+                "resposta": "Sim, mantenha sempre em 60 PSI (padrão consolidado) e verifique mensalmente. É apenas para emergências: máximo 80 km/h e 150 km conforme manual 2023."
+            },
+            {
+                "pergunta": "Com que frequência calibrar pneus no 3008 2023?",
+                "resposta": "Quinzenalmente é ideal (padrão estabelecido), mesmo com TPMS clássico. Procedimento testado por milhares de proprietários. Sempre antes de viagens longas."
+            },
+            {
+                "pergunta": "O 3008 2023 ainda é uma boa opção premium?",
+                "resposta": "Absolutamente! O 3008 2023 representa maturidade tecnológica consolidada, com todos os sistemas testados e aprovados. É o SUV premium mais confiável do segmento."
+            }
+        ],
+
+        "consideracoes_finais": "Dominar a calibragem do Peugeot 3008 2023 é fundamental para aproveitar toda a maturidade tecnológica desta referência consolidada do segmento premium. Com tecnologias testadas, i-Cockpit clássico confiável e padrões de qualidade estabelecidos, o 3008 2023 representa o equilíbrio perfeito entre inovação e confiabilidade comprovada. Calibragem correta (35/35 PSI normal, 38/41 PSI carregado) garante aproveitamento total desta obra-prima francesa. O TPMS clássico é confiável, mas a verificação quinzenal manual permanece essencial. Para um SUV desta categoria, com tecnologia madura e sistemas comprovados, a calibragem precisa é investimento na experiência premium consolidada. Lembre-se: o 3008 2023 não é apenas um SUV - é a referência estabelecida que definiu os padrões do segmento premium no Brasil, recompensando o cuidado correto com sofisticação e confiabilidade francesas por muitos anos."
+    },
+    "metadata": [],
+    "status": "published",
+    "created_at": "2025-08-15T13:00:00.000000Z",
+    "updated_at": "2025-08-15T13:00:00.000000Z",
+    "formated_updated_at": "15 de agosto de 2025",
+    "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-peugeot-3008-2023",
+    "id": "tire_calibration_car_peugeot_3008_2023"
+}
