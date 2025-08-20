@@ -2,11 +2,16 @@
 
 namespace Src\VehicleData\Infrastructure\Providers;
 
+use Src\VehicleData\Infrastructure\Console\Commands\PropagateFromRepresentativesCommand;
+use Src\VehicleData\Infrastructure\Console\Commands\EnrichRepresentativesCommand;
 use Illuminate\Support\ServiceProvider;
-use Src\VehicleData\Infrastructure\Console\Commands\ExtractVehicleDataCommand;
-use Src\VehicleData\Infrastructure\Console\Commands\ValidateVehicleDataCommand;
+use Src\VehicleData\Infrastructure\Console\Commands\SearchVehicleCommand;
 use Src\VehicleData\Infrastructure\Console\Commands\CleanVehicleDataCommand;
 use Src\VehicleData\Infrastructure\Console\Commands\VehicleDataStatsCommand;
+use Src\VehicleData\Infrastructure\Console\Commands\ExtractVehicleDataCommand;
+use Src\VehicleData\Infrastructure\Console\Commands\ValidateVehicleDataCommand;
+use Src\VehicleData\Infrastructure\Console\Commands\GroupVehiclesForEnrichmentCommand;
+use Src\VehicleData\Infrastructure\Console\Commands\AnalyzeVehicleDataStructureCommand;
 
 /**
  * VehicleDataServiceProvider - Provider para o módulo de dados de veículos
@@ -24,7 +29,13 @@ class VehicleDataServiceProvider extends ServiceProvider
         ValidateVehicleDataCommand::class,
         CleanVehicleDataCommand::class,
         VehicleDataStatsCommand::class,
-        \Src\VehicleData\Infrastructure\Console\Commands\SearchVehicleCommand::class,
+        SearchVehicleCommand::class,
+        AnalyzeVehicleDataStructureCommand::class,
+        GroupVehiclesForEnrichmentCommand::class,
+        EnrichRepresentativesCommand::class,
+        PropagateFromRepresentativesCommand::class,
+        
+        
     ];
 
     /**
@@ -61,6 +72,12 @@ class VehicleDataServiceProvider extends ServiceProvider
             $this->app->singleton('command.vehicle-data.validate', ValidateVehicleDataCommand::class);
             $this->app->singleton('command.vehicle-data.clean', CleanVehicleDataCommand::class);
             $this->app->singleton('command.vehicle-data.stats', VehicleDataStatsCommand::class);
+            $this->app->singleton('command.vehicle-data.analyzes', AnalyzeVehicleDataStructureCommand::class);
+            $this->app->singleton('command.vehicle-data.groups', GroupVehiclesForEnrichmentCommand::class);
+            $this->app->singleton('command.vehicle-data.enrichs', EnrichRepresentativesCommand::class);
+            $this->app->singleton('command.vehicle-data.propagates', PropagateFromRepresentativesCommand::class);
+
+            
         }
     }
 
