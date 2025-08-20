@@ -77,226 +77,219 @@
         "combustivel": "Híbrido Flex"
     },
     "content": {
-        "introducao": "A **calibragem adequada dos pneus do Toyota Corolla Hybrid 2025** é essencial para maximizar a eficiência do revolucionário sistema Toyota Hybrid Synergy Drive e garantir os prometidos 17,1 km/l urbanos. Como primeiro sedan híbrido flex do Brasil, o Corolla Hybrid combina motor 1.8 flex (101cv) com motor elétrico (72cv) totalizando 122cv, mas essa tecnologia avançada exige calibragem específica.\n\nCom sistema TPMS integrado ao Toyota Safety Sense 2.0 e pneus de baixa resistência 215/55 R17, a calibragem correta (33/33 PSI normal, 38/38 PSI carregado) não apenas economiza combustível, mas otimiza as transições entre combustão e modo elétrico. Os pneus específicos Dunlop Enasave ou Bridgestone Ecopia custam entre R$ 420-580 cada.\n\nNeste guia específico, você aprenderá o procedimento correto de calibragem para veículos híbridos, entenderá como as pressões impactam a frenagem regenerativa e descobrirá os segredos para extrair máxima eficiência desta tecnologia que democratiza a mobilidade sustentável no Brasil.",
-
+        "introducao": "O Toyota Corolla Hybrid 2025 é um sedan híbrido que combina motor 1.8 aspirado flex com motor elétrico, resultando em 122 cv de potência total. A calibragem correta dos pneus é fundamental para maximizar a eficiência do sistema Toyota Hybrid Synergy Drive e garantir os 17,1 km/l prometidos no ciclo urbano.",
         "especificacoes_por_versao": [
             {
-                "versao": "XLi Hybrid",
-                "motor": "1.8 VVT-i + Motor Elétrico",
-                "aro_pneu": "17 polegadas",
-                "medida_pneu": "215/55 R17 94V",
-                "pressao_vazio_dianteiro": "33 PSI",
-                "pressao_vazio_traseiro": "33 PSI",
-                "pressao_cheio_dianteiro": "38 PSI",
-                "pressao_cheio_traseiro": "38 PSI",
-                "observacoes": "Pneus de baixa resistência obrigatórios para eficiência híbrida"
-            },
-            {
                 "versao": "XEi Hybrid",
-                "motor": "1.8 VVT-i + Motor Elétrico",
-                "aro_pneu": "17 polegadas",
-                "medida_pneu": "215/55 R17 94V",
-                "pressao_vazio_dianteiro": "33 PSI",
-                "pressao_vazio_traseiro": "33 PSI",
-                "pressao_cheio_dianteiro": "38 PSI",
-                "pressao_cheio_traseiro": "38 PSI",
-                "observacoes": "TPMS integrado ao Toyota Safety Sense 2.0"
+                "medida_pneus": "215/55 R17",
+                "indice_carga_velocidade": "94V",
+                "pressao_dianteiro_normal": "33 PSI",
+                "pressao_traseiro_normal": "33 PSI",
+                "pressao_dianteiro_carregado": "38 PSI",
+                "pressao_traseiro_carregado": "38 PSI"
             },
             {
-                "versao": "Altis Hybrid Premium",
-                "motor": "1.8 VVT-i + Motor Elétrico",
-                "aro_pneu": "17 polegadas",
-                "medida_pneu": "215/55 R17 94V",
-                "pressao_vazio_dianteiro": "33 PSI",
-                "pressao_vazio_traseiro": "33 PSI",
-                "pressao_cheio_dianteiro": "38 PSI",
-                "pressao_cheio_traseiro": "38 PSI",
-                "observacoes": "Versão topo com sistemas avançados de monitoramento"
+                "versao": "XEi Hybrid Premium",
+                "medida_pneus": "215/55 R17",
+                "indice_carga_velocidade": "94V",
+                "pressao_dianteiro_normal": "33 PSI",
+                "pressao_traseiro_normal": "33 PSI",
+                "pressao_dianteiro_carregado": "38 PSI",
+                "pressao_traseiro_carregado": "38 PSI"
+            },
+            {
+                "versao": "Altis Hybrid",
+                "medida_pneus": "225/50 R18",
+                "indice_carga_velocidade": "95V",
+                "pressao_dianteiro_normal": "35 PSI",
+                "pressao_traseiro_normal": "33 PSI",
+                "pressao_dianteiro_carregado": "39 PSI",
+                "pressao_traseiro_carregado": "37 PSI"
             }
         ],
-
         "tabela_carga_completa": {
-            "titulo": "Pressões por Condição de Uso Híbrido",
-            "descricao": "Ajuste conforme uso para máxima eficiência do sistema híbrido",
+            "titulo": "Pressões para Carga Completa - Sedan Híbrido",
+            "descricao": "Valores recomendados quando o sedan híbrido estiver com 5 passageiros e bagagem completa. Peso da bateria híbrida já considerado.",
             "condicoes": [
                 {
-                    "versao": "Uso Urbano Híbrido",
-                    "ocupantes": "1-3 pessoas",
-                    "bagagem": "Bagagem leve",
-                    "pressao_dianteira": "33 PSI",
-                    "pressao_traseira": "33 PSI",
-                    "observacao": "Máximo aproveitamento do motor elétrico urbano",
-                    "css_class": "bg-green-50 border-green-200"
-                },
-                {
-                    "versao": "Família Completa",
-                    "ocupantes": "4-5 pessoas",
-                    "bagagem": "Porta-malas carregado",
+                    "versao": "XEi Hybrid",
+                    "ocupantes": "5 pessoas",
+                    "bagagem": "Porta-malas cheio",
                     "pressao_dianteira": "38 PSI",
                     "pressao_traseira": "38 PSI",
-                    "observacao": "Mantém eficiência híbrida com carga máxima",
-                    "css_class": "bg-yellow-50 border-yellow-200"
+                    "observacao": "Eficiência híbrida mantida mesmo com carga"
                 },
                 {
-                    "versao": "Modo ECO Extremo",
-                    "ocupantes": "1-2 pessoas",
-                    "bagagem": "Mínima",
-                    "pressao_dianteira": "35 PSI",
-                    "pressao_traseira": "35 PSI",
-                    "observacao": "Para maximizar os 17,1 km/l urbanos prometidos",
-                    "css_class": "bg-blue-50 border-blue-200"
+                    "versao": "XEi Hybrid Premium",
+                    "ocupantes": "5 pessoas",
+                    "bagagem": "Porta-malas cheio",
+                    "pressao_dianteira": "38 PSI",
+                    "pressao_traseira": "38 PSI",
+                    "observacao": "Sistema de navegação otimiza rotas"
+                },
+                {
+                    "versao": "Altis Hybrid",
+                    "ocupantes": "5 pessoas",
+                    "bagagem": "Porta-malas cheio",
+                    "pressao_dianteira": "39 PSI",
+                    "pressao_traseira": "37 PSI",
+                    "observacao": "Rodas aro 18 requerem atenção especial"
                 }
             ]
         },
-
         "localizacao_etiqueta": {
-            "localizacao_principal": "Coluna da porta do motorista",
-            "localizacoes_alternativas": [
-                "Manual do proprietário (porta-luvas)",
-                "App Toyota Connect (monitoramento digital)",
-                "Display central (pressões em tempo real)"
+            "local_principal": "Coluna da porta do motorista",
+            "descricao": "A etiqueta oficial de pressão dos pneus do Toyota Corolla Hybrid 2025 está localizada na coluna da porta do motorista, visível quando a porta está aberta. Inclui informações específicas para o sistema híbrido.",
+            "locais_alternativos": [
+                "Manual do proprietário na seção \"Especificações do Sistema Híbrido\"",
+                "Display multimídia Toyota (Menu Configurações > Veículo)",
+                "Aplicativo Toyota Connect",
+                "Compartimento do estepe (etiqueta auxiliar)"
             ],
-            "descricao": "No Corolla Hybrid 2025, além da etiqueta física, o TPMS mostra pressões no display",
-            "observacao": "Sistema Toyota Safety Sense 2.0 monitora pressões automaticamente"
+            "observacao": "O sistema TPMS alerta sobre variações de pressão. Use sempre os valores em PSI conforme especificação Toyota para híbridos."
         },
-
         "condicoes_especiais": [
             {
-                "situacao": "Frenagem Regenerativa Otimizada",
-                "ajuste": "Manter pressões exatas (33 PSI)",
-                "justificativa": "Maximizar eficiência de recuperação de energia",
-                "cuidado": "Pressão incorreta reduz regeneração em até 30%"
+                "condicao": "Modo ECO Híbrido",
+                "ajuste_recomendado": "+2 PSI",
+                "aplicacao": "Para maximizar eficiência do sistema híbrido",
+                "justificativa": "Reduz resistência ao rolamento, otimizando transições entre motor a combustão e elétrico."
             },
             {
-                "situacao": "Modo Elétrico Puro (EV)",
-                "ajuste": "Pressões padrão obrigatórias",
-                "justificativa": "Motor elétrico é sensível à resistência de rolamento",
-                "cuidado": "Variações mínimas impactam autonomia elétrica"
+                "condicao": "Viagem Rodoviária",
+                "ajuste_recomendado": "+3 PSI",
+                "aplicacao": "Trajetos acima de 100km em rodovias",
+                "justificativa": "Compensa aquecimento e mantém eficiência em velocidades constantes."
             },
             {
-                "situacao": "Viagem Rodoviária Híbrida",
-                "ajuste": "+3 PSI sobre normal",
-                "justificativa": "Otimizar modo combustão em alta velocidade",
-                "cuidado": "Retornar pressões urbanas ao voltar à cidade"
+                "condicao": "Uso Urbano Intenso",
+                "ajuste_recomendado": "Pressão padrão",
+                "aplicacao": "Trânsito pesado com paradas frequentes",
+                "justificativa": "Pressão ideal para máximo aproveitamento da frenagem regenerativa."
             },
             {
-                "situacao": "Clima Extremo (>35°C)",
-                "ajuste": "Verificar 2x por semana",
-                "justificativa": "Sistema híbrido é sensível a temperaturas",
-                "cuidado": "Bateria híbrida aquece com pressão incorreta"
+                "condicao": "Modo Power",
+                "ajuste_recomendado": "Pressão padrão",
+                "aplicacao": "Acelerações mais intensas",
+                "justificativa": "Mantém aderência para potência combinada de 122 cv."
+            },
+            {
+                "condicao": "Bateria Híbrida Baixa",
+                "ajuste_recomendado": "+1 PSI",
+                "aplicacao": "Quando motor a combustão trabalha mais",
+                "justificativa": "Compensa maior dependência do motor flex em baixa carga da bateria."
             }
         ],
-
         "conversao_unidades": {
-            "pressao_normal_hibrido": {
-                "psi": "33 PSI",
-                "bar": "2,27 bar",
-                "kgf_cm2": "2,32 kgf/cm²",
-                "kpa": "227 kPa"
+            "tabela_conversao": [
+                {
+                    "psi": "33",
+                    "kgf_cm2": "2,32",
+                    "bar": "2,28"
+                },
+                {
+                    "psi": "35",
+                    "kgf_cm2": "2,46",
+                    "bar": "2,41"
+                },
+                {
+                    "psi": "38",
+                    "kgf_cm2": "2,67",
+                    "bar": "2,62"
+                },
+                {
+                    "psi": "39",
+                    "kgf_cm2": "2,74",
+                    "bar": "2,69"
+                },
+                {
+                    "psi": "60",
+                    "kgf_cm2": "4,22",
+                    "bar": "4,14"
+                }
+            ],
+            "formulas": {
+                "psi_para_kgf": "kgf/cm² = PSI ÷ 14,22",
+                "kgf_para_psi": "PSI = kgf/cm² × 14,22",
+                "psi_para_bar": "Bar = PSI ÷ 14,5"
             },
-            "pressao_carregado_hibrido": {
-                "psi": "38 PSI",
-                "bar": "2,62 bar",
-                "kgf_cm2": "2,67 kgf/cm²",
-                "kpa": "262 kPa"
-            },
-            "pressao_estepe_temporario": {
-                "psi": "60 PSI",
-                "bar": "4,14 bar",
-                "kgf_cm2": "4,22 kgf/cm²",
-                "kpa": "414 kPa"
-            },
-            "formula_conversao": "PSI × 0,0689 = bar | bar × 14,5 = PSI"
+            "observacao": "O sistema TPMS do Corolla Hybrid mostra pressões no display. Configure para PSI nas opções do veículo."
         },
-
         "cuidados_recomendacoes": [
             {
-                "categoria": "Sistema Híbrido",
-                "recomendacao": "Verificação quinzenal obrigatória",
-                "importancia": "Sistema híbrido é mais sensível a variações",
-                "dica": "Sempre após carregamento completo da bateria híbrida"
+                "categoria": "Verificação Mensal - Sistema Híbrido",
+                "descricao": "Veículos híbridos são mais sensíveis às variações de pressão devido ao sistema de regeneração de energia."
             },
             {
                 "categoria": "TPMS Toyota Safety Sense",
-                "recomendacao": "Reset após cada calibragem",
-                "importancia": "Garantir funcionamento correto dos alertas",
-                "dica": "Botão reset no console, dirigir 10-15km para recalibração"
+                "descricao": "O Corolla Hybrid possui TPMS integrado ao pacote de segurança. Calibre sempre com veículo frio."
             },
             {
-                "categoria": "Pneus Específicos",
-                "recomendacao": "Usar apenas pneus de baixa resistência",
-                "importancia": "Otimizar eficiência do sistema híbrido",
-                "dica": "Dunlop Enasave, Bridgestone Ecopia específicos"
+                "categoria": "Pneus Eco-friendly",
+                "descricao": "Use pneus de baixa resistência (Dunlop Enasave, Bridgestone Ecopia) para otimizar consumo híbrido."
             },
             {
                 "categoria": "Frenagem Regenerativa",
-                "recomendacao": "Pressão exata para máxima recuperação",
-                "importancia": "Recuperar até 70% da energia de frenagem",
-                "dica": "Pressão incorreta reduz eficiência regenerativa"
+                "descricao": "Pressão correta maximiza eficiência da regeneração de energia nas frenadas e desacelerações."
+            },
+            {
+                "categoria": "Estepe Temporário",
+                "descricao": "Mantenha o estepe em 60 PSI. Verifique mensalmente pois afeta equilíbrio do sistema híbrido em emergências."
             }
         ],
-
         "impacto_pressao": {
             "subcalibrado": {
-                "titulo": "Pressão Baixa - Impactos no Sistema Híbrido",
-                "economia": "Redução de 17,1 para 13-14 km/l urbano",
-                "hibrido": "Transições bruscas entre combustão/elétrico",
-                "regeneracao": "Perda de até 30% na eficiência regenerativa",
-                "bateria": "Maior demanda da bateria híbrida",
-                "desgaste": "Desgaste acelerado dos pneus específicos caros"
+                "titulo": "Pressão Baixa - Impacto no Sistema Híbrido",
+                "problemas": [
+                    "Redução na eficiência do sistema híbrido (consumo sobe para 13-14 km/l)",
+                    "Motor a combustão trabalha mais para compensar resistência",
+                    "Frenagem regenerativa menos eficiente",
+                    "Desgaste irregular dos pneus (especialmente important em híbridos)"
+                ]
+            },
+            "ideal": {
+                "titulo": "Calibragem Ideal - Performance Híbrida",
+                "beneficios": [
+                    "Consumo otimizado: até 17,1 km/l na cidade",
+                    "Transições suaves entre motor elétrico e a combustão",
+                    "Máxima eficiência da frenagem regenerativa",
+                    "Autonomia combinada de até 1.000km com tanque cheio"
+                ]
             },
             "sobrecalibrado": {
-                "titulo": "Pressão Alta - Problemas Híbridos",
-                "economia": "Ligeira melhoria, mas compromete sistema",
-                "hibrido": "Redução do conforto característico",
-                "regeneracao": "Menor área de contato reduz regeneração",
-                "dirigibilidade": "Perda da suavidade Toyota",
-                "seguranca": "Compromete assistentes de direção"
-            },
-            "calibragem_ideal": {
-                "titulo": "Pressão Correta - Máxima Eficiência",
-                "economia": "17,1 km/l urbano, 15,7 km/l rodoviário garantidos",
-                "hibrido": "Transições suaves e imperceptíveis",
-                "regeneracao": "Máxima recuperação de energia na frenagem",
-                "dirigibilidade": "Conforto e precisão Toyota preservados",
-                "durabilidade": "Vida útil otimizada dos componentes híbridos"
+                "titulo": "Pressão Alta - Conforto Comprometido",
+                "problemas": [
+                    "Redução do conforto de rodagem Toyota",
+                    "Menor aderência em frenadas (compromete Toyota Safety Sense)",
+                    "Desgaste central dos pneus",
+                    "Ruído de rodagem aumentado (contra o refinamento híbrido)"
+                ]
             }
         },
-
         "perguntas_frequentes": [
             {
-                "pergunta": "Qual a pressão ideal para calibragem do Corolla Hybrid?",
-                "resposta": "Para uso normal: 33 PSI em todos os pneus. Para carga completa: 38 PSI. Em modo ECO, adicione +2 PSI para máxima eficiência híbrida. O sistema TPMS Toyota Safety Sense monitora automaticamente."
+                "pergunta": "Qual a pressão ideal do Toyota Corolla Hybrid 2025 em PSI?",
+                "resposta": "Para o Toyota Corolla Hybrid 2025, use 33 PSI em todos os pneus para uso normal. Com carga completa, use 38 PSI. Em modo ECO, adicione +2 PSI para maximizar eficiência híbrida. O TPMS monitora automaticamente."
             },
             {
-                "pergunta": "A calibragem afeta o consumo do sistema híbrido?",
-                "resposta": "Muito! Pressão baixa pode reduzir de 17,1 km/l para 13-14 km/l urbano. Pressão correta otimiza as transições entre motor elétrico e combustão, maximizando a eficiência do Toyota Hybrid Synergy Drive."
+                "pergunta": "A pressão afeta o consumo do sistema híbrido?",
+                "resposta": "Sim! Pressão baixa pode aumentar o consumo de 17,1 km/l para 13-14 km/l. Pressão correta otimiza as transições entre motor elétrico e a combustão, maximizando a eficiência híbrida."
             },
             {
-                "pergunta": "Como funciona o TPMS no Corolla Hybrid 2025?",
-                "resposta": "O TPMS é integrado ao Toyota Safety Sense 2.0. Mostra alertas no display quando pressão varia mais que 20%. Após calibragem, reset via botão no console e o sistema recalibra automaticamente em 10-15 km."
+                "pergunta": "Como o TPMS funciona no Corolla Hybrid?",
+                "resposta": "O TPMS do Corolla Hybrid é integrado ao Toyota Safety Sense 2.0. Mostra alertas no display quando pressão varia mais que 25%. Após calibragem, o sistema se recalibra automaticamente."
             },
             {
                 "pergunta": "Posso usar pneus comuns no Corolla Hybrid?",
-                "resposta": "Recomenda-se pneus específicos de baixa resistência (Dunlop Enasave, Bridgestone Ecopia) para otimizar o sistema híbrido. Pneus comuns funcionam mas reduzem a eficiência significativamente."
+                "resposta": "Recomenda-se pneus de baixa resistência (Dunlop Enasave, Bridgestone Ecopia) para otimizar o sistema híbrido. Pneus comuns funcionam, mas reduzem eficiência."
             },
             {
-                "pergunta": "O estepe do híbrido é diferente?",
-                "resposta": "O estepe temporário deve ser mantido em 60 PSI e verificado mensalmente. É importante para manter equilíbrio do sistema híbrido em emergências. Use apenas para distâncias curtas, máximo 80 km/h."
-            },
-            {
-                "pergunta": "Com que frequência calibrar pneus no híbrido?",
-                "resposta": "Quinzenalmente é ideal para veículos híbridos. O sistema é mais sensível a variações de pressão que impactam a eficiência elétrica. Sempre antes de viagens longas e após mudanças de temperatura."
+                "pergunta": "O estepe do Corolla Hybrid é diferente?",
+                "resposta": "O estepe temporário deve ficar em 60 PSI. É importante para manter equilíbrio do sistema híbrido. Use apenas para emergências, máximo 80 km/h."
             }
         ],
-
-        "consideracoes_finais": "Dominar a calibragem do Toyota Corolla Hybrid 2025 é essencial para aproveitar toda a revolução da motorização híbrida nacional. Com calibragem correta (33/33 PSI normal, 38/38 PSI carregado), você garante os 17,1 km/l urbanos prometidos e transições suaves entre os motores. O sistema Toyota Safety Sense 2.0 facilita o monitoramento, mas a verificação quinzenal manual permanece fundamental. Como primeiro sedan híbrido flex do Brasil, o Corolla Hybrid democratiza tecnologia avançada, mas exige cuidados específicos de calibragem. Lembre-se: calibragem correta não é apenas economia - é aproveitar o futuro da mobilidade sustentável que chegou ao Brasil pelas mãos da Toyota, garantindo que cada quilômetro seja percorrido com máxima eficiência e responsabilidade ambiental."
+        "consideracoes_finais": "O Toyota Corolla Hybrid 2025 representa a democratização da tecnologia híbrida no Brasil. A calibragem correta (33 PSI normal, 38 PSI carregado) é essencial para aproveitar os 17,1 km/l na cidade e o sistema Toyota Hybrid Synergy Drive. Com TPMS integrado ao Toyota Safety Sense, monitoramento constante é facilitado. Diferente de veículos convencionais, pequenas variações de pressão impactam significativamente a eficiência híbrida. Mantenha sempre a pressão ideal para desfrutar da economia e suavidade que tornam este Corolla referência em eficiência."
     },
-    "metadata": [],
-    "status": "published",
-    "created_at": "2025-08-15T11:30:00.000000Z",
-    "updated_at": "2025-08-15T11:30:00.000000Z",
-    "formated_updated_at": "15 de agosto de 2025",
-    "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-toyota-corolla-hybrid-2025",
-    "id": "tire_calibration_car_toyota_corolla_hybrid_2025"
+    "formated_updated_at": "14 de agosto de 2025",
+    "canonical_url": "https://mercadoveiculos.com.br/info/pressao-ideal-pneus-toyota-corolla-hybrid-2025/"
 }

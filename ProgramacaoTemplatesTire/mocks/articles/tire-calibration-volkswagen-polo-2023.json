@@ -1,7 +1,7 @@
 {
     "title": "Calibragem do Pneu do Volkswagen Polo 2023 – Guia Completo",
     "slug": "calibragem-pneu-volkswagen-polo-2023",
-    "template": "ideal_tire_pressure_car",
+    "template": "tire_calibration_car",
     "category_id": 1,
     "category_name": "Calibragem de Pneus",
     "category_slug": "calibragem-pneus",
@@ -76,233 +76,181 @@
         "combustivel": "Flex"
     },
     "content": {
-        "introducao": "A **calibragem adequada dos pneus do Volkswagen Polo 2023** é fundamental para aproveitar toda a eficiência alemã deste hatchback compacto referência no Brasil. Como carro urbano por excelência, o Polo recompensa o cuidado correto com economia de combustível, dirigibilidade precisa e durabilidade exemplar que fazem dele o hatchback premium mais confiável do segmento.\n\nCom motor 1.0 MPI (75cv) ou 200 TSI turbo (116cv), o Polo 2023 oferece até 14 km/l urbano quando bem calibrado. A calibragem correta (30/28 PSI normal, 32/35 PSI carregado) também preserva os pneus 185/65 R15 que custam entre R$ 280-450 cada.\n\nNeste guia específico, você aprenderá o procedimento correto de calibragem, entenderá os ajustes para diferentes usos e descobrirá como um Polo bem calibrado mantém a qualidade alemã por décadas, desde o uso urbano diário até viagens familiares.",
-
+        "introducao": "Manter os pneus do seu Volkswagen Polo 2023 com a pressão correta é fundamental para garantir segurança, economia de combustível e prolongar a vida útil dos pneus. O Polo é um hatchback compacto que exige cuidados específicos na calibragem para manter seu excelente desempenho urbano.",
         "especificacoes_por_versao": [
             {
-                "versao": "Polo MPI 1.0 (75cv)",
-                "motor": "1.0 MPI Flex",
-                "aro_pneu": "15 polegadas",
-                "medida_pneu": "185/65 R15 88H",
-                "pressao_vazio_dianteiro": "30 PSI",
-                "pressao_vazio_traseiro": "28 PSI",
-                "pressao_cheio_dianteiro": "32 PSI",
-                "pressao_cheio_traseiro": "35 PSI",
-                "observacoes": "Versão de entrada, foco em economia máxima"
+                "versao": "Polo 200 TSI",
+                "medida_pneus": "185/65 R15",
+                "indice_carga_velocidade": "88H",
+                "pressao_dianteiro_normal": "30 PSI",
+                "pressao_traseiro_normal": "28 PSI",
+                "pressao_dianteiro_carregado": "32 PSI",
+                "pressao_traseiro_carregado": "35 PSI"
             },
             {
-                "versao": "Polo 200 TSI Comfortline",
-                "motor": "1.0 TSI Turbo",
-                "aro_pneu": "15 polegadas",
-                "medida_pneu": "185/65 R15 88H",
-                "pressao_vazio_dianteiro": "30 PSI",
-                "pressao_vazio_traseiro": "28 PSI",
-                "pressao_cheio_dianteiro": "32 PSI",
-                "pressao_cheio_traseiro": "35 PSI",
-                "observacoes": "Motor turbo exige calibragem precisa para eficiência"
-            },
-            {
-                "versao": "Polo 200 TSI Highline",
-                "motor": "1.0 TSI Turbo",
-                "aro_pneu": "15 polegadas",
-                "medida_pneu": "185/65 R15 88H",
-                "pressao_vazio_dianteiro": "30 PSI",
-                "pressao_vazio_traseiro": "28 PSI",
-                "pressao_cheio_dianteiro": "32 PSI",
-                "pressao_cheio_traseiro": "35 PSI",
-                "observacoes": "Versão completa, conforto e economia equilibrados"
-            },
-            {
-                "versao": "Polo GTS (se disponível)",
-                "motor": "1.4 TSI Turbo",
-                "aro_pneu": "16 polegadas",
-                "medida_pneu": "195/55 R16 87V",
-                "pressao_vazio_dianteiro": "32 PSI",
-                "pressao_vazio_traseiro": "30 PSI",
-                "pressao_cheio_dianteiro": "34 PSI",
-                "pressao_cheio_traseiro": "36 PSI",
-                "observacoes": "Versão esportiva com pressões específicas"
+                "versao": "Polo GTS",
+                "medida_pneus": "195/55 R16",
+                "indice_carga_velocidade": "87V",
+                "pressao_dianteiro_normal": "32 PSI",
+                "pressao_traseiro_normal": "30 PSI",
+                "pressao_dianteiro_carregado": "34 PSI",
+                "pressao_traseiro_carregado": "36 PSI"
             }
         ],
-
         "tabela_carga_completa": {
-            "titulo": "Pressões por Condição de Uso",
-            "descricao": "Ajuste conforme ocupação e bagagem do veículo",
+            "titulo": "Pressões para Carga Completa",
+            "descricao": "Valores recomendados quando o veículo estiver com 4-5 passageiros e bagagem",
             "condicoes": [
                 {
-                    "versao": "Uso Urbano Normal",
-                    "ocupantes": "1-2 pessoas",
-                    "bagagem": "Bagagem leve",
-                    "pressao_dianteira": "30 PSI",
-                    "pressao_traseira": "28 PSI",
-                    "observacao": "Máxima economia urbana",
-                    "css_class": "bg-green-50 border-green-200"
-                },
-                {
-                    "versao": "Família Completa",
-                    "ocupantes": "3-5 pessoas",
-                    "bagagem": "Porta-malas carregado",
+                    "versao": "Polo 200 TSI",
+                    "ocupantes": "4-5 pessoas",
+                    "bagagem": "Porta-malas cheio",
                     "pressao_dianteira": "32 PSI",
                     "pressao_traseira": "35 PSI",
-                    "observacao": "Estabilidade com carga máxima",
-                    "css_class": "bg-yellow-50 border-yellow-200"
+                    "observacao": "Ideal para viagens familiares"
                 },
                 {
-                    "versao": "Viagem Rodoviária",
-                    "ocupantes": "Variável",
-                    "bagagem": "Bagagem de viagem",
-                    "pressao_dianteira": "33 PSI",
-                    "pressao_traseira": "31 PSI",
-                    "observacao": "Compensação para velocidades altas",
-                    "css_class": "bg-blue-50 border-blue-200"
+                    "versao": "Polo GTS",
+                    "ocupantes": "4-5 pessoas",
+                    "bagagem": "Porta-malas cheio",
+                    "pressao_dianteira": "34 PSI",
+                    "pressao_traseira": "36 PSI",
+                    "observacao": "Performance mantida mesmo carregado"
                 }
             ]
         },
-
         "localizacao_etiqueta": {
-            "localizacao_principal": "Coluna da porta do motorista",
-            "localizacoes_alternativas": [
-                "Manual do proprietário (porta-luvas)",
-                "Tampa do combustível (interno)",
-                "Etiqueta no batente da porta"
+            "local_principal": "Coluna da porta do motorista",
+            "descricao": "A etiqueta oficial de pressão dos pneus do Volkswagen Polo 2023 está localizada na coluna da porta do motorista, visível quando a porta está aberta.",
+            "locais_alternativos": [
+                "Manual do proprietário na seção \"Especificações Técnicas\"",
+                "Tampa do tanque de combustível",
+                "Porta-luvas"
             ],
-            "descricao": "No Polo 2023, a etiqueta oficial fica na coluna da porta do motorista, lado interno",
-            "observacao": "Etiqueta mostra pressões em bar. Conversão: 1 bar = 14,5 PSI"
+            "observacao": "Sempre utilize os valores oficiais da etiqueta em PSI como referência principal."
         },
-
         "condicoes_especiais": [
             {
-                "situacao": "Tempo Muito Quente (>35°C)",
-                "ajuste": "Reduzir 2 PSI de manhã",
-                "justificativa": "Compensar expansão térmica",
-                "cuidado": "Verificar mais frequentemente no verão"
+                "condicao": "Viagens em Rodovias",
+                "ajuste_recomendado": "+3 PSI",
+                "aplicacao": "Velocidades sustentadas acima de 110 km/h",
+                "justificativa": "Compensa o aquecimento dos pneus em altas velocidades."
             },
             {
-                "situacao": "Carga Extra Temporária",
-                "ajuste": "Usar pressões de carga completa",
-                "justificativa": "Manter estabilidade e segurança",
-                "cuidado": "Retornar pressões normais após uso"
+                "condicao": "Carga Máxima",
+                "ajuste_recomendado": "Ver tabela carga completa",
+                "aplicacao": "4 ou 5 passageiros e bagagem",
+                "justificativa": "Utilize sempre os valores da coluna carga completa para manter estabilidade."
             },
             {
-                "situacao": "Viagem Longa (>300km)",
-                "ajuste": "+3 PSI sobre normal",
-                "justificativa": "Compensar aquecimento em velocidade",
-                "cuidado": "Verificar temperatura dos pneus em paradas"
-            },
-            {
-                "situacao": "Uso Exclusivo Urbano",
-                "ajuste": "Manter pressões padrão",
-                "justificativa": "Otimizar conforto e economia",
-                "cuidado": "Verificar mensalmente sem falta"
+                "condicao": "Uso Urbano Intenso",
+                "ajuste_recomendado": "Pressão padrão",
+                "aplicacao": "Trânsito de cidade, velocidades baixas",
+                "justificativa": "Pressões normais oferecem melhor conforto e aderência urbana."
             }
         ],
-
         "conversao_unidades": {
-            "pressao_dianteira_normal": {
-                "psi": "30 PSI",
-                "bar": "2,07 bar",
-                "kgf_cm2": "2,11 kgf/cm²",
-                "kpa": "207 kPa"
+            "tabela_conversao": [
+                {
+                    "psi": "28",
+                    "kgf_cm2": "1,97",
+                    "bar": "1,93"
+                },
+                {
+                    "psi": "30",
+                    "kgf_cm2": "2,11",
+                    "bar": "2,07"
+                },
+                {
+                    "psi": "32",
+                    "kgf_cm2": "2,25",
+                    "bar": "2,21"
+                },
+                {
+                    "psi": "35",
+                    "kgf_cm2": "2,46",
+                    "bar": "2,41"
+                },
+                {
+                    "psi": "36",
+                    "kgf_cm2": "2,53",
+                    "bar": "2,48"
+                }
+            ],
+            "formulas": {
+                "psi_para_kgf": "kgf/cm² = PSI ÷ 14,22",
+                "kgf_para_psi": "PSI = kgf/cm² × 14,22",
+                "psi_para_bar": "Bar = PSI ÷ 14,5"
             },
-            "pressao_traseira_normal": {
-                "psi": "28 PSI",
-                "bar": "1,93 bar",
-                "kgf_cm2": "1,97 kgf/cm²",
-                "kpa": "193 kPa"
-            },
-            "pressao_estepe": {
-                "psi": "36 PSI",
-                "bar": "2,48 bar",
-                "kgf_cm2": "2,53 kgf/cm²",
-                "kpa": "248 kPa"
-            },
-            "formula_conversao": "PSI × 0,0689 = bar | bar × 14,5 = PSI"
+            "observacao": "No Brasil, PSI é o padrão usado nos postos de combustível e calibradores."
         },
-
         "cuidados_recomendacoes": [
             {
-                "categoria": "Verificação Regular",
-                "recomendacao": "Verificar pressão mensalmente",
-                "importancia": "Hatchbacks compactos são sensíveis a variações",
-                "dica": "Sempre com pneus frios (2-3 horas após uso)"
+                "categoria": "Verificação Mensal",
+                "descricao": "Verifique a pressão dos pneus pelo menos uma vez por mês e sempre antes de viagens longas."
             },
             {
-                "categoria": "Equipamentos",
-                "recomendacao": "Usar calibrador digital quando possível",
-                "importancia": "Maior precisão para economia máxima",
-                "dica": "Calibradores de posto são adequados para o Polo"
+                "categoria": "Pneus Frios",
+                "descricao": "Calibre sempre com os pneus frios, preferencialmente pela manhã ou após 3 horas parado."
             },
             {
-                "categoria": "Estepe Compacto",
-                "recomendacao": "Manter sempre em 36 PSI",
-                "importancia": "Estepe temporário exige pressão alta",
-                "dica": "Verificar junto com pneus normais mensalmente"
+                "categoria": "Calibradores Confiáveis",
+                "descricao": "Use calibradores digitais quando possível. Equipamentos analógicos podem ter margem de erro."
             },
             {
-                "categoria": "Rodízio",
-                "recomendacao": "Fazer rodízio a cada 10.000km",
-                "importancia": "Desgaste uniforme em hatchback urbano",
-                "dica": "Ajustar pressões após rodízio conforme posição"
+                "categoria": "Rodízio de Pneus",
+                "descricao": "Faça o rodízio a cada 10.000 km. Após o rodízio, ajuste a pressão conforme a nova posição."
             }
         ],
-
         "impacto_pressao": {
             "subcalibrado": {
-                "titulo": "Pressão Baixa - Problemas",
-                "economia": "Aumento de 10-15% no consumo (de 14 para 12 km/l urbano)",
-                "desgaste": "Desgaste acelerado das laterais dos pneus",
-                "dirigibilidade": "Direção pesada e imprecisa em curvas",
-                "seguranca": "Maior risco de perda de controle e estouro",
-                "aquecimento": "Superaquecimento em velocidades altas"
+                "titulo": "Pneu Subcalibrado",
+                "problemas": [
+                    "Maior consumo de combustível (+10% a 15%)",
+                    "Desgaste acelerado nas bordas",
+                    "Menor estabilidade em curvas",
+                    "Alto risco de estouro no calor brasileiro"
+                ]
+            },
+            "ideal": {
+                "titulo": "Calibragem Correta (PSI)",
+                "beneficios": [
+                    "Consumo otimizado de combustível",
+                    "Desgaste uniforme e vida útil máxima",
+                    "Aderência e comportamento previsíveis",
+                    "Distâncias de frenagem otimizadas"
+                ]
             },
             "sobrecalibrado": {
-                "titulo": "Pressão Alta - Problemas",
-                "economia": "Ligeira melhoria, mas compromete outros aspectos",
-                "desgaste": "Desgaste central excessivo",
-                "dirigibilidade": "Direção nervosa e menor aderência",
-                "seguranca": "Redução da área de contato em frenagem",
-                "conforto": "Maior transmissão de impactos e ruído"
-            },
-            "calibragem_ideal": {
-                "titulo": "Pressão Correta - Benefícios",
-                "economia": "Máxima economia: até 14 km/l urbano, 18 km/l rodoviário",
-                "desgaste": "Vida útil otimizada: 50.000-60.000km",
-                "dirigibilidade": "Precisão e estabilidade em todas as condições",
-                "seguranca": "Distância de frenagem minimizada",
-                "conforto": "Conforto de rodagem alemão preservado"
+                "titulo": "Pneu Sobrecalibrado",
+                "problemas": [
+                    "Desgaste excessivo no centro",
+                    "Menor área de contato com o solo",
+                    "Redução na aderência em piso molhado",
+                    "Maior rigidez, reduzindo o conforto"
+                ]
             }
         },
-
         "perguntas_frequentes": [
             {
-                "pergunta": "Qual a pressão ideal para calibragem do Polo 2023?",
-                "resposta": "Para o Volkswagen Polo 2023, use 30 PSI no pneu dianteiro e 28 PSI no traseiro para uso normal. Com carga completa, use 32 PSI na frente e 35 PSI atrás. Sempre calibre com pneus frios."
+                "pergunta": "Qual a pressão ideal do Volkswagen Polo 2023 em PSI?",
+                "resposta": "Para o Volkswagen Polo 2023, use 30 PSI no pneu dianteiro e 28 PSI no traseiro para uso normal. Com carga completa, use 32 PSI na frente e 35 PSI atrás. Sempre verifique com pneus frios."
             },
             {
-                "pergunta": "Com que frequência calibrar os pneus do Polo?",
-                "resposta": "Mensalmente para uso urbano normal. Quinzenalmente se uso intenso. Sempre antes de viagens. O Polo é sensível a variações que afetam economia e dirigibilidade."
+                "pergunta": "Com que frequência verificar a pressão no Polo?",
+                "resposta": "Verifique mensalmente e sempre antes de viagens. O Polo, sendo um hatchback compacto, é sensível a variações de pressão que afetam economia e dirigibilidade."
             },
             {
                 "pergunta": "Posso usar pneus 195/55 R16 no Polo 200 TSI?",
-                "resposta": "O Polo 200 TSI usa originalmente 185/65 R15. Os 195/55 R16 são da versão GTS. Consulte especialista antes da alteração pois as pressões recomendadas são diferentes."
+                "resposta": "O Polo 200 TSI vem originalmente com 185/65 R15. Pneus 195/55 R16 são da versão GTS. Consulte um especialista antes de alterar, pois as pressões recomendadas são diferentes."
             },
             {
-                "pergunta": "A calibragem afeta muito o consumo do Polo TSI?",
-                "resposta": "Sim! Motor turbo TSI é sensível. Calibragem inadequada pode aumentar consumo de 14 para 12 km/l urbano. Pressão correta é fundamental para aproveitar a eficiência do turbo."
-            },
-            {
-                "pergunta": "Como funciona o estepe compacto do Polo?",
-                "resposta": "O estepe compacto deve ficar sempre em 36 PSI. É apenas para emergências: máximo 80 km/h e até concessionária mais próxima. Substitua pelo pneu definitivo rapidamente."
+                "pergunta": "O Polo tem sensor de pressão (TPMS)?",
+                "resposta": "O Volkswagen Polo 2023 não possui sistema TPMS de fábrica no Brasil. Por isso, a verificação manual mensal é ainda mais importante para manter a segurança."
             }
         ],
-
-        "consideracoes_finais": "Dominar a calibragem do Volkswagen Polo 2023 é fundamental para aproveitar toda a eficiência alemã deste hatchback compacto referência. Com calibragem correta (30/28 PSI normal, 32/35 PSI carregado), você garante a economia prometida, preserva a dirigibilidade precisa e mantém a durabilidade exemplar que fazem do Polo a escolha inteligente no segmento. Sem sistema TPMS, a disciplina na verificação mensal é essencial, mas o resultado compensa: um carro que recompensa o cuidado com economia, confiabilidade e prazer de dirigir. Lembre-se: o Polo é um investimento de longo prazo que valoriza a manutenção preventiva e recompensa a calibragem correta com décadas de confiabilidade alemã."
+        "consideracoes_finais": "O Volkswagen Polo 2023 é um hatchback confiável que recompensa o cuidado adequado com os pneus. Manter a pressão correta (30/28 PSI para uso normal) garante economia, segurança e durabilidade. Lembre-se: a verificação mensal é simples e evita problemas maiores. Para o motorista brasileiro, que enfrenta calor intenso e trânsito pesado, essa atenção aos pneus faz toda a diferença no dia a dia."
     },
-    "metadata": [],
-    "status": "published",
-    "created_at": "2025-08-15T11:00:00.000000Z",
-    "updated_at": "2025-08-15T11:00:00.000000Z",
-    "formated_updated_at": "15 de agosto de 2025",
-    "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-volkswagen-polo-2023",
-    "id": "tire_calibration_car_volkswagen_polo_2023"
+    "formated_updated_at": "15 de janeiro de 2024",
+    "canonical_url": "https://mercadoveiculos.com.br/info/pressao-ideal-pneus-volkswagen-polo-2023/"
 }

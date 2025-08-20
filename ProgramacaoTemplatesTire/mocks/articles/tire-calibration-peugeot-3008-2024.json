@@ -50,13 +50,13 @@
             ],
             "seasonal_recommendations": [
                 "Michelin Pilot Sport 4",
-                "Continental SportContact 6"
+                "Continental PremiumContact 6"
             ]
         },
         "vehicle_features": {
             "vehicle_full_name": "Peugeot 3008 2024",
             "url_slug": "peugeot-3008-2024",
-            "category_normalized": "SUV Premium Aprimorado",
+            "category_normalized": "SUV Premium",
             "recommended_oil": "5W30 Sintético"
         },
         "is_premium": true,
@@ -76,243 +76,221 @@
         "combustivel": "Flex"
     },
     "content": {
-        "introducao": "A **calibragem adequada dos pneus do Peugeot 3008 2024** é essencial para aproveitar toda a evolução inteligente desta obra-prima francesa refinada. Como evolução natural da referência premium, o 3008 2024 combina tecnologias maduras com refinamentos significativos, oferecendo a escolha mais equilibrada entre inovação e confiabilidade comprovada.\n\nCom motor 1.6 THP turbo aprimorado, i-Cockpit com visualização melhorada e TPMS integrado com análise de tendências, o 3008 2024 representa a sofisticação francesa refinada. A calibragem correta (35/35 PSI normal, 38/41 PSI carregado) também preserva os pneus premium específicos 2024 que custam entre R$ 700-950 cada.\n\nNeste guia específico, você aprenderá o procedimento correto de calibragem para SUVs premium aprimorados, entenderá os sistemas integrados 2024 e descobrirá como um 3008 bem calibrado oferece a experiência premium completa que combina o melhor da tecnologia madura com inovações significativas.",
-
+        "introducao": "Manter os pneus do seu Peugeot 3008 2024 com a pressão correta é fundamental para aproveitar toda a tecnologia e conforto deste SUV premium francês. Com sistema TPMS integrado e suspensão sofisticada, o 3008 exige cuidados específicos para manter sua excelência em dirigibilidade e eficiência.",
         "especificacoes_por_versao": [
             {
-                "versao": "Active Aprimorado (R18)",
-                "motor": "1.6 THP Turbo Refinado",
-                "aro_pneu": "18 polegadas",
-                "medida_pneu": "225/55 R18 98V",
-                "pressao_vazio_dianteiro": "35 PSI",
-                "pressao_vazio_traseiro": "35 PSI",
-                "pressao_cheio_dianteiro": "37 PSI",
-                "pressao_cheio_traseiro": "39 PSI",
-                "observacoes": "Versão com refinamentos 2024 integrados"
+                "versao": "3008 Allure",
+                "medida_pneus": "225/55 R18",
+                "indice_carga_velocidade": "98V",
+                "pressao_dianteiro_normal": "35 PSI",
+                "pressao_traseiro_normal": "35 PSI",
+                "pressao_dianteiro_carregado": "37 PSI",
+                "pressao_traseiro_carregado": "39 PSI"
             },
             {
-                "versao": "Allure Integrado (R19)",
-                "motor": "1.6 THP Turbo Aprimorado",
-                "aro_pneu": "19 polegadas",
-                "medida_pneu": "235/50 R19 99V",
-                "pressao_vazio_dianteiro": "35 PSI",
-                "pressao_vazio_traseiro": "35 PSI",
-                "pressao_cheio_dianteiro": "38 PSI",
-                "pressao_cheio_traseiro": "41 PSI",
-                "observacoes": "i-Cockpit aprimorado com TPMS integrado"
+                "versao": "3008 Allure Pack",
+                "medida_pneus": "235/50 R19",
+                "indice_carga_velocidade": "99V",
+                "pressao_dianteiro_normal": "35 PSI",
+                "pressao_traseiro_normal": "35 PSI",
+                "pressao_dianteiro_carregado": "38 PSI",
+                "pressao_traseiro_carregado": "41 PSI"
             },
             {
-                "versao": "Allure Pack Plus (R19)",
-                "motor": "1.6 THP Turbo 2024",
-                "aro_pneu": "19 polegadas",
-                "medida_pneu": "235/50 R19 99V",
-                "pressao_vazio_dianteiro": "35 PSI",
-                "pressao_vazio_traseiro": "35 PSI",
-                "pressao_cheio_dianteiro": "38 PSI",
-                "pressao_cheio_traseiro": "41 PSI",
-                "observacoes": "Comandos por voz e análise preditiva"
-            },
-            {
-                "versao": "GT Aprimorado (R19)",
-                "motor": "1.6 THP Turbo Sport",
-                "aro_pneu": "19 polegadas",
-                "medida_pneu": "235/50 R19 99V",
-                "pressao_vazio_dianteiro": "35 PSI",
-                "pressao_vazio_traseiro": "35 PSI",
-                "pressao_cheio_dianteiro": "38 PSI",
-                "pressao_cheio_traseiro": "41 PSI",
-                "observacoes": "Versão esportiva com sistemas integrados 2024"
+                "versao": "3008 GT",
+                "medida_pneus": "235/50 R19",
+                "indice_carga_velocidade": "99W",
+                "pressao_dianteiro_normal": "35 PSI",
+                "pressao_traseiro_normal": "35 PSI",
+                "pressao_dianteiro_carregado": "38 PSI",
+                "pressao_traseiro_carregado": "41 PSI"
             }
         ],
-
         "tabela_carga_completa": {
-            "titulo": "Pressões por Condição de Uso - Tecnologia Integrada 2024",
-            "descricao": "Ajuste conforme ocupação para máximo aproveitamento dos sistemas aprimorados",
+            "titulo": "Pressões para Carga Completa",
+            "descricao": "Valores recomendados quando o SUV estiver com 5 passageiros e bagagem máxima",
             "condicoes": [
                 {
-                    "versao": "Uso Premium Aprimorado 2024",
-                    "ocupantes": "1-3 pessoas",
-                    "bagagem": "Bagagem leve a moderada",
-                    "pressao_dianteira": "35 PSI",
-                    "pressao_traseira": "35 PSI",
-                    "observacao": "Sistemas integrados funcionando perfeitamente",
-                    "css_class": "bg-green-50 border-green-200"
+                    "versao": "3008 Allure",
+                    "ocupantes": "5 pessoas",
+                    "bagagem": "Porta-malas + teto cheio",
+                    "pressao_dianteira": "37 PSI",
+                    "pressao_traseira": "39 PSI",
+                    "observacao": "Ideal para viagens familiares"
                 },
                 {
-                    "versao": "Família Completa Integrada",
-                    "ocupantes": "4-5 pessoas",
-                    "bagagem": "Porta-malas carregado",
+                    "versao": "3008 Allure Pack",
+                    "ocupantes": "5 pessoas",
+                    "bagagem": "Porta-malas + teto cheio",
                     "pressao_dianteira": "38 PSI",
                     "pressao_traseira": "41 PSI",
-                    "observacao": "Configuração otimizada para sistemas 2024",
-                    "css_class": "bg-yellow-50 border-yellow-200"
+                    "observacao": "Performance e conforto mantidos"
                 },
                 {
-                    "versao": "Viagem Inteligente 2024",
-                    "ocupantes": "Variável",
-                    "bagagem": "Bagagem + conectividade",
+                    "versao": "3008 GT",
+                    "ocupantes": "5 pessoas",
+                    "bagagem": "Porta-malas + teto cheio",
                     "pressao_dianteira": "38 PSI",
                     "pressao_traseira": "41 PSI",
-                    "observacao": "Assistentes de condução aprimorados ativos",
-                    "css_class": "bg-blue-50 border-blue-200"
+                    "observacao": "Esportividade preservada mesmo carregado"
                 }
             ]
         },
-
         "localizacao_etiqueta": {
-            "localizacao_principal": "Coluna da porta do motorista",
-            "localizacoes_alternativas": [
-                "Manual do proprietário (porta-luvas)",
-                "i-Cockpit aprimorado (visualização melhorada)",
-                "App MyPeugeot Cloud (conectividade automática)"
+            "local_principal": "Coluna da porta do motorista",
+            "descricao": "A etiqueta oficial de pressão dos pneus do Peugeot 3008 2024 está localizada na coluna da porta do motorista, visível quando a porta está aberta. Informações também disponíveis no display digital do painel.",
+            "locais_alternativos": [
+                "Manual do proprietário na seção \"Especificações Técnicas\"",
+                "Display digital do painel (Menu Veículo > Pneus)",
+                "Aplicativo MyPeugeot (algumas versões)",
+                "Tampa do tanque de combustível (backup)"
             ],
-            "descricao": "No 3008 2024, o TPMS integrado com análise de tendências facilita monitoramento",
-            "observacao": "Sistema i-Cockpit aprimorado com integração mais sofisticada"
+            "observacao": "O sistema TPMS mostra pressões em tempo real no display central. Use sempre os valores oficiais da etiqueta como referência."
         },
-
         "condicoes_especiais": [
             {
-                "situacao": "Modo Sport GT Aprimorado",
-                "ajuste": "37/37 PSI (+2 PSI sobre normal)",
-                "justificativa": "Otimizar dirigibilidade esportiva refinada 2024",
-                "cuidado": "Sistemas integrados se adaptam automaticamente"
+                "condicao": "Viagens Longas",
+                "ajuste_recomendado": "+3 PSI",
+                "aplicacao": "Rodovias, velocidades sustentadas acima de 120 km/h",
+                "justificativa": "Compensa o aquecimento dos pneus em altas velocidades e mantém estabilidade do SUV."
             },
             {
-                "situacao": "Assistentes de Condução 2024",
-                "ajuste": "Manter pressões exatas (35/35 PSI)",
-                "justificativa": "Sistemas preditivos dependem de pressão correta",
-                "cuidado": "Calibragem incorreta compromete assistentes"
+                "condicao": "Carga Máxima",
+                "ajuste_recomendado": "Ver tabela carga completa",
+                "aplicacao": "5 passageiros + bagagem + bagageiro de teto",
+                "justificativa": "SUVs premium como o 3008 exigem ajustes específicos para manter conforto e dirigibilidade."
             },
             {
-                "situacao": "Conectividade em Nuvem",
-                "ajuste": "Pressões padrão para sincronização",
-                "justificativa": "MyPeugeot Cloud monitora baseado em padrões",
-                "cuidado": "App precisa de pressões calibradas para análise"
+                "condicao": "Uso Urbano Premium",
+                "ajuste_recomendado": "Pressão padrão (35 PSI)",
+                "aplicacao": "Cidade, baixas velocidades, conforto máximo",
+                "justificativa": "Aproveita ao máximo a suspensão sofisticada e o sistema de absorção de impactos."
             },
             {
-                "situacao": "Análise Preditiva Ativa",
-                "ajuste": "Verificação quinzenal mesmo com TPMS",
-                "justificativa": "Sistema aprende padrões de uso",
-                "cuidado": "Dados incorretos comprometem predições"
+                "condicao": "Modo Sport (GT)",
+                "ajuste_recomendado": "+2 PSI",
+                "aplicacao": "Pilotagem esportiva, curvas, acelerações",
+                "justificativa": "Melhora resposta da direção e estabilidade em condução mais dinâmica."
             }
         ],
-
         "conversao_unidades": {
-            "pressao_normal_integrada": {
-                "psi": "35 PSI",
-                "bar": "2,41 bar",
-                "kgf_cm2": "2,46 kgf/cm²",
-                "kpa": "241 kPa"
+            "tabela_conversao": [
+                {
+                    "psi": "35",
+                    "kgf_cm2": "2,46",
+                    "bar": "2,41"
+                },
+                {
+                    "psi": "37",
+                    "kgf_cm2": "2,60",
+                    "bar": "2,55"
+                },
+                {
+                    "psi": "38",
+                    "kgf_cm2": "2,67",
+                    "bar": "2,62"
+                },
+                {
+                    "psi": "39",
+                    "kgf_cm2": "2,74",
+                    "bar": "2,69"
+                },
+                {
+                    "psi": "41",
+                    "kgf_cm2": "2,88",
+                    "bar": "2,83"
+                },
+                {
+                    "psi": "60",
+                    "kgf_cm2": "4,22",
+                    "bar": "4,14"
+                }
+            ],
+            "formulas": {
+                "psi_para_kgf": "kgf/cm² = PSI ÷ 14,22",
+                "kgf_para_psi": "PSI = kgf/cm² × 14,22",
+                "psi_para_bar": "Bar = PSI ÷ 14,5"
             },
-            "pressao_carregado_dianteiro": {
-                "psi": "38 PSI",
-                "bar": "2,62 bar",
-                "kgf_cm2": "2,67 kgf/cm²",
-                "kpa": "262 kPa"
-            },
-            "pressao_carregado_traseiro": {
-                "psi": "41 PSI",
-                "bar": "2,83 bar",
-                "kgf_cm2": "2,88 kgf/cm²",
-                "kpa": "283 kPa"
-            },
-            "pressao_estepe_inteligente": {
-                "psi": "60 PSI",
-                "bar": "4,14 bar",
-                "kgf_cm2": "4,22 kgf/cm²",
-                "kpa": "414 kPa"
-            },
-            "formula_conversao": "PSI × 0,0689 = bar | bar × 14,5 = PSI"
+            "observacao": "O display do Peugeot 3008 pode mostrar pressões em bar ou PSI. Configure para PSI no menu do sistema para compatibilidade com postos brasileiros."
         },
-
         "cuidados_recomendacoes": [
             {
-                "categoria": "TPMS Integrado Aprimorado",
-                "recomendacao": "Reset via comandos por voz ou menu",
-                "importancia": "Sistema integrado com análise de tendências",
-                "dica": "Recalibração automática em apenas 10-15km"
+                "categoria": "Sistema TPMS",
+                "descricao": "Este veículo possui sistema de monitoramento que alerta automaticamente sobre variações de pressão. Após calibragem, aguarde alguns quilômetros para recalibração automática."
             },
             {
-                "categoria": "i-Cockpit Aprimorado 2024",
-                "recomendacao": "Visualização melhorada e mais intuitiva",
-                "importancia": "Interface refinada com dados precisos",
-                "dica": "Integração mais sofisticada com assistentes"
+                "categoria": "Verificação Quinzenal",
+                "descricao": "Apesar do TPMS, verifique manualmente a cada 15 dias. Pneus de perfil baixo (como os R19) são mais sensíveis a variações."
             },
             {
-                "categoria": "Conectividade MyPeugeot Cloud",
-                "recomendacao": "Sincronização automática em nuvem",
-                "importancia": "Monitoramento remoto e preditivo",
-                "dica": "Alertas inteligentes baseados em uso"
+                "categoria": "Pneus Premium",
+                "descricao": "Use apenas pneus de marcas premium recomendadas. O 3008 foi calibrado para pneus específicos que garantem conforto e performance."
             },
             {
-                "categoria": "Sistemas Preditivos 2024",
-                "recomendacao": "Calibragem precisa para funcionamento ótimo",
-                "importancia": "IA aprende padrões baseados em dados corretos",
-                "dica": "Predições de manutenção dependem de pressões certas"
+                "categoria": "Rodízio Especializado",
+                "descricao": "Faça rodízio a cada 10.000 km em oficina especializada em Peugeot. SUVs premium têm padrões específicos de desgaste."
+            },
+            {
+                "categoria": "Calibragem de Inverno",
+                "descricao": "No inverno brasileiro (Sul/Sudeste), adicione +1 PSI para compensar a queda de temperatura matinal."
             }
         ],
-
         "impacto_pressao": {
             "subcalibrado": {
-                "titulo": "Pressão Baixa - Compromete Sistemas Integrados",
-                "conforto": "Perda do refinamento aprimorado 2024",
-                "consumo": "Aumento de 8-12% no consumo do THP aprimorado",
-                "sistemas": "TPMS integrado e assistentes comprometidos",
-                "conectividade": "Dados incorretos para MyPeugeot Cloud",
-                "dirigibilidade": "Sistemas preditivos funcionam incorretamente"
+                "titulo": "Pneu Subcalibrado",
+                "problemas": [
+                    "Maior consumo de combustível (+12% em SUVs)",
+                    "Desgaste acelerado nas bordas dos pneus caros",
+                    "Comprometimento do sistema de suspensão sofisticada",
+                    "Redução da eficiência do sistema TPMS",
+                    "Perda de estabilidade em curvas (crítico em SUVs)"
+                ]
+            },
+            "ideal": {
+                "titulo": "Calibragem Correta (35 PSI)",
+                "beneficios": [
+                    "Consumo otimizado de combustível (até 13 km/l na cidade)",
+                    "Vida útil máxima dos pneus premium (até 60.000 km)",
+                    "Performance total da suspensão adaptativa",
+                    "Funcionamento perfeito do TPMS",
+                    "Conforto e estabilidade premium preservados"
+                ]
             },
             "sobrecalibrado": {
-                "titulo": "Pressão Alta - Reduz Integração dos Sistemas",
-                "conforto": "Compromete refinamento característico 2024",
-                "dirigibilidade": "Assistentes de condução menos precisos",
-                "sistemas": "Análise preditiva com dados distorcidos",
-                "conectividade": "Sincronização em nuvem comprometida",
-                "ruido": "Aumento do ruído afeta sensores acústicos"
-            },
-            "calibragem_ideal": {
-                "titulo": "Pressão Correta - Experiência Integrada Completa",
-                "conforto": "Máximo refinamento da evolução inteligente",
-                "consumo": "Eficiência otimizada do motor aprimorado",
-                "sistemas": "Funcionamento perfeito de todos os integrados",
-                "conectividade": "MyPeugeot Cloud com dados precisos",
-                "durabilidade": "Vida útil máxima dos sistemas premium"
+                "titulo": "Pneu Sobrecalibrado",
+                "problemas": [
+                    "Desgaste central prematuro em pneus caros",
+                    "Perda do conforto característico do 3008",
+                    "Maior impacto na suspensão sofisticada",
+                    "Redução da aderência em piso molhado",
+                    "Compromete a eficiência dos sistemas de segurança"
+                ]
             }
         },
-
         "perguntas_frequentes": [
             {
-                "pergunta": "Qual a pressão ideal para calibragem do 3008 2024?",
-                "resposta": "Para uso normal: 35 PSI em todos os pneus (padrão aprimorado). Para carga completa: 38 PSI na frente e 41 PSI atrás. O TPMS integrado com análise de tendências monitora automaticamente."
+                "pergunta": "Qual a pressão ideal do Peugeot 3008 2024 em PSI?",
+                "resposta": "Para o Peugeot 3008 2024, use 35 PSI tanto nos pneus dianteiros quanto traseiros para uso normal. Com carga completa, use 38 PSI na frente e 41 PSI atrás. O sistema TPMS alertará sobre variações importantes."
             },
             {
-                "pergunta": "Como funciona o i-Cockpit aprimorado 2024?",
-                "resposta": "O i-Cockpit 2024 tem visualização melhorada e integração mais sofisticada. O TPMS integrado oferece análise de tendências e reset via comandos por voz. Recalibração automática em apenas 10-15 km."
+                "pergunta": "Como funciona o sistema TPMS do Peugeot 3008?",
+                "resposta": "O TPMS monitora continuamente a pressão de todos os pneus e exibe no painel digital. Após calibragem, dirija por 10-15 km para recalibração automática. O sistema alerta quando a pressão varia mais que 3 PSI."
             },
             {
-                "pergunta": "Quais as principais novidades do 3008 2024?",
-                "resposta": "Principais refinamentos: comandos por voz para TPMS, análise preditiva de pressão, integração aprimorada com assistentes e conectividade em nuvem com MyPeugeot Cloud automático."
+                "pergunta": "Posso usar pneus de outras marcas no 3008?",
+                "resposta": "Recomendamos apenas marcas premium (Michelin, Continental, Pirelli) nas medidas originais. O 3008 foi calibrado para pneus específicos que garantem o conforto e performance premium."
             },
             {
-                "pergunta": "Posso usar pneus comuns no 3008 2024 aprimorado?",
-                "resposta": "Recomendamos apenas pneus específicos 2024 (Michelin Pilot Sport 4, Continental SportContact 6) que garantem funcionamento perfeito dos sistemas integrados aprimorados."
+                "pergunta": "Com que frequência verificar a pressão no SUV?",
+                "resposta": "Apesar do TPMS, verifique quinzenalmente. SUVs premium com pneus de perfil baixo são mais sensíveis. Sempre antes de viagens longas e mudanças de temperatura."
             },
             {
-                "pergunta": "Com que frequência calibrar no 3008 2024?",
-                "resposta": "Quinzenalmente é ideal, mesmo com TPMS integrado aprimorado. Os sistemas preditivos facilitam, mas verificação manual garante máxima precisão dos assistentes integrados."
-            },
-            {
-                "pergunta": "Vale a pena escolher o 3008 2024 vs outras opções?",
-                "resposta": "Sim! O 3008 2024 oferece a evolução inteligente: tecnologia madura + refinamentos significativos. É a escolha mais equilibrada entre inovação e confiabilidade comprovada."
+                "pergunta": "O estepe do 3008 precisa de cuidados especiais?",
+                "resposta": "Sim, mantenha o estepe temporário em 60 PSI. Verifique mensalmente pois perde pressão rapidamente. É apenas para emergências, máximo 80 km/h e 150 km de distância."
             }
         ],
-
-        "consideracoes_finais": "Dominar a calibragem do Peugeot 3008 2024 é essencial para aproveitar toda a evolução inteligente desta obra-prima francesa refinada. Com tecnologias integradas, i-Cockpit aprimorado e sistemas preditivos, o 3008 2024 representa a evolução natural da referência premium. Calibragem correta (35/35 PSI normal, 38/41 PSI carregado) garante funcionamento perfeito de todos os sistemas integrados. O TPMS integrado com análise de tendências revoluciona o monitoramento, mas a verificação quinzenal manual permanece fundamental. Para um SUV desta categoria, com tecnologias refinadas e sistemas integrados, a calibragem precisa é investimento na experiência premium completa. Lembre-se: o 3008 2024 não é apenas uma evolução - é a escolha mais inteligente que combina o melhor da tecnologia madura com inovações significativas, recompensando o cuidado correto com sofisticação francesa aprimorada."
+        "consideracoes_finais": "O Peugeot 3008 2024 é um SUV premium que merece cuidados premium com os pneus. Manter a pressão correta (35 PSI para uso normal) garante que você aproveite toda a tecnologia, conforto e eficiência que este veículo francês oferece. O sistema TPMS é um aliado, mas a verificação manual quinzenal continua essencial. Para um SUV desta categoria, com pneus caros e sistemas sofisticados, a atenção aos pneus é investimento na durabilidade e performance do conjunto."
     },
-    "metadata": [],
-    "status": "published",
-    "created_at": "2025-08-15T13:30:00.000000Z",
-    "updated_at": "2025-08-15T13:30:00.000000Z",
-    "formated_updated_at": "15 de agosto de 2025",
-    "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-peugeot-3008-2024",
-    "id": "tire_calibration_car_peugeot_3008_2024"
+    "formated_updated_at": "28 de janeiro de 2024",
+    "canonical_url": "https://mercadoveiculos.com.br/info/pressao-ideal-pneus-peugeot-3008-2024/"
 }

@@ -74,70 +74,92 @@
         "combustivel": "Flex"
     },
     "content": {
-        "introducao": "A **calibragem adequada dos pneus da Honda CG 160 Titan 2019** é fundamental para manter a economia, confiabilidade e segurança desta motocicleta icônica brasileira. Como a moto mais popular do país, usada tanto para transporte diário quanto trabalho profissional, a CG 160 exige calibragem específica que preserve sua famosa durabilidade.\n\nCom motor 162,7cc flex e consumo de até 38 km/l na cidade quando bem calibrada, a Titan é a escolha preferida de estudantes, trabalhadores e motoboys. A calibragem correta (28/30 PSI normal, 28/32 PSI com carga) não apenas economiza combustível, mas preserva os pneus que custam entre R$ 120-180 cada.\n\nNeste guia específico, você aprenderá o procedimento correto de calibragem, entenderá os ajustes para diferentes usos e descobrirá como uma CG bem calibrada mantém a confiabilidade Honda por décadas.",
-
-        "especificacoes_pneus": [
-            {
-                "posicao": "Dianteiro",
-                "medida_pneu": "80/100-18",
-                "indice_carga_velocidade": "47P (150kg, 150km/h)",
-                "marcas_recomendadas": ["Michelin Pilot Street", "Pirelli MT65", "Levorin Matrix"],
-                "preco_medio": "R$ 120-150",
-                "durabilidade_km": "25.000-30.000 km"
+        "introducao": "A Honda CG 160 Titan 2019 é uma motocicleta confiável e econômica, ideal para uso urbano e pequenas viagens. Como a moto mais popular do Brasil, a CG 160 merece cuidado especial na calibragem dos pneus para manter sua famosa durabilidade e economia de combustível.",
+        "especificacoes_pneus": {
+            "pneu_dianteiro": {
+                "medida_original": "80/100-18",
+                "indice_carga": "47",
+                "indice_velocidade": "P",
+                "tipo_construcao": "Diagonal",
+                "marca_original": "Levorin",
+                "alternativas_recomendadas": [
+                    "Michelin Pilot Street",
+                    "Pirelli MT65",
+                    "Continental Conti Go!",
+                    "Levorin Matrix"
+                ]
             },
-            {
-                "posicao": "Traseiro",
-                "medida_pneu": "90/90-18",
-                "indice_carga_velocidade": "57P (230kg, 150km/h)", 
-                "marcas_recomendadas": ["Michelin Pilot Street", "Pirelli MT65", "Levorin Matrix"],
-                "preco_medio": "R$ 140-180",
-                "durabilidade_km": "20.000-25.000 km"
-            }
-        ],
-
+            "pneu_traseiro": {
+                "medida_original": "90/90-18",
+                "indice_carga": "57",
+                "indice_velocidade": "P",
+                "tipo_construcao": "Diagonal",
+                "marca_original": "Levorin",
+                "alternativas_recomendadas": [
+                    "Michelin Pilot Street",
+                    "Pirelli MT65",
+                    "Continental Conti Go!",
+                    "Levorin Matrix"
+                ]
+            },
+            "observacao": "A CG 160 aceita tanto pneus diagonais quanto radiais. Pneus nacionais como Levorin oferecem boa relação custo-benefício."
+        },
         "tabela_pressoes": {
             "pressoes_oficiais": {
-                "uso_normal": {
-                    "dianteira": "28 PSI (1,97 kgf/cm²)",
-                    "traseira": "30 PSI (2,11 kgf/cm²)",
-                    "observacao": "Uso urbano diário, piloto solo"
+                "piloto_solo": {
+                    "dianteira": "28 PSI",
+                    "traseira": "30 PSI",
+                    "observacao": "Para piloto até 75kg + equipamentos básicos"
                 },
                 "piloto_garupa": {
-                    "dianteira": "28 PSI (1,97 kgf/cm²)",
-                    "traseira": "32 PSI (2,25 kgf/cm²)",
-                    "observacao": "Duas pessoas até peso máximo permitido"
-                },
-                "uso_profissional": {
-                    "dianteira": "28 PSI (1,97 kgf/cm²)",
-                    "traseira": "32 PSI (2,25 kgf/cm²)",
-                    "observacao": "Motoboy, delivery com bag e carga extra"
+                    "dianteira": "28 PSI",
+                    "traseira": "32 PSI",
+                    "observacao": "Piloto + garupa até peso máximo de 150kg"
                 }
             },
             "condicoes_especiais": [
                 {
-                    "situacao": "Piso molhado/chuva",
-                    "dianteira": "27 PSI",
-                    "traseira": "29 PSI",
-                    "justificativa": "Maior área de contato melhora aderência",
-                    "cuidado": "Use apenas em dias chuvosos"
+                    "situacao": "Uso urbano diário",
+                    "terreno": "Cidade/trânsito",
+                    "pressao_dianteira": "28 PSI",
+                    "pressao_traseira": "30 PSI",
+                    "temperatura_ideal": "Pneus frios (manhã)",
+                    "observacao": "Ideal para trabalho, estudos e uso diário."
                 },
                 {
-                    "situacao": "Piloto pesado (≥80kg)",
-                    "dianteira": "28 PSI",
-                    "traseira": "31 PSI",
-                    "justificativa": "Compensação do peso extra",
-                    "cuidado": "Não exceder para manter conforto"
+                    "situacao": "Viagem curta",
+                    "terreno": "Estradas municipais",
+                    "pressao_dianteira": "29 PSI",
+                    "pressao_traseira": "32 PSI",
+                    "temperatura_ideal": "Pneus frios",
+                    "observacao": "Para trajetos de 50-100km em estradas."
                 },
                 {
-                    "situacao": "Viagem longa",
-                    "dianteira": "29 PSI",
-                    "traseira": "32 PSI",
-                    "justificativa": "Maior estabilidade em estrada",
-                    "cuidado": "Reduzir ao retornar ao uso urbano"
+                    "situacao": "Piloto pesado",
+                    "terreno": "Uso geral",
+                    "pressao_dianteira": "28 PSI",
+                    "pressao_traseira": "31 PSI",
+                    "temperatura_ideal": "Pneus frios",
+                    "observacao": "Para piloto acima de 80kg."
+                },
+                {
+                    "situacao": "Carga extra",
+                    "terreno": "Delivery/trabalho",
+                    "pressao_dianteira": "28 PSI",
+                    "pressao_traseira": "32 PSI",
+                    "temperatura_ideal": "Pneus frios",
+                    "observacao": "Para uso profissional com bagagem."
+                },
+                {
+                    "situacao": "Piso molhado",
+                    "terreno": "Chuva",
+                    "pressao_dianteira": "27 PSI",
+                    "pressao_traseira": "29 PSI",
+                    "temperatura_ideal": "Pneus frios",
+                    "observacao": "Redução leve para mais aderência na chuva."
                 }
             ]
         },
-
         "localizacao_informacoes": {
             "manual_proprietario": {
                 "localizacao": "Seção Especificações Técnicas",
@@ -154,165 +176,261 @@
             },
             "dica_importante": "A Honda CG 160 Titan 2019 tem etiqueta com pressões em kgf/cm². Conversão: 1 kgf/cm² = 14,22 PSI. Use sempre PSI como padrão."
         },
-
         "conversao_unidades": {
-            "pressao_dianteira": {
-                "psi": "28 PSI",
-                "kgf_cm2": "1,97 kgf/cm²",
-                "bar": "1,93 bar",
-                "kpa": "193 kPa"
-            },
-            "pressao_traseira": {
-                "psi": "30 PSI",
-                "kgf_cm2": "2,11 kgf/cm²",
-                "bar": "2,07 bar",
-                "kpa": "207 kPa"
-            },
-            "formula_conversao": "PSI × 0,07031 = kgf/cm² | kgf/cm² × 14,22 = PSI"
+            "tabela_conversao": [
+                {
+                    "psi": "27",
+                    "kgf_cm2": "1,90",
+                    "bar": "1,86",
+                    "is_recommended": false
+                },
+                {
+                    "psi": "28",
+                    "kgf_cm2": "1,97",
+                    "bar": "1,93",
+                    "is_recommended": true
+                },
+                {
+                    "psi": "29",
+                    "kgf_cm2": "2,04",
+                    "bar": "2,00",
+                    "is_recommended": false
+                },
+                {
+                    "psi": "30",
+                    "kgf_cm2": "2,11",
+                    "bar": "2,07",
+                    "is_recommended": true
+                },
+                {
+                    "psi": "31",
+                    "kgf_cm2": "2,18",
+                    "bar": "2,14",
+                    "is_recommended": false
+                },
+                {
+                    "psi": "32",
+                    "kgf_cm2": "2,25",
+                    "bar": "2,21",
+                    "is_recommended": false
+                }
+            ],
+            "observacao": "A CG 160 usa pressões mais baixas que motos esportivas. No Brasil, PSI é o padrão nos postos."
         },
-
         "consideracoes_especiais": [
             {
-                "tipo": "Motocicleta Popular",
-                "titulo": "Características da CG 160",
-                "descricao": "Como motocicleta de entrada, a CG 160 é sensível a variações de pressão. Manter calibragem correta é essencial para economia e durabilidade.",
-                "dicas": [
-                    "Verificação semanal obrigatória",
-                    "Para motoboys: verificar 2x por semana",
-                    "Calibrar sempre com pneus frios",
-                    "Usar calibrador digital para precisão"
-                ]
+                "categoria": "temperatura",
+                "titulo": "Impacto da Temperatura - Moto Popular",
+                "descricao": "Motocicletas populares são mais sensíveis a variações térmicas.",
+                "fatores": [
+                    "No calor brasileiro (35°C+), pressão pode aumentar 3-4 PSI",
+                    "Sempre calibre pela manhã ou após 3h parada",
+                    "CG 160 aquece menos que motos esportivas",
+                    "Em dias muito quentes, verifique pressão duas vezes",
+                    "Pneus da CG são mais sensíveis ao calor excessivo"
+                ],
+                "importancia": "alta"
             },
             {
-                "tipo": "Uso Profissional",
-                "titulo": "Dicas para Motoboys e Delivery",
-                "descricao": "Uso intensivo exige calibragem mais frequente e pressões específicas para carga extra.",
-                "dicas": [
-                    "Sempre usar 28/32 PSI com bag",
-                    "Verificar antes de cada turno de trabalho",
-                    "Rotacionar pneus a cada 5.000km",
-                    "Investir em pneus de qualidade superior"
-                ]
+                "categoria": "carga",
+                "titulo": "Ajustes por Peso e Carga - Uso Prático",
+                "descricao": "A CG 160 é muito usada para trabalho e precisa de ajustes específicos.",
+                "tipos": [
+                    "Piloto leve (≤60kg): manter pressões padrão",
+                    "Piloto médio (61-80kg): pressões oficiais ideais",
+                    "Piloto pesado (≥81kg): +1 PSI no traseiro",
+                    "Delivery/motoboy: usar 28/32 PSI sempre",
+                    "Garupa frequente: +2 PSI no traseiro"
+                ],
+                "importancia": "alta"
+            },
+            {
+                "categoria": "economia",
+                "titulo": "Foco na Economia - Principal Objetivo",
+                "descricao": "CG 160 é comprada pela economia. Pressão correta é essencial.",
+                "orientacoes": [
+                    "Pressão correta: até 38 km/l na cidade",
+                    "Subcalibrado: reduz para 32-34 km/l",
+                    "Sobrecalibrado: reduz conforto e aderência",
+                    "Verificação semanal obrigatória para economia",
+                    "Economia é o principal benefício da calibragem correta"
+                ],
+                "importancia": "crítica"
             }
         ],
-
         "beneficios_calibragem": [
             {
-                "categoria": "Economia de Combustível",
-                "beneficio": "Até 38 km/l na cidade",
-                "comparacao": "Pneus mal calibrados: 30-32 km/l",
-                "economia_anual": "Economia de até R$ 600/ano em combustível"
+                "categoria": "economia",
+                "titulo": "Economia Máxima - Principal Vantagem",
+                "descricao": "A CG 160 é comprada pela economia. Pressão correta maximiza esse benefício.",
+                "aspectos": [
+                    "Até 38 km/l na cidade com pressão correta",
+                    "Economia de R$ 15-25 por tanque",
+                    "Redução de 15-20% no gasto com combustível",
+                    "Tanque de 13,2L rende até 500km urbanos"
+                ],
+                "economia_estimada": "R$ 400-600 por ano",
+                "prioridade": "crítica"
             },
             {
-                "categoria": "Durabilidade dos Pneus",
-                "beneficio": "25.000-30.000 km (dianteiro)",
-                "comparacao": "Mal calibrados: 15.000-20.000 km",
-                "economia_anual": "Economia de R$ 200-300 em pneus"
+                "categoria": "durabilidade",
+                "titulo": "Durabilidade Honda - Lendária Confiabilidade",
+                "descricao": "Mantenha a famosa durabilidade Honda com pressão correta.",
+                "aspectos": [
+                    "Pneus duram 25.000-30.000km com calibragem correta",
+                    "Desgaste uniforme preserva suspensão",
+                    "Motor trabalha menos, dura mais",
+                    "Preserva a famosa confiabilidade Honda"
+                ],
+                "economia_estimada": "R$ 300-500 por jogo de pneus",
+                "prioridade": "alta"
             },
             {
-                "categoria": "Segurança",
-                "beneficio": "Frenagem 15% mais eficiente",
-                "comparacao": "Pressão baixa aumenta distância de frenagem",
-                "impacto": "Pode evitar acidentes graves"
+                "categoria": "seguranca",
+                "titulo": "Segurança no Trânsito Urbano",
+                "descricao": "Uso principalmente urbano exige segurança específica.",
+                "aspectos": [
+                    "Frenagem eficiente no trânsito pesado",
+                    "Estabilidade em lombadas e buracos",
+                    "Aderência em curvas urbanas",
+                    "Comportamento previsível em emergências"
+                ],
+                "economia_estimada": "Segurança no dia a dia",
+                "prioridade": "alta"
+            },
+            {
+                "categoria": "conforto",
+                "titulo": "Conforto para Uso Diário",
+                "descricao": "Uso diário exige conforto para trabalho e estudos.",
+                "aspectos": [
+                    "Menor vibração em pisos irregulares",
+                    "Absorção adequada de imperfeições",
+                    "Redução do cansaço em trajetos longos",
+                    "Dirigibilidade suave e previsível"
+                ],
+                "economia_estimada": "Conforto e qualidade de vida",
+                "prioridade": "média"
             }
         ],
-
         "dicas_manutencao": [
             {
-                "frequencia": "Semanal",
-                "acao": "Verificação visual e de pressão",
-                "importancia": "Detecta problemas antes que se tornem graves"
+                "categoria": "Verificação Semanal - Moto Popular",
+                "frequencia": "A cada 7 dias ou 400km",
+                "importancia": "alta",
+                "itens": [
+                    "Verificar pressão toda segunda-feira",
+                    "Inspecionar desgaste dos pneus",
+                    "Observar se válvulas estão bem fechadas",
+                    "Verificar objetos cravados (pregos, vidros)",
+                    "Medir profundidade mínima (1,6mm)"
+                ]
             },
             {
-                "frequencia": "Mensal",
-                "acao": "Limpeza e inspeção das válvulas",
-                "importancia": "Evita vazamentos e contaminação"
+                "categoria": "Manutenção Econômica",
+                "frequencia": "Conforme necessidade",
+                "importancia": "média",
+                "itens": [
+                    "Calibrar sempre em postos gratuitos",
+                    "Usar calibradores públicos com cuidado",
+                    "Levar próprio medidor quando possível",
+                    "Aproveitar para verificar óleo e corrente",
+                    "Fazer rodízio dos pneus a cada 8.000km"
+                ]
             },
             {
-                "frequencia": "A cada 5.000km",
-                "acao": "Rotação e balanceamento",
-                "importancia": "Desgaste uniforme e melhor dirigibilidade"
+                "categoria": "Equipamentos Básicos",
+                "frequencia": "Investimento único",
+                "importancia": "recomendada",
+                "itens": [
+                    "Calibrador portátil simples (R$ 20-40)",
+                    "Kit reparo básico para emergências",
+                    "Bomba manual de backup",
+                    "Medidor de sulco simples",
+                    "Ferramentas básicas para válvulas"
+                ]
             }
         ],
-
         "alertas_criticos": [
             {
-                "tipo": "Segurança",
-                "titulo": "Nunca Calibre com Motor Quente",
-                "descricao": "Pneus quentes alteram a medição. Aguarde 30 minutos após pilotagem.",
-                "consequencia": "Medição incorreta pode causar subcalibragem perigosa"
+                "tipo": "crítico",
+                "titulo": "Economia Comprometida",
+                "descricao": "Pressão incorreta compromete o principal benefício da CG 160.",
+                "consequencia": "Consumo pode aumentar de 38 km/l para 30 km/l, anulando economia da moto."
             },
             {
-                "tipo": "Economia",
-                "titulo": "Verificação Semanal Obrigatória",
-                "descricao": "Motocicletas perdem pressão mais rapidamente que carros.",
-                "consequencia": "Economia pode cair de 38 para 30 km/l rapidamente"
+                "tipo": "importante",
+                "titulo": "Uso Profissional - Verificação Dobrada",
+                "descricao": "Motoboys e delivery precisam verificar duas vezes por semana.",
+                "consequencia": "Uso intenso acelera perda de pressão e desgaste irregular."
+            },
+            {
+                "tipo": "atenção",
+                "titulo": "Pneus Nacionais - Atenção Redobrada",
+                "descricao": "Pneus nacionais podem ter variação de qualidade.",
+                "consequencia": "Alguns pneus nacionais perdem pressão mais rapidamente."
             }
         ],
-
-        "procedimento_calibragem": [
-            {
-                "passo": 1,
-                "titulo": "Preparação da Motocicleta",
-                "descricao": "Estacione em local seguro e plano. Desligue o motor e aguarde 30 minutos para pneus esfriarem. Use cavalete central ou apoie com segurança.",
-                "dica_especial": "Para motoboys: calibre pela manhã antes do primeiro delivery"
-            },
-            {
-                "passo": 2,
-                "titulo": "Verificação Visual dos Pneus",
-                "descricao": "Inspecione pneus em busca de objetos, cortes ou desgaste irregular. Em motocicletas, qualquer problema é crítico para segurança.",
-                "dica_especial": "Verifique especialmente as laterais - área mais vulnerável"
-            },
-            {
-                "passo": 3,
-                "titulo": "Medição das Pressões Atuais",
-                "descricao": "Use calibrador digital de qualidade. Anote pressões atuais: dianteiro ___ PSI, traseiro ___ PSI. Compare com tabela de uso.",
-                "dica_especial": "Na CG 160, diferença normal entre dianteiro e traseiro é 2 PSI"
-            },
-            {
-                "passo": 4,
-                "titulo": "Calibragem Específica por Uso",
-                "descricao": "Ajuste conforme uso: urbano (28/30), com garupa (28/32), profissional (28/32). Adicione ar gradualmente.",
-                "dica_especial": "Para delivery: sempre use pressões de carga mesmo sem bag"
-            },
-            {
-                "passo": 5,
-                "titulo": "Verificação Final e Teste",
-                "descricao": "Confirme pressões, recoloque tampas das válvulas e anote data. Teste pilotando 1-2 quarteirões em baixa velocidade.",
-                "dica_especial": "Qualquer alteração no comportamento indica problema"
-            }
-        ],
-
+        "procedimento_calibragem": {
+            "passos": [
+                {
+                    "numero": 1,
+                    "titulo": "Preparação Simples",
+                    "descricao": "Aguarde esfriamento após uso",
+                    "detalhes": [
+                        "Moto parada há pelo menos 3 horas",
+                        "Ou trajeto inferior a 2 km",
+                        "Preferencialmente pela manhã",
+                        "Em local com sombra"
+                    ]
+                },
+                {
+                    "numero": 2,
+                    "titulo": "Verificação Cuidadosa",
+                    "descricao": "Use calibrador disponível com atenção",
+                    "detalhes": [
+                        "Calibradores de posto: usar com cuidado",
+                        "Retirar tampa da válvula",
+                        "Encaixar bem evitando vazamentos",
+                        "Anotar pressão atual"
+                    ]
+                },
+                {
+                    "numero": 3,
+                    "titulo": "Calibragem Econômica",
+                    "descricao": "Ajuste para máxima economia",
+                    "detalhes": [
+                        "Dianteiro: 28 PSI (uso normal)",
+                        "Traseiro: 30 PSI (piloto solo)",
+                        "Traseiro: 32 PSI (com garupa ou carga)",
+                        "Recolocar tampas das válvulas"
+                    ]
+                }
+            ]
+        },
         "perguntas_frequentes": [
             {
-                "pergunta": "Com que frequência verificar pressão na CG 160?",
-                "resposta": "Semanalmente para uso normal. Para motoboys e delivery, duas vezes por semana. A CG 160 é sensível a variações que afetam economia e segurança."
+                "pergunta": "Qual a pressão ideal da Honda CG 160 Titan 2019?",
+                "resposta": "Para a Honda CG 160 Titan 2019, use 28 PSI no pneu dianteiro e 30 PSI no traseiro para piloto solo. Com garupa ou carga, aumente o traseiro para 32 PSI. Sempre verifique com pneus frios para manter economia."
             },
             {
-                "pergunta": "Posso usar pneus diferentes na CG 160 Titan?",
-                "resposta": "Recomenda-se manter medidas originais 80/100-18 (diant.) e 90/90-18 (tras.). Marcas premium como Michelin ou Pirelli melhoram performance."
+                "pergunta": "A pressão incorreta afeta o consumo da CG 160?",
+                "resposta": "Muito! A CG 160 pode fazer até 38 km/l com pressão correta. Com pneus descalibrados, o consumo cai para 30-32 km/l, perdendo a principal vantagem da moto."
             },
             {
-                "pergunta": "A calibragem afeta muito o consumo da CG?",
-                "resposta": "Muito! Pressão baixa pode reduzir economia de 38 para 30 km/l urbano. Para motoboys, isso representa R$ 150-200/mês a mais em combustível."
+                "pergunta": "Posso usar pneus mais baratos na CG 160?",
+                "resposta": "Sim, a CG aceita pneus nacionais como Levorin Matrix, que oferecem boa relação custo-benefício. Mas mantenha a pressão correta independente da marca do pneu."
             },
             {
-                "pergunta": "Como calibrar corretamente para delivery?",
-                "resposta": "Sempre 28/32 PSI, mesmo sem bag. Verificar duas vezes por semana, calibrar pela manhã antes do trabalho. Investir em pneus reforçados."
+                "pergunta": "Com que frequência verificar na CG 160?",
+                "resposta": "Semanalmente para uso normal, duas vezes por semana para motoboys/delivery. A CG é moto de trabalho e merece atenção regular para manter economia."
             },
             {
-                "pergunta": "Pressão baixa é perigosa na CG 160?",
-                "resposta": "Muito perigosa! Pode causar instabilidade, aquaplanagem e desgaste irregular. Em motocicletas, pressão correta é questão de segurança vital."
+                "pergunta": "A CG 160 tem sensor de pressão?",
+                "resposta": "Não, a Honda CG 160 Titan 2019 não possui TPMS. É uma moto popular e a verificação manual é obrigatória para manter os benefícios de economia."
             }
         ],
-
-        "consideracoes_finais": "Dominar a calibragem da Honda CG 160 Titan 2019 é fundamental para aproveitar todos os benefícios desta motocicleta icônica brasileira. A CG é reconhecida pela economia, confiabilidade e facilidade de manutenção, mas esses benefícios só se mantêm com calibragem adequada. Para uso urbano diário, 28/30 PSI são ideais. Para uso profissional ou com garupa, 28/32 PSI garantem segurança e economia. Verificação semanal é obrigatória para uso normal, duas vezes por semana para motoboys. Lembre-se: uma CG bem calibrada não apenas economiza combustível, mas preserva todos os componentes, mantendo a famosa durabilidade Honda por muitos anos e garantindo segurança em todas as situações de pilotagem."
+        "consideracoes_finais": "A Honda CG 160 Titan 2019 é a moto mais popular do Brasil por bons motivos: economia, confiabilidade e facilidade de manutenção. A calibragem correta (28/30 PSI) é fundamental para manter esses benefícios. Diferente de motos esportivas, na CG o foco é economia e durabilidade. Verificação semanal, pressões adequadas e cuidado com a famosa qualidade Honda garantem que sua CG continue sendo a companheira fiel de todos os dias. Lembre-se: uma CG bem cuidada pode rodar 100.000 km sem problemas."
     },
-    "metadata": [],
-    "status": "published",
-    "created_at": "2025-08-15T10:30:00.000000Z",
-    "updated_at": "2025-08-15T10:30:00.000000Z",
-    "formated_updated_at": "15 de agosto de 2025",
-    "canonical_url": "https://mercadoveiculos.com/info/calibragem-pneu-honda-cg-160-2019",
-    "id": "tire_calibration_motorcycle_honda_cg_160_2019"
+    "formated_updated_at": "18 de fevereiro de 2024",
+    "canonical_url": "https://mercadoveiculos.com.br/info/pressao-ideal-pneus-honda-cg-160-2019/"
 }
