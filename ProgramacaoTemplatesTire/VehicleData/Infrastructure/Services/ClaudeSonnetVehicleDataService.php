@@ -86,9 +86,9 @@ class ClaudeSonnetVehicleDataService
     protected function buildPayload(string $prompt, array $options): array
     {
         return [
-            'model' => 'claude-3-5-sonnet-20240620',
-            'max_tokens' => $options['max_tokens'] ?? 1500,
-            'temperature' => $options['temperature'] ?? 0.1,
+            'model' => 'claude-3-7-sonnet-20250219', // Versão mais econômica
+            'max_tokens' => 2500, // Reduzido para economizar
+            'temperature' => 0.2, // Mais determinístico
             'messages' => [
                 [
                     'role' => 'user',

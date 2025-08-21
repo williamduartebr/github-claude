@@ -9,8 +9,7 @@ use Carbon\Carbon;
 /**
  * VehicleEnrichmentGroup Model - Grupos de veículos para enrichment otimizado
  * 
- * Armazena agrupamentos inteligentes de veículos por make+model+geração
- * para otimizar chamadas da API Claude (963 → ~200 chamadas)
+ * VERSÃO CORRIGIDA - Compatible com MongoDB
  */
 class VehicleEnrichmentGroup extends Model
 {
@@ -52,9 +51,9 @@ class VehicleEnrichmentGroup extends Model
     /**
      * Constantes para prioridade
      */
-    const PRIORITY_HIGH = 'high';    // Marcas premium, modelos populares
-    const PRIORITY_MEDIUM = 'medium'; // Modelos comuns
-    const PRIORITY_LOW = 'low';      // Modelos raros, muito antigos
+    const PRIORITY_HIGH = 'high';
+    const PRIORITY_MEDIUM = 'medium';
+    const PRIORITY_LOW = 'low';
 
     // =======================================================================
     // SCOPES
@@ -369,26 +368,40 @@ class VehicleEnrichmentGroup extends Model
     }
 
     /**
-     * Obter estatísticas de processamento
+     * Obter estatísticas de processamento - CORRIGIDO para MongoDB
      */
     public static function getProcessingStats(): array
     {
-        $total = self::count();
-        $pending = self::pendingEnrichment()->count();
-        $enriched = self::where('is_enriched', true)->count();
-        $propagated = self::where('is_propagated', true)->count();
-        $completed = self::completed()->count();
-        $failed = self::where('processing_status', self::STATUS_FAILED)->count();
+        try {
+            $total = self::count();
+            $pending = self::pendingEnrichment()->count();
+            $enriched = self::where('is_enriched', true)->count();
+            $propagated = self::where('is_propagated', true)->count();
+            $completed = self::completed()->count();
+            $failed = self::where('processing_status', self::STATUS_FAILED)->count();
 
-        return [
-            'total_groups' => $total,
-            'pending_enrichment' => $pending,
-            'enriched' => $enriched,
-            'pending_propagation' => $enriched - $propagated,
-            'completed' => $completed,
-            'failed' => $failed,
-            'completion_rate' => $total > 0 ? round(($completed / $total) * 100, 1) : 0
-        ];
+            return [
+                'total_groups' => $total,
+                'pending_enrichment' => $pending,
+                'enriched' => $enriched,
+                'pending_propagation' => max(0, $enriched - $propagated),
+                'completed' => $completed,
+                'failed' => $failed,
+                'completion_rate' => $total > 0 ? round(($completed / $total) * 100, 1) : 0
+            ];
+        } catch (\Exception $e) {
+            // Fallback em caso de erro
+            return [
+                'total_groups' => 0,
+                'pending_enrichment' => 0,
+                'enriched' => 0,
+                'pending_propagation' => 0,
+                'completed' => 0,
+                'failed' => 0,
+                'completion_rate' => 0,
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -409,7 +422,7 @@ class VehicleEnrichmentGroup extends Model
     public static function resetFailedGroups(): int
     {
         return self::where('processing_status', self::STATUS_FAILED)
-                  ->whereRaw('enrichment_attempts < 3')
+                  ->where('enrichment_attempts', '<', 3)
                   ->update([
                       'processing_status' => self::STATUS_PENDING,
                       'enrichment_error' => null,
@@ -418,34 +431,56 @@ class VehicleEnrichmentGroup extends Model
     }
 
     /**
-     * Obter próximo lote para processamento
+     * Obter próximo lote para processamento - SIMPLIFICADO para MongoDB
      */
     public static function getNextBatchForEnrichment(int $batchSize = 10): \Illuminate\Support\Collection
     {
-        return self::pendingEnrichment()
-                  ->where(function($query) {
-                      $query->whereNull('last_enrichment_attempt_at')
-                            ->orWhere('last_enrichment_attempt_at', '<', now()->subMinutes(30));
-                  })
-                  ->orderBy('priority', 'desc')
-                  ->orderBy('created_at', 'asc')
-                  ->limit($batchSize)
-                  ->get();
+        // Buscar todos e filtrar na memória
+        $candidates = self::pendingEnrichment()
+                         ->where(function($query) {
+                             $query->whereNull('last_enrichment_attempt_at')
+                                   ->orWhere('last_enrichment_attempt_at', '<', now()->subMinutes(30));
+                         })
+                         ->get();
+
+        // Ordenar na memória
+        return $candidates->sortBy([
+            function ($group) {
+                return match($group->priority) {
+                    'high' => 1,
+                    'medium' => 2,
+                    'low' => 3,
+                    default => 4
+                };
+            },
+            ['created_at', 'asc']
+        ])->take($batchSize);
     }
 
     /**
-     * Obter próximo lote para propagação
+     * Obter próximo lote para propagação - SIMPLIFICADO para MongoDB
      */
     public static function getNextBatchForPropagation(int $batchSize = 20): \Illuminate\Support\Collection
     {
-        return self::pendingPropagation()
-                  ->where(function($query) {
-                      $query->whereNull('last_propagation_attempt_at')
-                            ->orWhere('last_propagation_attempt_at', '<', now()->subMinutes(10));
-                  })
-                  ->orderBy('priority', 'desc')
-                  ->orderBy('enriched_at', 'asc')
-                  ->limit($batchSize)
-                  ->get();
+        // Buscar todos e filtrar na memória
+        $candidates = self::pendingPropagation()
+                         ->where(function($query) {
+                             $query->whereNull('last_propagation_attempt_at')
+                                   ->orWhere('last_propagation_attempt_at', '<', now()->subMinutes(10));
+                         })
+                         ->get();
+
+        // Ordenar na memória
+        return $candidates->sortBy([
+            function ($group) {
+                return match($group->priority) {
+                    'high' => 1,
+                    'medium' => 2,
+                    'low' => 3,
+                    default => 4
+                };
+            },
+            ['enriched_at', 'asc']
+        ])->take($batchSize);
     }
 }

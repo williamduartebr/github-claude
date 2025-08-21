@@ -11,8 +11,7 @@ use Src\VehicleData\Domain\Entities\VehicleEnrichmentGroup;
 /**
  * Command para agrupar veículos e identificar representantes para enrichment
  * 
- * Analisa os 963 veículos e identifica grupos únicos (make+model+generation)
- * para otimizar o uso da API Claude, reduzindo chamadas de 963 para ~200
+ * VERSÃO CORRIGIDA - Compatible com MongoDB
  */
 class GroupVehiclesForEnrichmentCommand extends Command
 {
@@ -59,6 +58,7 @@ class GroupVehiclesForEnrichmentCommand extends Command
             if ($force && !$dryRun) {
                 $this->clearExistingGroups($make);
             }
+
             // Análise inicial
             $this->displayInitialAnalysis($make);
 
@@ -133,7 +133,7 @@ class GroupVehiclesForEnrichmentCommand extends Command
             $this->line("   Filtro: {$make}");
         }
 
-        // Estatísticas por categoria
+        // Estatísticas por categoria usando Eloquent simples
         $byCategory = $query->get()->groupBy('main_category')->map->count();
         $this->line("   Por categoria:");
         foreach ($byCategory->take(5) as $category => $count) {
@@ -144,13 +144,13 @@ class GroupVehiclesForEnrichmentCommand extends Command
     }
 
     /**
-     * Agrupar veículos por modelo e geração
+     * Agrupar veículos por modelo e geração - CORRIGIDO para MongoDB
      */
     protected function groupVehiclesByModel(?string $make, int $maxYearDiff): \Illuminate\Support\Collection
     {
         $this->info('🔄 Executando agrupamento inteligente...');
 
-        // Usar Eloquent ao invés de agregação raw para evitar problemas de campo
+        // Usar Eloquent simples ao invés de agregação MongoDB
         $query = VehicleData::query();
         
         if ($make) {
@@ -245,7 +245,7 @@ class GroupVehiclesForEnrichmentCommand extends Command
         $years = array_column($vehicles, 'year');
         
         return [
-            '_id' => $groupId, // Manter como _id para compatibilidade
+            '_id' => $groupId,
             'vehicles' => $vehicles,
             'count' => count($vehicles),
             'years' => $years,
@@ -436,22 +436,13 @@ class GroupVehiclesForEnrichmentCommand extends Command
 
         foreach ($representatives as $groupData) {
             try {
-                // Log dados do grupo para debug
-                Log::debug('Tentando salvar grupo', [
-                    'generation_key' => $groupData['group_info']['generation_key'] ?? 'missing',
-                    'make' => $groupData['group_info']['make'] ?? 'missing',
-                    'model' => $groupData['group_info']['model'] ?? 'missing',
-                    'representative_id' => $groupData['representative']['id'] ?? $groupData['representative']['_id'] ?? 'missing'
-                ]);
-
                 VehicleEnrichmentGroup::createGroup($groupData);
                 $savedCount++;
             } catch (\Exception $e) {
                 $errorCount++;
                 Log::error('Erro ao salvar grupo', [
                     'group' => $groupData['group_info']['generation_key'] ?? 'unknown',
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
+                    'error' => $e->getMessage()
                 ]);
                 
                 // Mostrar primeiro erro no console para debug
@@ -464,29 +455,8 @@ class GroupVehiclesForEnrichmentCommand extends Command
         $this->line("   Grupos salvos: {$savedCount}");
         if ($errorCount > 0) {
             $this->warn("   Erros: {$errorCount}");
-            $this->warn("   Verifique logs para detalhes: tail -f storage/logs/laravel.log");
+            $this->warn("   Verifique logs para detalhes");
         }
-    }
-
-    /**
-     * Salvar resultados no cache (DEPRECATED - mantido para compatibilidade)
-     */
-    protected function saveGroupingResults(array $representatives): void
-    {
-        // Método mantido para compatibilidade, mas agora salva no banco
-        $this->saveGroupsToDatabase($representatives);
-        
-        // Também salvar no cache como backup
-        $cacheKey = 'vehicle_enrichment_groups_backup';
-        $cacheData = [
-            'generated_at' => now()->toISOString(),
-            'total_vehicles' => $this->totalVehicles,
-            'total_groups' => $this->totalGroups,
-            'representatives_count' => $this->potentialApiCalls,
-            'representatives' => $representatives
-        ];
-
-        Cache::put($cacheKey, $cacheData, now()->addDays(7));
     }
 
     /**
@@ -559,21 +529,25 @@ class GroupVehiclesForEnrichmentCommand extends Command
      */
     protected function displayDatabaseStats(): void
     {
-        $stats = VehicleEnrichmentGroup::getProcessingStats();
-        
-        $this->newLine();
-        $this->info('📊 ESTATÍSTICAS DO BANCO:');
-        $this->line("   Total de grupos: {$stats['total_groups']}");
-        $this->line("   Pendentes: {$stats['pending_enrichment']}");
-        $this->line("   Por prioridade:");
-        
-        // Usar método mais simples para evitar erro do MongoDB
-        $high = VehicleEnrichmentGroup::where('priority', 'high')->count();
-        $medium = VehicleEnrichmentGroup::where('priority', 'medium')->count();
-        $low = VehicleEnrichmentGroup::where('priority', 'low')->count();
+        try {
+            $stats = VehicleEnrichmentGroup::getProcessingStats();
             
-        $this->line("      • high: {$high}");
-        $this->line("      • medium: {$medium}");
-        $this->line("      • low: {$low}");
+            $this->newLine();
+            $this->info('📊 ESTATÍSTICAS DO BANCO:');
+            $this->line("   Total de grupos: {$stats['total_groups']}");
+            $this->line("   Pendentes: {$stats['pending_enrichment']}");
+            $this->line("   Por prioridade:");
+            
+            // Usar método mais simples para evitar erro do MongoDB
+            $high = VehicleEnrichmentGroup::where('priority', 'high')->count();
+            $medium = VehicleEnrichmentGroup::where('priority', 'medium')->count();
+            $low = VehicleEnrichmentGroup::where('priority', 'low')->count();
+                
+            $this->line("      • high: {$high}");
+            $this->line("      • medium: {$medium}");
+            $this->line("      • low: {$low}");
+        } catch (\Exception $e) {
+            $this->warn("   Erro ao obter estatísticas detalhadas: " . $e->getMessage());
+        }
     }
 }

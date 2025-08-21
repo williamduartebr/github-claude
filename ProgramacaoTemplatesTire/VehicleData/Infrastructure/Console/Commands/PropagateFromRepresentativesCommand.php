@@ -8,10 +8,10 @@ use Src\VehicleData\Domain\Entities\VehicleEnrichmentGroup;
 use Src\VehicleData\Domain\Entities\VehicleData;
 
 /**
- * Command para propagar dados enriquecidos dos representantes para veículos irmãos
+ * VERSÃO CORRIGIDA - Propagação funcionando corretamente
  * 
- * Distribui dados técnicos enriquecidos via Claude API para todos os veículos
- * do mesmo grupo, aplicando ajustes inteligentes baseados na diferença de anos
+ * PROBLEMA ENCONTRADO: Os dados enriquecidos não estavam sendo aplicados 
+ * nos veículos irmãos, apenas marcado como "propagado" sem fazer nada.
  */
 class PropagateFromRepresentativesCommand extends Command
 {
@@ -21,7 +21,8 @@ class PropagateFromRepresentativesCommand extends Command
                            {--make= : Processar apenas uma marca específica}
                            {--dry-run : Simular propagação sem salvar dados}
                            {--force : Reprocessar grupos já propagados}
-                           {--limit= : Limite total de grupos para processar}';
+                           {--limit= : Limite total de grupos para processar}
+                           {--debug : Modo debug com logs detalhados}';
 
     protected $description = 'Propagar dados enriquecidos dos representantes para veículos irmãos';
 
@@ -32,10 +33,11 @@ class PropagateFromRepresentativesCommand extends Command
     protected int $totalVehiclesUpdated = 0;
     protected array $errors = [];
     protected array $propagationRules = [];
+    protected bool $debugMode = false;
 
     public function handle(): int
     {
-        $this->info('🔄 INICIANDO PROPAGAÇÃO DE DADOS ENRIQUECIDOS');
+        $this->info('🔄 INICIANDO PROPAGAÇÃO DE DADOS ENRIQUECIDOS - VERSÃO CORRIGIDA');
         $this->newLine();
 
         $batchSize = (int) $this->option('batch-size');
@@ -44,11 +46,17 @@ class PropagateFromRepresentativesCommand extends Command
         $dryRun = $this->option('dry-run');
         $force = $this->option('force');
         $limit = $this->option('limit') ? (int) $this->option('limit') : null;
+        $this->debugMode = $this->option('debug');
 
         if ($dryRun) {
             $this->warn('🔍 MODO DRY-RUN: Nenhum dado será salvo');
-            $this->newLine();
         }
+
+        if ($this->debugMode) {
+            $this->info('🐛 MODO DEBUG: Logs detalhados ativados');
+        }
+
+        $this->newLine();
 
         try {
             // Definir regras de propagação
@@ -72,7 +80,6 @@ class PropagateFromRepresentativesCommand extends Command
             $this->displayResults();
 
             return Command::SUCCESS;
-
         } catch (\Exception $e) {
             $this->error('❌ ERRO: ' . $e->getMessage());
             Log::error('PropagateFromRepresentativesCommand: Erro fatal', [
@@ -92,17 +99,19 @@ class PropagateFromRepresentativesCommand extends Command
             // Campos que SEMPRE propagam (raramente mudam entre anos)
             'always_propagate' => [
                 'dimensions.length',
-                'dimensions.width', 
+                'dimensions.width',
                 'dimensions.height',
                 'dimensions.wheelbase',
                 'technical_specs.suspension_front',
                 'technical_specs.suspension_rear',
                 'technical_specs.brakes_front',
                 'technical_specs.brakes_rear',
-                'transmission_data.type', // Manual/Auto raramente muda
-                'engine_data.engine_type', // "1.6 16V" geralmente igual
+                'transmission_data.type',
+                'transmission_data.gears',
+                'engine_data.engine_type',
                 'engine_data.displacement',
                 'engine_data.fuel_type',
+                'fuel_data.fuel_tank_capacity',
             ],
 
             // Campos que propagam com AJUSTES graduais
@@ -123,7 +132,6 @@ class PropagateFromRepresentativesCommand extends Command
             'conditional_propagate' => [
                 'dimensions.weight', // Pode variar levemente
                 'technical_specs.max_load',
-                'fuel_data.fuel_tank_capacity',
                 'market_data.main_competitors', // Pode mudar com o tempo
             ]
         ];
@@ -165,13 +173,13 @@ class PropagateFromRepresentativesCommand extends Command
      * Buscar grupos prontos para propagação
      */
     protected function getGroupsToPropagate(
-        int $batchSize, 
-        ?string $priority, 
-        ?string $make, 
-        bool $force, 
+        int $batchSize,
+        ?string $priority,
+        ?string $make,
+        bool $force,
         ?int $limit
     ): \Illuminate\Support\Collection {
-        
+
         if ($force) {
             // Se force, pegar todos os grupos enriquecidos
             $query = VehicleEnrichmentGroup::where('is_enriched', true);
@@ -189,25 +197,30 @@ class PropagateFromRepresentativesCommand extends Command
             $query->byMake($make);
         }
 
-        // Ordenação: prioridade > enriquecidos mais antigos
-        $query->orderByRaw("
-            CASE priority 
-                WHEN 'high' THEN 1 
-                WHEN 'medium' THEN 2 
-                WHEN 'low' THEN 3 
-                ELSE 4 
-            END
-        ")
-        ->orderBy('enriched_at', 'asc');
+        // Buscar todos e ordenar na memória
+        $groups = $query->get();
+
+        // Ordenar na memória
+        $groups = $groups->sortBy([
+            function ($group) {
+                return match ($group->priority) {
+                    'high' => 1,
+                    'medium' => 2,
+                    'low' => 3,
+                    default => 4
+                };
+            },
+            ['enriched_at', 'asc']
+        ]);
 
         // Aplicar limite
         if ($limit) {
-            $query->limit($limit);
+            $groups = $groups->take($limit);
         } else {
-            $query->limit($batchSize * 5); // Máximo 5 lotes por execução
+            $groups = $groups->take($batchSize * 5);
         }
 
-        return $query->get();
+        return $groups;
     }
 
     /**
@@ -225,7 +238,7 @@ class PropagateFromRepresentativesCommand extends Command
             $repInfo = $group->getRepresentativeInfo();
             $vehicleName = $repInfo['full_name'];
             $siblingCount = $group->sibling_count;
-            
+
             $progressBar->setMessage("Propagando: {$vehicleName} → {$siblingCount} veículos");
 
             $this->processGroup($group, $dryRun);
@@ -247,54 +260,46 @@ class PropagateFromRepresentativesCommand extends Command
             // Verificar se pode tentar novamente
             if (!$group->canRetryPropagation()) {
                 $this->skippedGroups++;
-                Log::info('Grupo ignorado - máximo de tentativas de propagação atingido', [
-                    'group_id' => $group->id,
-                    'generation_key' => $group->generation_key,
-                    'attempts' => $group->propagation_attempts
-                ]);
+                if ($this->debugMode) {
+                    $this->warn("Grupo {$group->generation_key} ignorado - máximo de tentativas atingido");
+                }
                 return;
             }
 
             // Verificar se tem dados enriquecidos
             if (empty($group->enriched_data)) {
                 $this->skippedGroups++;
-                Log::warning('Grupo ignorado - sem dados enriquecidos', [
-                    'group_id' => $group->id,
-                    'generation_key' => $group->generation_key
-                ]);
+                if ($this->debugMode) {
+                    $this->warn("Grupo {$group->generation_key} ignorado - sem dados enriquecidos");
+                }
                 return;
             }
 
             if ($dryRun) {
                 $this->successGroups++;
                 $this->totalVehiclesUpdated += $group->sibling_count;
-                
-                Log::info('DRY-RUN: Grupo seria propagado', [
-                    'group_id' => $group->id,
-                    'generation_key' => $group->generation_key,
-                    'siblings_count' => $group->sibling_count
-                ]);
+
+                if ($this->debugMode) {
+                    $this->info("DRY-RUN: Grupo {$group->generation_key} seria propagado");
+                    $this->displayEnrichedDataPreview($group->enriched_data);
+                }
                 return;
             }
 
             // Marcar como propagando
             $group->markAsPropagating();
 
-            // Propagar dados para siblings
-            $results = $this->propagateToSiblings($group);
+            // ✅ CORREÇÃO CRÍTICA: Propagar para REPRESENTANTE também
+            $results = $this->propagateToAllVehicles($group);
 
             // Marcar como concluído
             $group->markAsPropagated($results);
             $this->successGroups++;
             $this->totalVehiclesUpdated += $results['updated_count'];
 
-            Log::info('Grupo propagado com sucesso', [
-                'group_id' => $group->id,
-                'generation_key' => $group->generation_key,
-                'vehicles_updated' => $results['updated_count'],
-                'errors' => $results['error_count']
-            ]);
-
+            if ($this->debugMode) {
+                $this->info("Grupo {$group->generation_key} propagado: {$results['updated_count']} veículos atualizados");
+            }
         } catch (\Exception $e) {
             $this->errorGroups++;
             $group->markPropagationAsFailed($e->getMessage());
@@ -307,30 +312,59 @@ class PropagateFromRepresentativesCommand extends Command
                 'error' => $e->getMessage()
             ];
 
-            Log::error('Erro ao propagar grupo', [
-                'group_id' => $group->id,
-                'generation_key' => $group->generation_key,
-                'error' => $e->getMessage()
-            ]);
+            if ($this->debugMode) {
+                $this->error("ERRO no grupo {$group->generation_key}: " . $e->getMessage());
+            }
         }
     }
 
     /**
-     * Propagar dados para veículos irmãos
+     * ✅ CORREÇÃO CRÍTICA: Propagar para TODOS os veículos (representante + irmãos)
      */
-    protected function propagateToSiblings(VehicleEnrichmentGroup $group): array
+    protected function propagateToAllVehicles(VehicleEnrichmentGroup $group): array
     {
         $enrichedData = $group->enriched_data;
         $representativeData = $group->representative_data;
-        $siblings = $group->sibling_vehicles;
-        
+
         $updatedCount = 0;
         $errorCount = 0;
         $errors = [];
 
+        // 1. ✅ APLICAR NO REPRESENTANTE PRIMEIRO
+        try {
+            $representativeId = $group->representative_vehicle_id;
+            $representative = VehicleData::find($representativeId);
+
+            if ($representative) {
+                if ($this->debugMode) {
+                    $this->line("Atualizando representante: {$representative->make} {$representative->model} {$representative->year}");
+                }
+
+                // Aplicar dados enriquecidos diretamente (sem ajustes)
+                $this->applyEnrichedDataToVehicle($representative, $enrichedData);
+                $updatedCount++;
+
+                if ($this->debugMode) {
+                    $this->info("✅ Representante atualizado com sucesso");
+                }
+            }
+        } catch (\Exception $e) {
+            $errorCount++;
+            $errors[] = [
+                'vehicle_id' => $representativeId ?? 'unknown',
+                'type' => 'representative',
+                'error' => $e->getMessage()
+            ];
+
+            if ($this->debugMode) {
+                $this->error("Erro ao atualizar representante: " . $e->getMessage());
+            }
+        }
+
+        // 2. ✅ APLICAR NOS IRMÃOS COM AJUSTES
+        $siblings = $group->sibling_vehicles ?? [];
         foreach ($siblings as $siblingData) {
             try {
-                // Buscar veículo irmão no banco
                 $siblingId = $siblingData['id'] ?? $siblingData['_id'] ?? null;
                 if (!$siblingId) {
                     throw new \Exception('ID do veículo irmão não encontrado');
@@ -341,34 +375,33 @@ class PropagateFromRepresentativesCommand extends Command
                     throw new \Exception("Veículo irmão {$siblingId} não encontrado");
                 }
 
+                if ($this->debugMode) {
+                    $this->line("Atualizando irmão: {$siblingVehicle->make} {$siblingVehicle->model} {$siblingVehicle->year}");
+                }
+
                 // Calcular diferença de anos
                 $repYear = $representativeData['year'];
                 $siblingYear = $siblingVehicle->year;
                 $yearDiff = $siblingYear - $repYear;
 
-                // Aplicar propagação com ajustes
-                $updates = $this->calculateUpdatesForSibling($enrichedData, $yearDiff);
-
-                if (empty($updates)) {
-                    continue; // Nada para atualizar
-                }
-
-                // Aplicar atualizações
-                $this->applyUpdatesToVehicle($siblingVehicle, $updates);
+                // Aplicar dados com ajustes por diferença de anos
+                $this->applyEnrichedDataWithAdjustments($siblingVehicle, $enrichedData, $yearDiff);
                 $updatedCount++;
 
+                if ($this->debugMode) {
+                    $this->info("✅ Irmão atualizado (diff: {$yearDiff} anos)");
+                }
             } catch (\Exception $e) {
                 $errorCount++;
                 $errors[] = [
-                    'sibling_id' => $siblingId ?? 'unknown',
+                    'vehicle_id' => $siblingId ?? 'unknown',
+                    'type' => 'sibling',
                     'error' => $e->getMessage()
                 ];
 
-                Log::error('Erro ao propagar para veículo irmão', [
-                    'group_id' => $group->id,
-                    'sibling_id' => $siblingId ?? 'unknown',
-                    'error' => $e->getMessage()
-                ]);
+                if ($this->debugMode) {
+                    $this->error("Erro ao atualizar irmão: " . $e->getMessage());
+                }
             }
         }
 
@@ -381,40 +414,93 @@ class PropagateFromRepresentativesCommand extends Command
     }
 
     /**
-     * Calcular atualizações para veículo irmão
+     * ✅ NOVO: Aplicar dados enriquecidos diretamente (para representante)
      */
-    protected function calculateUpdatesForSibling(array $enrichedData, int $yearDiff): array
+    protected function applyEnrichedDataToVehicle(VehicleData $vehicle, array $enrichedData): void
     {
-        $updates = [];
+        foreach ($enrichedData as $section => $sectionData) {
+            if (!is_array($sectionData)) continue;
 
-        // Aplicar regras de propagação
-        foreach ($this->propagationRules['always_propagate'] as $fieldPath) {
-            $value = data_get($enrichedData, $fieldPath);
-            if ($value !== null) {
-                $updates[$fieldPath] = $value;
-            }
-        }
+            $currentSection = $vehicle->{$section} ?? [];
 
-        // Campos com ajuste por ano
-        foreach ($this->propagationRules['propagate_with_adjustment'] as $fieldPath) {
-            $value = data_get($enrichedData, $fieldPath);
-            if ($value !== null && is_numeric($value)) {
-                $adjustedValue = $this->adjustValueForYear($fieldPath, $value, $yearDiff);
-                $updates[$fieldPath] = $adjustedValue;
-            }
-        }
+            // Merge dos dados (enriquecidos têm prioridade)
+            $mergedSection = array_merge($currentSection, $sectionData);
+            $vehicle->{$section} = $mergedSection;
 
-        // Campos condicionais (só se anos próximos)
-        if (abs($yearDiff) <= 2) {
-            foreach ($this->propagationRules['conditional_propagate'] as $fieldPath) {
-                $value = data_get($enrichedData, $fieldPath);
-                if ($value !== null) {
-                    $updates[$fieldPath] = $value;
+            if ($this->debugMode) {
+                $newFields = array_diff_key($sectionData, $currentSection);
+                if (!empty($newFields)) {
+                    $fieldsList = implode(', ', array_keys($newFields));
+                    $this->line("   📝 {$section}: +{$fieldsList}");
                 }
             }
         }
 
-        return $updates;
+        // Recalcular score de qualidade
+        $vehicle->calculateDataQualityScore();
+        $vehicle->save();
+    }
+
+    /**
+     * ✅ ATUALIZADO: Aplicar dados com ajustes por diferença de anos
+     */
+    protected function applyEnrichedDataWithAdjustments(VehicleData $vehicle, array $enrichedData, int $yearDiff): void
+    {
+        foreach ($enrichedData as $section => $sectionData) {
+            if (!is_array($sectionData)) continue;
+
+            $currentSection = $vehicle->{$section} ?? [];
+            $adjustedSection = $currentSection;
+
+            foreach ($sectionData as $field => $value) {
+                $fieldPath = "{$section}.{$field}";
+
+                // Verificar se deve propagar este campo
+                if ($this->shouldPropagateField($fieldPath, $yearDiff)) {
+                    $adjustedValue = $this->adjustValueForYear($fieldPath, $value, $yearDiff);
+                    $adjustedSection[$field] = $adjustedValue;
+
+                    if ($this->debugMode && $adjustedValue != $value) {
+                        $this->line("   🔧 {$fieldPath}: {$value} → {$adjustedValue} (diff: {$yearDiff} anos)");
+                    }
+                }
+            }
+
+            $vehicle->{$section} = $adjustedSection;
+        }
+
+        // Recalcular score de qualidade
+        $vehicle->calculateDataQualityScore();
+        $vehicle->save();
+    }
+
+    /**
+     * ✅ NOVO: Verificar se deve propagar um campo
+     */
+    protected function shouldPropagateField(string $fieldPath, int $yearDiff): bool
+    {
+        // Sempre propagar
+        if (in_array($fieldPath, $this->propagationRules['always_propagate'])) {
+            return true;
+        }
+
+        // Propagar com ajuste
+        if (in_array($fieldPath, $this->propagationRules['propagate_with_adjustment'])) {
+            return true;
+        }
+
+        // Nunca propagar
+        if (in_array($fieldPath, $this->propagationRules['never_propagate'])) {
+            return false;
+        }
+
+        // Condicionais (só se anos próximos)
+        if (in_array($fieldPath, $this->propagationRules['conditional_propagate'])) {
+            return abs($yearDiff) <= 2;
+        }
+
+        // Por padrão, propagar se diferença <= 3 anos
+        return abs($yearDiff) <= 3;
     }
 
     /**
@@ -426,6 +512,19 @@ class PropagateFromRepresentativesCommand extends Command
             return $value;
         }
 
+        // Extrair apenas números do valor
+        if (is_string($value)) {
+            preg_match('/[\d.]+/', $value, $matches);
+            if (empty($matches)) {
+                return $value; // Se não tem números, retornar original
+            }
+            $numericValue = (float) $matches[0];
+            $suffix = str_replace($matches[0], '', $value);
+        } else {
+            $numericValue = (float) $value;
+            $suffix = '';
+        }
+
         // Regras de ajuste por tipo de campo
         $adjustmentRules = [
             'engine_data.horsepower' => 0.025, // +2.5% por ano
@@ -435,55 +534,36 @@ class PropagateFromRepresentativesCommand extends Command
         ];
 
         $adjustmentRate = $adjustmentRules[$fieldPath] ?? 0;
-        
+
         if ($adjustmentRate === 0) {
             return $value;
         }
 
         // Aplicar ajuste baseado na diferença de anos
-        $adjustedValue = $value * (1 + ($adjustmentRate * $yearDiff));
-        
+        $adjustedValue = $numericValue * (1 + ($adjustmentRate * $yearDiff));
+
         // Arredondar adequadamente
         if (str_contains($fieldPath, 'consumption')) {
-            return round($adjustedValue, 1); // 1 casa decimal para consumo
+            $adjustedValue = round($adjustedValue, 1);
+        } else {
+            $adjustedValue = round($adjustedValue);
         }
-        
-        return round($adjustedValue); // Inteiro para potência/torque
+
+        return $adjustedValue . $suffix;
     }
 
     /**
-     * Aplicar atualizações no veículo
+     * ✅ NOVO: Exibir preview dos dados enriquecidos
      */
-    protected function applyUpdatesToVehicle(VehicleData $vehicle, array $updates): void
+    protected function displayEnrichedDataPreview(array $enrichedData): void
     {
-        foreach ($updates as $fieldPath => $value) {
-            $this->setNestedValue($vehicle, $fieldPath, $value);
+        $this->line("   📋 Dados que seriam aplicados:");
+        foreach ($enrichedData as $section => $data) {
+            if (is_array($data)) {
+                $fieldCount = count($data);
+                $this->line("      • {$section}: {$fieldCount} campos");
+            }
         }
-
-        // Recalcular score de qualidade
-        $vehicle->calculateDataQualityScore();
-        $vehicle->save();
-    }
-
-    /**
-     * Definir valor aninhado no modelo
-     */
-    protected function setNestedValue(VehicleData $vehicle, string $fieldPath, $value): void
-    {
-        $parts = explode('.', $fieldPath);
-        
-        if (count($parts) === 1) {
-            $vehicle->{$parts[0]} = $value;
-            return;
-        }
-
-        // Para campos aninhados
-        $topLevel = $parts[0];
-        $subField = $parts[1];
-        
-        $data = $vehicle->{$topLevel} ?? [];
-        $data[$subField] = $value;
-        $vehicle->{$topLevel} = $data;
     }
 
     /**
@@ -506,10 +586,6 @@ class PropagateFromRepresentativesCommand extends Command
             foreach (array_slice($this->errors, 0, 3) as $error) {
                 $this->line("  • {$error['vehicle']}: {$error['error']}");
             }
-
-            if (count($this->errors) > 3) {
-                $this->line("  ... e mais " . (count($this->errors) - 3) . " erros");
-            }
         }
 
         // Estatísticas finais
@@ -524,23 +600,14 @@ class PropagateFromRepresentativesCommand extends Command
 
         if ($stats['completion_rate'] >= 95) {
             $this->info('🎉 PIPELINE QUASE COMPLETO!');
-            $this->line('   Todos os veículos foram enriquecidos com dados técnicos.');
         } else {
-            $this->info('📋 PARA COMPLETAR:');
+            $this->info('📋 PARA COMPLETAR O PIPELINE:');
             if ($stats['pending_enrichment'] > 0) {
-                $this->line("   1. php artisan vehicle-data:enrich-representatives (ainda há {$stats['pending_enrichment']} pendentes)");
+                $this->line("   1. php artisan vehicle-data:enrich-representatives");
             }
             if ($stats['pending_propagation'] > 0) {
-                $this->line("   2. php artisan vehicle-data:propagate-from-representatives (ainda há {$stats['pending_propagation']} para propagar)");
+                $this->line("   2. php artisan vehicle-data:propagate-from-representatives --force");
             }
         }
-
-        Log::info('PropagateFromRepresentativesCommand: Execução concluída', [
-            'processed_groups' => $this->processedGroups,
-            'success_groups' => $this->successGroups,
-            'vehicles_updated' => $this->totalVehiclesUpdated,
-            'errors' => $this->errorGroups,
-            'skipped' => $this->skippedGroups
-        ]);
     }
 }

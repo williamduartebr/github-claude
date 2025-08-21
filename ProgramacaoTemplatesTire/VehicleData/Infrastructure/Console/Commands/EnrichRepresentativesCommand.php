@@ -10,8 +10,7 @@ use Src\VehicleData\Infrastructure\Services\ClaudeSonnetVehicleDataService;
 /**
  * Command para enriquecer representantes via API Claude
  * 
- * Processa os grupos pendentes e enriquece os veículos representantes
- * com dados técnicos completos via Claude API
+ * VERSÃO CORRIGIDA - Compatible com MongoDB
  */
 class EnrichRepresentativesCommand extends Command
 {
@@ -38,8 +37,14 @@ class EnrichRepresentativesCommand extends Command
         $this->claudeService = $claudeService;
     }
 
-    public function handle(): int
+    public function handle(): ?int
     {
+
+        // Só executa em produção e staging
+        if (app()->environment(['local', 'testing'])) {
+            return null;
+        }
+
         $this->info('🤖 INICIANDO ENRICHMENT VIA CLAUDE API');
         $this->newLine();
 
@@ -60,7 +65,7 @@ class EnrichRepresentativesCommand extends Command
             if (!$dryRun && !$this->claudeService->canMakeRequest()) {
                 $waitTime = $this->claudeService->timeUntilNextRequest();
                 $this->warn("⏳ Rate limit ativo. Aguarde {$waitTime} segundos.");
-                
+
                 if (!$this->confirm('Continuar mesmo assim?')) {
                     return Command::SUCCESS;
                 }
@@ -84,7 +89,6 @@ class EnrichRepresentativesCommand extends Command
             $this->displayResults();
 
             return Command::SUCCESS;
-
         } catch (\Exception $e) {
             $this->error('❌ ERRO: ' . $e->getMessage());
             Log::error('EnrichRepresentativesCommand: Erro fatal', [
@@ -126,16 +130,16 @@ class EnrichRepresentativesCommand extends Command
     }
 
     /**
-     * Buscar grupos para processar
+     * Buscar grupos para processar - CORRIGIDO para MongoDB
      */
     protected function getGroupsToProcess(
-        int $batchSize, 
-        ?string $priority, 
-        ?string $make, 
-        bool $force, 
+        int $batchSize,
+        ?string $priority,
+        ?string $make,
+        bool $force,
         ?int $limit
     ): \Illuminate\Support\Collection {
-        
+
         if ($force) {
             // Se force, pegar todos os grupos
             $query = VehicleEnrichmentGroup::query();
@@ -153,25 +157,32 @@ class EnrichRepresentativesCommand extends Command
             $query->byMake($make);
         }
 
-        // Ordenação: prioridade > falhas antigas > mais antigos
-        $query->orderByRaw("
-            CASE priority 
-                WHEN 'high' THEN 1 
-                WHEN 'medium' THEN 2 
-                WHEN 'low' THEN 3 
-                ELSE 4 
-            END
-        ")
-        ->orderBy('created_at', 'asc');
+        // CORREÇÃO: Ordenação compatível com MongoDB
+        $groups = $query->get();
+
+        // Ordenar na memória usando Collection
+        $groups = $groups->sortBy([
+            // Primeiro por prioridade (high = 1, medium = 2, low = 3)
+            function ($group) {
+                return match ($group->priority) {
+                    'high' => 1,
+                    'medium' => 2,
+                    'low' => 3,
+                    default => 4
+                };
+            },
+            // Depois por data de criação (mais antigos primeiro)
+            ['created_at', 'asc']
+        ]);
 
         // Aplicar limite se especificado
         if ($limit) {
-            $query->limit($limit);
+            $groups = $groups->take($limit);
         } else {
-            $query->limit($batchSize * 10); // Máximo 10 lotes por execução
+            $groups = $groups->take($batchSize * 10); // Máximo 10 lotes por execução
         }
 
-        return $query->get();
+        return $groups;
     }
 
     /**
@@ -263,7 +274,6 @@ class EnrichRepresentativesCommand extends Command
                 'vehicle' => $repInfo['full_name'],
                 'fields_enriched' => count($enrichedData)
             ]);
-
         } catch (\Exception $e) {
             $this->errorCount++;
             $group->markEnrichmentAsFailed($e->getMessage());
