@@ -14,7 +14,9 @@ use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\Debu
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DiagnosticVehicleDataCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\SyncBlogTiresPressureCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\TestEnhancedProcessingCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\ValidateClonedArticlesCommand;
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\DiagnosticCsvProcessingCommand;
+use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\CloneCalibrationArticlesCommand;
 
 // ✅ NOVOS IMPORTS PARA CORREÇÃO DO VEHICLE_DATA
 use Src\ContentGeneration\TirePressureGuide\Infrastructure\Console\Commands\SyncRemainingVehicleDataCommand;
@@ -61,6 +63,9 @@ class TirePressureGuideServiceProvider extends ServiceProvider
 
         CheckIndexesCommand::class,
         ManageIndexesCommand::class,
+
+        CloneCalibrationArticlesCommand::class,
+        ValidateClonedArticlesCommand::class,
     ];
 
     /**
@@ -146,6 +151,28 @@ class TirePressureGuideServiceProvider extends ServiceProvider
         $this->app->alias(
             \Src\ContentGeneration\TirePressureGuide\Application\Services\TirePressureGuideApplicationService::class,
             'tire.pressure.guide.service'
+        );
+    }
+
+    /**
+     * ✅ NOVOS SERVICES PARA CLONAGEM
+     */
+    protected function registerCloningServices(): void
+    {
+        // ArticleCloningService - Service para lógica de clonagem
+        $this->app->singleton(
+            \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\ArticleCloningService::class
+        );
+
+        // ClonedArticleValidationService - Service para validação de artigos clonados
+        $this->app->singleton(
+            \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\ClonedArticleValidationService::class
+        );
+
+        // Alias para facilitar injeção
+        $this->app->alias(
+            \Src\ContentGeneration\TirePressureGuide\Infrastructure\Services\ArticleCloningService::class,
+            'tire.pressure.guide.cloning'
         );
     }
 
