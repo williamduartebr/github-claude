@@ -1,1 +1,83 @@
-{"make":"Honda","model":"Bros 160","year":2025,"tire_size":"90\/90-19 (DIANTEIRO) 110\/90-17 (TRASEIRO)","main_category":"motorcycle_trail","vehicle_segment":"MOTO","vehicle_type":"motorcycle","pressure_specifications":{"pressure_empty_front":28,"pressure_empty_rear":28,"pressure_light_front":28,"pressure_light_rear":28,"pressure_max_front":32,"pressure_max_rear":32,"pressure_spare":null,"pressure_display":"Dianteiros: 28 PSI \/ Traseiros: 28 PSI","empty_pressure_display":"28\/28 PSI","loaded_pressure_display":"32\/32 PSI"},"tire_specifications":{"tire_size":"90\/90-19 (DIANTEIRO) 110\/90-17 (TRASEIRO)","recommended_brands":[],"seasonal_recommendations":[]},"vehicle_features":{"vehicle_full_name":"Honda Bros 160 2025","url_slug":"honda-bros-160-2025","category_normalized":"Motocicletas Trail","recommended_oil":"10W30 Semissint\u00e9tico"},"is_premium":false,"has_tpms":false,"is_motorcycle":true,"is_electric":false,"is_hybrid":false,"validation_status":"pending","extracted_at":"2025-08-03T18:27:14.616000Z","source_articles":[{"article_id":"687ee83a754ded715709f480","extracted_at":"2025-08-03T18:27:14.616991Z"},{"article_id":"687ee840754ded715709f845","template_type":"calibration","extracted_at":"2025-08-03T18:27:15.940901Z"}],"updated_at":"2025-08-03T18:27:15.940000Z","created_at":"2025-08-03T18:27:14.617000Z","data_quality_score":8,"id":"688faa02ced9069e6d09350e"}
+{
+  "make": "Honda",
+  "model": "Bros 160",
+  "year": 2022,
+  "tire_size": "90/90-19 (DIANTEIRO) 110/90-17 (TRASEIRO)",
+  "main_category": "motorcycle_trail",
+  "vehicle_segment": "MOTO",
+  "vehicle_type": "motorcycle",
+  "pressure_specifications": {
+    "pressure_empty_front": 28,
+    "pressure_empty_rear": 28,
+    "pressure_light_front": 28,
+    "pressure_light_rear": 28,
+    "pressure_max_front": 28,
+    "pressure_max_rear": 32,
+    "pressure_spare": null,
+    "pressure_display": "Dianteiro: 28 PSI / Traseiro: 28 PSI",
+    "empty_pressure_display": "28/28 PSI",
+    "loaded_pressure_display": "28/32 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "90/90-19 (DIANTEIRO) 110/90-17 (TRASEIRO)",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "Honda Bros 160 2022",
+    "url_slug": "honda-bros-160-2022",
+    "category_normalized": "Motocicletas Trail",
+    "recommended_oil": "10W30 Semissintético"
+  },
+  "is_premium": false,
+  "has_tpms": false,
+  "is_motorcycle": true,
+  "is_electric": false,
+  "is_hybrid": false,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:50.980000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee838754ded715709f35f",
+      "extracted_at": "2025-08-03T19:47:50.980017Z"
+    },
+    {
+      "article_id": "687ee83e754ded715709f724",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:53.569545Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:16.172000Z",
+  "created_at": "2025-08-03T19:47:50.980000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "2067mm",
+    "width": "810mm",
+    "height": "1158mm",
+    "wheelbase": "1356mm"
+  },
+  "engine_data": {
+    "engine_type": "OHC, Monocilíndrico, 4 tempos, arrefecido a ar",
+    "displacement": "162.7cc",
+    "horsepower": "14.5 cv a 8500 rpm",
+    "torque": "1.46 kgfm a 5500 rpm",
+    "fuel_type": "Gasolina/Etanol (Flex)"
+  },
+  "fuel_data": {
+    "consumption_city": "42.9 km/l (Gasolina) / 29.8 km/l (Etanol)",
+    "consumption_highway": "42.9 km/l (Gasolina) / 29.8 km/l (Etanol)",
+    "fuel_tank_capacity": "12.0L"
+  },
+  "market_data": [],
+  "technical_specs": {
+    "suspension_front": "Garfo telescópico, curso de 180mm",
+    "suspension_rear": "Mono-shock, curso de 150mm",
+    "brakes_front": "Disco 240mm com ABS",
+    "brakes_rear": "Disco 220mm com ABS"
+  },
+  "transmission_data": {
+    "type": "Manual",
+    "gears": "5"
+  },
+  "id": "688fbce6b9d42e84bf01f2cf"
+}

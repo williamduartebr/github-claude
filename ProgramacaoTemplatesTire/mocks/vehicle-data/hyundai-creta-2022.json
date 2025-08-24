@@ -1,1 +1,83 @@
-{"make":"Hyundai","model":"Creta","year":2022,"tire_size":"215\/60 R17","main_category":"suv","vehicle_segment":"B","vehicle_type":"car","pressure_specifications":{"pressure_empty_front":32,"pressure_empty_rear":32,"pressure_light_front":32,"pressure_light_rear":32,"pressure_max_front":35,"pressure_max_rear":35,"pressure_spare":60,"pressure_display":"Dianteiros: 32 PSI \/ Traseiros: 32 PSI","empty_pressure_display":"32\/32 PSI","loaded_pressure_display":"35\/35 PSI"},"tire_specifications":{"tire_size":"215\/60 R17","recommended_brands":[],"seasonal_recommendations":[]},"vehicle_features":{"vehicle_full_name":"Hyundai Creta 2022","url_slug":"hyundai-creta-2022","category_normalized":"SUVs","recommended_oil":"5W30 Sint\u00e9tico"},"is_premium":false,"has_tpms":true,"is_motorcycle":false,"is_electric":false,"is_hybrid":false,"validation_status":"pending","extracted_at":"2025-08-03T18:27:14.046000Z","source_articles":[{"article_id":"687ee837754ded715709f311","extracted_at":"2025-08-03T18:27:14.046121Z"},{"article_id":"687ee83d754ded715709f6d6","template_type":"calibration","extracted_at":"2025-08-03T18:27:15.594770Z"}],"updated_at":"2025-08-03T18:27:15.594000Z","created_at":"2025-08-03T18:27:14.046000Z","data_quality_score":8,"id":"688faa02ced9069e6d0933a1"}
+{
+  "make": "Hyundai",
+  "model": "Creta",
+  "year": 2022,
+  "tire_size": "215/60 R17",
+  "main_category": "suv",
+  "vehicle_segment": "B",
+  "vehicle_type": "car",
+  "pressure_specifications": {
+    "pressure_empty_front": 32,
+    "pressure_empty_rear": 32,
+    "pressure_light_front": 32,
+    "pressure_light_rear": 32,
+    "pressure_max_front": 35,
+    "pressure_max_rear": 35,
+    "pressure_spare": 60,
+    "pressure_display": "Dianteiros: 32 PSI / Traseiros: 32 PSI",
+    "empty_pressure_display": "32/32 PSI",
+    "loaded_pressure_display": "35/35 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "215/60 R17",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "Hyundai Creta 2022",
+    "url_slug": "hyundai-creta-2022",
+    "category_normalized": "SUVs",
+    "recommended_oil": "5W30 Sintético"
+  },
+  "is_premium": false,
+  "has_tpms": true,
+  "is_motorcycle": false,
+  "is_electric": false,
+  "is_hybrid": false,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:50.808000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee837754ded715709f311",
+      "extracted_at": "2025-08-03T19:47:50.808929Z"
+    },
+    {
+      "article_id": "687ee83d754ded715709f6d6",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:53.455793Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:10.117000Z",
+  "created_at": "2025-08-03T19:47:50.809000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "4315mm",
+    "width": "1790mm",
+    "height": "1630mm",
+    "wheelbase": "2610mm"
+  },
+  "engine_data": {
+    "engine_type": "1.0 Turbo GDI, 1.6 16V Flex, 2.0 16V Flex",
+    "displacement": "998cc (1.0T), 1591cc (1.6), 1999cc (2.0)",
+    "horsepower": "120 cv (1.0T), 130 cv (1.6), 167 cv (2.0)",
+    "torque": "17.5 kgfm (1.0T), 16.5 kgfm (1.6), 20.6 kgfm (2.0)",
+    "fuel_type": "Flex"
+  },
+  "fuel_data": {
+    "consumption_city": "9.2 km/l (1.0T), 8.8 km/l (1.6), 8.3 km/l (2.0)",
+    "consumption_highway": "10.7 km/l (1.0T), 10.3 km/l (1.6), 9.7 km/l (2.0)",
+    "fuel_tank_capacity": "50L"
+  },
+  "market_data": [],
+  "technical_specs": {
+    "suspension_front": "McPherson",
+    "suspension_rear": "Eixo de torção",
+    "brakes_front": "Disco ventilado",
+    "brakes_rear": "Disco sólido"
+  },
+  "transmission_data": {
+    "type": "Automático",
+    "gears": "6 (1.0T e 1.6), 6 (2.0)"
+  },
+  "id": "688fbce6b9d42e84bf01f281"
+}

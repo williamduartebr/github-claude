@@ -1,1 +1,89 @@
-{"make":"Mercedes-Benz","model":"GLC 300","year":2024,"tire_size":"235\/55 R19","main_category":"suv","vehicle_segment":"D","vehicle_type":"car","pressure_specifications":{"pressure_empty_front":35,"pressure_empty_rear":35,"pressure_light_front":35,"pressure_light_rear":35,"pressure_max_front":41,"pressure_max_rear":44,"pressure_spare":60,"pressure_display":"Dianteiros: 35 PSI \/ Traseiros: 35 PSI","empty_pressure_display":"35\/35 PSI","loaded_pressure_display":"41\/44 PSI"},"tire_specifications":{"tire_size":"235\/55 R19","recommended_brands":[],"seasonal_recommendations":[]},"vehicle_features":{"vehicle_full_name":"Mercedes-Benz GLC 300 2024","url_slug":"mercedes-benz-glc-300-2024","category_normalized":"SUVs","recommended_oil":"0W20 Sint\u00e9tico"},"is_premium":true,"has_tpms":true,"is_motorcycle":false,"is_electric":false,"is_hybrid":false,"validation_status":"pending","extracted_at":"2025-08-03T18:27:14.337000Z","source_articles":[{"article_id":"687ee838754ded715709f3ca","extracted_at":"2025-08-03T18:27:14.337167Z"},{"article_id":"687ee83f754ded715709f78f","template_type":"calibration","extracted_at":"2025-08-03T18:27:15.771699Z"}],"updated_at":"2025-08-03T18:27:15.771000Z","created_at":"2025-08-03T18:27:14.337000Z","data_quality_score":8,"id":"688faa02ced9069e6d09345a"}
+{
+  "make": "Mercedes-Benz",
+  "model": "GLC 300",
+  "year": 2024,
+  "tire_size": "235/55 R19",
+  "main_category": "suv",
+  "vehicle_segment": "D",
+  "vehicle_type": "car",
+  "pressure_specifications": {
+    "pressure_empty_front": 35,
+    "pressure_empty_rear": 35,
+    "pressure_light_front": 35,
+    "pressure_light_rear": 35,
+    "pressure_max_front": 41,
+    "pressure_max_rear": 44,
+    "pressure_spare": 60,
+    "pressure_display": "Dianteiros: 35 PSI / Traseiros: 35 PSI",
+    "empty_pressure_display": "35/35 PSI",
+    "loaded_pressure_display": "41/44 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "235/55 R19",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "Mercedes-Benz GLC 300 2024",
+    "url_slug": "mercedes-benz-glc-300-2024",
+    "category_normalized": "SUVs",
+    "recommended_oil": "0W20 Sintético"
+  },
+  "is_premium": true,
+  "has_tpms": true,
+  "is_motorcycle": false,
+  "is_electric": false,
+  "is_hybrid": false,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:51.280000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee838754ded715709f3ca",
+      "extracted_at": "2025-08-03T19:47:51.280751Z"
+    },
+    {
+      "article_id": "687ee83f754ded715709f78f",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:53.807711Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:10.473000Z",
+  "created_at": "2025-08-03T19:47:51.280000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "4716mm",
+    "width": "1890mm",
+    "height": "1640mm",
+    "wheelbase": "2888mm",
+    "weight": "1860kg"
+  },
+  "engine_data": {
+    "engine_type": "2.0 Turbo",
+    "displacement": "1991cc",
+    "horsepower": "258 cv",
+    "torque": "40.8 kgfm",
+    "fuel_type": "Gasolina"
+  },
+  "fuel_data": {
+    "consumption_city": "8.5 km/l",
+    "consumption_highway": "10.3 km/l",
+    "fuel_tank_capacity": "66L"
+  },
+  "market_data": {
+    "price_range": "R$ 399.900 - 429.900",
+    "launch_year": "2024",
+    "main_competitors": ["BMW X3", "Audi Q5", "Volvo XC60"]
+  },
+  "technical_specs": {
+    "max_load": "620kg",
+    "suspension_front": "Independente, multibraço",
+    "suspension_rear": "Independente, multibraço",
+    "brakes_front": "Disco ventilado",
+    "brakes_rear": "Disco"
+  },
+  "transmission_data": {
+    "type": "Automático",
+    "gears": "9"
+  },
+  "id": "688fbce7b9d42e84bf01f33a"
+}

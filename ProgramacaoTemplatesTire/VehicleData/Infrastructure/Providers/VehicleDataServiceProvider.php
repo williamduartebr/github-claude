@@ -13,6 +13,9 @@ use Src\VehicleData\Infrastructure\Console\Commands\ValidateVehicleDataCommand;
 use Src\VehicleData\Infrastructure\Console\Commands\GroupVehiclesForEnrichmentCommand;
 use Src\VehicleData\Infrastructure\Console\Commands\AnalyzeVehicleDataStructureCommand;
 
+// ✅ NOVO: Import da schedule
+use Src\VehicleData\Infrastructure\Console\Commands\Schedules\VehicleDataEnrichmentSchedule;
+
 /**
  * VehicleDataServiceProvider - Provider para o módulo de dados de veículos
  * 
@@ -35,7 +38,8 @@ class VehicleDataServiceProvider extends ServiceProvider
         EnrichRepresentativesCommand::class,
         PropagateFromRepresentativesCommand::class,
         
-        
+        // ✅ NOVO: Registrar a schedule também como command
+        VehicleDataEnrichmentSchedule::class,
     ];
 
     /**
@@ -76,8 +80,9 @@ class VehicleDataServiceProvider extends ServiceProvider
             $this->app->singleton('command.vehicle-data.groups', GroupVehiclesForEnrichmentCommand::class);
             $this->app->singleton('command.vehicle-data.enrichs', EnrichRepresentativesCommand::class);
             $this->app->singleton('command.vehicle-data.propagates', PropagateFromRepresentativesCommand::class);
-
             
+            // ✅ NOVO: Alias para a schedule
+            $this->app->singleton('command.vehicle-data.enrichment-schedule', VehicleDataEnrichmentSchedule::class);
         }
     }
 
@@ -104,6 +109,12 @@ class VehicleDataServiceProvider extends ServiceProvider
                     'remove_duplicates' => true,
                     'archive_old_data' => false,
                     'retention_days' => 365,
+                ],
+                // ✅ NOVO: Configurações de schedule
+                'schedule' => [
+                    'enrichment_limit' => 1,
+                    'cleanup_days' => 7,
+                    'enable_in_local' => false,
                 ]
             ];
         });
