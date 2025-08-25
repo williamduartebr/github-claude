@@ -24,7 +24,7 @@ use Carbon\Carbon;
 class ClaudeRefinementService
 {
     private const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-    private const MODEL = 'claude-3-5-sonnet-20241022';
+    private const MODEL = 'claude-3-7-sonnet-20250219';
     private const MAX_TOKENS = 3000; // Reduzido pois é só refinamento
     private const TEMPERATURE = 0.2; // Mais conservador para refinamento
 
@@ -97,7 +97,6 @@ class ClaudeRefinementService
             ]);
 
             return $refinedArticle;
-
         } catch (\Exception $e) {
             Log::error('ClaudeRefinementService: Erro no refinamento', [
                 'tire_calibration_id' => $calibration->_id,
@@ -225,7 +224,7 @@ EOT;
 
                 if ($response->successful()) {
                     $data = $response->json();
-                    
+
                     Log::info('ClaudeRefinementService: Refinamento recebido', [
                         'tire_calibration_id' => $calibrationId,
                         'response_size' => strlen($response->body()),
@@ -252,7 +251,6 @@ EOT;
                     Log::info("Rate limit atingido, aguardando {$waitTime}s...");
                     sleep($waitTime);
                 }
-
             } catch (\Exception $e) {
                 $error = $e->getMessage();
                 Log::error('ClaudeRefinementService: Exceção na requisição', [
@@ -291,7 +289,7 @@ EOT;
             Log::warning('ClaudeRefinementService: Não foi possível extrair JSON válido', [
                 'response_text' => substr($text, 0, 300) . '...'
             ]);
-            
+
             // Fallback: retornar original com melhorias básicas de SEO
             return $this->createMinimalSeoRefinement($originalArticle);
         }
@@ -342,14 +340,14 @@ EOT;
         if (isset($original['technical_content']['especificacoes_pressao']['pressoes'])) {
             $originalPressures = $original['technical_content']['especificacoes_pressao']['pressoes'];
             $refinedPressures = $refined['technical_content']['especificacoes_pressao']['pressoes'] ?? [];
-            
+
             foreach ($originalPressures as $type => $pressureData) {
                 if (isset($pressureData['dianteiro'], $pressureData['traseiro'])) {
                     $origFront = $pressureData['dianteiro'];
                     $origRear = $pressureData['traseiro'];
                     $refFront = $refinedPressures[$type]['dianteiro'] ?? null;
                     $refRear = $refinedPressures[$type]['traseiro'] ?? null;
-                    
+
                     if ($origFront != $refFront || $origRear != $refRear) {
                         Log::warning('ClaudeRefinementService: Dados de pressão foram alterados', [
                             'original' => compact('origFront', 'origRear'),
@@ -364,7 +362,7 @@ EOT;
         if (isset($original['technical_content']['informacoes_veiculo']['dados_basicos'])) {
             $origBasics = $original['technical_content']['informacoes_veiculo']['dados_basicos'];
             $refBasics = $refined['technical_content']['informacoes_veiculo']['dados_basicos'] ?? [];
-            
+
             $criticalFields = ['marca', 'modelo', 'ano'];
             foreach ($criticalFields as $field) {
                 if (($origBasics[$field] ?? null) != ($refBasics[$field] ?? null)) {
@@ -475,9 +473,9 @@ EOT;
     private function countWords(array $article): int
     {
         $text = '';
-        
+
         // Concatenar todos os textos do artigo
-        array_walk_recursive($article, function($value) use (&$text) {
+        array_walk_recursive($article, function ($value) use (&$text) {
             if (is_string($value)) {
                 $text .= ' ' . $value;
             }
@@ -532,7 +530,7 @@ EOT;
     {
         try {
             $testPrompt = "Melhore esta frase mantendo o significado: 'A pressão dos pneus é importante.'";
-            
+
             $response = Http::timeout(30)
                 ->withHeaders([
                     'Content-Type' => 'application/json',
@@ -564,7 +562,6 @@ EOT;
                 'message' => 'Erro HTTP: ' . $response->status(),
                 'error' => $response->body()
             ];
-
         } catch (\Exception $e) {
             return [
                 'success' => false,
