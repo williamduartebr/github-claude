@@ -14,11 +14,11 @@ use Carbon\Carbon;
  * FASE 3: Refinamento via Claude API
  * 
  * @property string $wordpress_url
+ * @property string $version
  * @property Carbon $blog_modified_time
  * @property Carbon $blog_published_time
  * @property string $vehicle_make
  * @property string $vehicle_model
- * @property int $vehicle_year
  * @property string $vehicle_data_id
  * @property array $vehicle_basic_data
  * @property array $pressure_specifications
@@ -74,7 +74,6 @@ class TireCalibration extends Model
 
         // Controle
         'processing_attempts' => 'integer',
-        'vehicle_year' => 'integer',
 
         // Timestamps automáticos
         'created_at' => 'datetime',
@@ -177,14 +176,6 @@ class TireCalibration extends Model
         return $query->where('main_category', $category);
     }
 
-    /**
-     * Filtro por ano do veículo
-     */
-    public function scopeByYear($query, int $year)
-    {
-        return $query->where('vehicle_year', $year);
-    }
-
     // =======================================================================
     // MÉTODOS DE CONTROLE DE FASE - CORRIGIDOS
     // =======================================================================
@@ -271,7 +262,6 @@ class TireCalibration extends Model
         // Dados básicos obrigatórios (3 pontos)
         if (!empty($this->vehicle_make)) $score += 1;
         if (!empty($this->vehicle_model)) $score += 1;
-        if (!empty($this->vehicle_year)) $score += 1;
 
         // Especificações de pressão (4 pontos)
         $pressureSpecs = $this->pressure_specifications ?? [];
