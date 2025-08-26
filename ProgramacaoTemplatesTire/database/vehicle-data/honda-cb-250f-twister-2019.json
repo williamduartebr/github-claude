@@ -1,0 +1,83 @@
+{
+  "make": "Honda",
+  "model": "CB 250F Twister",
+  "year": 2019,
+  "tire_size": "110/70-17 (DIANTEIRO) 140/70-17 (TRASEIRO)",
+  "main_category": "motorcycle_street",
+  "vehicle_segment": "MOTO",
+  "vehicle_type": "motorcycle",
+  "pressure_specifications": {
+    "pressure_empty_front": 29,
+    "pressure_empty_rear": 32,
+    "pressure_light_front": 29,
+    "pressure_light_rear": 32,
+    "pressure_max_front": 29,
+    "pressure_max_rear": 32,
+    "pressure_spare": null,
+    "pressure_display": "Dianteiro: 29 PSI / Traseiro: 32 PSI",
+    "empty_pressure_display": "29/32 PSI",
+    "loaded_pressure_display": "29/32 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "110/70-17 (DIANTEIRO) 140/70-17 (TRASEIRO)",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "Honda CB 250F Twister 2019",
+    "url_slug": "honda-cb-250f-twister-2019",
+    "category_normalized": "Motocicletas Street",
+    "recommended_oil": "10W30 Semissintético"
+  },
+  "is_premium": false,
+  "has_tpms": false,
+  "is_motorcycle": true,
+  "is_electric": false,
+  "is_hybrid": false,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:51.747000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee83a754ded715709f481",
+      "extracted_at": "2025-08-03T19:47:51.747434Z"
+    },
+    {
+      "article_id": "687ee840754ded715709f846",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:54.098831Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:16.015000Z",
+  "created_at": "2025-08-03T19:47:51.747000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "2067mm",
+    "width": "810mm",
+    "height": "1090mm",
+    "wheelbase": "1356mm"
+  },
+  "engine_data": {
+    "engine_type": "DOHC, 2 cilindros, 4 tempos, arrefecido a ar",
+    "displacement": "249.5cc",
+    "horsepower": "22,9 cv a 8.500 rpm",
+    "torque": "2,28 kgfm a 6.500 rpm",
+    "fuel_type": "Gasolina"
+  },
+  "fuel_data": {
+    "consumption_city": "30,2 km/l",
+    "consumption_highway": "33,5 km/l",
+    "fuel_tank_capacity": "13,8L"
+  },
+  "market_data": [],
+  "technical_specs": {
+    "suspension_front": "Garfo telescópico, curso de 130mm",
+    "suspension_rear": "Mono-shock, curso de 108mm",
+    "brakes_front": "Disco, 276mm, com ABS",
+    "brakes_rear": "Disco, 220mm, com ABS"
+  },
+  "transmission_data": {
+    "type": "Manual",
+    "gears": "6"
+  },
+  "id": "688fbce7b9d42e84bf01f3ef"
+}

@@ -1,0 +1,83 @@
+{
+  "make": "Chevrolet",
+  "model": "Onix",
+  "year": 2019,
+  "tire_size": "185/65 R15",
+  "main_category": "hatch",
+  "vehicle_segment": "B",
+  "vehicle_type": "car",
+  "pressure_specifications": {
+    "pressure_empty_front": 32,
+    "pressure_empty_rear": 32,
+    "pressure_light_front": 32,
+    "pressure_light_rear": 32,
+    "pressure_max_front": 36,
+    "pressure_max_rear": 36,
+    "pressure_spare": 60,
+    "pressure_display": "Dianteiros: 32 PSI / Traseiros: 32 PSI",
+    "empty_pressure_display": "32/32 PSI",
+    "loaded_pressure_display": "36/36 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "185/65 R15",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "Chevrolet Onix 2019",
+    "url_slug": "chevrolet-onix-2019",
+    "category_normalized": "Hatchbacks",
+    "recommended_oil": "5W30 Semissintético"
+  },
+  "is_premium": false,
+  "has_tpms": true,
+  "is_motorcycle": false,
+  "is_electric": true,
+  "is_hybrid": true,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:50.761000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee837754ded715709f302",
+      "extracted_at": "2025-08-03T19:47:50.761158Z"
+    },
+    {
+      "article_id": "687ee83d754ded715709f6c7",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:53.438397Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:30.420000Z",
+  "created_at": "2025-08-03T19:47:50.762000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "4163mm",
+    "width": "1735mm",
+    "height": "1478mm",
+    "wheelbase": "2550mm"
+  },
+  "engine_data": {
+    "engine_type": "1.0 Turbo Flex",
+    "displacement": "999cc",
+    "horsepower": "116 cv (etanol) / 114 cv (gasolina)",
+    "torque": "16.8 kgfm (etanol) / 16.3 kgfm (gasolina)",
+    "fuel_type": "Flex"
+  },
+  "fuel_data": {
+    "consumption_city": "10.1 km/l (etanol) / 14.3 km/l (gasolina)",
+    "consumption_highway": "11.3 km/l (etanol) / 16.3 km/l (gasolina)",
+    "fuel_tank_capacity": "44L"
+  },
+  "market_data": [],
+  "technical_specs": {
+    "suspension_front": "McPherson",
+    "suspension_rear": "Eixo de torção",
+    "brakes_front": "Disco ventilado",
+    "brakes_rear": "Tambor"
+  },
+  "transmission_data": {
+    "type": "Automático",
+    "gears": "6"
+  },
+  "id": "688fbce6b9d42e84bf01f272"
+}

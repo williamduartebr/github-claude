@@ -1,19 +1,17 @@
 <?php
 
-namespace Src\ContentGeneration\TireCalibration\Infrastructure\Commands;
+namespace Src\ContentGeneration\IdealPressure\Infrastructure\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
+use Src\ContentGeneration\IdealPressure\Domain\Entities\IdealPressure;
 use Carbon\Carbon;
 
 /**
- * CopyCalibrationArticlesCommand - CORRIGIDO - Cópia inteligente de TirePressureArticle
- * 
- * 
+ * CopyIdealPressureArticlesCommand - CORRIGIDO - Cópia inteligente de TirePressureArticle
  * 
  * Extrai e estrutura dados do campo vehicle_data (JSON string) para criar
- * registros TireCalibration otimizados para busca e processamento futuro.
+ * registros IdealPressure otimizados para busca e processamento futuro.
  * 
  * ESTRATÉGIA:
  * - Parse do JSON vehicle_data string
@@ -22,18 +20,18 @@ use Carbon\Carbon;
  * - Campos de filtro para consultas eficientes
  * 
  * USO:
- * php artisan tire-calibration:copy-calibration --limit=100 --dry-run
- * php artisan tire-calibration:copy-calibration --category=hatch --validate
+ * php artisan ideal-pressure:copy-calibration --limit=100 --dry-run
+ * php artisan ideal-pressure:copy-calibration --category=hatch --validate
  * 
  * @author Claude Sonnet 4
  * @version 2.0 - Implementação corrigida com parsing JSON
  */
-class CopyCalibrationArticlesCommand extends Command
+class CopyIdealPressureArticlesCommand extends Command
 {
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'tire-calibration:copy-calibration
+    protected $signature = 'ideal-pressure:copy-calibration
                             {--limit=1000 : Número máximo de artigos a processar}
                             {--category= : Filtrar por categoria específica (hatch, suv, sedan, etc)}
                             {--make= : Filtrar por marca específica}
@@ -78,11 +76,11 @@ class CopyCalibrationArticlesCommand extends Command
             }
 
             $this->info("📊 {$articles->count()} artigos calibration encontrados para processamento");
-            
+
             if ($config['validate']) {
                 $this->displayArticlesPreview($articles);
             }
-            
+
             $this->newLine();
 
             // 3. Processar artigos
@@ -92,10 +90,9 @@ class CopyCalibrationArticlesCommand extends Command
             $this->displayFinalStats($startTime);
 
             return self::SUCCESS;
-
         } catch (\Exception $e) {
             $this->error('❌ ERRO FATAL: ' . $e->getMessage());
-            Log::error('CopyCalibrationArticlesCommand: Erro fatal', [
+            Log::error('CopyIdealPressureArticlesCommand: Erro fatal', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -141,7 +138,7 @@ class CopyCalibrationArticlesCommand extends Command
     protected function getTirePressureArticles(array $config)
     {
         // Usar diretamente o model TirePressureArticle com filtro específico
-        $query = \Src\ContentGeneration\TirePressureGuide\Domain\Entities\TirePressureArticle::where('template_type', 'calibration');
+        $query = \Src\ContentGeneration\TirePressureGuide\Domain\Entities\TirePressureArticle::where('template_type', 'ideal');
 
         // Filtros adicionais baseados no vehicle_data JSON
         if ($config['category']) {
@@ -154,7 +151,7 @@ class CopyCalibrationArticlesCommand extends Command
 
         // Pular existentes se solicitado
         if ($config['skip_existing'] && !$config['force']) {
-            $existingUrls = TireCalibration::pluck('wordpress_url')->toArray();
+            $existingUrls = IdealPressure::pluck('wordpress_url')->toArray();
             if (!empty($existingUrls)) {
                 $query->whereNotIn('wordpress_url', $existingUrls);
             }
@@ -162,8 +159,8 @@ class CopyCalibrationArticlesCommand extends Command
 
         // Campos obrigatórios para o processamento
         $query->whereNotNull('wordpress_url')
-              ->whereNotNull('vehicle_data')
-              ->where('vehicle_data', '!=', '');
+            ->whereNotNull('vehicle_data')
+            ->where('vehicle_data', '!=', '');
 
         return $query->limit($config['limit'])->get();
     }
@@ -187,13 +184,13 @@ class CopyCalibrationArticlesCommand extends Command
                 $this->errorCount++;
                 $this->line('');
                 $this->error("❌ Erro no artigo {$article['wordpress_url']}: " . $e->getMessage());
-                
-                Log::error('CopyCalibrationArticlesCommand: Erro no processamento', [
+
+                Log::error('CopyIdealPressureArticlesCommand: Erro no processamento', [
                     'article_url' => $article['wordpress_url'] ?? 'unknown',
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString()
                 ]);
-                
+
                 $progressBar->advance();
                 continue;
             }
@@ -210,7 +207,7 @@ class CopyCalibrationArticlesCommand extends Command
     {
         // 1. Parse do JSON vehicle_data
         $vehicleDataParsed = $this->parseVehicleData($article['vehicle_data'] ?? '');
-        
+
         if (!$vehicleDataParsed) {
             $this->skippedCount++;
             return;
@@ -226,12 +223,12 @@ class CopyCalibrationArticlesCommand extends Command
             }
         }
 
-        // 3. Estruturar dados para TireCalibration
+        // 3. Estruturar dados para IdealPressure
         $calibrationData = $this->buildCalibrationData($article, $vehicleDataParsed);
 
         // 4. Salvar ou simular
         if (!$config['dry_run']) {
-            $this->saveTireCalibration($calibrationData, $config);
+            $this->saveIdealPressure($calibrationData, $config);
         }
 
         $this->processedCount++;
@@ -258,11 +255,11 @@ class CopyCalibrationArticlesCommand extends Command
                 // Limpar possíveis caracteres problemáticos
                 $cleanJson = trim($vehicleData);
                 $cleanJson = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $cleanJson);
-                
+
                 $parsed = json_decode($cleanJson, true);
-                
+
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    Log::warning('CopyCalibrationArticlesCommand: JSON inválido', [
+                    Log::warning('CopyIdealPressureArticlesCommand: JSON inválido', [
                         'json_error' => json_last_error_msg(),
                         'vehicle_data_sample' => substr($vehicleData, 0, 200)
                     ]);
@@ -270,9 +267,8 @@ class CopyCalibrationArticlesCommand extends Command
                 }
 
                 return $parsed;
-
             } catch (\Exception $e) {
-                Log::error('CopyCalibrationArticlesCommand: Erro no parse JSON', [
+                Log::error('CopyIdealPressureArticlesCommand: Erro no parse JSON', [
                     'error' => $e->getMessage(),
                     'vehicle_data_sample' => substr($vehicleData, 0, 200)
                 ]);
@@ -291,7 +287,7 @@ class CopyCalibrationArticlesCommand extends Command
     {
         $errors = [];
         $requiredFields = ['make', 'model', 'year', 'main_category'];
-        
+
         foreach ($requiredFields as $field) {
             if (empty($vehicleData[$field])) {
                 $errors[] = "Campo obrigatório '{$field}' ausente ou vazio";
@@ -304,7 +300,14 @@ class CopyCalibrationArticlesCommand extends Command
         }
 
         if (!empty($vehicleData['main_category']) && !in_array($vehicleData['main_category'], [
-            'hatch', 'sedan', 'suv', 'pickup', 'van', 'motorcycle', 'car_electric', 'truck'
+            'hatch',
+            'sedan',
+            'suv',
+            'pickup',
+            'van',
+            'motorcycle',
+            'car_electric',
+            'truck'
         ])) {
             $errors[] = "Categoria inválida: {$vehicleData['main_category']}";
         }
@@ -317,7 +320,7 @@ class CopyCalibrationArticlesCommand extends Command
     }
 
     /**
-     * Construir dados estruturados para TireCalibration
+     * Construir dados estruturados para IdealPressure
      */
     protected function buildCalibrationData($article, array $vehicleData): array
     {
@@ -326,13 +329,13 @@ class CopyCalibrationArticlesCommand extends Command
             'wordpress_url' => $article->wordpress_url ?? null,
             'blog_modified_time' => $this->parseTimestamp($article->blog_modified_time ?? null),
             'blog_published_time' => $this->parseTimestamp($article->blog_published_time ?? null),
-            
+
             // Campos extraídos para busca eficiente
             'vehicle_make' => $vehicleData['make'] ?? null,
             'vehicle_model' => $vehicleData['model'] ?? null,
             'vehicle_year' => (int) ($vehicleData['year'] ?? 0),
             'main_category' => $vehicleData['main_category'] ?? null,
-            
+
             // Dados estruturados para VehicleData lookup
             'vehicle_basic_data' => [
                 'make' => $vehicleData['make'] ?? null,
@@ -343,7 +346,7 @@ class CopyCalibrationArticlesCommand extends Command
                 'category_normalized' => $vehicleData['category_normalized'] ?? null,
                 'url_slug' => $vehicleData['url_slug'] ?? null,
             ],
-            
+
             'pressure_specifications' => [
                 'tire_size' => $vehicleData['tire_size'] ?? null,
                 'empty_front' => $this->parseFloat($vehicleData['pressure_empty_front'] ?? null),
@@ -357,7 +360,7 @@ class CopyCalibrationArticlesCommand extends Command
                 'empty_pressure_display' => $vehicleData['empty_pressure_display'] ?? null,
                 'loaded_pressure_display' => $vehicleData['loaded_pressure_display'] ?? null,
             ],
-            
+
             'vehicle_features' => [
                 'has_tpms' => $this->parseBoolean($vehicleData['has_tpms'] ?? null),
                 'is_premium' => $this->parseBoolean($vehicleData['is_premium'] ?? null),
@@ -365,30 +368,30 @@ class CopyCalibrationArticlesCommand extends Command
                 'vehicle_type' => $vehicleData['vehicle_type'] ?? 'car',
                 'recommended_oil' => $vehicleData['recommended_oil'] ?? null,
             ],
-            
+
             // Estado inicial do processamento
-            'enrichment_phase' => TireCalibration::PHASE_PENDING,
+            'enrichment_phase' => IdealPressure::PHASE_PENDING,
             'processing_attempts' => 0,
             'data_completeness_score' => $this->calculateCompletenessScore($vehicleData),
         ];
     }
 
     /**
-     * Salvar TireCalibration no banco
+     * Salvar IdealPressure no banco
      */
-    protected function saveTireCalibration(array $data, array $config): void
+    protected function saveIdealPressure(array $data, array $config): void
     {
         if ($config['force'] || !$config['skip_existing']) {
             // Upsert baseado no wordpress_url
-            TireCalibration::updateOrCreate(
+            IdealPressure::updateOrCreate(
                 ['wordpress_url' => $data['wordpress_url']],
                 $data
             );
         } else {
             // Apenas criar se não existir
-            $existing = TireCalibration::where('wordpress_url', $data['wordpress_url'])->first();
+            $existing = IdealPressure::where('wordpress_url', $data['wordpress_url'])->first();
             if (!$existing) {
-                TireCalibration::create($data);
+                IdealPressure::create($data);
             }
         }
     }
@@ -399,7 +402,7 @@ class CopyCalibrationArticlesCommand extends Command
     protected function parseTimestamp($value): ?Carbon
     {
         if (!$value) return null;
-        
+
         try {
             return Carbon::parse($value);
         } catch (\Exception $e) {
@@ -425,17 +428,23 @@ class CopyCalibrationArticlesCommand extends Command
     protected function calculateCompletenessScore(array $vehicleData): float
     {
         $essentialFields = [
-            'make', 'model', 'year', 'main_category', 'tire_size',
-            'pressure_empty_front', 'pressure_empty_rear', 'pressure_spare'
+            'make',
+            'model',
+            'year',
+            'main_category',
+            'tire_size',
+            'pressure_empty_front',
+            'pressure_empty_rear',
+            'pressure_spare'
         ];
-        
+
         $filled = 0;
         foreach ($essentialFields as $field) {
             if (!empty($vehicleData[$field])) {
                 $filled++;
             }
         }
-        
+
         return round(($filled / count($essentialFields)) * 10, 1);
     }
 
@@ -446,7 +455,7 @@ class CopyCalibrationArticlesCommand extends Command
     {
         $make = $vehicleData['make'] ?? 'unknown';
         $category = $vehicleData['main_category'] ?? 'unknown';
-        
+
         $this->stats['by_make'][$make] = ($this->stats['by_make'][$make] ?? 0) + 1;
         $this->stats['by_category'][$category] = ($this->stats['by_category'][$category] ?? 0) + 1;
     }
@@ -457,14 +466,14 @@ class CopyCalibrationArticlesCommand extends Command
     protected function displayFinalStats(float $startTime): void
     {
         $duration = round(microtime(true) - $startTime, 2);
-        
+
         $this->newLine();
         $this->info('📊 ESTATÍSTICAS FINAIS:');
         $this->line("   • Processados: {$this->processedCount}");
         $this->line("   • Ignorados: {$this->skippedCount}");
         $this->line("   • Erros: {$this->errorCount}");
         $this->line("   • Duração: {$duration}s");
-        
+
         if (!empty($this->stats['by_make'])) {
             $this->newLine();
             $this->info('📈 POR MARCA:');
@@ -473,7 +482,7 @@ class CopyCalibrationArticlesCommand extends Command
                 $this->line("   • {$make}: {$count}");
             }
         }
-        
+
         if (!empty($this->stats['by_category'])) {
             $this->newLine();
             $this->info('📈 POR CATEGORIA:');
@@ -482,7 +491,7 @@ class CopyCalibrationArticlesCommand extends Command
                 $this->line("   • {$category}: {$count}");
             }
         }
-        
+
         if (!empty($this->validationErrors)) {
             $this->newLine();
             $this->warn('⚠️ ERROS DE VALIDAÇÃO ENCONTRADOS:');
@@ -494,12 +503,12 @@ class CopyCalibrationArticlesCommand extends Command
                 $this->line("   ... e mais {$remaining} erros");
             }
         }
-        
+
         $this->newLine();
         $this->info('✅ PROCESSAMENTO CONCLUÍDO!');
-        
+
         // Log para auditoria
-        Log::info('CopyCalibrationArticlesCommand: Processamento concluído', [
+        Log::info('CopyIdealPressureArticlesCommand: Processamento concluído', [
             'processed' => $this->processedCount,
             'skipped' => $this->skippedCount,
             'errors' => $this->errorCount,
@@ -514,37 +523,37 @@ class CopyCalibrationArticlesCommand extends Command
     protected function displayArticlesPreview($articles): void
     {
         $this->info('📋 PRÉVIA DOS ARTIGOS ENCONTRADOS:');
-        
+
         // Estatísticas por marca/categoria
         $byMake = [];
         $byCategory = [];
         $validArticles = 0;
-        
+
         foreach ($articles->take(5) as $index => $article) {
             $vehicleDataParsed = $this->parseVehicleData($article->vehicle_data ?? '');
-            
+
             if ($vehicleDataParsed) {
                 $validArticles++;
                 $make = $vehicleDataParsed['make'] ?? 'Unknown';
                 $category = $vehicleDataParsed['main_category'] ?? 'Unknown';
-                
+
                 $byMake[$make] = ($byMake[$make] ?? 0) + 1;
                 $byCategory[$category] = ($byCategory[$category] ?? 0) + 1;
-                
+
                 $this->line("   {$index}. {$make} {$vehicleDataParsed['model']} {$vehicleDataParsed['year']} ({$category})");
             } else {
                 $this->line("   {$index}. [DADOS INVÁLIDOS] - URL: {$article->wordpress_url}");
             }
         }
-        
+
         if ($articles->count() > 5) {
             $remaining = $articles->count() - 5;
             $this->line("   ... e mais {$remaining} artigos");
         }
-        
+
         $this->newLine();
         $this->info("✅ Artigos válidos: {$validArticles} de {$articles->count()}");
-        
+
         if (!empty($byMake)) {
             $this->info('📈 DISTRIBUIÇÃO POR MARCA:');
             arsort($byMake);
@@ -552,7 +561,7 @@ class CopyCalibrationArticlesCommand extends Command
                 $this->line("   • {$make}: {$count}");
             }
         }
-        
+
         if (!empty($byCategory)) {
             $this->info('📈 DISTRIBUIÇÃO POR CATEGORIA:');
             arsort($byCategory);
@@ -560,7 +569,7 @@ class CopyCalibrationArticlesCommand extends Command
                 $this->line("   • {$category}: {$count}");
             }
         }
-        
+
         $this->newLine();
     }
 }

@@ -1,0 +1,83 @@
+{
+  "make": "Fiat",
+  "model": "Toro",
+  "year": 2022,
+  "tire_size": "225/65 R17",
+  "main_category": "pickup",
+  "vehicle_segment": "D",
+  "vehicle_type": "car",
+  "pressure_specifications": {
+    "pressure_empty_front": 32,
+    "pressure_empty_rear": 32,
+    "pressure_light_front": 32,
+    "pressure_light_rear": 32,
+    "pressure_max_front": 35,
+    "pressure_max_rear": 41,
+    "pressure_spare": 41,
+    "pressure_display": "Dianteiros: 32 PSI / Traseiros: 32 PSI",
+    "empty_pressure_display": "32/32 PSI",
+    "loaded_pressure_display": "35/41 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "225/65 R17",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "Fiat Toro 2022",
+    "url_slug": "fiat-toro-2022",
+    "category_normalized": "Pickups",
+    "recommended_oil": "5W30 Sintético (gasolina)/15W40 Diesel (diesel)"
+  },
+  "is_premium": false,
+  "has_tpms": true,
+  "is_motorcycle": false,
+  "is_electric": false,
+  "is_hybrid": false,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:50.811000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee837754ded715709f312",
+      "extracted_at": "2025-08-03T19:47:50.811018Z"
+    },
+    {
+      "article_id": "687ee83d754ded715709f6d7",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:53.456847Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:10.135000Z",
+  "created_at": "2025-08-03T19:47:50.811000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "4944mm",
+    "width": "1844mm",
+    "height": "1791mm",
+    "wheelbase": "2990mm"
+  },
+  "engine_data": {
+    "engine_type": "1.3 Turbo 270 Flex / 2.0 Turbo Diesel",
+    "displacement": "1332cc (Flex) / 1956cc (Diesel)",
+    "horsepower": "185 cv (Flex) / 170 cv (Diesel)",
+    "torque": "27.5 kgfm (Flex) / 35.7 kgfm (Diesel)",
+    "fuel_type": "Flex (1.3) / Diesel (2.0)"
+  },
+  "fuel_data": {
+    "consumption_city": "9.5 km/l (Flex) / 10.2 km/l (Diesel)",
+    "consumption_highway": "10.7 km/l (Flex) / 11.8 km/l (Diesel)",
+    "fuel_tank_capacity": "55L"
+  },
+  "market_data": [],
+  "technical_specs": {
+    "suspension_front": "McPherson",
+    "suspension_rear": "Multilink",
+    "brakes_front": "Disco ventilado",
+    "brakes_rear": "Disco sólido"
+  },
+  "transmission_data": {
+    "type": "Automático",
+    "gears": "6 (Diesel) / 9 (Flex)"
+  },
+  "id": "688fbce6b9d42e84bf01f282"
+}

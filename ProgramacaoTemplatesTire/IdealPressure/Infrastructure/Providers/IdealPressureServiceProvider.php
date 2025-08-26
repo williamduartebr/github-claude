@@ -1,22 +1,22 @@
 <?php
 
-namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
+namespace Src\ContentGeneration\IdealPressure\Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
 use Illuminate\Support\Facades\Schedule;
-use Src\ContentGeneration\TireCalibration\Application\Services\TestArticleService;
-use Src\ContentGeneration\TireCalibration\Application\Services\ClaudeRefinementService;
+use Src\ContentGeneration\IdealPressure\Application\Services\TestArticleService;
+use Src\ContentGeneration\IdealPressure\Application\Services\ClaudeRefinementService;
 
-use Src\ContentGeneration\TireCalibration\Application\Services\ArticleGenerationService;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudeCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateTestArticlesCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TireCalibrationStatsCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateArticlesPhase1Command;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\CopyCalibrationArticlesCommand;
+use Src\ContentGeneration\IdealPressure\Application\Services\ArticleGenerationService;
+use Src\ContentGeneration\IdealPressure\Infrastructure\Commands\RefineWithClaudeCommand;
+use Src\ContentGeneration\IdealPressure\Infrastructure\Commands\GenerateTestArticlesCommand;
+use Src\ContentGeneration\IdealPressure\Infrastructure\Commands\IdealPressureStatsCommand;
+use Src\ContentGeneration\IdealPressure\Infrastructure\Commands\GenerateArticlesPhase1Command;
+use Src\ContentGeneration\IdealPressure\Infrastructure\Commands\CopyIdealPressureArticlesCommand;
 
 /**
- * TireCalibrationServiceProvider - Provider completo do módulo TireCalibration
+ * IdealPressureServiceProvider - Provider completo do módulo IdealPressure
  * 
  * Responsável por:
  * - Registrar todos os services do módulo
@@ -32,14 +32,13 @@ use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\CopyCalibratio
  * @author Claude Sonnet 4
  * @version 1.0 - Implementação simplificada sem redundâncias
  */
-class TireCalibrationServiceProvider extends ServiceProvider
+class IdealPressureServiceProvider extends ServiceProvider
 {
     /**
      * All of the container bindings that should be registered.
      */
     public array $bindings = [
         // Services principais
-        ArticleGenerationService::class => ArticleGenerationService::class,
         ArticleGenerationService::class => ArticleGenerationService::class,
         ClaudeRefinementService::class => ClaudeRefinementService::class,
         TestArticleService::class => TestArticleService::class,
@@ -50,9 +49,9 @@ class TireCalibrationServiceProvider extends ServiceProvider
      */
     public array $singletons = [
         // Services como singletons para performance
-        'tire-calibration.article-service' => ArticleGenerationService::class,
-        'tire-calibration.claude-service' => ClaudeRefinementService::class,
-        'tire-calibration.test-service' => TestArticleService::class,
+        'ideal-pressure.article-service' => ArticleGenerationService::class,
+        'ideal-pressure.claude-service' => ClaudeRefinementService::class,
+        'ideal-pressure.test-service' => TestArticleService::class,
     ];
 
     /**
@@ -100,20 +99,20 @@ class TireCalibrationServiceProvider extends ServiceProvider
         $defaultConfig = [
             // Configurações da Claude API
             'claude' => [
-                'model' => env('TIRE_CALIBRATION_CLAUDE_MODEL', 'claude-3-7-sonnet-20250219'),
-                'timeout' => (int) env('TIRE_CALIBRATION_CLAUDE_TIMEOUT', 90),
-                'max_retries' => (int) env('TIRE_CALIBRATION_CLAUDE_MAX_RETRIES', 3),
-                'rate_limit_delay' => (int) env('TIRE_CALIBRATION_CLAUDE_DELAY', 3),
-                'max_tokens' => (int) env('TIRE_CALIBRATION_CLAUDE_MAX_TOKENS', 3000),
-                'temperature' => (float) env('TIRE_CALIBRATION_CLAUDE_TEMPERATURE', 0.2),
+                'model' => env('IDEAL_PRESSURE_CLAUDE_MODEL', 'claude-3-7-sonnet-20250219'),
+                'timeout' => (int) env('IDEAL_PRESSURE_CLAUDE_TIMEOUT', 90),
+                'max_retries' => (int) env('IDEAL_PRESSURE_CLAUDE_MAX_RETRIES', 3),
+                'rate_limit_delay' => (int) env('IDEAL_PRESSURE_CLAUDE_DELAY', 3),
+                'max_tokens' => (int) env('IDEAL_PRESSURE_CLAUDE_MAX_TOKENS', 3000),
+                'temperature' => (float) env('IDEAL_PRESSURE_CLAUDE_TEMPERATURE', 0.2),
             ],
 
             // Configurações de Geração de Artigos
             'article' => [
-                'min_quality_score' => (int) env('TIRE_CALIBRATION_MIN_QUALITY', 70),
-                'max_word_count' => (int) env('TIRE_CALIBRATION_MAX_WORDS', 3000),
-                'min_word_count' => (int) env('TIRE_CALIBRATION_MIN_WORDS', 800),
-                'templates_enabled' => env('TIRE_CALIBRATION_TEMPLATES_ENABLED', true),
+                'min_quality_score' => (int) env('IDEAL_PRESSURE_MIN_QUALITY', 70),
+                'max_word_count' => (int) env('IDEAL_PRESSURE_MAX_WORDS', 3000),
+                'min_word_count' => (int) env('IDEAL_PRESSURE_MIN_WORDS', 800),
+                'templates_enabled' => env('IDEAL_PRESSURE_TEMPLATES_ENABLED', true),
                 'valid_categories' => [
                     'sedan',
                     'suv',
@@ -140,68 +139,68 @@ class TireCalibrationServiceProvider extends ServiceProvider
 
             // Configurações de Processamento
             'processing' => [
-                'batch_size' => (int) env('TIRE_CALIBRATION_BATCH_SIZE', 50),
-                'max_concurrent_claude' => (int) env('TIRE_CALIBRATION_MAX_CONCURRENT', 5),
-                'error_threshold' => (int) env('TIRE_CALIBRATION_ERROR_THRESHOLD', 10),
-                'single_article_timeout' => (int) env('TIRE_CALIBRATION_ARTICLE_TIMEOUT', 120),
-                'parallel_processing' => env('TIRE_CALIBRATION_PARALLEL', false),
-                'max_memory_per_worker' => (int) env('TIRE_CALIBRATION_MAX_MEMORY', 256),
+                'batch_size' => (int) env('IDEAL_PRESSURE_BATCH_SIZE', 50),
+                'max_concurrent_claude' => (int) env('IDEAL_PRESSURE_MAX_CONCURRENT', 5),
+                'error_threshold' => (int) env('IDEAL_PRESSURE_ERROR_THRESHOLD', 10),
+                'single_article_timeout' => (int) env('IDEAL_PRESSURE_ARTICLE_TIMEOUT', 120),
+                'parallel_processing' => env('IDEAL_PRESSURE_PARALLEL', false),
+                'max_memory_per_worker' => (int) env('IDEAL_PRESSURE_MAX_MEMORY', 256),
             ],
 
             // Configurações de Scheduling
             'scheduling' => [
-                'enabled' => env('TIRE_CALIBRATION_SCHEDULING_ENABLED', false),
-                'article_generation_time' => env('TIRE_CALIBRATION_SCHEDULE_ARTICLES', '02:00'),
-                'claude_refinement_time' => env('TIRE_CALIBRATION_SCHEDULE_CLAUDE', '03:30'),
-                'auto_generation_limit' => (int) env('TIRE_CALIBRATION_AUTO_GEN_LIMIT', 100),
-                'auto_refinement_limit' => (int) env('TIRE_CALIBRATION_AUTO_REF_LIMIT', 20),
-                'auto_refinement_delay' => (int) env('TIRE_CALIBRATION_AUTO_DELAY', 5),
+                'enabled' => env('IDEAL_PRESSURE_SCHEDULING_ENABLED', false),
+                'article_generation_time' => env('IDEAL_PRESSURE_SCHEDULE_ARTICLES', '02:00'),
+                'claude_refinement_time' => env('IDEAL_PRESSURE_SCHEDULE_CLAUDE', '03:30'),
+                'auto_generation_limit' => (int) env('IDEAL_PRESSURE_AUTO_GEN_LIMIT', 100),
+                'auto_refinement_limit' => (int) env('IDEAL_PRESSURE_AUTO_REF_LIMIT', 20),
+                'auto_refinement_delay' => (int) env('IDEAL_PRESSURE_AUTO_DELAY', 5),
                 'allowed_environments' => ['production', 'staging'],
-                'weekly_stats' => env('TIRE_CALIBRATION_WEEKLY_STATS', true),
+                'weekly_stats' => env('IDEAL_PRESSURE_WEEKLY_STATS', true),
             ],
 
             // Configurações de Monitoramento
             'monitoring' => [
-                'detailed_logging' => env('TIRE_CALIBRATION_DETAILED_LOGS', false),
-                'stats_retention' => (int) env('TIRE_CALIBRATION_STATS_RETENTION', 90),
-                'alert_errors' => env('TIRE_CALIBRATION_ALERT_ERRORS', true),
-                'alert_error_threshold' => (int) env('TIRE_CALIBRATION_ALERT_THRESHOLD', 15),
-                'performance_metrics' => env('TIRE_CALIBRATION_PERFORMANCE_METRICS', true),
-                'claude_api_tracking' => env('TIRE_CALIBRATION_CLAUDE_TRACKING', true),
-                'log_channel' => env('TIRE_CALIBRATION_LOG_CHANNEL', null),
+                'detailed_logging' => env('IDEAL_PRESSURE_DETAILED_LOGS', false),
+                'stats_retention' => (int) env('IDEAL_PRESSURE_STATS_RETENTION', 90),
+                'alert_errors' => env('IDEAL_PRESSURE_ALERT_ERRORS', true),
+                'alert_error_threshold' => (int) env('IDEAL_PRESSURE_ALERT_THRESHOLD', 15),
+                'performance_metrics' => env('IDEAL_PRESSURE_PERFORMANCE_METRICS', true),
+                'claude_api_tracking' => env('IDEAL_PRESSURE_CLAUDE_TRACKING', true),
+                'log_channel' => env('IDEAL_PRESSURE_LOG_CHANNEL', null),
             ],
 
             // Configurações de Limpeza
             'cleanup' => [
-                'enabled' => env('TIRE_CALIBRATION_CLEANUP_ENABLED', false),
-                'retention_days' => (int) env('TIRE_CALIBRATION_RETENTION_DAYS', 90),
-                'compress_old_data' => env('TIRE_CALIBRATION_COMPRESS_OLD', false),
-                'max_history_records' => (int) env('TIRE_CALIBRATION_MAX_HISTORY', 10),
+                'enabled' => env('IDEAL_PRESSURE_CLEANUP_ENABLED', false),
+                'retention_days' => (int) env('IDEAL_PRESSURE_RETENTION_DAYS', 90),
+                'compress_old_data' => env('IDEAL_PRESSURE_COMPRESS_OLD', false),
+                'max_history_records' => (int) env('IDEAL_PRESSURE_MAX_HISTORY', 10),
             ],
 
             // Configurações de Desenvolvimento
             'development' => [
-                'enable_test_articles' => env('TIRE_CALIBRATION_TEST_ARTICLES', true),
-                'default_dry_run' => env('TIRE_CALIBRATION_DEFAULT_DRY_RUN', false),
-                'debug_traces' => env('TIRE_CALIBRATION_DEBUG_TRACES', false),
-                'save_claude_debug' => env('TIRE_CALIBRATION_CLAUDE_DEBUG', false),
-                'debug_storage_path' => env('TIRE_CALIBRATION_DEBUG_PATH', 'tire-calibration-debug'),
+                'enable_test_articles' => env('IDEAL_PRESSURE_TEST_ARTICLES', true),
+                'default_dry_run' => env('IDEAL_PRESSURE_DEFAULT_DRY_RUN', false),
+                'debug_traces' => env('IDEAL_PRESSURE_DEBUG_TRACES', false),
+                'save_claude_debug' => env('IDEAL_PRESSURE_CLAUDE_DEBUG', false),
+                'debug_storage_path' => env('IDEAL_PRESSURE_DEBUG_PATH', 'ideal-pressure-debug'),
             ],
 
             // Configurações de SEO
             'seo' => [
-                'max_title_length' => (int) env('TIRE_CALIBRATION_MAX_TITLE', 65),
-                'max_description_length' => (int) env('TIRE_CALIBRATION_MAX_DESC', 165),
-                'max_secondary_keywords' => (int) env('TIRE_CALIBRATION_MAX_KEYWORDS', 8),
-                'auto_optimize_meta' => env('TIRE_CALIBRATION_AUTO_META', true),
-                'keyword_density_analysis' => env('TIRE_CALIBRATION_KEYWORD_ANALYSIS', false),
+                'max_title_length' => (int) env('IDEAL_PRESSURE_MAX_TITLE', 65),
+                'max_description_length' => (int) env('IDEAL_PRESSURE_MAX_DESC', 165),
+                'max_secondary_keywords' => (int) env('IDEAL_PRESSURE_MAX_KEYWORDS', 8),
+                'auto_optimize_meta' => env('IDEAL_PRESSURE_AUTO_META', true),
+                'keyword_density_analysis' => env('IDEAL_PRESSURE_KEYWORD_ANALYSIS', false),
             ],
 
             // Configurações de Cache
             'cache' => [
-                'claude_results' => env('TIRE_CALIBRATION_CACHE_CLAUDE', false),
-                'article_cache_ttl' => (int) env('TIRE_CALIBRATION_CACHE_TTL', 1440),
-                'cache_driver' => env('TIRE_CALIBRATION_CACHE_DRIVER', 'redis'),
+                'claude_results' => env('IDEAL_PRESSURE_CACHE_CLAUDE', false),
+                'article_cache_ttl' => (int) env('IDEAL_PRESSURE_CACHE_TTL', 1440),
+                'cache_driver' => env('IDEAL_PRESSURE_CACHE_DRIVER', 'redis'),
                 'cache_prefix' => 'tire_calibration:',
             ],
         ];
@@ -210,7 +209,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
         config(['tire_calibration' => $defaultConfig]);
 
         // Configurações específicas para fácil acesso
-        $this->app->singleton('tire-calibration.config', function () use ($defaultConfig) {
+        $this->app->singleton('ideal-pressure.config', function () use ($defaultConfig) {
             return [
                 'claude_api' => [
                     'api_key' => config('services.anthropic.api_key'),
@@ -264,9 +263,9 @@ class TireCalibrationServiceProvider extends ServiceProvider
      */
     private function registerAliases(): void
     {
-        $this->app->alias(ArticleGenerationService::class, 'tire-calibration.article-generator');
-        $this->app->alias(ClaudeRefinementService::class, 'tire-calibration.claude-refiner');
-        $this->app->alias(TestArticleService::class, 'tire-calibration.test-generator');
+        $this->app->alias(ArticleGenerationService::class, 'ideal-pressure.article-generator');
+        $this->app->alias(ClaudeRefinementService::class, 'ideal-pressure.claude-refiner');
+        $this->app->alias(TestArticleService::class, 'ideal-pressure.test-generator');
     }
 
     /**
@@ -276,8 +275,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-
-                CopyCalibrationArticlesCommand::class,
+                CopyIdealPressureArticlesCommand::class,
 
                 // Commands principais do workflow
                 GenerateArticlesPhase1Command::class,  // FASE 1+2: VehicleData → JSON estruturado
@@ -285,7 +283,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
 
                 // Commands auxiliares
                 GenerateTestArticlesCommand::class,    // Desenvolvimento e testes
-                TireCalibrationStatsCommand::class,    // Monitoramento e estatísticas
+                IdealPressureStatsCommand::class,    // Monitoramento e estatísticas
             ]);
         }
     }
@@ -307,29 +305,29 @@ class TireCalibrationServiceProvider extends ServiceProvider
             }
 
             // FASE 1+2: Executar geração de artigos diariamente às 02:00
-            $schedule->command('tire-calibration:generate-articles --limit=100')
+            $schedule->command('ideal-pressure:generate-articles --limit=100')
                 ->dailyAt('02:00')
                 ->environments(['production', 'staging'])
                 ->onSuccess(function () {
-                    \Log::info('TireCalibration: Geração automática de artigos executada com sucesso');
+                    \Log::info('IdealPressure: Geração automática de artigos executada com sucesso');
                 })
                 ->onFailure(function () {
-                    \Log::error('TireCalibration: Falha na geração automática de artigos');
+                    \Log::error('IdealPressure: Falha na geração automática de artigos');
                 });
 
             // FASE 3: Executar refinamento via Claude às 03:30 (após geração)
-            $schedule->command('tire-calibration:refine-with-claude --limit=20 --delay=5')
+            $schedule->command('ideal-pressure:refine-with-claude --limit=20 --delay=5')
                 ->dailyAt('03:30')
                 ->environments(['production'])
                 ->onSuccess(function () {
-                    \Log::info('TireCalibration: Refinamento automático via Claude executado com sucesso');
+                    \Log::info('IdealPressure: Refinamento automático via Claude executado com sucesso');
                 })
                 ->onFailure(function () {
-                    \Log::error('TireCalibration: Falha no refinamento automático via Claude');
+                    \Log::error('IdealPressure: Falha no refinamento automático via Claude');
                 });
 
             // Estatísticas semanais para monitoramento
-            $schedule->command('tire-calibration:stats --export=json --output-file=weekly_stats')
+            $schedule->command('ideal-pressure:stats --export=json --output-file=weekly_stats')
                 ->weekly()
                 ->mondays()
                 ->at('06:00')
@@ -367,8 +365,8 @@ class TireCalibrationServiceProvider extends ServiceProvider
         // Exemplo: listener para falhas na Claude API
 
         /*
-        Event::listen('tire-calibration.claude-api-failed', function ($event) {
-            Log::error('TireCalibration: Claude API failure', [
+        Event::listen('ideal-pressure.claude-api-failed', function ($event) {
+            Log::error('IdealPressure: Claude API failure', [
                 'tire_calibration_id' => $event->tireCalibrationId,
                 'error' => $event->error,
                 'retry_count' => $event->retryCount
@@ -397,7 +395,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
         $cutoffDate = now()->subDays($retentionDays);
 
         try {
-            // Limpar logs de processamento antigos dos registros TireCalibration
+            // Limpar logs de processamento antigos dos registros IdealPressure
             \DB::collection('tire_calibrations')->where('updated_at', '<', $cutoffDate)->update([
                 '$unset' => [
                     'processing_history' => '',
@@ -405,12 +403,12 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 ]
             ]);
 
-            \Log::info('TireCalibration: Limpeza de logs antigos executada', [
+            \Log::info('IdealPressure: Limpeza de logs antigos executada', [
                 'retention_days' => $retentionDays,
                 'cutoff_date' => $cutoffDate->toISOString()
             ]);
         } catch (\Exception $e) {
-            \Log::error('TireCalibration: Erro na limpeza de logs antigos', [
+            \Log::error('IdealPressure: Erro na limpeza de logs antigos', [
                 'error' => $e->getMessage()
             ]);
         }
@@ -428,17 +426,17 @@ class TireCalibrationServiceProvider extends ServiceProvider
             TestArticleService::class,
 
             // Aliases
-            'tire-calibration.article-generator',
-            'tire-calibration.claude-refiner',
-            'tire-calibration.test-generator',
-            'tire-calibration.config',
+            'ideal-pressure.article-generator',
+            'ideal-pressure.claude-refiner',
+            'ideal-pressure.test-generator',
+            'ideal-pressure.config',
 
             // Commands
-            CopyCalibrationArticlesCommand::class,
+            CopyIdealPressureArticlesCommand::class,
             GenerateArticlesPhase1Command::class,
             RefineWithClaudeCommand::class,
             GenerateTestArticlesCommand::class,
-            TireCalibrationStatsCommand::class,
+            IdealPressureStatsCommand::class,
         ];
     }
 
@@ -453,7 +451,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
             $testService = $this->app->make(TestArticleService::class);
 
             return [
-                'module' => 'TireCalibration',
+                'module' => 'IdealPressure',
                 'status' => 'healthy',
                 'services' => [
                     'article_generation' => $articleService ? 'registered' : 'missing',
@@ -467,7 +465,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
             ];
         } catch (\Exception $e) {
             return [
-                'module' => 'TireCalibration',
+                'module' => 'IdealPressure',
                 'status' => 'unhealthy',
                 'error' => $e->getMessage(),
                 'checked_at' => now()->toISOString()

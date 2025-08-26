@@ -1,0 +1,94 @@
+{
+  "make": "BYD",
+  "model": "Song Plus",
+  "year": 2023,
+  "tire_size": "225/55 R18",
+  "main_category": "suv_electric",
+  "vehicle_segment": "C",
+  "vehicle_type": "car",
+  "pressure_specifications": {
+    "pressure_empty_front": 35,
+    "pressure_empty_rear": 35,
+    "pressure_light_front": 36,
+    "pressure_light_rear": 36,
+    "pressure_max_front": 38,
+    "pressure_max_rear": 38,
+    "pressure_spare": 42,
+    "pressure_display": "Dianteiros: 36 PSI / Traseiros: 36 PSI",
+    "empty_pressure_display": "35/35 PSI",
+    "loaded_pressure_display": "38/38 PSI"
+  },
+  "tire_specifications": {
+    "tire_size": "225/55 R18",
+    "recommended_brands": [],
+    "seasonal_recommendations": []
+  },
+  "vehicle_features": {
+    "vehicle_full_name": "BYD Song Plus 2023",
+    "url_slug": "byd-song-plus-2023",
+    "category_normalized": "Suv_electric",
+    "recommended_oil": "Não usa óleo motor"
+  },
+  "is_premium": true,
+  "has_tpms": true,
+  "is_motorcycle": false,
+  "is_electric": false,
+  "is_hybrid": false,
+  "validation_status": "pending",
+  "extracted_at": "2025-08-03T19:47:50.965000Z",
+  "source_articles": [
+    {
+      "article_id": "687ee838754ded715709f359",
+      "extracted_at": "2025-08-03T19:47:50.965860Z"
+    },
+    {
+      "article_id": "687ee83e754ded715709f71e",
+      "template_type": "calibration",
+      "extracted_at": "2025-08-03T19:47:53.562566Z"
+    }
+  ],
+  "updated_at": "2025-08-23T18:13:16.089000Z",
+  "created_at": "2025-08-03T19:47:50.966000Z",
+  "data_quality_score": 10,
+  "dimensions": {
+    "length": "4705mm",
+    "width": "1890mm",
+    "height": "1680mm",
+    "wheelbase": "2765mm",
+    "weight": "1930kg"
+  },
+  "engine_data": {
+    "engine_type": "Motor elétrico",
+    "displacement": "N/A",
+    "horsepower": "204 cv",
+    "torque": "31.6 kgfm",
+    "fuel_type": "Elétrico"
+  },
+  "fuel_data": {
+    "consumption_city": "N/A",
+    "consumption_highway": "N/A",
+    "fuel_tank_capacity": "N/A",
+    "autonomy": "400 km (NEDC)"
+  },
+  "market_data": {
+    "price_range": "R$ 269.800 - 289.800",
+    "launch_year": "2023",
+    "main_competitors": [
+      "Tesla Model Y",
+      "Volvo XC40 Recharge",
+      "Volkswagen ID.4"
+    ]
+  },
+  "technical_specs": {
+    "max_load": "400kg",
+    "suspension_front": "McPherson",
+    "suspension_rear": "Multilink",
+    "brakes_front": "Disco ventilado",
+    "brakes_rear": "Disco"
+  },
+  "transmission_data": {
+    "type": "Automático",
+    "gears": "Redução única"
+  },
+  "id": "688fbce6b9d42e84bf01f2c9"
+}

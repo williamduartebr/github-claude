@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\ContentGeneration\TireCalibration\Domain\Entities;
+namespace Src\ContentGeneration\IdealPressure\Domain\Entities;
 
 use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,7 +8,7 @@ use Src\VehicleData\Domain\Entities\VehicleData;
 use Carbon\Carbon;
 
 /**
- * TireCalibration Model - CORRIGIDO para alinhar com migration
+ * IdealPressure Model - CORRIGIDO para alinhar com migration
  * 
  * FASE 1+2: Mapeamento e Geração de artigos
  * FASE 3: Refinamento via Claude API
@@ -37,12 +37,12 @@ use Carbon\Carbon;
  * @property float $content_quality_score
  * @property float $seo_score
  */
-class TireCalibration extends Model
+class IdealPressure extends Model
 {
     use HasFactory;
 
     protected $connection = 'mongodb';
-    protected $table = 'tire_calibrations';
+    protected $table = 'ideal_pressures';
     protected $guarded = ['_id'];
 
     /**
