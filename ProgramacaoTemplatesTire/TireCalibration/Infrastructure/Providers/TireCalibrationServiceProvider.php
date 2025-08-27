@@ -2,6 +2,7 @@
 
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
 
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TestArticleGenerationCommand;
 use Illuminate\Support\ServiceProvider;
 
 use Illuminate\Support\Facades\Schedule;
@@ -12,7 +13,7 @@ use Src\ContentGeneration\TireCalibration\Application\Services\ArticleGeneration
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudeCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateTestArticlesCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TireCalibrationStatsCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateArticlesPhase1Command;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateArticlesPhase2Command;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\CopyCalibrationArticlesCommand;
 
 /**
@@ -280,7 +281,8 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 CopyCalibrationArticlesCommand::class,
 
                 // Commands principais do workflow
-                GenerateArticlesPhase1Command::class,  // FASE 1+2: VehicleData → JSON estruturado
+                GenerateArticlesPhase2Command::class,  // FASE 1+2: VehicleData → JSON estruturado
+                TestArticleGenerationCommand::class,
                 RefineWithClaudeCommand::class,        // FASE 3: Refinamento via Claude
 
                 // Commands auxiliares
@@ -435,7 +437,8 @@ class TireCalibrationServiceProvider extends ServiceProvider
 
             // Commands
             CopyCalibrationArticlesCommand::class,
-            GenerateArticlesPhase1Command::class,
+            GenerateArticlesPhase2Command::class,
+            TestArticleGenerationCommand::class,
             RefineWithClaudeCommand::class,
             GenerateTestArticlesCommand::class,
             TireCalibrationStatsCommand::class,
