@@ -636,7 +636,7 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
                 <ul style="list-style: none; padding: 0; margin: 8px 0 0;">
                     @foreach($equipment['tips'] as $tip)
                     <li style="font-size: 11px; color: #6b7280; margin-bottom: 2px; padding-left: 12px; position: relative;">
-                        <span style="position: absolute; left: 0;">🏍️</span>{{ $tip }}
+                        <span style="position: absolute; left: -0.7em;">🏍️</span>{{ $tip }}
                     </li>
                     @endforeach
                 </ul>

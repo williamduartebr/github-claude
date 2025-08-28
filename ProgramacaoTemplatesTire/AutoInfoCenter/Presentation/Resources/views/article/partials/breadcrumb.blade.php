@@ -5,13 +5,14 @@
             <ol class="list-none p-0 inline-flex" itemscope itemtype="https://schema.org/BreadcrumbList">
                 @foreach ($article->breadcrumbs as $breadcrumb)
                     <li class="flex items-center" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        @if (isset($breadcrumb['url']) && $breadcrumb['position'] !== 4)
+                        @if (!$loop->last && !empty($breadcrumb['url']))
+                            {{-- Links para todos exceto o último --}}
                             <a href="{{ $breadcrumb['url'] }}" class="text-blue-600 hover:underline" itemprop="item">
                                 <span itemprop="name">{{ $breadcrumb['name'] }}</span>
                             </a>
                         @else
-                            <!-- Para o último item (posição 4) ou sem URL -->
-                            <div itemprop="item" itemid="{{ $breadcrumb['url'] ?? '#' . Str::slug($breadcrumb['name']) }}">
+                            {{-- Último item ou sem URL - usa URL válida --}}
+                            <div itemprop="item" itemid="{{ $breadcrumb['url'] ?? request()->url() }}">
                                 <span class="text-gray-700" itemprop="name">{{ $breadcrumb['name'] }}</span>
                             </div>
                         @endif

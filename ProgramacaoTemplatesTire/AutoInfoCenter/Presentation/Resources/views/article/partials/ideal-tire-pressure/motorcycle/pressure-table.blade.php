@@ -8,9 +8,13 @@ Focado nas características específicas de duas rodas
 $pressureTable = $article->getData()['pressure_table'] ?? [];
 $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
+
+$officialPressures = $pressureTable['official_pressures'] ?? [];
+$conditionalAdjustments = $pressureTable['conditional_adjustments'] ?? [];
+$specialConditions = $pressureTable['special_conditions'] ?? [];
 @endphp
 
-@if(!empty($pressureTable) || !empty($pressureSpecs))
+@if(!empty($officialPressures) || !empty($pressureSpecs) || !empty($specialConditions))
 <section class="mb-12" id="pressure-table">
     <div class="bg-gradient-to-r from-[#DC2626] to-red-700 text-white rounded-t-lg p-6">
         <div class="flex items-center">
@@ -53,109 +57,132 @@ $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    <!-- Piloto Solo -->
-                    <tr class="hover:bg-green-50 transition-colors duration-200">
-                        <td class="py-6 px-6">
-                            <div class="flex items-center">
-                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                                    <span class="text-2xl">🏍️</span>
+                    <!-- Pressões Oficiais -->
+                    @foreach($officialPressures as $condition => $pressureData)
+                        @if($pressureData['condition'] === 'piloto_solo')
+                        <tr class="hover:bg-green-50 transition-colors duration-200">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                        <span class="text-2xl">🏍️</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Piloto Solo</h3>
+                                        <p class="text-sm text-gray-600">Uso urbano e rodoviário normal</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-gray-900">Piloto Solo</h3>
-                                    <p class="text-sm text-gray-600">Uso urbano e rodoviário normal</p>
+                            </td>
+                            <td class="py-6 px-4 text-center">
+                                <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
+                                    {{ $pressureData['front'] }}
                                 </div>
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <div
-                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
-                                {{ $pressureSpecs['front_solo'] ?? $pressureTable['solo']['front'] ?? 'Consulte manual'
-                                }}
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <div
-                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
-                                {{ $pressureSpecs['rear_solo'] ?? $pressureTable['solo']['rear'] ?? 'Consulte manual' }}
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <span
-                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
-                                Configuração padrão
-                            </span>
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="py-6 px-4 text-center">
+                                <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-green-100 text-green-800">
+                                    {{ $pressureData['rear'] }}
+                                </div>
+                            </td>
+                            <td class="py-6 px-4">
+                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800 mb-1 block">
+                                    Configuração padrão
+                                </span>
+                                @if(!empty($pressureData['observation']))
+                                    <p class="text-xs text-gray-600">{{ $pressureData['observation'] }}</p>
+                                @endif
+                            </td>
+                        </tr>
+                        @endif
 
-                    <!-- Com Garupa -->
-                    <tr class="hover:bg-blue-50 transition-colors duration-200 bg-blue-25">
-                        <td class="py-6 px-6">
-                            <div class="flex items-center">
-                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                                    <span class="text-2xl">👥</span>
+                        @if($pressureData['condition'] === 'piloto_garupa')
+                        <tr class="hover:bg-blue-50 transition-colors duration-200 bg-blue-25">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                        <span class="text-2xl">👥</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Com Garupa</h3>
+                                        <p class="text-sm text-gray-600">Dois ocupantes + possível bagagem</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-gray-900">Com Garupa</h3>
-                                    <p class="text-sm text-gray-600">Dois ocupantes + possível bagagem</p>
+                            </td>
+                            <td class="py-6 px-4 text-center">
+                                <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
+                                    {{ $pressureData['front'] }}
                                 </div>
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <div
-                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
-                                {{ $pressureSpecs['front_passenger'] ?? $pressureTable['passenger']['front'] ??
-                                'Consulte manual' }}
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <div
-                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
-                                {{ $pressureSpecs['rear_passenger'] ?? $pressureTable['passenger']['rear'] ?? 'Consulte
-                                manual' }}
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <span
-                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
-                                Pressão elevada no traseiro
-                            </span>
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="py-6 px-4 text-center">
+                                <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-blue-100 text-blue-800">
+                                    {{ $pressureData['rear'] }}
+                                </div>
+                            </td>
+                            <td class="py-6 px-4">
+                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800 mb-1 ">
+                                    Pressão elevada no traseiro
+                                </span>
+                                @if(!empty($pressureData['observation']))
+                                    <p class="text-xs text-gray-600">{{ $pressureData['observation'] }}</p>
+                                @endif
+                            </td>
+                        </tr>
+                        @endif
+                    @endforeach
 
-                    <!-- Viagem Longa (se aplicável) -->
-                    @if(!empty($pressureTable['long_trip']))
-                    <tr class="hover:bg-orange-50 transition-colors duration-200">
-                        <td class="py-6 px-6">
-                            <div class="flex items-center">
-                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
-                                    <span class="text-2xl">🛣️</span>
+                    <!-- Condições Especiais -->
+                    @foreach($specialConditions as $condition)
+                        @php
+                            $iconMap = [
+                                'home' => '🏠',
+                                'map' => '🗺️',
+                                'user' => '👤',
+                                'package' => '📦',
+                                'cloud-rain' => '🌧️'
+                            ];
+                            $icon = $iconMap[$condition['icon_class'] ?? 'gear'] ?? '⚙️';
+                            
+                            $colorClasses = [
+                                'home' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'hover' => 'hover:bg-gray-50'],
+                                'map' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-800', 'hover' => 'hover:bg-purple-50'],
+                                'user' => ['bg' => 'bg-indigo-100', 'text' => 'text-indigo-800', 'hover' => 'hover:bg-indigo-50'],
+                                'package' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-800', 'hover' => 'hover:bg-orange-50'],
+                                'cloud-rain' => ['bg' => 'bg-cyan-100', 'text' => 'text-cyan-800', 'hover' => 'hover:bg-cyan-50']
+                            ];
+                            $colors = $colorClasses[$condition['icon_class'] ?? 'gear'] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'hover' => 'hover:bg-gray-50'];
+                        @endphp
+                        <tr class="{{ $colors['hover'] }} transition-colors duration-200">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 {{ $colors['bg'] }} rounded-lg flex items-center justify-center mr-4">
+                                        <span class="text-2xl">{{ $icon }}</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">{{ $condition['situation'] }}</h3>
+                                        <p class="text-sm text-gray-600">{{ $condition['terrain'] }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-gray-900">Viagem Longa</h3>
-                                    <p class="text-sm text-gray-600">Touring com bagagem completa</p>
+                            </td>
+                            <td class="py-6 px-4 text-center">
+                                <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold {{ $colors['bg'] }} {{ $colors['text'] }}">
+                                    {{ $condition['front_pressure'] }}
                                 </div>
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <div
-                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-orange-100 text-orange-800">
-                                {{ $pressureTable['long_trip']['front'] ?? 'N/A' }}
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <div
-                                class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold bg-orange-100 text-orange-800">
-                                {{ $pressureTable['long_trip']['rear'] ?? 'N/A' }}
-                            </div>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            <span
-                                class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
-                                Máximo recomendado
-                            </span>
-                        </td>
-                    </tr>
-                    @endif
+                            </td>
+                            <td class="py-6 px-4 text-center">
+                                <div class="inline-flex items-center px-4 py-2 rounded-full text-lg font-bold {{ $colors['bg'] }} {{ $colors['text'] }}">
+                                    {{ $condition['rear_pressure'] }}
+                                </div>
+                            </td>
+                            <td class="py-6 px-4">
+                                @if(!empty($condition['ideal_temperature']))
+                                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium {{ $colors['bg'] }} {{ $colors['text'] }} mb-1 block">
+                                        {{ $condition['ideal_temperature'] }}
+                                    </span>
+                                @endif
+                                @if(!empty($condition['observation']))
+                                    <p class="text-xs text-gray-600">{{ $condition['observation'] }}</p>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -172,18 +199,15 @@ $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
                     <div class="space-y-3 text-sm text-gray-700">
                         <div class="flex items-start">
                             <div class="w-1 h-1 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                            <span><strong>Centro de gravidade:</strong> O garupa altera drasticamente o equilíbrio da
-                                moto</span>
+                            <span><strong>Centro de gravidade:</strong> O garupa altera drasticamente o equilíbrio da moto</span>
                         </div>
                         <div class="flex items-start">
                             <div class="w-1 h-1 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                            <span><strong>Distribuição de peso:</strong> Mais peso no traseiro exige maior
-                                pressão</span>
+                            <span><strong>Distribuição de peso:</strong> Mais peso no traseiro exige maior pressão</span>
                         </div>
                         <div class="flex items-start">
                             <div class="w-1 h-1 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                            <span><strong>Estabilidade:</strong> Pressões incorretas podem causar oscilações
-                                perigosas</span>
+                            <span><strong>Estabilidade:</strong> Pressões incorretas podem causar oscilações perigosas</span>
                         </div>
                     </div>
                 </div>

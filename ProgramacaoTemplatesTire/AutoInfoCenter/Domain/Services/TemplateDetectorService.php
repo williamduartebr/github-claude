@@ -23,6 +23,9 @@ class TemplateDetectorService
         'tire_pressure_guide_motorcycle' => 'tire_pressure_guide_motorcycle',
         'ideal_tire_pressure_car' => 'ideal_tire_pressure_car',
         'ideal_tire_pressure_motorcycle' => 'ideal_tire_pressure_motorcycle',
+        'tire_calibration_car' => 'tire_calibration_car',
+        'tire_calibration_motorcycle' => 'tire_calibration_motorcycle',
+        'tire_calibration_pickup' => 'tire_calibration_pickup',
 
         // 'tire_pressure' => 'tire_pressure',
         // 'air_filter' => 'air_filter',

@@ -1,5 +1,5 @@
 {{--
-Template AMP: ideal_tire_pressure_motorcycle.blade.php
+Template AMP: tire_calibration_motorcycle.blade.php
 VERSÃO FINAL CORRIGIDA - Com busca inteligente de dados
 --}}
 
@@ -260,7 +260,7 @@ h2{font-size:20px}
             </div>
             @endif
         </div>
-        @endif        
+        @endif
 
 
         <!-- TABELA DE PRESSÕES - VERSÃO FINAL LIMPA -->

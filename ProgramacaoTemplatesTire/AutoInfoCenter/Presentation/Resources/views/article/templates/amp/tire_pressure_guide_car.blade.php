@@ -170,9 +170,181 @@ p{margin-bottom:18px;line-height:1.7;font-size:16px}
 @media (max-width: 480px) {
     h1{font-size:24px}
     .section-title{font-size:18px}
-    .content-section{padding:20px}
+    .content-section{padding:16px}
     .car-pressure-table{font-size:11px}
     .alternative-brands{grid-template-columns:1fr}
+}
+
+/* ============================================
+   CSS RESPONSIVO PARA TABELA DE PRESSÕES
+   ============================================ */
+
+/* Container com scroll horizontal */
+.pressure-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 24px 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(14,54,138,0.1);
+    background: #ffffff;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+/* Scrollbar personalizada WebKit */
+.pressure-table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.pressure-table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.pressure-table-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.pressure-table-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Ajustes na tabela principal */
+.car-pressure-table {
+    min-width: 600px; /* Força scroll em telas menores */
+    white-space: nowrap;
+}
+
+.car-pressure-table th,
+.car-pressure-table td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Coluna de situação otimizada */
+.car-pressure-table td:first-child {
+    text-align: left;
+    min-width: 140px;
+    max-width: 160px;
+    white-space: normal;
+    line-height: 1.3;
+}
+
+/* Badges de pressão responsivos */
+.pressure-value {
+    min-width: 50px;
+    display: inline-block;
+}
+
+/* Indicador de scroll */
+.scroll-indicator {
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 8px;
+    padding: 8px;
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border-radius: 8px;
+    display: none;
+}
+
+/* BREAKPOINTS RESPONSIVOS */
+
+/* Tablets (768px e abaixo) */
+@media (max-width: 768px) {
+    .car-pressure-table {
+        min-width: 550px;
+        font-size: 13px;
+    }
+    
+    .car-pressure-table th,
+    .car-pressure-table td {
+        padding: 12px 8px;
+    }
+    
+    .pressure-value {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    
+    .car-pressure-table td:first-child {
+        min-width: 120px;
+        max-width: 140px;
+        font-size: 12px;
+    }
+    
+    .scroll-indicator {
+        display: block;
+    }
+}
+
+/* Mobile (480px e abaixo) */
+@media (max-width: 480px) {
+    .pressure-table-container {
+        margin: 0px;
+        border-radius: 0;
+        box-shadow: none;
+        border-top: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .car-pressure-table {
+        min-width: 520px;
+        font-size: 12px;
+    }
+    
+    .car-pressure-table th {
+        padding: 10px 6px;
+        font-size: 11px;
+    }
+    
+    .car-pressure-table td {
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+    
+    .car-pressure-table td:first-child {
+        min-width: 110px;
+        max-width: 130px;
+        font-size: 11px;
+    }
+    
+    .pressure-value {
+        font-size: 11px;
+        padding: 4px 8px;
+        min-width: 45px;
+    }
+    
+    .car-pressure-table td:last-child {
+        font-size: 11px;
+        max-width: 120px;
+    }
+}
+
+/* Mobile extra pequeno (360px e abaixo) */
+@media (max-width: 360px) {
+    .car-pressure-table {
+        min-width: 500px;
+    }
+    
+    .car-pressure-table th,
+    .car-pressure-table td {
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+    
+    .car-pressure-table td:first-child {
+        min-width: 100px;
+        max-width: 120px;
+        font-size: 10px;
+    }
+    
+    .pressure-value {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
 }
 </style>
 @endsection
@@ -213,12 +385,25 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
 
     <!-- INTRODUÇÃO -->
     @if(!empty($introduction))
-    <div style="margin-bottom: 40px; background: linear-gradient(135deg, #ffffff, #f8fafc); padding: 24px; border-radius: 16px; border: 2px solid #e0f2fe;">
-        <p style="font-size: 18px; color: #374151; line-height: 1.7; margin: 0; text-align: center;">
+    <div style="margin-bottom: 40px; padding: 24px; border-radius: 16px;">
+        <p style="font-size: 18px; color: #374151; line-height: 1.7; margin: 0;">
             {!! nl2br(e($introduction)) !!}
         </p>
     </div>
     @endif
+
+    <!-- ANÚNCIO 1 -->
+    <div class="ad-container">
+        <div class="ad-label">Publicidade</div>
+        <amp-ad width="100vw" height="320"
+            type="adsense"
+            data-ad-client="{{ config('services.google_adsense.id') }}"
+            data-ad-slot="1234567890"
+            data-auto-format="rspv"
+            data-full-width>
+            <div overflow></div>
+        </amp-ad>
+    </div>
 
     <!-- ESPECIFICAÇÕES TÉCNICAS DOS PNEUS -->
     @if(!empty($tireSpecs))
@@ -301,7 +486,7 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
     </div>
     @endif
 
-    <!-- TABELA DE PRESSÕES POR CONDIÇÃO -->
+    <!-- TABELA DE PRESSÕES POR CONDIÇÃO - VERSÃO RESPONSIVA -->
     @if(!empty($pressureTable['conditions']))
     <div class="content-section">
         <div class="section-header">
@@ -310,51 +495,57 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
         </div>
         <p style="color: #6b7280; margin-bottom: 24px; font-size: 16px;">{{ $pressureTable['description'] ?? '' }}</p>
 
-        <table class="car-pressure-table">
-            <thead>
-                <tr>
-                    <th>Situação de Uso</th>
-                    <th>Ocupantes</th>
-                    <th>Bagagem</th>
-                    <th>Dianteiro</th>
-                    <th>Traseiro</th>
-                    <th>Observação</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($pressureTable['conditions'] as $condition)
-                @php
-                $rowClass = '';
-                $situation = strtolower($condition['situation'] ?? '');
-                if (str_contains($situation, 'normal') || str_contains($situation, 'diário')) $rowClass = 'normal';
-                elseif (str_contains($situation, 'carga') || str_contains($situation, 'viagem')) $rowClass = 'load';
-                elseif (str_contains($situation, 'esportiv')) $rowClass = 'sport';
-                @endphp
-                <tr class="{{ $rowClass }}">
-                    <td style="font-weight: 600;">
-                        @switch($rowClass)
-                            @case('normal')
-                                🚗 {{ $condition['situation'] ?? '' }}
-                                @break
-                            @case('load')
-                                🧳 {{ $condition['situation'] ?? '' }}
-                                @break
-                            @case('sport')
-                                🏁 {{ $condition['situation'] ?? '' }}
-                                @break
-                            @default
-                                🚙 {{ $condition['situation'] ?? '' }}
-                        @endswitch
-                    </td>
-                    <td>{{ $condition['occupants'] ?? '' }}</td>
-                    <td>{{ $condition['luggage'] ?? '' }}</td>
-                    <td><span class="pressure-value front">{{ $condition['front_pressure'] ?? '' }}</span></td>
-                    <td><span class="pressure-value rear">{{ $condition['rear_pressure'] ?? '' }}</span></td>
-                    <td style="font-size: 13px;">{{ $condition['note'] ?? '' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="pressure-table-container">
+            <table class="car-pressure-table">
+                <thead>
+                    <tr>
+                        <th>Situação de Uso</th>
+                        <th>Ocupantes</th>
+                        <th>Bagagem</th>
+                        <th>Dianteiro</th>
+                        <th>Traseiro</th>
+                        <th>Observação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($pressureTable['conditions'] as $condition)
+                    @php
+                    $rowClass = '';
+                    $situation = strtolower($condition['situation'] ?? '');
+                    if (str_contains($situation, 'normal') || str_contains($situation, 'diário')) $rowClass = 'normal';
+                    elseif (str_contains($situation, 'carga') || str_contains($situation, 'viagem')) $rowClass = 'load';
+                    elseif (str_contains($situation, 'esportiv')) $rowClass = 'sport';
+                    @endphp
+                    <tr class="{{ $rowClass }}">
+                        <td style="font-weight: 600; text-align: left;">
+                            @switch($rowClass)
+                                @case('normal')
+                                    🚗 {{ $condition['situation'] ?? '' }}
+                                    @break
+                                @case('load')
+                                    🧳 {{ $condition['situation'] ?? '' }}
+                                    @break
+                                @case('sport')
+                                    🏁 {{ $condition['situation'] ?? '' }}
+                                    @break
+                                @default
+                                    🚙 {{ $condition['situation'] ?? '' }}
+                            @endswitch
+                        </td>
+                        <td>{{ $condition['occupants'] ?? '' }}</td>
+                        <td>{{ $condition['luggage'] ?? '' }}</td>
+                        <td><span class="pressure-value front">{{ $condition['front_pressure'] ?? '' }}</span></td>
+                        <td><span class="pressure-value rear">{{ $condition['rear_pressure'] ?? '' }}</span></td>
+                        <td style="font-size: 13px;">{{ $condition['note'] ?? '' }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scroll-indicator">
+            ← Deslize horizontalmente para ver todas as colunas →
+        </div>
     </div>
     @endif
 
@@ -388,6 +579,19 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
         </div>
     </div>
     @endif
+
+    <!-- ANÚNCIO 2 -->
+    <div class="ad-container">
+        <div class="ad-label">Publicidade</div>
+        <amp-ad width="100vw" height="320"
+            type="adsense"
+            data-ad-client="{{ config('services.google_adsense.id') }}"
+            data-ad-slot="2345678901"
+            data-auto-format="rspv"
+            data-full-width>
+            <div overflow></div>
+        </amp-ad>
+    </div>
 
     <!-- SISTEMA TPMS -->
     @if($hasTpms && !empty($tpmsSystem))
@@ -563,7 +767,7 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
                 <ul style="list-style: none; padding: 0; margin: 12px 0 0;">
                     @foreach($equipment['tips'] as $tip)
                     <li style="font-size: 13px; color: #6b7280; margin-bottom: 4px; padding-left: 16px; position: relative; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); padding: 8px 16px; border-radius: 8px; margin-bottom: 6px;">
-                        <span style="position: absolute; left: 8px;">💡</span>{{ $tip }}
+                        <span style="position: absolute; left: 0px;">💡</span>{{ $tip }}
                     </li>
                     @endforeach
                 </ul>
@@ -573,6 +777,20 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
         </div>
     </div>
     @endif
+
+
+    <!-- ANÚNCIO 3 -->
+    <div class="ad-container">
+        <div class="ad-label">Publicidade</div>
+        <amp-ad width="100vw" height="320"
+            type="adsense"
+            data-ad-client="{{ config('services.google_adsense.id') }}"
+            data-ad-slot="3456789012"
+            data-auto-format="rspv"
+            data-full-width>
+            <div overflow></div>
+        </amp-ad>
+    </div>
 
     <!-- ALERTAS CRÍTICOS DE SEGURANÇA -->
     @if(!empty($safetyAlerts['alerts']))
@@ -734,20 +952,14 @@ $isPremium = $vehicleInfo['is_premium'] ?? false;
                 @endif
                 <strong>Sistema TPMS:</strong> {{ $hasTpms ? 'Sim' : 'Não' }}<br>
                 <strong>Tipo:</strong> {{ $isElectric ? 'Elétrico' : ($isPremium ? 'Premium' : 'Convencional') }}<br>
-                <strong>Última atualização:</strong> {{ $article->getData()['formated_updated_at'] ?? '14 de agosto de 2025' }}
             </p>
         </div>
     </div>
 
-    <!-- FOOTER INFORMATIVO -->
-    <footer style="text-align: center; padding: 24px 0; border-top: 3px solid #e0f2fe; margin-top: 40px; background: linear-gradient(135deg, #f8fafc, #e2e8f0); border-radius: 16px;">
-        <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.6;">
-            🚗 Guia técnico baseado nas especificações oficiais do fabricante.<br>
-            Para dúvidas específicas, consulte sempre o manual do proprietário.
-        </p>
-        <p style="font-size: 12px; color: #9ca3af; margin: 12px 0 0;">
-            ⚡ Pressão correta = Economia + Segurança + Conforto
-        </p>
-    </footer>
+        <!-- Nota informativa -->
+    @include('auto-info-center::article.partials.info_note_manual')
+    
+    <!-- Footer do artigo -->
+    @include('auto-info-center::article.partials.article_footer')
 </div>
 @endsection 

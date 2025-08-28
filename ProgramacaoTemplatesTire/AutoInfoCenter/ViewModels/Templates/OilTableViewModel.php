@@ -128,7 +128,7 @@ class OilTableViewModel extends TemplateViewModel
             // Adiciona informações sobre a tabela como mentions (não mainEntity)
             if (!empty($content['tabela_oleo'])) {
                 $structuredData['mentions'] = [
-                    '@type' => 'Dataset',
+                    '@type' => 'Table',
                     'name' => 'Tabela de Especificações de Óleo',
                     'description' => 'Dados técnicos sobre óleo motor por geração e motorização',
                     'about' => [

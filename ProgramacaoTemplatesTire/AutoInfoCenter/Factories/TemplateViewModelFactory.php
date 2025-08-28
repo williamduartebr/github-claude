@@ -2,10 +2,6 @@
 
 namespace Src\AutoInfoCenter\Factories;
 
-use Src\AutoInfoCenter\ViewModels\Templates\IdealTirePressureMotorcycleViewModel;
-use Src\AutoInfoCenter\ViewModels\Templates\IdealTirePressureCarViewModel;
-use Src\AutoInfoCenter\ViewModels\Templates\TirePressureGuideMotorcycleViewModel;
-use Src\AutoInfoCenter\ViewModels\Templates\TirePressureGuideCarViewModel;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Src\AutoInfoCenter\Domain\Eloquent\Article;
@@ -15,10 +11,17 @@ use Src\AutoInfoCenter\ViewModels\Templates\GenericArticleViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\OilRecommendationViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\ReviewScheduleCarViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\WhenToChangeTiresViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\TireCalibrationCarViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\TireRecommendationViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\IdealTirePressureCarViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\ReviewScheduleHybridViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\TirePressureGuideCarViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\ReviewScheduleElectricViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\ReviewScheduleMotorcycleViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\TireCalibrationMotorcycleViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\IdealTirePressureMotorcycleViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\TireCalibrationPickupViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\TirePressureGuideMotorcycleViewModel;
 
 class TemplateViewModelFactory
 {
@@ -38,6 +41,9 @@ class TemplateViewModelFactory
         'tire_pressure_guide_motorcycle' => TirePressureGuideMotorcycleViewModel::class,
         'ideal_tire_pressure_car' => IdealTirePressureCarViewModel::class,
         'ideal_tire_pressure_motorcycle' => IdealTirePressureMotorcycleViewModel::class,
+        'tire_calibration_car' => TireCalibrationCarViewModel::class,
+        'tire_calibration_motorcycle' => TireCalibrationMotorcycleViewModel::class,
+        'tire_calibration_pickup' => TireCalibrationPickupViewModel::class,
 
         // Adicione mais mapeamentos conforme implementar novos ViewModels
     ];
