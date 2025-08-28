@@ -4,52 +4,34 @@ namespace Src\ContentGeneration\TireCalibration\Infrastructure\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
 use Src\ContentGeneration\TireCalibration\Application\Services\ArticleMappingService;
-use Carbon\Carbon;
 
 /**
- * GenerateArticlesPhase2Command - NOVA FASE 2: Mapear arquivos JSON físicos para artigos estruturados
+ * GenerateArticlesPhase2Command - CORREÇÃO FOCADA
  * 
- * Command refatorado para trabalhar com nova arquitetura:
- * - ENTRADA: TireCalibration com version="v2" + arquivos JSON em database/vehicle-data/
- * - PROCESSAMENTO: Mapear dados físicos para estrutura igual aos mocks/articles/
- * - SAÍDA: JSON estruturado salvo no campo generated_article
- * 
- * DIFERENÇA DA VERSÃO ANTERIOR:
- * - ANTES: Trabalhava com dados do MongoDB (enrichment_phase)
- * - AGORA: Trabalha com arquivos JSON físicos como fonte de verdade
- * 
- * USO:
- * php artisan tire-calibration:generate-articles-phase2
- * php artisan tire-calibration:generate-articles-phase2 --limit=10 --dry-run
- * php artisan tire-calibration:generate-articles-phase2 --make=Honda --force
+ * PROBLEMA IDENTIFICADO:
+ * - Dados já existem no TireCalibration (vehicle_basic_data, pressure_specifications, etc.)
+ * - Não precisa buscar arquivos externos
+ * - Só precisa mapear os dados existentes para estrutura de artigo
  * 
  * @author Claude Sonnet 4
- * @version 2.0 - Refatorado para arquivos JSON físicos
+ * @version 3.0 - Correção focada nos dados existentes
  */
 class GenerateArticlesPhase2Command extends Command
 {
-    /**
-     * The name and signature of the console command.
-     */
     protected $signature = 'tire-calibration:generate-articles-phase2
                             {--limit=50 : Número máximo de artigos a processar}
-                            {--make= : Filtrar por marca específica (Honda, Toyota, etc)}
-                            {--category= : Filtrar por categoria (sedan, suv, motorcycle, etc)}
-                            {--dry-run : Simular execução sem salvar no MongoDB}
-                            {--force : Reprocessar artigos que já têm generated_article}
-                            {--validate-files : Validar existência dos arquivos JSON antes de processar}';
+                            {--make= : Filtrar por marca específica}
+                            {--category= : Filtrar por categoria}
+                            {--dry-run : Simular execução sem salvar}
+                            {--force : Reprocessar artigos existentes}
+                            {--debug : Mostrar dados de debug}';
 
-    /**
-     * The console command description.
-     */
-    protected $description = 'FASE 2: Mapear arquivos JSON físicos (database/vehicle-data/) para artigos estruturados';
+    protected $description = 'FASE 2: Mapear dados existentes do TireCalibration para artigos estruturados';
 
     private ArticleMappingService $mappingService;
     
-    // Estatísticas de processamento
     private int $processedCount = 0;
     private int $successCount = 0;
     private int $errorCount = 0;
@@ -62,60 +44,50 @@ class GenerateArticlesPhase2Command extends Command
         $this->mappingService = $mappingService;
     }
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $startTime = microtime(true);
         
-        $this->info('🚀 GERANDO ARTIGOS - FASE 2 (Arquivos JSON → Artigos Estruturados)');
+        $this->info('🚀 GERANDO ARTIGOS - FASE 2 (Dados Existentes)');
         $this->info('📅 ' . now()->format('d/m/Y H:i:s'));
         $this->newLine();
 
         try {
-            // 1. Validar configurações
-            $config = $this->validateAndGetConfig();
+            $config = $this->getConfig();
             $this->displayConfig($config);
 
-            // 2. Validar arquivos se solicitado
-            if ($config['validate_files']) {
-                $this->validateVehicleDataFiles();
-            }
-
-            // 3. Buscar TireCalibration candidates (version="v2")
-            $candidates = $this->getCandidateCalibrations($config);
+            // Buscar registros que têm dados suficientes
+            $candidates = $this->getCandidates($config);
             
             if ($candidates->isEmpty()) {
-                $this->warn('❌ Nenhuma TireCalibration version="v2" encontrada com os critérios especificados.');
+                $this->warn('❌ Nenhum registro encontrado para processamento');
                 return self::SUCCESS;
             }
 
-            $this->info("📊 Encontradas {$candidates->count()} TireCalibration(s) version=\"v2\" para processamento");
+            $this->info("📊 Encontrados {$candidates->count()} registro(s) para processamento");
+            
+            if ($config['debug']) {
+                $this->showSampleData($candidates->first());
+            }
+
             $this->newLine();
 
-            // 4. Processar candidates
-            $results = $this->processCandidates($candidates, $config);
+            // Processar registros
+            $results = $this->processRecords($candidates, $config);
 
-            // 5. Exibir estatísticas finais
-            $this->displayFinalStats($startTime, $results);
+            // Mostrar resultados
+            $this->showResults($results, microtime(true) - $startTime);
 
             return self::SUCCESS;
 
         } catch (\Exception $e) {
-            $this->error('❌ ERRO FATAL: ' . $e->getMessage());
-            Log::error('GenerateArticlesPhase2Command: Erro fatal', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            $this->error('❌ ERRO: ' . $e->getMessage());
+            Log::error('GenerateArticlesPhase2Command: Erro', ['error' => $e->getMessage()]);
             return self::FAILURE;
         }
     }
 
-    /**
-     * Validar e obter configuração do comando
-     */
-    private function validateAndGetConfig(): array
+    private function getConfig(): array
     {
         return [
             'limit' => (int) $this->option('limit'),
@@ -123,158 +95,118 @@ class GenerateArticlesPhase2Command extends Command
             'category' => $this->option('category'),
             'dry_run' => $this->option('dry-run'),
             'force' => $this->option('force'),
-            'validate_files' => $this->option('validate-files'),
+            'debug' => $this->option('debug'),
         ];
     }
 
-    /**
-     * Exibir configuração do processamento
-     */
     private function displayConfig(array $config): void
     {
         $this->info('⚙️ CONFIGURAÇÃO:');
-        $this->line("   • 📊 Limite: {$config['limit']} registros");
-        $this->line("   • 🚗 Marca: " . ($config['make'] ?? 'Todas'));
-        $this->line("   • 🏷️ Categoria: " . ($config['category'] ?? 'Todas'));
-        $this->line("   • 🧪 Modo: " . ($config['dry_run'] ? '🔍 DRY-RUN (simulação)' : '💾 PRODUÇÃO'));
-        $this->line("   • 🔄 Reprocessar: " . ($config['force'] ? '✅ SIM' : '❌ NÃO'));
-        $this->line("   • 📁 Validar arquivos: " . ($config['validate_files'] ? '✅ SIM' : '❌ NÃO'));
+        $this->line("   • Limite: {$config['limit']}");
+        $this->line("   • Marca: " . ($config['make'] ?? 'Todas'));
+        $this->line("   • Categoria: " . ($config['category'] ?? 'Todas'));
+        $this->line("   • Modo: " . ($config['dry_run'] ? 'DRY-RUN' : 'PRODUÇÃO'));
+        $this->line("   • Reprocessar: " . ($config['force'] ? 'SIM' : 'NÃO'));
         $this->newLine();
     }
 
-    /**
-     * Validar existência dos arquivos JSON em database/vehicle-data/
-     */
-    private function validateVehicleDataFiles(): void
+    private function getCandidates(array $config)
     {
-        $this->info('📁 VALIDANDO ARQUIVOS JSON...');
-        
-        $basePath = database_path('vehicle-data');
-        if (!is_dir($basePath)) {
-            throw new \Exception("Diretório database/vehicle-data/ não encontrado");
-        }
+        $query = TireCalibration::whereNotNull('vehicle_make')
+            ->whereNotNull('vehicle_model')
+            ->where('version', 'v2')
+            ->where('enrichment_phase', TireCalibration::PHASE_PENDING);
 
-        $files = glob($basePath . '/*.json');
-        $this->line("   ✅ Encontrados " . count($files) . " arquivos JSON");
-        
-        // Validar alguns arquivos aleatórios
-        $sampleFiles = array_slice($files, 0, 3);
-        foreach ($sampleFiles as $file) {
-            $data = json_decode(file_get_contents($file), true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception("Arquivo JSON inválido: " . basename($file));
-            }
-        }
-        
-        $this->line("   ✅ Validação dos arquivos: OK");
-        $this->newLine();
-    }
-
-    /**
-     * Buscar TireCalibrations candidatas (version="v2" em PHASE_PENDING)
-     */
-    private function getCandidateCalibrations(array $config)
-    {
-        $this->info('🔍 BUSCANDO CANDIDATOS (version="v2" em PHASE_PENDING)...');
-        
-        $query = TireCalibration::where('version', 'v2')
-            ->where('enrichment_phase', TireCalibration::PHASE_PENDING)
-            ->whereNotNull('vehicle_make')
-            ->whereNotNull('vehicle_model');
-
-        // Filtrar por marca específica
+        // Filtros opcionais
         if ($config['make']) {
             $query->where('vehicle_make', 'LIKE', '%' . $config['make'] . '%');
         }
 
-        // Filtrar por categoria específica
         if ($config['category']) {
             $query->where('main_category', $config['category']);
         }
 
-        // Se não forçar, excluir já processados (que já tem generated_article)
+        // Se não forçar, pular os que já têm artigo
         if (!$config['force']) {
             $query->whereNull('generated_article');
         }
 
-        $candidates = $query->limit($config['limit'])->get();
-        
-        $this->line("   📊 Query executada: {$candidates->count()} registros encontrados");
-        
-        return $candidates;
+        return $query->limit($config['limit'])->get();
     }
 
-    /**
-     * Processar candidates mapeando arquivos JSON para artigos
-     */
-    private function processCandidates($candidates, array $config): array
+    private function showSampleData($record): void
     {
-        $this->info('⚡ PROCESSANDO MAPEAMENTO JSON → ARTIGO...');
+        $this->info('🔍 DADOS DE EXEMPLO:');
+        $this->line("   ID: {$record->_id}");
+        $this->line("   Veículo: {$record->vehicle_make} {$record->vehicle_model} " . ($record->vehicle_year ?? ''));
+        $this->line("   Categoria: {$record->main_category}");
+        $this->line("   Fase: {$record->enrichment_phase}");
         
+        if ($record->pressure_specifications) {
+            $pressures = $record->pressure_specifications;
+            $this->line("   Estrutura pressure_specifications:");
+            $this->line("      • " . json_encode($pressures, JSON_UNESCAPED_UNICODE));
+        }
+        
+        if ($record->vehicle_basic_data) {
+            $basic = $record->vehicle_basic_data;
+            $this->line("   vehicle_basic_data: " . count($basic) . ' campos');
+        }
+        
+        $this->newLine();
+    }
+
+    private function processRecords($candidates, array $config): array
+    {
         $progressBar = $this->output->createProgressBar($candidates->count());
         $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
-        $progressBar->setMessage('Iniciando...');
         $progressBar->start();
 
-        foreach ($candidates as $calibration) {
+        foreach ($candidates as $record) {
             $this->processedCount++;
             
-            try {
-                $vehicleInfo = "{$calibration->vehicle_make} {$calibration->vehicle_model}";
-                $progressBar->setMessage("Processando: {$vehicleInfo}");
+            $vehicleInfo = "{$record->vehicle_make} {$record->vehicle_model}";
+            $progressBar->setMessage($vehicleInfo);
 
-                // 1. Construir nome do arquivo baseado nos dados do TireCalibration
-                $filename = $this->buildVehicleDataFilename($calibration);
+            try {
+                // 1. Extrair dados do próprio registro TireCalibration
+                $vehicleData = $this->extractVehicleData($record);
                 
-                // 2. Carregar dados do arquivo JSON físico
-                $vehicleJsonData = $this->loadVehicleDataFromFile($filename);
-                
-                if (!$vehicleJsonData) {
+                if (!$vehicleData) {
                     $this->skippedCount++;
-                    $this->errorDetails[] = "Arquivo não encontrado: {$filename}";
+                    $this->errorDetails[] = "Dados insuficientes: {$vehicleInfo}";
                     $progressBar->advance();
                     continue;
                 }
 
-                // 3. Mapear dados para estrutura de artigo (igual aos mocks)
-                $articleStructure = $this->mappingService->mapVehicleDataToArticle(
-                    $vehicleJsonData, 
-                    $calibration
-                );
+                // 2. Usar ArticleMappingService para gerar estrutura
+                $articleData = $this->mappingService->mapVehicleDataToArticle($vehicleData, $record);
 
-                // 4. Salvar no MongoDB se não for dry-run
+                // 3. Salvar resultado se não for dry-run
                 if (!$config['dry_run']) {
-                    // Atualizar pelo ID do TireCalibration
-                    $calibration->update([
-                        'generated_article' => $articleStructure,
+                    $record->update([
+                        'generated_article' => $articleData,
                         'enrichment_phase' => TireCalibration::PHASE_ARTICLE_GENERATED,
                         'article_generated_at' => now(),
-                        'processing_attempts' => ($calibration->processing_attempts ?? 0) + 1,
-                    ]);
-                    
-                    Log::info('GenerateArticlesPhase2Command: TireCalibration atualizada', [
-                        'id' => $calibration->_id,
-                        'vehicle' => $vehicleInfo,
-                        'article_size' => strlen(json_encode($articleStructure))
+                        'processing_attempts' => ($record->processing_attempts ?? 0) + 1,
+                        'content_quality_score' => $this->calculateQuality($articleData),
                     ]);
                 }
 
                 $this->successCount++;
-                $progressBar->advance();
-
+                
             } catch (\Exception $e) {
                 $this->errorCount++;
-                $this->errorDetails[] = "Erro em {$vehicleInfo}: {$e->getMessage()}";
+                $this->errorDetails[] = "{$vehicleInfo}: {$e->getMessage()}";
                 
-                Log::error('GenerateArticlesPhase2Command: Erro no processamento', [
-                    'calibration_id' => $calibration->_id,
+                Log::error('ProcessRecord Error', [
+                    'id' => $record->_id,
                     'vehicle' => $vehicleInfo,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
+                    'error' => $e->getMessage()
                 ]);
-                
-                $progressBar->advance();
             }
+            
+            $progressBar->advance();
         }
 
         $progressBar->finish();
@@ -285,130 +217,149 @@ class GenerateArticlesPhase2Command extends Command
             'success' => $this->successCount,
             'errors' => $this->errorCount,
             'skipped' => $this->skippedCount,
-            'error_details' => $this->errorDetails
+            'details' => $this->errorDetails
         ];
     }
 
     /**
-     * Construir nome do arquivo JSON baseado nos dados do TireCalibration
+     * Extrair dados do veículo do próprio registro TireCalibration
      */
-    private function buildVehicleDataFilename(TireCalibration $calibration): string
+    private function extractVehicleData(TireCalibration $record): ?array
     {
-        $make = strtolower($calibration->vehicle_make);
-        $model = strtolower($calibration->vehicle_model);
-        
-        // Limpar caracteres especiais
-        $make = preg_replace('/[^a-z0-9]/', '-', $make);
-        $model = preg_replace('/[^a-z0-9]/', '-', $model);
-        
-        // Para version="v2" não usamos ano (conforme especificação)
-        return "{$make}-{$model}.json";
-    }
-
-    /**
-     * Carregar dados do arquivo JSON físico
-     */
-    private function loadVehicleDataFromFile(string $filename): ?array
-    {
-        $filepath = database_path("vehicle-data/{$filename}");
-        
-        if (!file_exists($filepath)) {
-            // Tentar variações do nome do arquivo
-            $variations = $this->generateFilenameVariations($filename);
-            
-            foreach ($variations as $variation) {
-                $variationPath = database_path("vehicle-data/{$variation}");
-                if (file_exists($variationPath)) {
-                    $filepath = $variationPath;
-                    break;
-                }
-            }
-            
-            if (!file_exists($filepath)) {
-                return null;
-            }
-        }
-
-        try {
-            $content = file_get_contents($filepath);
-            $data = json_decode($content, true);
-            
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception("JSON inválido: " . json_last_error_msg());
-            }
-            
-            return $data;
-            
-        } catch (\Exception $e) {
-            Log::error('GenerateArticlesPhase2Command: Erro ao carregar arquivo JSON', [
-                'filename' => $filename,
-                'filepath' => $filepath,
-                'error' => $e->getMessage()
-            ]);
+        // Dados básicos obrigatórios
+        if (empty($record->vehicle_make) || empty($record->vehicle_model)) {
             return null;
         }
-    }
 
-    /**
-     * Gerar variações do nome do arquivo para tentar encontrar correspondências
-     */
-    private function generateFilenameVariations(string $filename): array
-    {
-        $base = pathinfo($filename, PATHINFO_FILENAME);
-        
-        return [
-            // Variações com hífen, underscore, espaço
-            str_replace('-', '_', $base) . '.json',
-            str_replace('-', ' ', $base) . '.json',
-            str_replace('_', '-', $base) . '.json',
-            
-            // Variações sem caracteres especiais
-            preg_replace('/[^a-z0-9]/', '', $base) . '.json',
-            
-            // Variações com prefixos/sufixos comuns
-            'vehicle-' . $base . '.json',
-            $base . '-data.json',
+        // Montar estrutura baseada nos dados existentes no registro
+        $vehicleData = [
+            'make' => $record->vehicle_make,
+            'model' => $record->vehicle_model,
+            'main_category' => $record->main_category ?? 'sedan',
+            'data_quality_score' => $record->data_completeness_score ?? 8,
         ];
+
+        // Adicionar ano se disponível (version V1)
+        if (!empty($record->vehicle_year)) {
+            $vehicleData['year'] = $record->vehicle_year;
+        }
+
+        // Extrair dados do vehicle_basic_data se existir
+        if ($record->vehicle_basic_data) {
+            $basic = $record->vehicle_basic_data;
+            
+            // Mapear tire_size de várias fontes possíveis
+            $tireSize = $basic['tire_size'] ?? null;
+            if (empty($tireSize) && $record->pressure_specifications) {
+                $tireSize = $record->pressure_specifications['tire_size'] ?? null;
+            }
+            
+            $vehicleData = array_merge($vehicleData, [
+                'tire_size' => $tireSize ?? '215/55 R16',
+                'full_name' => $basic['full_name'] ?? "{$record->vehicle_make} {$record->vehicle_model}",
+                'category_normalized' => $basic['category_normalized'] ?? 'Sedan',
+                'segment' => $basic['segment'] ?? 'C',
+            ]);
+        } else {
+            // Se não tem vehicle_basic_data, tentar pegar tire_size de pressure_specifications
+            $tireSize = ($record->pressure_specifications['tire_size'] ?? null) ?? '215/55 R16';
+            $vehicleData['tire_size'] = $tireSize;
+        }
+
+        // Extrair especificações de pressão se existir
+        if ($record->pressure_specifications) {
+            $pressure = $record->pressure_specifications;
+            
+            // Tratar as duas estruturas diferentes (TireCalibration vs VehicleData)
+            $frontPressure = $pressure['empty_front'] ?? $pressure['pressure_empty_front'] ?? $pressure['light_front'] ?? $pressure['pressure_light_front'] ?? 32;
+            $rearPressure = $pressure['empty_rear'] ?? $pressure['pressure_empty_rear'] ?? $pressure['light_rear'] ?? $pressure['pressure_light_rear'] ?? 30;
+            
+            $vehicleData = array_merge($vehicleData, [
+                'pressure_empty_front' => $frontPressure,
+                'pressure_empty_rear' => $rearPressure,
+                'pressure_max_front' => $pressure['max_front'] ?? $pressure['pressure_max_front'] ?? ($frontPressure + 3),
+                'pressure_max_rear' => $pressure['max_rear'] ?? $pressure['pressure_max_rear'] ?? ($rearPressure + 3),
+                'pressure_spare' => $pressure['spare'] ?? $pressure['pressure_spare'] ?? 60,
+                'tire_size' => $pressure['tire_size'] ?? $vehicleData['tire_size'] ?? '215/55 R16',
+            ]);
+        } else {
+            // Valores padrão se não tiver dados de pressão
+            $vehicleData = array_merge($vehicleData, [
+                'pressure_empty_front' => 32,
+                'pressure_empty_rear' => 30,
+                'pressure_max_front' => 35,
+                'pressure_max_rear' => 33,
+                'pressure_spare' => 60,
+                'tire_size' => '215/55 R16',
+            ]);
+        }
+
+        // Extrair características do veículo se existir
+        if ($record->vehicle_features) {
+            $features = $record->vehicle_features;
+            $vehicleData = array_merge($vehicleData, [
+                'has_tpms' => $features['has_tpms'] ?? false,
+                'is_premium' => $features['is_premium'] ?? false,
+                'is_motorcycle' => $features['is_motorcycle'] ?? false,
+                'vehicle_type' => $features['vehicle_type'] ?? 'car',
+                'recommended_oil' => $features['recommended_oil'] ?? '5W30 Sintético',
+            ]);
+        } else {
+            // Valores padrão
+            $vehicleData = array_merge($vehicleData, [
+                'has_tpms' => false,
+                'is_premium' => false,
+                'is_motorcycle' => str_contains($record->main_category ?? '', 'motorcycle'),
+                'vehicle_type' => str_contains($record->main_category ?? '', 'motorcycle') ? 'motorcycle' : 'car',
+                'recommended_oil' => str_contains($record->main_category ?? '', 'motorcycle') ? '10W40 Sintético' : '5W30 Sintético',
+            ]);
+        }
+
+        return $vehicleData;
     }
 
-    /**
-     * Exibir estatísticas finais
-     */
-    private function displayFinalStats(float $startTime, array $results): void
+    private function calculateQuality(array $article): float
     {
-        $executionTime = round(microtime(true) - $startTime, 2);
-        
-        $this->newLine();
-        $this->info('=== ESTATÍSTICAS FINAIS - FASE 2 ===');
+        $score = 0;
+
+        if (!empty($article['title'])) $score += 2;
+        if (!empty($article['seo_data']['meta_description'])) $score += 2;
+        if (!empty($article['content'])) $score += 3;
+        if (!empty($article['content']['especificacoes_por_versao'])) $score += 2;
+        if (!empty($article['seo_data']['primary_keyword'])) $score += 1;
+
+        return round($score, 1);
+    }
+
+    private function showResults(array $results, float $executionTime): void
+    {
+        $this->info('=== RESULTADOS ===');
         $this->line("✅ Processados: {$results['processed']}");
         $this->line("🎯 Sucessos: {$results['success']}");  
         $this->line("⏭️ Ignorados: {$results['skipped']}");
         $this->line("❌ Erros: {$results['errors']}");
-        $this->line("⏱️ Tempo: {$executionTime}s");
-        
+        $this->line("⏱️ Tempo: " . round($executionTime, 2) . "s");
+
         if ($results['success'] > 0) {
-            $avgTime = round($executionTime / $results['success'], 2);
-            $this->line("📊 Média: {$avgTime}s por artigo");
-        }
-        
-        // Mostrar alguns erros se houver
-        if (!empty($results['error_details']) && count($results['error_details']) <= 5) {
             $this->newLine();
-            $this->warn('❌ DETALHES DOS ERROS:');
-            foreach (array_slice($results['error_details'], 0, 5) as $error) {
-                $this->line("   • {$error}");
+            $this->info('✅ ARTIGOS GERADOS!');
+            $this->line('   • Salvos no campo: generated_article');
+            $this->line('   • Fase atualizada para: article_generated');
+            $this->line('   • Prontos para Fase 3 (Claude)');
+        }
+
+        // Mostrar alguns erros se houver
+        if (!empty($results['details']) && $results['errors'] > 0) {
+            $this->newLine();
+            $this->warn('⚠️ ALGUNS ERROS:');
+            foreach (array_slice($results['details'], 0, 3) as $detail) {
+                $this->line("   • {$detail}");
             }
         }
 
         $this->newLine();
         $this->info('🚀 PRÓXIMOS PASSOS:');
-        $this->line('   1. Verifique artigos gerados no campo generated_article');
-        $this->line('   2. Execute: php artisan tire-calibration:stats para ver progresso');
-        $this->line('   3. Execute Fase 3 (Claude refinement) quando pronto');
-        
-        Log::info('GenerateArticlesPhase2Command: Execução concluída', [
-            'results' => $results,
-            'execution_time' => $executionTime
-        ]);
+        $this->line('   php artisan tire-calibration:stats');
+        $this->line('   php artisan tire-calibration:refine-with-claude --limit=5');
     }
 }
