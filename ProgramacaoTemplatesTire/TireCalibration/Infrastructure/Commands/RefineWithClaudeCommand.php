@@ -8,16 +8,11 @@ use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
 use Src\ContentGeneration\TireCalibration\Application\Services\ClaudeRefinementService;
 
 /**
- * RefineWithClaudeCommand - ATUALIZADO para foco em enhancements
+ * RefineWithClaudeCommand - CORRIGIDO - Tratamento de tipos de dados
  * 
- * FASE 3: Enhancements específicos via Claude API
- * - Introdução contextualizada
- * - Considerações finais personalizadas  
- * - FAQs específicas do modelo
- * - Alertas críticos por categoria
+ * CORREÇÃO: generated_article pode ser string JSON ou array
  * 
- * @author Claude Sonnet 4
- * @version 3.0 - Especializado em enhancements
+ * @version 3.1 - Fix array to string conversion
  */
 class RefineWithClaudeCommand extends Command
 {
@@ -27,9 +22,10 @@ class RefineWithClaudeCommand extends Command
                             {--dry-run : Simular execução sem salvar}
                             {--force : Reprocessar artigos já refinados}
                             {--delay=5 : Delay entre requests (segundos)}
-                            {--test-api : Testar Claude API antes de processar}';
+                            {--test-api : Testar Claude API antes de processar}
+                            {--debug : Mostrar informações de debug}';
 
-    protected $description = 'FASE 3: Enriquecer artigos com Claude API - foco em contexto e linguagem';
+    protected $description = 'FASE 3: Enriquecer artigos com Claude API - CORRIGIDO';
 
     private ClaudeRefinementService $claudeService;
 
@@ -39,11 +35,17 @@ class RefineWithClaudeCommand extends Command
         $this->claudeService = $claudeService;
     }
 
-    public function handle(): int
+    public function handle(): ?int
     {
+
+        // Só executa em produção e staging
+        if (app()->environment(['local', 'testing'])) {
+            return null;
+        }
+
         $startTime = microtime(true);
 
-        $this->info('🤖 CLAUDE API - FASE 3: ENHANCEMENTS CONTEXTUAIS');
+        $this->info('🤖 CLAUDE API - FASE 3: ENHANCEMENTS CONTEXTUAIS (CORRIGIDO)');
         $this->info('📅 ' . now()->format('d/m/Y H:i:s'));
         $this->newLine();
 
@@ -65,6 +67,12 @@ class RefineWithClaudeCommand extends Command
             }
 
             $this->info("📊 Encontrados {$candidates->count()} artigo(s) para enhancement Claude");
+
+            // Debug: Mostrar dados do primeiro candidato
+            if ($config['debug'] && $candidates->count() > 0) {
+                $this->debugCandidateData($candidates->first());
+            }
+
             $this->newLine();
 
             // Processar enhancements
@@ -74,7 +82,6 @@ class RefineWithClaudeCommand extends Command
             $this->displayResults($results, microtime(true) - $startTime);
 
             return self::SUCCESS;
-
         } catch (\Exception $e) {
             $this->error('❌ Erro: ' . $e->getMessage());
             Log::error('RefineWithClaudeCommand: Erro fatal', [
@@ -105,6 +112,7 @@ class RefineWithClaudeCommand extends Command
             'force' => $this->option('force'),
             'delay' => $delay,
             'test_api' => $this->option('test-api'),
+            'debug' => $this->option('debug'),
         ];
     }
 
@@ -116,6 +124,7 @@ class RefineWithClaudeCommand extends Command
         $this->line("   • Delay: {$config['delay']}s entre requests");
         $this->line("   • Modo: " . ($config['dry_run'] ? '🔍 DRY-RUN' : '💾 PRODUÇÃO'));
         $this->line("   • Reprocessar: " . ($config['force'] ? '✅ SIM' : '❌ NÃO'));
+        $this->line("   • Debug: " . ($config['debug'] ? '✅ SIM' : '❌ NÃO'));
         $this->newLine();
 
         if ($config['limit'] > 15) {
@@ -155,6 +164,34 @@ class RefineWithClaudeCommand extends Command
         return $query->limit($config['limit'])->get();
     }
 
+    /**
+     * ✅ CORREÇÃO PRINCIPAL: Debug de dados do candidato
+     */
+    private function debugCandidateData(TireCalibration $calibration): void
+    {
+        $this->info('🔍 DEBUG - DADOS DO CANDIDATO:');
+        $this->line("   • ID: {$calibration->_id}");
+        $this->line("   • Veículo: {$calibration->vehicle_make} {$calibration->vehicle_model}");
+        $this->line("   • Fase: {$calibration->enrichment_phase}");
+
+        // ✅ VERIFICAR TIPO DO CAMPO generated_article
+        $generatedArticle = $calibration->generated_article;
+        $articleType = gettype($generatedArticle);
+        $this->line("   • Tipo generated_article: {$articleType}");
+
+        if (is_string($generatedArticle)) {
+            $this->line("   • Tamanho string: " . strlen($generatedArticle) . " chars");
+            $this->line("   • É JSON válido: " . (json_decode($generatedArticle) ? '✅ SIM' : '❌ NÃO'));
+        } elseif (is_array($generatedArticle)) {
+            $this->line("   • Elementos array: " . count($generatedArticle));
+            $this->line("   • Chaves principais: " . implode(', ', array_keys($generatedArticle)));
+        } else {
+            $this->warn("   • Tipo inesperado: {$articleType}");
+        }
+
+        $this->newLine();
+    }
+
     private function processEnhancements($candidates, array $config): array
     {
         $results = [
@@ -178,7 +215,7 @@ class RefineWithClaudeCommand extends Command
 
             try {
                 if (!$config['dry_run']) {
-                    // Enhancement via Claude API
+                    // ✅ CORREÇÃO: Enhancement via Claude API com tratamento de tipos
                     $enhancedArticle = $this->claudeService->enhanceWithClaude($calibration);
                     $results['api_calls']++;
                     $results['total_improvement'] += $calibration->claude_improvement_score ?? 0;
@@ -188,7 +225,6 @@ class RefineWithClaudeCommand extends Command
                 }
 
                 $results['success']++;
-
             } catch (\Exception $e) {
                 $results['errors']++;
                 $results['error_details'][] = "{$vehicleInfo}: {$e->getMessage()}";
@@ -196,7 +232,9 @@ class RefineWithClaudeCommand extends Command
                 Log::error('RefineWithClaudeCommand: Erro no enhancement', [
                     'calibration_id' => $calibration->_id,
                     'vehicle' => $vehicleInfo,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'generated_article_type' => gettype($calibration->generated_article), // ✅ LOG DO TIPO
+                    'trace' => $e->getTraceAsString()
                 ]);
             }
 
@@ -227,7 +265,7 @@ class RefineWithClaudeCommand extends Command
 
         // Performance
         $this->line("⏱️ <fg=cyan>Tempo total:</fg=cyan> " . round($duration, 2) . "s");
-        
+
         if ($results['success'] > 0) {
             $avgTime = round($duration / $results['success'], 2);
             $avgImprovement = round($results['total_improvement'] / $results['success'], 2);
@@ -239,8 +277,8 @@ class RefineWithClaudeCommand extends Command
 
         // Mostrar alguns erros
         if (!empty($results['error_details'])) {
-            $this->error('🚨 ALGUNS ERROS:');
-            foreach (array_slice($results['error_details'], 0, 3) as $error) {
+            $this->error('🚨 ERROS ENCONTRADOS:');
+            foreach (array_slice($results['error_details'], 0, 5) as $error) {
                 $this->line("   • {$error}");
             }
             $this->newLine();
@@ -259,13 +297,15 @@ class RefineWithClaudeCommand extends Command
         if ($results['errors'] > $results['success']) {
             $this->warn('⚠️ MUITOS ERROS. Sugestões:');
             $this->line('   • Verifique ANTHROPIC_API_KEY');
-            $this->line('   • Reduza --limit para 5-10');
+            $this->line('   • Execute com --debug para investigar');
+            $this->line('   • Reduza --limit para 1-3');
             $this->line('   • Aumente --delay para 8-15s');
+            $this->newLine();
         }
 
-        $this->info('💡 PRÓXIMOS PASSOS:');
-        $this->line('   • Verificar: php artisan tire-calibration:stats --detailed');
-        $this->line('   • API tem rate limits - use limits baixos');
-        $this->line('   • Artigos enriquecidos prontos para publicação');
+        $this->info('💡 COMANDOS ÚTEIS:');
+        $this->line('   • Debug: php artisan tire-calibration:refine-with-claude --limit=1 --debug');
+        $this->line('   • Stats: php artisan tire-calibration:stats --detailed');
+        $this->line('   • Test API: php artisan tire-calibration:refine-with-claude --test-api --dry-run');
     }
 }

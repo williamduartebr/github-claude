@@ -80,7 +80,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
         $this->registerCommands();
 
         // 2. Configurar scheduling automático
-        $this->configureScheduling();
+        // $this->configureScheduling();
 
         // 3. Publicar assets se em modo de desenvolvimento
         $this->publishAssets();
@@ -308,21 +308,21 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 return;
             }
 
-            // FASE 1+2: Executar geração de artigos diariamente às 02:00
-            $schedule->command('tire-calibration:generate-articles --limit=100')
-                ->dailyAt('02:00')
-                ->environments(['production', 'staging'])
-                ->onSuccess(function () {
-                    \Log::info('TireCalibration: Geração automática de artigos executada com sucesso');
-                })
-                ->onFailure(function () {
-                    \Log::error('TireCalibration: Falha na geração automática de artigos');
-                });
+            // // FASE 1+2: Executar geração de artigos diariamente às 02:00
+            // $schedule->command('tire-calibration:generate-articles --limit=100')
+            //     ->dailyAt('02:00')
+            //     ->environments(['production', 'staging'])
+            //     ->onSuccess(function () {
+            //         \Log::info('TireCalibration: Geração automática de artigos executada com sucesso');
+            //     })
+            //     ->onFailure(function () {
+            //         \Log::error('TireCalibration: Falha na geração automática de artigos');
+            //     });
 
             // FASE 3: Executar refinamento via Claude às 03:30 (após geração)
-            $schedule->command('tire-calibration:refine-with-claude --limit=20 --delay=5')
-                ->dailyAt('03:30')
-                ->environments(['production'])
+            $schedule->command('tire-calibration:refine-with-claude --limit=1 --delay=5')
+                ->everyFiveMinutes()
+                // ->environments(['local', 'testing'])
                 ->onSuccess(function () {
                     \Log::info('TireCalibration: Refinamento automático via Claude executado com sucesso');
                 })
@@ -331,11 +331,11 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 });
 
             // Estatísticas semanais para monitoramento
-            $schedule->command('tire-calibration:stats --export=json --output-file=weekly_stats')
-                ->weekly()
-                ->mondays()
-                ->at('06:00')
-                ->environments(['production', 'staging']);
+            // $schedule->command('tire-calibration:stats --export=json --output-file=weekly_stats')
+            //     ->weekly()
+            //     ->mondays()
+            //     ->at('06:00')
+            //     ->environments(['production', 'staging']);
 
             // Limpeza de logs antigos (se configurado)
             if (config('tire_calibration.cleanup.enabled', false)) {

@@ -46,7 +46,6 @@ class TireCalibration extends Model
         'last_claude_processing' => 'datetime',
 
         // Artigos - AJUSTADO
-        'generated_article' => 'string',         // String estruturada (script)
         'article_refined' => 'array',            // JSON final (Claude API)
         'claude_enhancements' => 'array',        // Melhorias Claude específicas
 
@@ -331,5 +330,62 @@ class TireCalibration extends Model
     public function scopeFailed($query)
     {
         return $query->where('enrichment_phase', self::PHASE_FAILED);
+    }
+
+    /**
+     * ✅ MÉTODO NOVO: Marcar como falhou com mensagem de erro
+     * 
+     * Adicione este método à classe TireCalibration
+     */
+    public function markFailed(string $errorMessage): void
+    {
+        // Histórico de erro
+        $processingHistory = $this->claude_processing_history ?? [];
+        $processingHistory[] = [
+            'failed_at' => now()->toISOString(),
+            'error_message' => $errorMessage,
+            'processing_attempt' => $this->processing_attempts ?? 0,
+            'phase_when_failed' => $this->enrichment_phase,
+        ];
+
+        $this->update([
+            'enrichment_phase' => self::PHASE_FAILED,
+            'last_error' => $errorMessage,
+            'failed_at' => now(),
+            'claude_processing_history' => $processingHistory,
+        ]);
+    }
+
+    /**
+     * ✅ MÉTODO UTILITÁRIO: Verificar se pode tentar novamente
+     */
+    public function canRetryProcessing(): bool
+    {
+        // Se falhou, permitir retry após 1 hora
+        if ($this->enrichment_phase === self::PHASE_FAILED) {
+            $failedAt = $this->failed_at ?? $this->updated_at;
+            return $failedAt->diffInHours(now()) >= 1;
+        }
+
+        // Se está processando há mais de 30 minutos, considerar travado
+        if ($this->enrichment_phase === self::PHASE_CLAUDE_PROCESSING) {
+            $startedAt = $this->claude_processing_started_at ?? $this->updated_at;
+            return $startedAt->diffInMinutes(now()) >= 30;
+        }
+
+        return false;
+    }
+
+    /**
+     * ✅ MÉTODO UTILITÁRIO: Reset para retry
+     */
+    public function resetForRetry(): void
+    {
+        $this->update([
+            'enrichment_phase' => self::PHASE_ARTICLE_GENERATED,
+            'claude_processing_started_at' => null,
+            'last_error' => null,
+            'processing_attempts' => ($this->processing_attempts ?? 0) + 1,
+        ]);
     }
 }
