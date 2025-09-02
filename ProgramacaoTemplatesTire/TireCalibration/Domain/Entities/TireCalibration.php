@@ -74,6 +74,8 @@ class TireCalibration extends Model
        'seo_score' => 'float',
        'processing_attempts' => 'integer',
 
+    //    'generated_article' => 'array',
+
        'created_at' => 'datetime',
        'updated_at' => 'datetime',
    ];

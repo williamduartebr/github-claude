@@ -2,6 +2,8 @@
 
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
 
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ResetPickupRecordsCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateCalibrationStructureCommand;
 use Illuminate\Support\ServiceProvider;
 
 // Services V4 + Dependências
@@ -99,7 +101,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 'model' => env('TIRE_CALIBRATION_CLAUDE_MODEL', 'claude-3-7-sonnet-20250219'),
                 'timeout' => (int) env('TIRE_CALIBRATION_CLAUDE_TIMEOUT', 90),
                 'max_retries' => (int) env('TIRE_CALIBRATION_CLAUDE_MAX_RETRIES', 3),
-                
+
                 'phase_3a' => [
                     'max_tokens' => 2500,
                     'temperature' => 0.3,
@@ -118,10 +120,10 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 'min_quality_score' => (int) env('TIRE_CALIBRATION_MIN_QUALITY', 80),
                 'max_word_count' => (int) env('TIRE_CALIBRATION_MAX_WORDS', 3500),
                 'min_word_count' => (int) env('TIRE_CALIBRATION_MIN_WORDS', 1000),
-                
+
                 'editorial_validation' => [
                     'meta_description_min_length' => 120,  // ✅ Era 140
-                    'meta_description_max_length' => 300,  // ✅ Era 165
+                    'meta_description_max_length' => 330,  // ✅ Era 165
                     'intro_min_words' => 100,              // ✅ Era 170  
                     'intro_max_words' => 300,              // ✅ Era 230
                     'final_min_words' => 80,               // ✅ Era 140
@@ -130,14 +132,23 @@ class TireCalibrationServiceProvider extends ServiceProvider
                     'required_faqs_max' => 8,              // ✅ Novo (era fixo 5)
                     'min_faq_response_words' => 25,        // ✅ Era 50
                 ],
-                
+
                 'technical_validation' => [
                     'min_versions_per_article' => 3,
                     'max_versions_per_article' => 5,
                     'min_version_name_length' => 5,
                     'forbidden_generic_terms' => [
-                        'versão base', 'base', 'básica', 'intermediária', 'top', 'premium', 
-                        'completa', 'entrada', 'superior', 'padrão', 'standard'
+                        'versão base',
+                        'base',
+                        'básica',
+                        'intermediária',
+                        'top',
+                        'premium',
+                        'completa',
+                        'entrada',
+                        'superior',
+                        'padrão',
+                        'standard'
                     ],
                 ],
             ],
@@ -252,6 +263,9 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 // ✅ Commands auxiliares
                 GenerateTestArticlesCommand::class,         // Depende: TestArticleService ✅
                 TireCalibrationStatsCommand::class,         // Depende: ArticleGenerationService + ClaudeRefinementService + TestArticleService ✅
+
+                InvestigateCalibrationStructureCommand::class,
+                ResetPickupRecordsCommand::class,
             ]);
         }
     }
@@ -337,7 +351,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 'module' => 'TireCalibration',
                 'version' => 'v4_dual_phase_complete',
                 'status' => 'healthy',
-                
+
                 'services' => [
                     'article_generation' => $services['article_generation'] ? 'registered' : 'missing',
                     'article_mapping' => $services['article_mapping'] ? 'registered' : 'missing',      // ✅
@@ -363,7 +377,6 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 'commands_registered' => count($this->provides()),
                 'checked_at' => now()->toISOString(),
             ];
-
         } catch (\Exception $e) {
             return [
                 'module' => 'TireCalibration',

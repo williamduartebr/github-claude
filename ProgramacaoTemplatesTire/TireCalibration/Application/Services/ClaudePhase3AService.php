@@ -249,7 +249,7 @@ class ClaudePhase3AService
         } else {
             $metaLength = strlen($enhancements['meta_description']);
             // ✅ Google aceita até 320 caracteres! Limites realistas: 120-300
-            if ($metaLength < 120 || $metaLength > 300) {
+            if ($metaLength < 120 || $metaLength > 330) {
                 $errors[] = "Meta description com {$metaLength} caracteres (aceito: 120-300)";
             }
 
@@ -444,18 +444,151 @@ class ClaudePhase3AService
     /**
      * Parse da resposta da Claude API
      */
+    // ✅ DEPOIS (parsing robusto multi-estratégia):
     private function parseClaudeResponse(array $response): array
     {
         $text = $response['content'][0]['text'] ?? '';
 
+        if (empty($text)) {
+            throw new \Exception('Resposta da Claude API está vazia');
+        }
+
+        // ESTRATÉGIA 1: JSON dentro de code block ```json
         if (preg_match('/```json\s*(.*?)\s*```/s', $text, $matches)) {
-            $json = json_decode($matches[1], true);
+            $jsonString = trim($matches[1]);
+            $json = json_decode($jsonString, true);
+
             if ($json && json_last_error() === JSON_ERROR_NONE) {
+                return $json;
+            }
+
+            Log::warning('ClaudePhase3AService: JSON em code block inválido', [
+                'json_error' => json_last_error_msg(),
+                'json_preview' => substr($jsonString, 0, 200)
+            ]);
+        }
+
+        // ESTRATÉGIA 2: JSON dentro de code block sem especificar linguagem
+        if (preg_match('/```\s*(.*?)\s*```/s', $text, $matches)) {
+            $jsonString = trim($matches[1]);
+
+            // Verificar se parece JSON (começa com { ou [)
+            if (preg_match('/^\s*[{\[]/', $jsonString)) {
+                $json = json_decode($jsonString, true);
+
+                if ($json && json_last_error() === JSON_ERROR_NONE) {
+                    Log::info('ClaudePhase3AService: JSON recuperado de code block genérico');
+                    return $json;
+                }
+            }
+        }
+
+        // ESTRATÉGIA 3: Buscar JSON no meio do texto
+        if (preg_match('/\{.*\}/s', $text, $matches)) {
+            $jsonString = $matches[0];
+            $json = json_decode($jsonString, true);
+
+            if ($json && json_last_error() === JSON_ERROR_NONE) {
+                Log::info('ClaudePhase3AService: JSON recuperado do meio do texto');
                 return $json;
             }
         }
 
-        throw new \Exception('Resposta da Claude API não contém JSON válido');
+        // ESTRATÉGIA 4: Tentar limpar e parsear texto inteiro
+        $cleanText = trim($text);
+        $cleanText = preg_replace('/^[^{]*/', '', $cleanText); // Remove texto antes do primeiro {
+        $cleanText = preg_replace('/[^}]*$/', '', $cleanText); // Remove texto depois do último }
+
+        if (!empty($cleanText)) {
+            $json = json_decode($cleanText, true);
+
+            if ($json && json_last_error() === JSON_ERROR_NONE) {
+                Log::info('ClaudePhase3AService: JSON recuperado após limpeza');
+                return $json;
+            }
+        }
+
+        // ESTRATÉGIA 5: Buscar campos JSON individuais (última tentativa)
+        $extractedData = $this->extractJsonFieldsManually($text);
+        if (!empty($extractedData)) {
+            Log::warning('ClaudePhase3AService: JSON reconstruído manualmente - pode ter problemas');
+            return $extractedData;
+        }
+
+        // Se todas as estratégias falharam, logar detalhes para debug
+        Log::error('ClaudePhase3AService: Todas as estratégias de parsing JSON falharam', [
+            'text_preview' => substr($text, 0, 500),
+            'text_length' => strlen($text),
+            'has_json_block' => str_contains($text, '```json'),
+            'has_code_block' => str_contains($text, '```'),
+            'has_braces' => str_contains($text, '{'),
+        ]);
+
+        throw new \Exception('Resposta da Claude API não contém JSON válido após 5 estratégias de parsing');
+    }
+
+    /**
+     * Extração manual de campos JSON como última tentativa
+     * Quando o JSON está malformado mas os campos individuais são legíveis
+     */
+    private function extractJsonFieldsManually(string $text): array
+    {
+        $fields = [];
+
+        try {
+            // Extrair meta_description
+            if (preg_match('/"meta_description":\s*"([^"]*)"/', $text, $matches)) {
+                $fields['meta_description'] = $matches[1];
+            }
+
+            // Extrair introducao
+            if (preg_match('/"introducao":\s*"([^"]*(?:"[^"]*"[^"]*)*)"/', $text, $matches)) {
+                $fields['introducao'] = $matches[1];
+            }
+
+            // Extrair consideracoes_finais
+            if (preg_match('/"consideracoes_finais":\s*"([^"]*(?:"[^"]*"[^"]*)*)"/', $text, $matches)) {
+                $fields['consideracoes_finais'] = $matches[1];
+            }
+
+            // Extrair perguntas_frequentes (mais complexo)
+            if (preg_match('/"perguntas_frequentes":\s*\[(.*?)\]/s', $text, $matches)) {
+                $faqText = $matches[1];
+                $faqs = [];
+
+                // Buscar pares pergunta/resposta
+                if (preg_match_all('/\{\s*"pergunta":\s*"([^"]*)",\s*"resposta":\s*"([^"]*(?:"[^"]*"[^"]*)*)"/', $faqText, $faqMatches, PREG_SET_ORDER)) {
+                    foreach ($faqMatches as $faqMatch) {
+                        $faqs[] = [
+                            'pergunta' => $faqMatch[1],
+                            'resposta' => $faqMatch[2]
+                        ];
+                    }
+                }
+
+                if (!empty($faqs)) {
+                    $fields['perguntas_frequentes'] = $faqs;
+                }
+            }
+
+            // Só retornar se conseguiu pelo menos 3 campos essenciais
+            $requiredFields = ['meta_description', 'introducao', 'consideracoes_finais'];
+            $foundRequired = count(array_intersect($requiredFields, array_keys($fields)));
+
+            if ($foundRequired >= 3) {
+                Log::info('ClaudePhase3AService: Extração manual bem-sucedida', [
+                    'fields_extracted' => array_keys($fields),
+                    'faqs_count' => count($fields['perguntas_frequentes'] ?? [])
+                ]);
+                return $fields;
+            }
+        } catch (\Exception $e) {
+            Log::warning('ClaudePhase3AService: Falha na extração manual', [
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        return [];
     }
 
     /**
