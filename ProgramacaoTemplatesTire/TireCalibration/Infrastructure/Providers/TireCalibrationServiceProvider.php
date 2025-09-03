@@ -2,6 +2,7 @@
 
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
 
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\FixIncompletePickupArticlesCommand;
 use Illuminate\Support\ServiceProvider;
 use Src\ContentGeneration\TireCalibration\Application\Services\TestArticleService;
 use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3AService;
@@ -268,6 +269,8 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 InvestigateCalibrationStructureCommand::class,
                 ResetPickupRecordsCommand::class,
                 ReprocessFailedArticlesCommand::class,
+                FixIncompletePickupArticlesCommand::class,
+                
             ]);
         }
     }
