@@ -2,27 +2,28 @@
 
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
 
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ResetPickupRecordsCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateCalibrationStructureCommand;
 use Illuminate\Support\ServiceProvider;
+use Src\ContentGeneration\TireCalibration\Application\Services\TestArticleService;
+use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3AService;
 
 // Services V4 + Dependências
-use Src\ContentGeneration\TireCalibration\Application\Services\ArticleGenerationService;
-use Src\ContentGeneration\TireCalibration\Application\Services\ArticleMappingService;  // ✅ ADICIONADO
-use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3AService;
 use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3BService;
-use Src\ContentGeneration\TireCalibration\Application\Services\ClaudeRefinementService; // ✅ ADICIONADO (compatibilidade V3)
-use Src\ContentGeneration\TireCalibration\Application\Services\TestArticleService;
+use Src\ContentGeneration\TireCalibration\Application\Services\ArticleGenerationService;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudeCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ResetPickupRecordsCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateTestArticlesCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TireCalibrationStatsCommand;
 
 // Commands V4
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudeCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TestArticleGenerationCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateArticlesPhase2Command;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\CopyCalibrationArticlesCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudePhase3ACommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudePhase3BCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateArticlesPhase2Command;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TireCalibrationStatsCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\GenerateTestArticlesCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\TestArticleGenerationCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\CopyCalibrationArticlesCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ReprocessFailedArticlesCommand;
+use Src\ContentGeneration\TireCalibration\Application\Services\ArticleMappingService;  // ✅ ADICIONADO
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateCalibrationStructureCommand;
+use Src\ContentGeneration\TireCalibration\Application\Services\ClaudeRefinementService; // ✅ ADICIONADO (compatibilidade V3)
 
 /**
  * TireCalibrationServiceProvider - V4 Dual-Phase Provider CORRIGIDO
@@ -266,6 +267,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
 
                 InvestigateCalibrationStructureCommand::class,
                 ResetPickupRecordsCommand::class,
+                ReprocessFailedArticlesCommand::class,
             ]);
         }
     }

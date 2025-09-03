@@ -46,6 +46,22 @@ class TireCalibrationV4Schedule
                 Log::error('TireCalibration V4: Falha na Fase 3B automática');
             });
 
+
+        // ========================================
+        // FASE 3C: REPROCESSAR FALHAS
+        // ========================================
+        $schedule->command('tire-calibration:reprocess-failed --limit=2')
+            ->cron('*/3 * * * *')  // Cada 3 minutos
+            // ->withoutOverlapping(6)
+            // ->runInBackground()
+            ->appendOutputTo(storage_path('logs/reprocess-failed.log'))
+            ->onSuccess(function () {
+                Log::info('TireCalibration V4: Reprocessar falha automática concluída');
+            })
+            ->onFailure(function () {
+                Log::error('TireCalibration V4: Falha na Reprocessar falha automática');
+            });
+
         // ========================================
         // GERAÇÃO DE ARTIGOS BASE (FASE 2) - DIÁRIO
         // ========================================

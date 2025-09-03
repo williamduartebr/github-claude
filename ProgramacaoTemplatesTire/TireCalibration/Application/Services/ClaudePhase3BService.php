@@ -118,7 +118,7 @@ class ClaudePhase3BService
     /**
      * Gerar enhancements técnicos via Claude API com retry automático
      */
-    private function generateTechnicalEnhancements(array $vehicleInfo, array $baseArticle): array
+    private function generateTechnicalEnhancements(array $vehicleInfo, array $baseArticle)
     {
         $maxAttempts = $this->maxRetries;
         $attempt = 1;
