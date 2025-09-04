@@ -2,599 +2,834 @@
 
 namespace Src\ContentGeneration\TireCalibration\Application\Services;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 /**
- * PickupArticleFixService - Corrigir pickups com conteúdo incompleto
+ * PickupArticleFixService V4
  * 
- * Service especializado para corrigir pickups que passaram pelo processo V4
- * mas ficaram com article_refined.content incompleto.
+ * Service responsável pela correção definitiva de artigos pickup com estruturas JSON incorretas.
  * 
- * BASEADO NO TEMPLATE FUNCIONAL:
- * - Toyota Hilux 2023 (exemplo de pickup completo e bem estruturado)
- * - Utiliza Claude 3.5 Sonnet para gerar conteúdo específico
- * - Preserva estrutura e metadados existentes
- * - Foco apenas na seção 'content' que está incompleta
+ * PROBLEMA IDENTIFICADO:
+ * - localizacao_etiqueta como string em vez de object estruturado
+ * - Outras seções (condicoes_especiais, conversao_unidades, etc.) como string
+ * - ViewModel falha ao processar strings como arrays
  * 
- * ESTRATÉGIA DE CORREÇÃO:
- * 1. Detectar seções faltantes no content
- * 2. Gerar conteúdo usando template Hilux como referência
- * 3. Adaptar para marca/modelo específico
- * 4. Preservar dados técnicos existentes
- * 5. Manter compatibilidade V4
- * 
- * @author Claude Sonnet 4  
- * @version 1.0
+ * SOLUÇÃO:
+ * - Análise precisa de estruturas incorretas
+ * - Harmonização com command
+ * - Correção via Claude API com estruturas definidas
+ * - Rate limiting e retry logic robustos
  */
 class PickupArticleFixService
 {
-    private const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-    private const CLAUDE_MODEL = 'claude-3-5-sonnet-20241022';
-    private const MAX_TOKENS = 4000;
-    private const TIMEOUT_SECONDS = 60;
-
     /**
-     * Template base da Toyota Hilux (exemplo que funciona perfeitamente)
+     * Estruturas requeridas para template pickup
+     * 
+     * Define a estrutura correta que cada seção deve ter para evitar
+     * o erro fatal no TireCalibrationPickupViewModel
      */
-    private const HILUX_TEMPLATE_SECTIONS = [
-        'introducao' => true,
-        'especificacoes_por_versao' => true,
-        'tabela_carga_completa' => true,
-        'localizacao_etiqueta' => true,
-        'condicoes_especiais' => true,
-        'conversao_unidades' => true,
-        'cuidados_recomendacoes' => true,
-        'impacto_pressao' => true,
-        'perguntas_frequentes' => true,
-        'consideracoes_finais' => true,
+    private const REQUIRED_PICKUP_STRUCTURES = [
+        'localizacao_etiqueta' => 'object',      // CRÍTICO: deve ser object, não string
+        'condicoes_especiais' => 'array',        // Array de objects
+        'conversao_unidades' => 'object',        // Object com tabela_conversao
+        'cuidados_recomendacoes' => 'array',     // Array de objects  
+        'impacto_pressao' => 'object'            // Object com subcalibrado/ideal/sobrecalibrado
     ];
 
     /**
-     * Corrigir conteúdo incompleto de pickup
+     * Template correto para localizacao_etiqueta
+     * 
+     * Esta é a estrutura exata que o ViewModel espera receber
      */
-    public function fixIncompletePickupContent(TireCalibration $calibration): array
+    private const CORRECT_LOCALIZACAO_ETIQUETA_STRUCTURE = [
+        'local_principal' => 'string',
+        'descricao' => 'string',
+        'locais_alternativos' => 'array',
+        'observacao' => 'string'
+    ];
+
+    private string $apiKey;
+    private string $apiUrl;
+    private int $maxRetries;
+    private int $requestTimeout;
+
+    public function __construct()
     {
-        try {
-            Log::info('PickupArticleFixService: Iniciando correção', [
-                'id' => $calibration->_id,
-                'vehicle' => "{$calibration->vehicle_make} {$calibration->vehicle_model}",
-                'category' => $calibration->main_category
-            ]);
+        $this->apiKey = config('services.anthropic.api_key');
+        $this->apiUrl = config('services.anthropic.api_url', 'https://api.anthropic.com/v1/messages');
+        $this->maxRetries = config('tire_calibration.claude_max_retries', 3);
+        $this->requestTimeout = config('tire_calibration.claude_timeout', 45);
 
-            // 1. Analisar o que está faltando
-            $missingAnalysis = $this->analyzeMissingSections($calibration);
-            
-            if (empty($missingAnalysis['missing_sections'])) {
-                return [
-                    'success' => true,
-                    'action' => 'skipped',
-                    'message' => 'Conteúdo já está completo',
-                    'analysis' => $missingAnalysis
-                ];
-            }
-
-            // 2. Preparar prompt para Claude 3.5
-            $prompt = $this->buildClaudePrompt($calibration, $missingAnalysis);
-            
-            // 3. Chamar Claude API
-            $claudeResponse = $this->callClaudeApi($prompt);
-            
-            // 4. Processar resposta e extrair JSON
-            $newContent = $this->extractContentFromResponse($claudeResponse);
-            
-            // 5. Mesclar com conteúdo existente
-            $finalContent = $this->mergeWithExistingContent($calibration, $newContent);
-            
-            // 6. Atualizar registro
-            $this->updateCalibrationContent($calibration, $finalContent);
-            
-            Log::info('PickupArticleFixService: Correção concluída com sucesso', [
-                'id' => $calibration->_id,
-                'sections_fixed' => array_keys($missingAnalysis['missing_sections']),
-                'total_sections' => count($finalContent)
-            ]);
-            
-            return [
-                'success' => true,
-                'action' => 'fixed',
-                'message' => 'Conteúdo corrigido com sucesso',
-                'sections_fixed' => array_keys($missingAnalysis['missing_sections']),
-                'final_sections_count' => count($finalContent)
-            ];
-            
-        } catch (\Exception $e) {
-            Log::error('PickupArticleFixService: Erro na correção', [
-                'id' => $calibration->_id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            throw new \Exception("Erro ao corrigir pickup: {$e->getMessage()}");
+        if (empty($this->apiKey)) {
+            throw new Exception('Anthropic API key não configurada');
         }
     }
 
     /**
-     * Analisar seções faltantes
+     * Analisar seções faltando ou com estrutura incorreta
+     * 
+     * Este método detecta com precisão os pickups que precisam de correção,
+     * harmonizando com a análise do command
      */
     public function analyzeMissingSections(TireCalibration $calibration): array
     {
-        $existingContent = $calibration->article_refined['content'] ?? [];
-        $missingSections = [];
-        $incompleteSections = [];
+        $content = $this->extractArticleContent($calibration);
 
-        foreach (self::HILUX_TEMPLATE_SECTIONS as $section => $required) {
-            if (!isset($existingContent[$section]) || empty($existingContent[$section])) {
-                $missingSections[$section] = 'completely_missing';
-            } elseif ($this->isSectionIncomplete($section, $existingContent[$section])) {
-                $incompleteSections[$section] = 'incomplete';
+        if (empty($content)) {
+            return [
+                'needs_fix' => false,
+                'reason' => 'Sem conteúdo de artigo para analisar',
+                'missing_sections' => 0,
+                'incorrect_structures' => []
+            ];
+        }
+
+        $incorrectStructures = [];
+        $structuralIssues = 0;
+
+        // Analisar cada seção requerida
+        foreach (self::REQUIRED_PICKUP_STRUCTURES as $section => $expectedType) {
+            $issue = $this->validateSectionStructure($content, $section, $expectedType);
+
+            if ($issue) {
+                $incorrectStructures[] = $issue;
+                $structuralIssues++;
             }
         }
 
+        // Se localizacao_etiqueta está incorreta, é crítico
+        $isCritical = $this->isCriticalStructureError($incorrectStructures);
+
         return [
-            'missing_sections' => $missingSections,
-            'incomplete_sections' => $incompleteSections,
-            'existing_sections' => array_keys($existingContent),
-            'needs_fix' => !empty($missingSections) || !empty($incompleteSections)
+            'needs_fix' => $structuralIssues > 0,
+            'is_critical' => $isCritical,
+            'missing_sections' => $structuralIssues,
+            'incorrect_structures' => $incorrectStructures,
+            'analysis_details' => [
+                'vehicle' => "{$calibration->vehicle_make} {$calibration->vehicle_model}",
+                'template_confirmed' => $this->isPickupTemplate($content),
+                'content_source' => $this->getContentSource($calibration)
+            ]
         ];
     }
 
     /**
-     * Verificar se seção está incompleta
+     * Corrigir artigo pickup com estruturas incorretas
+     * 
+     * Utiliza Claude API para corrigir as estruturas JSON mantendo o conteúdo
      */
-    private function isSectionIncomplete(string $section, $content): bool
+    public function fixPickupArticle(TireCalibration $calibration): array
     {
-        if ($section === 'introducao') {
-            // Introdução deve ter pelo menos 200 caracteres
-            return is_string($content) && strlen($content) < 200;
+        try {
+            $analysis = $this->analyzeMissingSections($calibration);
+
+            if (!$analysis['needs_fix']) {
+                return [
+                    'success' => false,
+                    'reason' => 'Artigo não precisa de correção',
+                    'analysis' => $analysis
+                ];
+            }
+
+            // Extrair conteúdo base
+            $currentContent = $this->extractArticleContent($calibration);
+
+            // Buscar referência Toyota Hilux como template
+            $referenceContent = $this->getPickupReference();
+
+            // Preparar prompt para Claude API
+            $prompt = $this->buildCorrectionPrompt($currentContent, $analysis['incorrect_structures'], $referenceContent);
+
+            // Chamar Claude API com retry logic
+            $correctedContent = $this->callClaudeApiWithRetry($prompt, $calibration);
+
+            // Validar estrutura corrigida
+            $validation = $this->validateCorrectedStructure($correctedContent);
+
+            if (!$validation['is_valid']) {
+                throw new Exception("Estrutura corrigida inválida: " . implode(', ', $validation['errors']));
+            }
+
+            // Salvar correção
+            $this->saveCorrectedArticle($calibration, $correctedContent, $analysis);
+
+            Log::info('PickupArticleFixService: Artigo corrigido com sucesso', [
+                'calibration_id' => $calibration->_id,
+                'vehicle' => "{$calibration->vehicle_make} {$calibration->vehicle_model}",
+                'structures_fixed' => count($analysis['incorrect_structures']),
+                'fixed_sections' => array_column($analysis['incorrect_structures'], 'section')
+            ]);
+
+            return [
+                'success' => true,
+                'structures_fixed' => count($analysis['incorrect_structures']),
+                'fixed_sections' => array_column($analysis['incorrect_structures'], 'section'),
+                'validation' => $validation,
+                'analysis' => $analysis
+            ];
+        } catch (Exception $e) {
+            Log::error('PickupArticleFixService: Erro na correção', [
+                'calibration_id' => $calibration->_id,
+                'vehicle' => "{$calibration->vehicle_make} {$calibration->vehicle_model}",
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'analysis' => $analysis ?? null
+            ];
         }
-        
-        if ($section === 'perguntas_frequentes') {
-            // FAQs deve ter pelo menos 3 perguntas
-            return !is_array($content) || count($content) < 3;
-        }
-        
-        if ($section === 'especificacoes_por_versao') {
-            // Deve ter pelo menos 2 versões
-            return !is_array($content) || count($content) < 2;
+    }
+
+    /**
+     * Validar estrutura de seção específica
+     */
+    private function validateSectionStructure(array $content, string $section, string $expectedType): ?array
+    {
+        if (!isset($content[$section])) {
+            return [
+                'section' => $section,
+                'issue' => 'missing',
+                'expected_type' => $expectedType,
+                'actual_type' => 'null',
+                'description' => "Seção {$section} está ausente"
+            ];
         }
 
+        $actualValue = $content[$section];
+        $actualType = $this->getValueType($actualValue);
+
+        // Verificações específicas por seção
         if ($section === 'localizacao_etiqueta') {
-            // CRÍTICO: localizacao_etiqueta deve ser object, não string
-            return is_string($content);
+            return $this->validateLocalizacaoEtiqueta($actualValue, $actualType);
         }
 
-        if ($section === 'condicoes_especiais') {
-            // Deve ser array, não string
-            return is_string($content) || !is_array($content);
+        if ($actualType !== $expectedType) {
+            return [
+                'section' => $section,
+                'issue' => 'wrong_type',
+                'expected_type' => $expectedType,
+                'actual_type' => $actualType,
+                'description' => "Seção {$section} deveria ser {$expectedType} mas é {$actualType}"
+            ];
         }
 
-        if ($section === 'conversao_unidades') {
-            // Deve ter estrutura object com tabela
-            return !is_array($content) || !isset($content['tabela_conversao']);
+        return null;
+    }
+
+    /**
+     * Validação específica para localizacao_etiqueta
+     * 
+     * Esta é a validação mais crítica pois é onde o ViewModel falha
+     */
+    private function validateLocalizacaoEtiqueta($value, string $actualType): ?array
+    {
+        if ($actualType === 'string') {
+            // CRÍTICO: localizacao_etiqueta como string causa erro fatal
+            return [
+                'section' => 'localizacao_etiqueta',
+                'issue' => 'critical_structure_error',
+                'expected_type' => 'object',
+                'actual_type' => 'string',
+                'description' => 'CRÍTICO: localizacao_etiqueta como string causa erro fatal no ViewModel',
+                'sample_content' => substr($value, 0, 100) . '...',
+                'required_structure' => self::CORRECT_LOCALIZACAO_ETIQUETA_STRUCTURE
+            ];
         }
 
-        if ($section === 'cuidados_recomendacoes') {
-            // Deve ser array, não string
-            return is_string($content) || !is_array($content);
+        if ($actualType === 'object' || $actualType === 'array') {
+            // Verificar se tem as chaves requeridas
+            $requiredKeys = array_keys(self::CORRECT_LOCALIZACAO_ETIQUETA_STRUCTURE);
+            $missingKeys = [];
+
+            foreach ($requiredKeys as $key) {
+                if (!isset($value[$key])) {
+                    $missingKeys[] = $key;
+                }
+            }
+
+            if (!empty($missingKeys)) {
+                return [
+                    'section' => 'localizacao_etiqueta',
+                    'issue' => 'incomplete_structure',
+                    'expected_type' => 'object',
+                    'actual_type' => $actualType,
+                    'description' => 'localizacao_etiqueta tem estrutura incompleta',
+                    'missing_keys' => $missingKeys,
+                    'required_structure' => self::CORRECT_LOCALIZACAO_ETIQUETA_STRUCTURE
+                ];
+            }
         }
 
-        if ($section === 'impacto_pressao') {
-            // Deve ter estrutura completa com subcalibrado/ideal/sobrecalibrado
-            return !is_array($content) || !isset($content['subcalibrado']);
+        return null;
+    }
+
+    /**
+     * Extrair conteúdo do artigo (priorizar article_refined)
+     */
+    private function extractArticleContent(TireCalibration $calibration): array
+    {
+        // Priorizar article_refined.content se existir
+        if (!empty($calibration->article_refined)) {
+            $refined = is_array($calibration->article_refined)
+                ? $calibration->article_refined
+                : json_decode($calibration->article_refined, true);
+
+            if (!empty($refined['content'])) {
+                return $refined['content'];
+            }
+        }
+
+        // Fallback para generated_article.content
+        if (!empty($calibration->generated_article)) {
+            $generated = is_array($calibration->generated_article)
+                ? $calibration->generated_article
+                : json_decode($calibration->generated_article, true);
+
+            if (!empty($generated['content'])) {
+                return $generated['content'];
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Verificar se é erro crítico (localizacao_etiqueta incorreta)
+     */
+    private function isCriticalStructureError(array $incorrectStructures): bool
+    {
+        foreach ($incorrectStructures as $structure) {
+            if (
+                $structure['section'] === 'localizacao_etiqueta' &&
+                $structure['issue'] === 'critical_structure_error'
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Confirmar se é template pickup
+     */
+    private function isPickupTemplate(array $content): bool
+    {
+        // Verificar se tem características de pickup
+        $pickupIndicators = [
+            'tabela_carga',
+            'capacidade_carga',
+            'uso_trabalho',
+            'tração'
+        ];
+
+        foreach ($pickupIndicators as $indicator) {
+            if (isset($content[$indicator])) {
+                return true;
+            }
         }
 
         return false;
     }
 
     /**
-     * Construir prompt para Claude 3.5
+     * Identificar fonte do conteúdo
      */
-    private function buildClaudePrompt(TireCalibration $calibration, array $analysis): string
+    private function getContentSource(TireCalibration $calibration): string
     {
-        $vehicleInfo = $this->extractVehicleInfo($calibration);
-        $existingContent = $calibration->article_refined['content'] ?? [];
-        
-        $prompt = "Você é um especialista em calibração de pneus e redação técnica. Precisa COMPLETAR o conteúdo de um artigo sobre calibração de pneus para pickup que ficou incompleto.
+        if (!empty($calibration->article_refined)) {
+            return 'article_refined';
+        }
+        if (!empty($calibration->generated_article)) {
+            return 'generated_article';
+        }
+        return 'unknown';
+    }
 
-VEÍCULO ALVO:
-- Marca: {$vehicleInfo['make']}
-- Modelo: {$vehicleInfo['model']}  
-- Ano: {$vehicleInfo['year']}
-- Categoria: Pickup
-- Pressão Recomendada: {$vehicleInfo['pressure_display']}
-- Tamanho do Pneu: {$vehicleInfo['tire_size']}
+    /**
+     * Obter tipo de valor PHP
+     */
+    private function getValueType($value): string
+    {
+        if (is_array($value)) {
+            // Distinguir entre array e object
+            return (array_keys($value) !== range(0, count($value) - 1)) ? 'object' : 'array';
+        }
 
-SEÇÕES QUE PRECISAM SER CRIADAS/COMPLETADAS:
-" . implode(', ', array_keys($analysis['missing_sections'])) . "
+        return gettype($value);
+    }
 
-TEMPLATE DE REFERÊNCIA (baseado na Toyota Hilux que funciona perfeitamente):
-Use esta estrutura como referência, mas ADAPTE para o veículo específico:
+    /**
+     * Obter referência Toyota Hilux como template
+     */
+    private function getPickupReference(): array
+    {
+        // Buscar Toyota Hilux como referência de estrutura correta
+        $reference = TireCalibration::where('vehicle_make', 'Toyota')
+            ->where('vehicle_model', 'Hilux')
+            ->where('main_category', 'pickup')
+            ->whereNotNull('article_refined')
+            ->first();
 
+        if ($reference && !empty($reference->article_refined)) {
+            $content = is_array($reference->article_refined)
+                ? $reference->article_refined
+                : json_decode($reference->article_refined, true);
+
+            if (!empty($content['content'])) {
+                return $content['content'];
+            }
+        }
+
+        // Se não encontrar, retornar estrutura modelo
+        return $this->getDefaultPickupStructure();
+    }
+
+    /**
+     * Estrutura modelo padrão para pickup
+     */
+    private function getDefaultPickupStructure(): array
+    {
+        return [
+            'localizacao_etiqueta' => [
+                'local_principal' => 'Coluna da porta do motorista',
+                'descricao' => 'A etiqueta oficial de pressão está localizada na coluna da porta do motorista.',
+                'locais_alternativos' => [
+                    'Manual do proprietário na seção "Especificações Técnicas"',
+                    'Display digital do painel (se disponível)',
+                    'Tampa do tanque de combustível'
+                ],
+                'observacao' => 'Use sempre os valores oficiais da etiqueta como referência.'
+            ],
+            'condicoes_especiais' => [
+                [
+                    'situacao' => 'Com carga',
+                    'descricao' => 'Para transporte de carga na caçamba',
+                    'ajuste_pressao' => 'Aumentar 3-5 PSI no eixo traseiro'
+                ]
+            ],
+            'conversao_unidades' => [
+                'tabela_conversao' => [
+                    ['psi' => '30', 'kgf_cm2' => '2.11', 'bar' => '2.07']
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Construir prompt para correção Claude
+     * 
+     * Atualizado para ser mais flexível e aceitar estruturas array OU object
+     */
+    private function buildCorrectionPrompt(array $currentContent, array $incorrectStructures, array $referenceContent): string
+    {
+        $vehicle = $currentContent['vehicle_info']['full_name'] ?? 'Pickup';
+
+        $structureIssues = "ESTRUTURAS COM PROBLEMAS:\n";
+        foreach ($incorrectStructures as $issue) {
+            $structureIssues .= "- {$issue['section']}: {$issue['description']}\n";
+        }
+
+        return "Você é um especialista em correção de estruturas JSON para artigos de calibragem de pneus.
+
+TAREFA: Corrigir as estruturas JSON incorretas no artigo de calibragem para {$vehicle}, mantendo TODO o conteúdo original.
+
+{$structureIssues}
+
+IMPORTANTE: O ViewModel aceita tanto ARRAY quanto OBJECT para as seções. O crítico é que NÃO sejam strings.
+
+ESTRUTURAS ACEITAS:
+
+localizacao_etiqueta - DEVE SER OBJECT (nunca string):
 ```json
 {
-    \"introducao\": \"Texto completo sobre o veículo, destacando características de pickup, capacidade de carga, versatilidade urbano/off-road, importância da calibragem correta para segurança e economia.\",
-    
-    \"especificacoes_por_versao\": [
-        {
-            \"versao\": \"[MODELO] Base\",
-            \"medida_pneus\": \"{$vehicleInfo['tire_size']}\",
-            \"indice_carga_velocidade\": \"112S\",
-            \"pressao_dianteiro_normal\": \"{$vehicleInfo['pressure_front']}\",
-            \"pressao_traseiro_normal\": \"{$vehicleInfo['pressure_rear']}\",
-            \"pressao_dianteiro_carregado\": \"{$vehicleInfo['pressure_front_loaded']}\",
-            \"pressao_traseiro_carregado\": \"{$vehicleInfo['pressure_rear_loaded']}\"
-        },
-        {
-            \"versao\": \"[MODELO] Topo de Linha\",
-            \"medida_pneus\": \"{$vehicleInfo['tire_size']}\",
-            \"indice_carga_velocidade\": \"112S\",
-            \"pressao_dianteiro_normal\": \"{$vehicleInfo['pressure_front']}\",
-            \"pressao_traseiro_normal\": \"{$vehicleInfo['pressure_rear']}\",
-            \"pressao_dianteiro_carregado\": \"{$vehicleInfo['pressure_front_loaded']}\",
-            \"pressao_traseiro_carregado\": \"{$vehicleInfo['pressure_rear_loaded']}\"
-        }
-    ],
-    
-    \"perguntas_frequentes\": [
-        {
-            \"pergunta\": \"Qual a pressão ideal do {$vehicleInfo['make']} {$vehicleInfo['model']} em PSI?\",
-            \"resposta\": \"Para o {$vehicleInfo['make']} {$vehicleInfo['model']}, use {$vehicleInfo['pressure_display']} para uso normal. Com carga máxima, ajuste conforme especificado.\"
-        },
-        {
-            \"pergunta\": \"Com que frequência verificar a pressão na {$vehicleInfo['model']}?\",
-            \"resposta\": \"Verifique semanalmente devido ao uso intensivo típico de pickups. Sistema TPMS auxilia no monitoramento.\"
-        },
-        {
-            \"pergunta\": \"Como ajustar pressão para off-road na {$vehicleInfo['model']}?\",
-            \"resposta\": \"Para off-road pesado, reduza 5 PSI em todos os pneus. Sempre recalibre após uso off-road.\"
-        },
-        {
-            \"pergunta\": \"O {$vehicleInfo['make']} {$vehicleInfo['model']} tem sistema TPMS?\",
-            \"resposta\": \"Versões mais recentes possuem TPMS que monitora pressão em tempo real e alerta sobre variações.\"
-        },
-        {
-            \"pergunta\": \"Posso usar pneus all-terrain com mesma pressão?\",
-            \"resposta\": \"Sim, mantenha as mesmas pressões com pneus all-terrain, ideais para uso misto da pickup.\"
-        }
-    ],
-    
-    \"consideracoes_finais\": \"O {$vehicleInfo['make']} {$vehicleInfo['model']} é uma pickup [DESTAQUE AS CARACTERÍSTICAS]. Manter a pressão correta ({$vehicleInfo['pressure_display']}) garante máxima performance, economia e segurança para uso urbano, rodoviário e off-road.\"
+  \"localizacao_etiqueta\": {
+    \"local_principal\": \"string\",
+    \"descricao\": \"string\", 
+    \"locais_alternativos\": [\"array de strings\"],
+    \"observacao\": \"string\"
+  }
 }
 ```
 
-INSTRUÇÕES ESPECÍFICAS:
-1. ADAPTE todo o conteúdo para o {$vehicleInfo['make']} {$vehicleInfo['model']}
-2. Use dados técnicos reais (pressões, tamanho de pneu) fornecidos
-3. Mantenha o tom técnico mas acessível
-4. Foque nos benefícios específicos de pickups (capacidade de carga, off-road, versatilidade)
-5. Retorne APENAS o JSON válido, sem explicações adicionais
+Outras seções - podem ser ARRAY ou OBJECT (nunca string):
+- condicoes_especiais: array de objects OU object com propriedades
+- conversao_unidades: object com tabela OU array de conversões  
+- cuidados_recomendacoes: array de objects OU object com categorias
+- impacto_pressao: object com tipos OU array de impactos
 
-CONTEÚDO EXISTENTE (para preservar):
-" . json_encode($existingContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "
+ARTIGO ATUAL (com estruturas incorretas):
+```json
+" . json_encode($currentContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "
+```
 
-Gere o JSON completo com TODAS as seções necessárias:";
+REFERÊNCIA (estrutura que funciona):
+```json
+" . json_encode($referenceContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "
+```
 
-        return $prompt;
+INSTRUÇÕES:
+1. MANTER todo conteúdo textual existente
+2. CONVERTER strings para array/object conforme necessário
+3. Priorizar localizacao_etiqueta como object estruturado
+4. Para outras seções: manter como object se já estiver funcionando
+5. NUNCA alterar informações técnicas ou dados do veículo
+6. Retornar JSON válido completo
+7. Foque apenas nas seções que são STRINGS e precisam virar array/object
+
+Retorne APENAS o JSON corrigido, sem explicações:";
     }
 
     /**
-     * Extrair informações do veículo
+     * Chamar Claude API com retry logic
      */
-    private function extractVehicleInfo(TireCalibration $calibration): array
+    private function callClaudeApiWithRetry(string $prompt, TireCalibration $calibration): array
     {
-        $vehicleData = $calibration->article_refined['vehicle_data'] ?? [];
-        $pressureSpecs = $vehicleData['pressure_specifications'] ?? [];
-        
-        return [
-            'make' => $calibration->vehicle_make ?? $vehicleData['make'] ?? 'Veículo',
-            'model' => $calibration->vehicle_model ?? $vehicleData['model'] ?? 'Pickup',
-            'year' => $calibration->vehicle_year ?? $vehicleData['year'] ?? '2023',
-            'tire_size' => $pressureSpecs['tire_size'] ?? $vehicleData['tire_size'] ?? '265/65 R17',
-            'pressure_display' => $pressureSpecs['pressure_display'] ?? 'Dianteiros: 35 PSI / Traseiros: 35 PSI',
-            'pressure_front' => $pressureSpecs['pressure_empty_front'] ?? 35,
-            'pressure_rear' => $pressureSpecs['pressure_empty_rear'] ?? 35,
-            'pressure_front_loaded' => $pressureSpecs['pressure_max_front'] ?? 38,
-            'pressure_rear_loaded' => $pressureSpecs['pressure_max_rear'] ?? 42,
-        ];
-    }
+        $attempt = 1;
+        $lastError = null;
 
-    /**
-     * Chamar Claude API
-     */
-    private function callClaudeApi(string $prompt): array
-    {
-        $apiKey = config('services.claude.api_key');
-        
-        if (!$apiKey) {
-            throw new \Exception('Claude API key não configurada');
-        }
+        while ($attempt <= $this->maxRetries) {
+            try {
+                Log::info("PickupArticleFixService: Tentativa {$attempt} para {$calibration->vehicle_make} {$calibration->vehicle_model}");
 
-        $response = Http::timeout(self::TIMEOUT_SECONDS)
-            ->withHeaders([
-                'x-api-key' => $apiKey,
-                'content-type' => 'application/json',
-                'anthropic-version' => '2023-06-01'
-            ])
-            ->post(self::CLAUDE_API_URL, [
-                'model' => self::CLAUDE_MODEL,
-                'max_tokens' => self::MAX_TOKENS,
-                'temperature' => 0.3,
-                'messages' => [
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
-                ]
-            ]);
+                $response = Http::timeout($this->requestTimeout)
+                    ->withHeaders([
+                        'Content-Type' => 'application/json',
+                        'x-api-key' => $this->apiKey,
+                        'anthropic-version' => '2023-06-01'
+                    ])
+                    ->post($this->apiUrl, [
+                        'model' => 'claude-3-5-sonnet-20241022',
+                        'max_tokens' => 4000,
+                        'temperature' => 0.1,
+                        'messages' => [
+                            [
+                                'role' => 'user',
+                                'content' => $prompt
+                            ]
+                        ]
+                    ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('Erro na API Claude: ' . $response->body());
-        }
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $content = $data['content'][0]['text'] ?? '';
 
-        $data = $response->json();
-        
-        if (!isset($data['content'][0]['text'])) {
-            throw new \Exception('Resposta da API Claude inválida');
-        }
+                    // Extrair e validar JSON
+                    $correctedContent = $this->extractJsonFromResponse($content);
 
-        return [
-            'content' => $data['content'][0]['text'],
-            'usage' => $data['usage'] ?? [],
-        ];
-    }
+                    if (!empty($correctedContent)) {
+                        return $correctedContent;
+                    }
 
-    /**
-     * Extrair conteúdo JSON da resposta do Claude
-     */
-    private function extractContentFromResponse(array $response): array
-    {
-        $text = $response['content'];
-        
-        // ESTRATÉGIA 1: JSON dentro de code block
-        if (preg_match('/```(?:json)?\s*(.*?)\s*```/s', $text, $matches)) {
-            $jsonString = trim($matches[1]);
-            $json = json_decode($jsonString, true);
+                    throw new Exception('Resposta Claude não contém JSON válido');
+                }
 
-            if ($json && json_last_error() === JSON_ERROR_NONE) {
-                Log::info('PickupArticleFixService: JSON extraído de code block');
-                return $json;
-            }
-        }
-
-        // ESTRATÉGIA 2: JSON no início/meio do texto
-        if (preg_match('/\{.*\}/s', $text, $matches)) {
-            $jsonString = $matches[0];
-            $json = json_decode($jsonString, true);
-
-            if ($json && json_last_error() === JSON_ERROR_NONE) {
-                Log::info('PickupArticleFixService: JSON extraído do texto');
-                return $json;
-            }
-        }
-
-        // ESTRATÉGIA 3: Tentar todo o texto como JSON
-        $json = json_decode($text, true);
-        if ($json && json_last_error() === JSON_ERROR_NONE) {
-            Log::info('PickupArticleFixService: Texto completo é JSON válido');
-            return $json;
-        }
-
-        throw new \Exception('Não foi possível extrair JSON válido da resposta do Claude: ' . json_last_error_msg());
-    }
-
-    /**
-     * Mesclar novo conteúdo com existente
-     * 
-     * ⚠️ TRATA: article_refined pode ser string JSON do MongoDB
-     */
-    private function mergeWithExistingContent(TireCalibration $calibration, array $newContent): array
-    {
-        // Usar método seguro para garantir array
-        $articleRefined = $this->ensureArrayFromField($calibration, 'article_refined');
-        $existingContent = $articleRefined['content'] ?? [];
-        
-        // Priorizar conteúdo novo, mas preservar seções que já estavam completas
-        $mergedContent = $existingContent;
-        
-        foreach ($newContent as $section => $content) {
-            if (!empty($content)) {
-                // Sempre sobrescrever com conteúdo novo se disponível
-                $mergedContent[$section] = $content;
-                
-                Log::info('PickupArticleFixService: Seção atualizada', [
-                    'section' => $section,
-                    'type' => gettype($content),
-                    'size' => is_string($content) ? strlen($content) : count($content)
+                $lastError = "API Error: " . $response->status() . " - " . $response->body();
+            } catch (Exception $e) {
+                $lastError = $e->getMessage();
+                Log::warning("PickupArticleFixService: Tentativa {$attempt} falhou", [
+                    'error' => $lastError,
+                    'vehicle' => "{$calibration->vehicle_make} {$calibration->vehicle_model}"
                 ]);
             }
+
+            if ($attempt < $this->maxRetries) {
+                sleep(pow(2, $attempt)); // Backoff exponencial: 2s, 4s, 8s
+            }
+
+            $attempt++;
         }
-        
-        return $mergedContent;
+
+        throw new Exception("Falha após {$this->maxRetries} tentativas. Último erro: {$lastError}");
     }
 
     /**
-     * Atualizar registro com novo conteúdo
-     * 
-     * ⚠️ IMPORTANTE: Força array no update para evitar problemas de cast
+     * Extrair JSON da resposta Claude
      */
-    private function updateCalibrationContent(TireCalibration $calibration, array $finalContent): void
+    private function extractJsonFromResponse(string $content): array
     {
-        // Garantir que temos array válido
-        $articleRefined = $this->ensureArrayFromField($calibration, 'article_refined');
-        
-        // Preservar toda estrutura article_refined, apenas atualizando 'content'
-        $articleRefined['content'] = $finalContent;
-        
-        // Adicionar metadados da correção
-        $articleRefined['pickup_fix_metadata'] = [
-            'fixed_at' => now()->toISOString(),
-            'fixed_by' => 'PickupArticleFixService',
-            'claude_model' => self::CLAUDE_MODEL,
-            'sections_count' => count($finalContent),
-            'fix_version' => '1.0'
-        ];
-        
-        // FORÇAR cast no update - converter explicitamente para array
-        $updateData = [
-            'article_refined' => $articleRefined, // Laravel deve aplicar cast aqui
-            'content_quality_score' => $this->calculateContentQuality($finalContent),
-            'last_content_update' => now(),
-        ];
-        
-        // Debug do tipo antes do update
-        Log::info('PickupArticleFixService: Atualizando registro', [
-            'id' => $calibration->_id,
-            'article_refined_type' => gettype($articleRefined),
-            'is_array' => is_array($articleRefined),
-            'sections_count' => count($finalContent)
-        ]);
-        
-        $calibration->update($updateData);
-        
-        // Verificar se update funcionou corretamente
-        $calibration->refresh();
-        $updatedArticle = $this->ensureArrayFromField($calibration, 'article_refined');
-        
-        Log::info('PickupArticleFixService: Update verificado', [
-            'id' => $calibration->_id,
-            'updated_sections_count' => count($updatedArticle['content'] ?? []),
-            'success' => !empty($updatedArticle['content'])
-        ]);
-    }
+        // Remover markdown code blocks se presentes
+        $content = preg_replace('/```json\s*|\s*```/', '', $content);
+        $content = trim($content);
 
-    /**
-     * Calcular score de qualidade do conteúdo
-     */
-    private function calculateContentQuality(array $content): int
-    {
-        $score = 0;
-        $maxScore = 10;
-        
-        // Verificar seções essenciais (6 pontos)
-        $essentialSections = ['introducao', 'perguntas_frequentes', 'consideracoes_finais'];
-        foreach ($essentialSections as $section) {
-            if (!empty($content[$section])) {
-                $score += 2;
+        // Tentar decode direto
+        $decoded = json_decode($content, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return $decoded;
+        }
+
+        // Tentar extrair JSON do meio do texto
+        if (preg_match('/\{.*\}/s', $content, $matches)) {
+            $decoded = json_decode($matches[0], true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
             }
         }
-        
-        // Verificar seções técnicas (4 pontos)
-        $technicalSections = ['especificacoes_por_versao', 'tabela_carga_completa'];
-        foreach ($technicalSections as $section) {
-            if (!empty($content[$section])) {
-                $score += 2;
-            }
-        }
-        
-        return min($score, $maxScore);
+
+        return [];
     }
 
     /**
-     * Detectar registros pickup que precisam de correção
+     * Validar estrutura corrigida
      */
-    public function detectIncompletePickups(int $limit = 50): \Illuminate\Support\Collection
+    private function validateCorrectedStructure(array $correctedContent): array
     {
-        return TireCalibration::where('main_category', 'pickup')
-            ->where('claude_refinement_version', 'v4_completed')
-            ->whereNotNull('article_refined')
-            ->get()
-            ->filter(function ($calibration) {
-                $analysis = $this->analyzeMissingSections($calibration);
-                return $analysis['needs_fix'];
-            })
-            ->take($limit);
-    }
+        $errors = [];
+        $isValid = true;
 
-    /**
-     * Estatísticas dos pickups incompletos
-     */
-    public function getIncompletePickupsStats(): array
-    {
-        $totalPickups = TireCalibration::where('main_category', 'pickup')
-            ->where('claude_refinement_version', 'v4_completed')
-            ->count();
-            
-        $incompletePickups = $this->detectIncompletePickups(1000);
-        
-        $sectionProblems = [];
-        
-        foreach ($incompletePickups as $pickup) {
-            $analysis = $this->analyzeMissingSections($pickup);
-            
-            foreach ($analysis['missing_sections'] as $section => $status) {
-                $sectionProblems[$section] = ($sectionProblems[$section] ?? 0) + 1;
+        // Validar cada estrutura requerida
+        foreach (self::REQUIRED_PICKUP_STRUCTURES as $section => $expectedType) {
+            if (!isset($correctedContent[$section])) {
+                $errors[] = "Seção {$section} ainda ausente";
+                $isValid = false;
+                continue;
+            }
+
+            $actualType = $this->getValueType($correctedContent[$section]);
+
+            if ($actualType !== $expectedType) {
+                $errors[] = "Seção {$section} ainda tem tipo incorreto: {$actualType} (esperado: {$expectedType})";
+                $isValid = false;
+            }
+
+            // Validação específica para localizacao_etiqueta
+            if ($section === 'localizacao_etiqueta' && $actualType === 'object') {
+                $requiredKeys = array_keys(self::CORRECT_LOCALIZACAO_ETIQUETA_STRUCTURE);
+                foreach ($requiredKeys as $key) {
+                    if (!isset($correctedContent[$section][$key])) {
+                        $errors[] = "localizacao_etiqueta não tem chave requerida: {$key}";
+                        $isValid = false;
+                    }
+                }
             }
         }
-        
+
         return [
-            'total_pickups_v4_completed' => $totalPickups,
-            'incomplete_pickups_count' => $incompletePickups->count(),
-            'incomplete_percentage' => $totalPickups > 0 ? round(($incompletePickups->count() / $totalPickups) * 100, 1) : 0,
-            'most_missing_sections' => $sectionProblems,
-            'needs_attention' => $incompletePickups->count() > 0
+            'is_valid' => $isValid,
+            'errors' => $errors,
+            'validated_sections' => array_keys(self::REQUIRED_PICKUP_STRUCTURES)
         ];
     }
 
     /**
-     * Testar conexão com Claude API
+     * Salvar artigo corrigido com estrutura correta
+     * 
+     * Salva no formato EXATO igual ao RefineWithClaudePhase3BCommand
+     */
+    private function saveCorrectedArticle(TireCalibration $calibration, array $correctedContent, array $analysis): void
+    {
+        // Extrair dados do artigo original para manter compatibilidade
+        $originalArticle = $this->extractOriginalArticleStructure($calibration);
+
+        // Construir article_refined no formato CORRETO (igual ao Audi A3)
+        $articleRefined = [
+            'title' => $originalArticle['title'] ?? $this->generateTitle($calibration),
+            'slug' => $originalArticle['slug'] ?? $this->generateSlug($calibration),
+            'template' => 'tire_calibration_pickup',
+            'category_id' => 1,
+            'category_name' => 'Calibragem de Pneus',
+            'category_slug' => 'calibragem-pneus',
+
+            // SEO data
+            'seo_data' => $originalArticle['seo_data'] ?? $this->generateSeoData($calibration),
+
+            // Dados do veículo
+            'vehicle_data' => $originalArticle['vehicle_data'] ?? $this->extractVehicleData($calibration),
+
+            // Entidades extraídas
+            'extracted_entities' => $originalArticle['extracted_entities'] ?? $this->generateExtractedEntities($calibration),
+
+            // CONTEÚDO CORRIGIDO
+            'content' => $correctedContent,
+
+            // Metadados formatados
+            'formated_updated_at' => now()->locale('pt_BR')->translatedFormat('d \d\e F \d\e Y'),
+            'canonical_url' => $this->generateCanonicalUrl($calibration),
+
+            // Enhancement metadata (igual ao Phase3B)
+            'enhancement_metadata' => [
+                'enhanced_by' => 'pickup-fix-service',
+                'enhanced_at' => now()->toISOString(),
+                'enhanced_areas' => array_keys($correctedContent),
+                'model_used' => 'claude-3-5-sonnet-20241022',
+                'structures_fixed' => count($analysis['incorrect_structures']),
+                'fixed_sections' => array_column($analysis['incorrect_structures'], 'section'),
+                'validation_passed' => true,
+                'pickup_fix_success' => true,
+                'total_api_calls' => 1,
+                'fix_version' => '1.0'
+            ]
+        ];
+
+        $calibration->update([
+            'article_refined' => $articleRefined,
+            'claude_refinement_version' => 'v4_pickup_fixed',
+            'enrichment_phase' => TireCalibration::PHASE_CLAUDE_COMPLETED,
+            'updated_at' => now(),
+
+            // Metadados específicos de correção pickup (fora do article_refined)
+            'pickup_fix_metadata' => [
+                'fixed_at' => now()->toISOString(),
+                'fixed_by' => 'PickupArticleFixService',
+                'claude_model' => 'claude-3-5-sonnet-20241022',
+                'sections_count' => count($correctedContent),
+                'fix_version' => '1.0',
+            ]
+        ]);
+    }
+
+    /**
+     * Extrair estrutura do artigo original (de generated_article ou existing article_refined)
+     */
+    private function extractOriginalArticleStructure(TireCalibration $calibration): array
+    {
+        // Se já tem article_refined, usar como base
+        if (!empty($calibration->article_refined)) {
+            $existing = is_array($calibration->article_refined)
+                ? $calibration->article_refined
+                : json_decode($calibration->article_refined, true);
+
+            if (!empty($existing)) {
+                return $existing;
+            }
+        }
+
+        // Fallback: usar generated_article
+        $generatedArticle = is_array($calibration->generated_article)
+            ? $calibration->generated_article
+            : json_decode($calibration->generated_article, true);
+
+        return $generatedArticle ?? [];
+    }
+
+    /**
+     * Gerar dados SEO
+     */
+    private function generateSeoData(TireCalibration $calibration): array
+    {
+        $vehicleFullName = "{$calibration->vehicle_make} {$calibration->vehicle_model}";
+
+        return [
+            'page_title' => "Calibragem do Pneu do {$vehicleFullName} – Guia Completo",
+            'meta_description' => "Guia completo de calibragem dos pneus do {$vehicleFullName}. Pressões específicas e dicas especializadas.",
+            'h1' => "Calibragem do Pneu do {$vehicleFullName} – Guia Completo",
+            'primary_keyword' => "calibragem pneu " . strtolower("{$calibration->vehicle_make} {$calibration->vehicle_model}"),
+            'secondary_keywords' => [
+                "como calibrar pneu {$calibration->vehicle_make} {$calibration->vehicle_model}",
+                "pressão pneu {$calibration->vehicle_make}",
+                "calibrar pneu {$calibration->vehicle_model}",
+                "procedimento calibragem {$calibration->vehicle_make}"
+            ],
+            'og_title' => "Calibragem do Pneu do {$vehicleFullName} – Guia Completo",
+            'og_description' => "Procedimento completo de calibragem dos pneus do {$vehicleFullName}. Pressões específicas e dicas especializadas.",
+            'canonical_url' => $this->generateCanonicalUrl($calibration)
+        ];
+    }
+
+    /**
+     * Gerar entidades extraídas
+     */
+    private function generateExtractedEntities(TireCalibration $calibration): array
+    {
+        return [
+            'marca' => $calibration->vehicle_make,
+            'modelo' => $calibration->vehicle_model,
+            'categoria' => $calibration->main_category,
+            'motorizacao' => '2.0 Turbo', // Padrão para pickup
+            'combustivel' => 'Diesel'     // Padrão para pickup
+        ];
+    }
+
+    /**
+     * Gerar título para o artigo
+     */
+    private function generateTitle(TireCalibration $calibration): string
+    {
+        return "Calibragem do Pneu do {$calibration->vehicle_make} {$calibration->vehicle_model} – Guia Completo";
+    }
+
+    /**
+     * Gerar slug para o artigo
+     */
+    private function generateSlug(TireCalibration $calibration): string
+    {
+        $make = strtolower($calibration->vehicle_make);
+        $model = strtolower(str_replace(' ', '-', $calibration->vehicle_model));
+        return "calibragem-pneu-{$make}-{$model}";
+    }
+
+    /**
+     * Gerar URL canônica
+     */
+    private function generateCanonicalUrl(TireCalibration $calibration): string
+    {
+        $slug = $this->generateSlug($calibration);
+        return "https://mercadoveiculos.com.br/info/{$slug}";
+    }
+
+    /**
+     * Verificar conectividade com API
      */
     public function testApiConnection(): array
     {
         try {
-            $testPrompt = "Responda apenas com: {\"status\": \"ok\", \"message\": \"Claude API funcionando\"}";
-            
-            $response = $this->callClaudeApi($testPrompt);
-            $testResult = $this->extractContentFromResponse($response);
-            
-            if (isset($testResult['status']) && $testResult['status'] === 'ok') {
-                return [
-                    'success' => true,
-                    'message' => 'Claude API conectada e funcionando',
-                    'model' => self::CLAUDE_MODEL
-                ];
-            }
-            
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                    'x-api-key' => $this->apiKey,
+                    'anthropic-version' => '2023-06-01'
+                ])
+                ->post($this->apiUrl, [
+                    'model' => 'claude-3-5-sonnet-20241022',
+                    'max_tokens' => 10,
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => 'test'
+                        ]
+                    ]
+                ]);
+
             return [
-                'success' => false,
-                'message' => 'Claude API respondeu mas formato inesperado'
+                'success' => $response->successful(),
+                'status' => $response->status(),
+                'response_time' => $response->handlerStats()['total_time'] ?? null
             ];
-            
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Erro ao conectar com Claude API: ' . $e->getMessage()
+                'error' => $e->getMessage()
             ];
         }
     }
 
     /**
-     * Executar limpeza de registros travados
+     * Estatísticas do service
      */
-    public function cleanupStuckRecords(): int
+    public function getStats(): array
     {
-        $stuckRecords = TireCalibration::where('claude_refinement_version', 'v4_pickup_fixing')
-            ->where('updated_at', '<', now()->subHours(2))
-            ->get();
-            
-        $cleanedCount = 0;
-        
-        foreach ($stuckRecords as $record) {
-            $record->update([
-                'claude_refinement_version' => 'v4_completed',
-                'last_error' => 'Limpeza automática - processo travado'
-            ]);
-            
-            $cleanedCount++;
-            
-            Log::warning('PickupArticleFixService: Registro travado limpo', [
-                'id' => $record->_id,
-                'vehicle' => "{$record->vehicle_make} {$record->vehicle_model}"
-            ]);
-        }
-        
-        return $cleanedCount;
+        $pickupsTotal = TireCalibration::where('main_category', 'pickup')->count();
+        $pickupsWithRefined = TireCalibration::where('main_category', 'pickup')
+            ->whereNotNull('article_refined')->count();
+        $pickupsV4Completed = TireCalibration::where('main_category', 'pickup')
+            ->where('claude_refinement_version', 'v4_completed')->count();
+
+        return [
+            'service' => 'PickupArticleFixService',
+            'version' => 'v4_structure_correction',
+            'pickups_total' => $pickupsTotal,
+            'pickups_with_refined' => $pickupsWithRefined,
+            'pickups_v4_completed' => $pickupsV4Completed,
+            'api_configured' => !empty($this->apiKey),
+            'required_structures' => array_keys(self::REQUIRED_PICKUP_STRUCTURES),
+            'critical_structure' => 'localizacao_etiqueta'
+        ];
     }
 }

@@ -3,59 +3,60 @@
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Src\ContentGeneration\TireCalibration\Application\Services\PickupArticleFixService;
 use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
-use Carbon\Carbon;
+use Src\ContentGeneration\TireCalibration\Application\Services\PickupArticleFixService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 /**
- * FixIncompletePickupArticlesCommand - Corrigir pickups com article_refined incompleto
+ * FixIncompletePickupArticlesCommand V4
  * 
- * Este command identifica e corrige pickups que passaram pelo processo V4
- * mas ficaram com conteúdo incompleto na seção 'content' do article_refined.
+ * Command harmonizado com PickupArticleFixService para correção definitiva de pickups
+ * com estruturas JSON incorretas que causam erro fatal no ViewModel.
  * 
- * PROBLEMA IDENTIFICADO:
- * - Pickups com claude_refinement_version = "v4_completed"
- * - Mas article_refined.content possui apenas 'introducao' cortada
- * - Faltam: perguntas_frequentes, consideracoes_finais, especificacoes_por_versao
+ * CORREÇÃO APLICADA:
+ * - Análise harmonizada com service (ambos detectam mesmos problemas)
+ * - Loop de processamento de todos pickups problemáticos
+ * - Rate limiting adequado (3 pickups por batch, 5s entre requests)
+ * - Sistema de retry robusto
+ * - Logging detalhado do processo
  * 
- * ESTRATÉGIA:
- * 1. Alterar flag: v4_completed -> v4_pickup_fixing
- * 2. Reprocessar conteúdo usando template Toyota Hilux como base
- * 3. Restaurar flag: v4_pickup_fixing -> v4_completed
- * 
- * USO:
- * php artisan tire-calibration:fix-incomplete-pickups
- * php artisan tire-calibration:fix-incomplete-pickups --dry-run
- * php artisan tire-calibration:fix-incomplete-pickups --limit=5
- * php artisan tire-calibration:fix-incomplete-pickups --force-all
- * 
- * @author Claude Sonnet 4
- * @version 1.0
+ * FOCO CRÍTICO: localizacao_etiqueta como string → object estruturado
  */
+
+// php artisan tinker
+// > use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
+//
+// $updated = TireCalibration::where('main_category', 'pickup')
+//     ->where('claude_refinement_version', 'v4_completed')
+//     ->update([
+//         'claude_refinement_version' => 'v4_pickup_fixing',
+//         'pickup_fix_notes' => null,
+//         'last_pickup_fix_at' => null
+//     ]);
+// echo "Pickups resetados: $updated\n";
+// Pickups resetados: 16
+
 class FixIncompletePickupArticlesCommand extends Command
 {
-    /**
-     * Signature do command
-     */
-    protected $signature = 'tire-calibration:fix-incomplete-pickups
-                            {--dry-run : Simular apenas, não executar alterações}
-                            {--limit=1 : Número máximo de registros a processar}
-                            {--force-all : Forçar correção mesmo em pickups que parecem completos}
-                            {--category=pickup : Categoria específica (pickup, truck)}
-                            {--debug : Mostrar informações detalhadas de debug}';
+    protected $signature = 'calibration:fix-incomplete-pickups
+                            {--limit=1 : Limite de pickups para processar por execução}
+                            {--batch-size=3 : Número de pickups por batch (rate limiting)}
+                            {--delay=5 : Segundos de delay entre batches}
+                            {--dry-run : Simular sem fazer alterações}
+                            {--force-all : Processar todos pickups problemáticos}
+                            {--skip-analysis : Pular análise inicial e ir direto para correção}
+                            {--debug : Mostrar análise detalhada de cada pickup}';
 
-    /**
-     * Descrição do command
-     */
-    protected $description = 'Corrigir pickups com article_refined incompleto usando Claude 3.5 Sonnet';
+    protected $description = 'Corrigir definitivamente pickups com estruturas JSON incorretas que causam erro no ViewModel';
 
     private PickupArticleFixService $fixService;
     private int $processedCount = 0;
     private int $fixedCount = 0;
-    private int $skippedCount = 0;
     private int $errorCount = 0;
-    private array $errors = [];
+    private int $skippedCount = 0;
+    private array $processingResults = [];
+    private array $errorDetails = [];
 
     public function __construct(PickupArticleFixService $fixService)
     {
@@ -63,319 +64,480 @@ class FixIncompletePickupArticlesCommand extends Command
         $this->fixService = $fixService;
     }
 
-    /**
-     * Executar o command
-     */
-    public function handle(): int
+    public function handle(): ?int
     {
-        $config = $this->getConfiguration();
+
+        // Só executa em produção e staging
+        if (app()->environment(['local', 'testing'])) {
+            return null;
+        }
+
+        $startTime = microtime(true);
         
-        $this->displayHeader($config);
-        
+        $this->info('🔧 CORREÇÃO DEFINITIVA DE PICKUPS COM ESTRUTURAS JSON INCORRETAS');
+        $this->line('   Harmonizado com PickupArticleFixService V4');
+        $this->newLine();
+
         try {
-            // 1. Encontrar pickups problemáticos
-            $candidates = $this->findIncompletePickups($config);
+            $config = $this->getConfig();
+            $this->displayConfig($config);
+
+            // Teste de conectividade API
+            if (!$this->testApiConnectivity()) {
+                return self::FAILURE;
+            }
+
+            // Análise inicial dos problemas
+            if (!$config['skip_analysis']) {
+                $this->performInitialAnalysis();
+            }
+
+            // Buscar candidatos para correção
+            $candidates = $this->getCandidatesForFix($config);
             
             if ($candidates->isEmpty()) {
-                $this->info('✅ Nenhum pickup incompleto encontrado!');
+                $this->warn('❌ Nenhum pickup problemático encontrado para correção');
                 return self::SUCCESS;
             }
 
-            $this->displayCandidatesSummary($candidates, $config);
-            
-            if (!$config['dry_run'] && !$this->confirm('Continuar com a correção?')) {
-                $this->info('❌ Operação cancelada pelo usuário.');
-                return self::SUCCESS;
-            }
+            $this->info("📊 Encontrados {$candidates->count()} pickup(s) com estruturas incorretas");
+            $this->newLine();
 
-            // 2. Processar candidatos
-            $this->processCandidates($candidates, $config);
-            
-            // 3. Exibir resultados finais
-            $this->displayFinalResults();
-            
-            return $this->fixedCount > 0 ? self::SUCCESS : self::FAILURE;
-            
-        } catch (\Exception $e) {
-            $this->error('❌ Erro crítico: ' . $e->getMessage());
-            
-            if ($config['debug']) {
-                $this->error('Stack trace: ' . $e->getTraceAsString());
-            }
-            
+            // Processar pickups em batches
+            $this->processPickupsBatched($candidates, $config);
+
+            // Exibir resultados finais
+            $this->displayFinalResults(microtime(true) - $startTime);
+
+            return self::SUCCESS;
+
+        } catch (Exception $e) {
+            $this->error('❌ ERRO CRÍTICO: ' . $e->getMessage());
+            Log::error('FixIncompletePickupArticlesCommand: Erro crítico', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return self::FAILURE;
         }
     }
 
     /**
-     * Configuração baseada nas opções
+     * Obter configuração do comando
      */
-    private function getConfiguration(): array
+    private function getConfig(): array
     {
         return [
+            'limit' => $this->option('force-all') ? 1000 : (int) $this->option('limit'),
+            'batch_size' => min(5, max(1, (int) $this->option('batch-size'))), // Entre 1-5
+            'delay' => max(3, (int) $this->option('delay')), // Mínimo 3s
             'dry_run' => $this->option('dry-run'),
-            'limit' => (int) $this->option('limit'),
             'force_all' => $this->option('force-all'),
-            'category' => $this->option('category'),
-            'debug' => $this->option('debug'),
+            'skip_analysis' => $this->option('skip-analysis'),
+            'debug' => $this->option('debug')
         ];
     }
 
     /**
-     * Exibir header do command
+     * Exibir configuração do comando
      */
-    private function displayHeader(array $config): void
+    private function displayConfig(array $config): void
     {
-        $this->info('🔧 CORREÇÃO DE PICKUPS INCOMPLETOS - V4');
-        $this->info('🤖 Powered by Claude 3.5 Sonnet');
-        $this->info('📅 ' . now()->format('d/m/Y H:i:s'));
+        $this->info('⚙️ CONFIGURAÇÃO:');
+        $this->line('   • Limite por execução: ' . ($config['force_all'] ? 'TODOS' : $config['limit']));
+        $this->line('   • Pickups por batch: ' . $config['batch_size']);
+        $this->line('   • Delay entre batches: ' . $config['delay'] . 's');
+        $this->line('   • Modo: ' . ($config['dry_run'] ? '🔍 SIMULAÇÃO' : '💾 EXECUÇÃO REAL'));
+        $this->line('   • Pular análise inicial: ' . ($config['skip_analysis'] ? 'SIM' : 'NÃO'));
+        $this->line('   • Debug detalhado: ' . ($config['debug'] ? 'SIM' : 'NÃO'));
         $this->newLine();
 
-        $this->info('⚙️  CONFIGURAÇÃO:');
-        $this->line("   • Limite: {$config['limit']} registros");
-        $this->line("   • Categoria: {$config['category']}");
-        $this->line("   • Modo: " . ($config['dry_run'] ? '🔍 DRY-RUN' : '💾 PRODUÇÃO'));
-        $this->line("   • Força tudo: " . ($config['force_all'] ? '✅ SIM' : '❌ NÃO'));
-        $this->line("   • Debug: " . ($config['debug'] ? '✅ SIM' : '❌ NÃO'));
-        $this->newLine();
-
-        $this->info('🎯 PROBLEMA ALVO:');
-        $this->line('   • claude_refinement_version = "v4_completed"');
-        $this->line('   • MAS article_refined.content incompleto');
-        $this->line('   • Faltam: FAQs, considerações finais, especificações');
+        $this->info('🎯 FOCO CRÍTICO:');
+        $this->line('   • localizacao_etiqueta: string → object estruturado');
+        $this->line('   • condicoes_especiais: string → array de objects');
+        $this->line('   • conversao_unidades: string → object com tabela_conversao');
+        $this->line('   • Corrigir estruturas que causam erro fatal no ViewModel');
         $this->newLine();
     }
 
     /**
-     * Encontrar pickups com conteúdo incompleto
+     * Testar conectividade com Claude API
      */
-    private function findIncompletePickups(array $config)
+    private function testApiConnectivity(): bool
     {
-        $this->info('🔍 Procurando pickups incompletos...');
+        $this->info('🌐 Testando conectividade com Claude API...');
         
-        $query = TireCalibration::where('main_category', $config['category'])
-            ->where('claude_refinement_version', 'v4_completed')
-            ->whereNotNull('article_refined');
+        $test = $this->fixService->testApiConnection();
+        
+        if ($test['success']) {
+            $responseTime = isset($test['response_time']) ? round($test['response_time'] * 1000) . 'ms' : 'N/A';
+            $this->line("   ✅ Claude API conectada (Status: {$test['status']}, Tempo: {$responseTime})");
+            return true;
+        } else {
+            $this->error("   ❌ Falha na conexão: " . ($test['error'] ?? 'Erro desconhecido'));
+            $this->error('   Verifique a configuração da API key do Anthropic');
+            return false;
+        }
+    }
+
+    /**
+     * Análise inicial dos problemas existentes
+     */
+    private function performInitialAnalysis(): void
+    {
+        $this->info('🔬 ANÁLISE INICIAL DOS PROBLEMAS ESTRUTURAIS');
+        $this->line('─────────────────────────────────────────────');
+
+        $allPickups = TireCalibration::where('main_category', 'pickup')
+            ->where('version', 'v2')
+            ->whereIn('enrichment_phase', [
+                'claude_3a_completed',
+                'claude_3b_completed', 
+                'claude_completed'
+            ])
+            ->whereNotNull('generated_article')
+            ->get();
+
+        $this->info("📊 Total de pickups V2: {$allPickups->count()}");
+
+        $problemCounts = [
+            'localizacao_etiqueta_string' => 0,
+            'condicoes_especiais_string' => 0,
+            'conversao_unidades_string' => 0,
+            'structures_missing' => 0,
+            'needs_fix_total' => 0
+        ];
+
+        $criticalPickups = [];
+
+        foreach ($allPickups as $pickup) {
+            $analysis = $this->fixService->analyzeMissingSections($pickup);
+            
+            if ($analysis['needs_fix']) {
+                $problemCounts['needs_fix_total']++;
+                
+                // Contar problemas específicos
+                foreach ($analysis['incorrect_structures'] as $issue) {
+                    switch ($issue['section']) {
+                        case 'localizacao_etiqueta':
+                            if ($issue['actual_type'] === 'string') {
+                                $problemCounts['localizacao_etiqueta_string']++;
+                                if ($issue['issue'] === 'critical_structure_error') {
+                                    $criticalPickups[] = [
+                                        'vehicle' => "{$pickup->vehicle_make} {$pickup->vehicle_model}",
+                                        'id' => $pickup->_id,
+                                        'issue' => $issue['description']
+                                    ];
+                                }
+                            }
+                            break;
+                        case 'condicoes_especiais':
+                            if ($issue['actual_type'] === 'string') {
+                                $problemCounts['condicoes_especiais_string']++;
+                            }
+                            break;
+                        case 'conversao_unidades':
+                            if ($issue['actual_type'] === 'string') {
+                                $problemCounts['conversao_unidades_string']++;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        $this->newLine();
+        $this->line('📈 PROBLEMAS DETECTADOS:');
+        $this->line("   • localizacao_etiqueta como string: {$problemCounts['localizacao_etiqueta_string']} (CRÍTICO)");
+        $this->line("   • condicoes_especiais como string: {$problemCounts['condicoes_especiais_string']}");
+        $this->line("   • conversao_unidades como string: {$problemCounts['conversao_unidades_string']}");
+        $this->line("   • Total precisando correção: {$problemCounts['needs_fix_total']}");
+
+        if (!empty($criticalPickups)) {
+            $this->newLine();
+            $this->error('🚨 PICKUPS CRÍTICOS (causam erro fatal no ViewModel):');
+            foreach (array_slice($criticalPickups, 0, 5) as $critical) {
+                $this->line("   • {$critical['vehicle']} - {$critical['issue']}");
+            }
+            
+            if (count($criticalPickups) > 5) {
+                $remaining = count($criticalPickups) - 5;
+                $this->line("   ... e mais {$remaining} pickup(s) crítico(s)");
+            }
+        }
+
+        $this->newLine();
+    }
+
+    /**
+     * Buscar candidatos para correção
+     */
+    private function getCandidatesForFix(array $config)
+    {
+        $query = TireCalibration::where('main_category', 'pickup')
+            ->where('version', 'v2')
+            ->whereIn('enrichment_phase', [
+                'claude_3a_completed',
+                'claude_3b_completed', 
+                'claude_completed'
+            ])
+            ->whereNotNull('generated_article');
+
+        // Priorizar pickups que ainda não foram corrigidos
+        $query->where(function($q) {
+            $q->whereNull('claude_refinement_version')
+              ->orWhere('claude_refinement_version', '!=', 'v4_pickup_fixed');
+        });
 
         if (!$config['force_all']) {
-            // Adicionar lógica para detectar conteúdo incompleto
-            $query->where(function($q) {
-                // MongoDB query para verificar se article_refined.content está incompleto
-                $q->whereRaw([
-                    '$or' => [
-                        ['article_refined.content.perguntas_frequentes' => ['$exists' => false]],
-                        ['article_refined.content.consideracoes_finais' => ['$exists' => false]],
-                        ['article_refined.content.especificacoes_por_versao' => ['$exists' => false]],
-                    ]
-                ]);
-            });
+            $query->limit($config['limit']);
         }
 
-        $candidates = $query->orderBy('updated_at', 'desc')
-            ->limit($config['limit'])
-            ->get();
-        
-        $this->line("   ✅ Encontrados: {$candidates->count()} candidatos");
-        
-        return $candidates;
+        $candidates = $query->orderBy('updated_at', 'asc')->get();
+
+        // Filtrar apenas os que realmente precisam de correção
+        return $candidates->filter(function ($pickup) {
+            $analysis = $this->fixService->analyzeMissingSections($pickup);
+            return $analysis['needs_fix'];
+        });
     }
 
+ 
     /**
-     * Exibir resumo dos candidatos
+     * Processar pickups em batches com rate limiting
      */
-    private function displayCandidatesSummary($candidates, array $config): void
+    private function processPickupsBatched($candidates, array $config): void
     {
-        if ($config['debug']) {
-            $this->info('📋 CANDIDATOS ENCONTRADOS:');
-            
-            foreach ($candidates->take(3) as $candidate) {
-                $contentStatus = $this->analyzeContentCompleteness($candidate);
-                
-                $this->line("   • {$candidate->vehicle_make} {$candidate->vehicle_model}");
-                $this->line("     - ID: {$candidate->_id}");
-                $this->line("     - Status: {$contentStatus['summary']}");
-                
-                if ($config['debug']) {
-                    $this->line("     - Introdução: {$contentStatus['introducao']}");
-                    $this->line("     - FAQs: {$contentStatus['faqs']}");
-                    $this->line("     - Considerações: {$contentStatus['consideracoes']}");
-                }
-            }
-            
-            if ($candidates->count() > 3) {
-                $remaining = $candidates->count() - 3;
-                $this->line("   ... e mais {$remaining} registros");
-            }
-            
-            $this->newLine();
-        }
-    }
-
-    /**
-     * Analisar completude do conteúdo
-     */
-    private function analyzeContentCompleteness(TireCalibration $calibration): array
-    {
-        $content = $calibration->article_refined['content'] ?? [];
-        
-        $introducao = !empty($content['introducao']) ? 
-            (strlen($content['introducao']) > 100 ? 'Completa' : 'Truncada') : 
-            'Ausente';
-            
-        $faqs = !empty($content['perguntas_frequentes']) ? 'Presente' : 'Ausente';
-        $consideracoes = !empty($content['consideracoes_finais']) ? 'Presente' : 'Ausente';
-        $especificacoes = !empty($content['especificacoes_por_versao']) ? 'Presente' : 'Ausente';
-        
-        $problems = [];
-        if ($introducao !== 'Completa') $problems[] = 'Intro';
-        if ($faqs === 'Ausente') $problems[] = 'FAQs';
-        if ($consideracoes === 'Ausente') $problems[] = 'Conclusão';
-        if ($especificacoes === 'Ausente') $problems[] = 'Specs';
-        
-        $summary = empty($problems) ? 
-            'Aparentemente Completo' : 
-            'Incompleto (' . implode(', ', $problems) . ')';
-            
-        return [
-            'summary' => $summary,
-            'introducao' => $introducao,
-            'faqs' => $faqs,
-            'consideracoes' => $consideracoes,
-            'especificacoes' => $especificacoes,
-            'problems' => $problems
-        ];
-    }
-
-    /**
-     * Processar candidatos
-     */
-    private function processCandidates($candidates, array $config): void
-    {
-        $this->info('🚀 INICIANDO CORREÇÕES...');
+        $this->info('🚀 INICIANDO CORREÇÃO DOS PICKUPS...');
         $this->newLine();
 
-        $progressBar = $this->output->createProgressBar($candidates->count());
-        $progressBar->start();
+        $batches = $candidates->chunk($config['batch_size']);
+        $totalBatches = $batches->count();
+        $currentBatch = 1;
 
-        foreach ($candidates as $candidate) {
-            $this->processedCount++;
+        foreach ($batches as $batch) {
+            $this->line("📦 Processando batch {$currentBatch}/{$totalBatches} ({$batch->count()} pickup(s))...");
             
-            try {
-                $result = $this->processCandidate($candidate, $config);
-                
-                if ($result['success']) {
-                    $this->fixedCount++;
-                } else {
-                    $this->skippedCount++;
-                }
-                
-            } catch (\Exception $e) {
-                $this->errorCount++;
-                $this->errors[] = [
-                    'vehicle' => "{$candidate->vehicle_make} {$candidate->vehicle_model}",
-                    'error' => $e->getMessage(),
-                    'id' => $candidate->_id,
-                ];
-                
-                Log::error('Erro ao corrigir pickup', [
-                    'id' => $candidate->_id,
-                    'vehicle' => "{$candidate->vehicle_make} {$candidate->vehicle_model}",
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
+            // Processar cada pickup do batch
+            foreach ($batch as $pickup) {
+                $this->processSinglePickup($pickup, $config);
             }
-            
-            $progressBar->advance();
-            
-            // Delay entre processamentos para não sobrecarregar API
-            if (!$config['dry_run']) {
-                sleep(2);
+
+            // Rate limiting entre batches (exceto no último)
+            if ($currentBatch < $totalBatches) {
+                $this->line("   ⏱️ Aguardando {$config['delay']}s antes do próximo batch...");
+                sleep($config['delay']);
             }
+
+            $currentBatch++;
         }
-        
-        $progressBar->finish();
-        $this->newLine(2);
+
+        $this->newLine();
     }
 
     /**
-     * Processar um candidato específico
+     * Processar pickup individual
      */
-    private function processCandidate(TireCalibration $candidate, array $config): array
+    private function processSinglePickup(TireCalibration $pickup, array $config): void
     {
-        if ($config['dry_run']) {
-            return [
-                'success' => true,
-                'action' => 'simulated',
-                'message' => 'Simulação - seria corrigido'
-            ];
-        }
-
-        // 1. Alterar flag para permitir reprocessamento
-        $originalFlag = $candidate->claude_refinement_version;
-        $candidate->update([
-            'claude_refinement_version' => 'v4_pickup_fixing'
-        ]);
+        $vehicleInfo = "{$pickup->vehicle_make} {$pickup->vehicle_model}";
+        $this->processedCount++;
 
         try {
-            // 2. Executar correção usando o service
-            $result = $this->fixService->fixIncompletePickupContent($candidate);
+            // Análise prévia
+            $analysis = $this->fixService->analyzeMissingSections($pickup);
             
-            // 3. Restaurar flag para completed
-            $candidate->update([
-                'claude_refinement_version' => 'v4_completed',
-                'last_pickup_fix_at' => now(),
-                'pickup_fix_notes' => 'Conteúdo corrigido via FixIncompletePickupArticlesCommand'
-            ]);
+            if (!$analysis['needs_fix']) {
+                $this->line("   ✅ {$vehicleInfo} - Já está correto");
+                $this->skippedCount++;
+                return;
+            }
+
+            if ($config['debug']) {
+                $this->displayPickupAnalysis($pickup, $analysis);
+            }
+
+            if ($config['dry_run']) {
+                $this->line("   🔍 [SIMULAÇÃO] {$vehicleInfo} - Seria corrigido ({$analysis['missing_sections']} estruturas)");
+                $this->processingResults[] = [
+                    'vehicle' => $vehicleInfo,
+                    'status' => 'simulated',
+                    'structures_count' => $analysis['missing_sections'],
+                    'is_critical' => $analysis['is_critical'] ?? false
+                ];
+                return;
+            }
+
+            // Correção efetiva
+            $this->line("   🔧 Corrigindo {$vehicleInfo}...");
+            $result = $this->fixService->fixPickupArticle($pickup);
+
+            if ($result['success']) {
+                $this->line("   ✅ {$vehicleInfo} - Corrigido ({$result['structures_fixed']} estruturas)");
+                $this->fixedCount++;
+                
+                $this->processingResults[] = [
+                    'vehicle' => $vehicleInfo,
+                    'status' => 'fixed',
+                    'structures_fixed' => $result['structures_fixed'],
+                    'fixed_sections' => $result['fixed_sections'],
+                    'is_critical' => $analysis['is_critical'] ?? false
+                ];
+
+                Log::info('FixIncompletePickupArticlesCommand: Pickup corrigido', [
+                    'pickup_id' => $pickup->_id,
+                    'vehicle' => $vehicleInfo,
+                    'structures_fixed' => $result['structures_fixed'],
+                    'sections' => $result['fixed_sections']
+                ]);
+
+            } else {
+                $this->error("   ❌ {$vehicleInfo} - Erro: " . ($result['error'] ?? 'Erro desconhecido'));
+                $this->errorCount++;
+                
+                $this->errorDetails[] = [
+                    'vehicle' => $vehicleInfo,
+                    'error' => $result['error'] ?? 'Erro desconhecido'
+                ];
+
+                Log::error('FixIncompletePickupArticlesCommand: Erro na correção', [
+                    'pickup_id' => $pickup->_id,
+                    'vehicle' => $vehicleInfo,
+                    'error' => $result['error'] ?? 'Erro desconhecido',
+                    'analysis' => $analysis
+                ]);
+            }
+
+        } catch (Exception $e) {
+            $this->error("   ❌ {$vehicleInfo} - Exceção: " . $e->getMessage());
+            $this->errorCount++;
             
-            return [
-                'success' => true,
-                'action' => 'fixed',
-                'message' => $result['message'] ?? 'Corrigido com sucesso'
+            $this->errorDetails[] = [
+                'vehicle' => $vehicleInfo,
+                'error' => $e->getMessage()
             ];
-            
-        } catch (\Exception $e) {
-            // Restaurar flag original em caso de erro
-            $candidate->update([
-                'claude_refinement_version' => $originalFlag
+
+            Log::error('FixIncompletePickupArticlesCommand: Exceção', [
+                'pickup_id' => $pickup->_id,
+                'vehicle' => $vehicleInfo,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-            
-            throw $e;
         }
+    }
+
+    /**
+     * Exibir análise detalhada do pickup
+     */
+    private function displayPickupAnalysis(TireCalibration $pickup, array $analysis): void
+    {
+        $vehicleInfo = "{$pickup->vehicle_make} {$pickup->vehicle_model}";
+        
+        $this->newLine();
+        $this->line("🔍 ANÁLISE DETALHADA: {$vehicleInfo}");
+        $this->line("   • Precisa correção: " . ($analysis['needs_fix'] ? 'SIM' : 'NÃO'));
+        $this->line("   • É crítico: " . ($analysis['is_critical'] ? 'SIM' : 'NÃO'));
+        $this->line("   • Estruturas problemáticas: {$analysis['missing_sections']}");
+        
+        if (!empty($analysis['incorrect_structures'])) {
+            $this->line("   • Problemas encontrados:");
+            foreach ($analysis['incorrect_structures'] as $issue) {
+                $critical = ($issue['issue'] === 'critical_structure_error') ? ' [CRÍTICO]' : '';
+                $this->line("     - {$issue['section']}: {$issue['actual_type']} → {$issue['expected_type']}{$critical}");
+            }
+        }
+        $this->newLine();
     }
 
     /**
      * Exibir resultados finais
      */
-    private function displayFinalResults(): void
+    private function displayFinalResults(float $duration): void
     {
-        $this->info('📊 RESULTADOS FINAIS:');
-        $this->line("   • Total processados: {$this->processedCount}");
-        $this->line("   • ✅ Corrigidos: {$this->fixedCount}");
-        $this->line("   • ⏭️  Pulados: {$this->skippedCount}");
-        $this->line("   • ❌ Erros: {$this->errorCount}");
+        $this->info('📊 RESULTADOS FINAIS DA CORREÇÃO:');
         $this->newLine();
 
-        if ($this->errorCount > 0) {
+        $this->line("✅ <fg=green>Pickups corrigidos:</fg=green> {$this->fixedCount}");
+        $this->line("❌ <fg=red>Erros:</fg=red> {$this->errorCount}");
+        $this->line("⏭️ <fg=yellow>Ignorados (já corretos):</fg=yellow> {$this->skippedCount}");
+        $this->line("📊 <fg=blue>Total processado:</fg=blue> {$this->processedCount}");
+        $this->line("⏱️ <fg=cyan>Tempo total:</fg=cyan> " . round($duration, 2) . "s");
+
+        if ($this->fixedCount > 0) {
+            $avgTime = round($duration / $this->processedCount, 2);
+            $this->line("📊 <fg=cyan>Média por pickup:</fg=cyan> {$avgTime}s");
+        }
+
+        $this->newLine();
+
+        // Mostrar pickups críticos corrigidos
+        $criticalFixed = array_filter($this->processingResults, function($result) {
+            return $result['status'] === 'fixed' && ($result['is_critical'] ?? false);
+        });
+
+        if (!empty($criticalFixed)) {
+            $this->info('🚨 PICKUPS CRÍTICOS CORRIGIDOS (não causarão mais erro no ViewModel):');
+            foreach ($criticalFixed as $result) {
+                $this->line("   • {$result['vehicle']} - {$result['structures_fixed']} estruturas corrigidas");
+            }
+            $this->newLine();
+        }
+
+        // Mostrar erros se houver
+        if (!empty($this->errorDetails)) {
             $this->error('❌ ERROS ENCONTRADOS:');
-            foreach (array_slice($this->errors, 0, 5) as $error) {
+            foreach (array_slice($this->errorDetails, 0, 5) as $error) {
                 $this->line("   • {$error['vehicle']}: {$error['error']}");
             }
-            
-            if (count($this->errors) > 5) {
-                $remaining = count($this->errors) - 5;
-                $this->line("   ... e mais {$remaining} erros (verifique logs)");
+
+            if (count($this->errorDetails) > 5) {
+                $remaining = count($this->errorDetails) - 5;
+                $this->line("   ... e mais {$remaining} erro(s)");
             }
             $this->newLine();
         }
 
         if ($this->fixedCount > 0) {
-            $this->info('✅ PRÓXIMOS PASSOS:');
-            $this->line('   1. Execute: php artisan tire-calibration:stats (verificar estatísticas)');
-            $this->line('   2. Monitore: Verificar se os pickups corrigidos estão completos');
-            $this->line('   3. Teste: Validar alguns artigos corrigidos manualmente');
+            $this->info('🎉 CORREÇÃO CONCLUÍDA!');
+            $this->line('   • Estruturas JSON corrigidas para formato object/array');
+            $this->line('   • localizacao_etiqueta agora é object estruturado');
+            $this->line('   • ViewModel não terá mais erro fatal');
+            $this->line('   • Pickups prontos para renderização');
         }
 
-        $this->newLine();
-        $this->info('🏁 Correção de pickups concluída!');
+        // Status para próximas execuções
+        $remainingPickups = $this->getRemainingPickupsCount();
+        if ($remainingPickups > 0) {
+            $this->newLine();
+            $this->warn("⚠️ Ainda restam {$remainingPickups} pickup(s) para correção.");
+            $this->line('   Execute novamente o comando para processar os restantes.');
+        } else {
+            $this->newLine();
+            $this->info('✅ Todos os pickups com problemas estruturais foram corrigidos!');
+        }
+    }
+
+    /**
+     * Contar pickups restantes que precisam de correção
+     */
+    private function getRemainingPickupsCount(): int
+    {
+        $remaining = TireCalibration::where('main_category', 'pickup')
+            ->where('version', 'v2')
+            ->whereIn('enrichment_phase', [
+                'claude_3a_completed',
+                'claude_3b_completed', 
+                'claude_completed'
+            ])
+            ->whereNotNull('generated_article')
+            ->where(function($q) {
+                $q->whereNull('claude_refinement_version')
+                  ->orWhere('claude_refinement_version', '!=', 'v4_pickup_fixed');
+            })
+            ->get();
+
+        return $remaining->filter(function ($pickup) {
+            $analysis = $this->fixService->analyzeMissingSections($pickup);
+            return $analysis['needs_fix'];
+        })->count();
     }
 }

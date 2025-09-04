@@ -62,6 +62,20 @@ class TireCalibrationV4Schedule
                 Log::error('TireCalibration V4: Falha na Reprocessar falha automática');
             });
 
+
+        $schedule->command('calibration:fix-incomplete-pickups --limit=1')
+            ->cron('*/3 * * * *')  // Cada 3 minutos
+            // ->withoutOverlapping(6)
+            // ->runInBackground()
+            ->appendOutputTo(storage_path('logs/fix-incomplete-pickup.log'))
+            ->onSuccess(function () {
+                Log::info('TireCalibration V4: Reprocessar fix falha automática concluída');
+            })
+            ->onFailure(function () {
+                Log::error('TireCalibration V4: Falha na Reprocessar fix falha automática');
+            });
+            
+
         // ========================================
         // GERAÇÃO DE ARTIGOS BASE (FASE 2) - DIÁRIO
         // ========================================
