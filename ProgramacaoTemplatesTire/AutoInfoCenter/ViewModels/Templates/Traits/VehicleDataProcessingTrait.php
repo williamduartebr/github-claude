@@ -18,7 +18,6 @@ trait VehicleDataProcessingTrait
             'full_name' => $this->getVehicleFullName($vehicleData, $vehicleInfo),
             'make' => $vehicleData['make'] ?? $vehicleInfo['marca'] ?? '',
             'model' => $vehicleData['model'] ?? $vehicleInfo['modelo'] ?? '',
-            'year' => $vehicleData['year'] ?? $vehicleInfo['ano'] ?? '',
             'category' => $this->getVehicleCategory($vehicleData, $vehicleInfo),
             'engine' => $vehicleInfo['motorizacao'] ?? '',
             'version' => $vehicleInfo['versao'] ?? '',
@@ -98,13 +97,12 @@ trait VehicleDataProcessingTrait
 
         $make = $vehicleData['make'] ?? $vehicleInfo['marca'] ?? '';
         $model = $vehicleData['model'] ?? $vehicleInfo['modelo'] ?? '';
-        $year = $vehicleData['year'] ?? $vehicleInfo['ano'] ?? '';
 
         if (empty($make) || empty($model)) {
             return '';
         }
 
-        return trim("{$make} {$model} {$year}");
+        return trim("{$make} {$model}");
     }
 
     /**
@@ -122,7 +120,6 @@ trait VehicleDataProcessingTrait
     {
         $make = $vehicleData['make'] ?? $vehicleInfo['marca'] ?? '';
         $model = $vehicleData['model'] ?? $vehicleInfo['modelo'] ?? '';
-        $year = $vehicleData['year'] ?? $vehicleInfo['ano'] ?? '';
 
         $makeSlug = strtolower($make);
         $modelSlug = strtolower(str_replace(' ', '-', $model));
@@ -130,7 +127,7 @@ trait VehicleDataProcessingTrait
         $vehicleType = $this->getVehicleTypeForImageFromData($vehicleData);
         $basePath = "https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/{$vehicleType}";
 
-        return "{$basePath}/{$makeSlug}-{$modelSlug}-{$year}.jpg";
+        return "{$basePath}/{$makeSlug}-{$modelSlug}.jpg";
     }
 
     /**

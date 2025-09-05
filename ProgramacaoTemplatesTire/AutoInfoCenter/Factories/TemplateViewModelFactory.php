@@ -2,6 +2,7 @@
 
 namespace Src\AutoInfoCenter\Factories;
 
+use Src\AutoInfoCenter\ViewModels\Templates\IdealTirePressurePickupViewModel;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Src\AutoInfoCenter\Domain\Eloquent\Article;
@@ -41,6 +42,7 @@ class TemplateViewModelFactory
         'tire_pressure_guide_motorcycle' => TirePressureGuideMotorcycleViewModel::class,
         'ideal_tire_pressure_car' => IdealTirePressureCarViewModel::class,
         'ideal_tire_pressure_motorcycle' => IdealTirePressureMotorcycleViewModel::class,
+        'ideal_tire_pressure_pickup' => IdealTirePressurePickupViewModel::class,
         'tire_calibration_car' => TireCalibrationCarViewModel::class,
         'tire_calibration_motorcycle' => TireCalibrationMotorcycleViewModel::class,
         'tire_calibration_pickup' => TireCalibrationPickupViewModel::class,

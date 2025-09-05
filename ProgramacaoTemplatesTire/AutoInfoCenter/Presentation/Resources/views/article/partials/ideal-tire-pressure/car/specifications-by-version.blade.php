@@ -42,7 +42,7 @@ $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
                                 @else
                                 <div class="w-3 h-3 bg-gray-300 rounded-full mr-2"></div>
                                 @endif
-                                {{ $spec['version'] ?? 'Padrão' }}
+                                {{ \Str::of($spec['version'])->title() ?? 'Padrão' }}
                             </div>
                             @if($index === 0)
                             <div class="text-xs text-blue-600 font-medium mt-1">Versão principal</div>
@@ -61,7 +61,7 @@ $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
                         <td class="py-4 px-4 text-sm text-center">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800">
-                                {{ $spec['front_normal'] ?? 'N/A' }}
+                                {{ $spec['front_normal'] ?? 'N/A' }} PSI
                             </span>
                         </td>
 
@@ -69,7 +69,7 @@ $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
                         <td class="py-4 px-4 text-sm text-center">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-800">
-                                {{ $spec['rear_normal'] ?? 'N/A' }}
+                                {{ $spec['rear_normal'] ?? 'N/A' }} PSI
                             </span>
                         </td>
 
@@ -77,7 +77,7 @@ $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
                         <td class="py-4 px-4 text-sm text-center">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-orange-100 text-orange-800">
-                                {{ $spec['front_loaded'] ?? 'N/A' }}
+                                {{ $spec['front_loaded'] ?? 'N/A' }} PSI
                             </span>
                         </td>
 
@@ -85,7 +85,7 @@ $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
                         <td class="py-4 px-4 text-sm text-center">
                             <span
                                 class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-red-100 text-red-800">
-                                {{ $spec['rear_loaded'] ?? 'N/A' }}
+                                {{ $spec['rear_loaded'] ?? 'N/A' }} PSI
                             </span>
                         </td>
 

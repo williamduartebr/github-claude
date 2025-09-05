@@ -75,7 +75,7 @@ $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
                                     {{ $index + 1 }}
                                 </div>
                                 <div>
-                                    <div class="font-semibold">{{ $condition['condition'] ?? $condition['version'] ??
+                                    <div class="font-semibold">{{ $condition['condition'] ?? \Str::of($condition['version'])->title() ??
                                         'Padrão' }}</div>
                                     @if(!empty($condition['description']))
                                     <div class="text-xs text-gray-600 mt-1">{{ $condition['description'] }}</div>

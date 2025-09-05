@@ -210,7 +210,7 @@ h2{font-size:20px}
             <div class="version-grid">
                 @foreach($tireSpecs as $spec)
                 <div class="version-card">
-                    <div class="version-header">{{ $spec['version'] ?? 'Versão Principal' }}</div>
+                    <div class="version-header">{{ \Str::of($spec['version'])->title() ?? 'Versão Principal' }}</div>
                     <div class="version-body">
                         @if(!empty($spec['tire_size']))
                         <div class="spec-row">
@@ -220,19 +220,19 @@ h2{font-size:20px}
                         @endif
                         <div class="spec-row">
                             <span class="spec-label">Dianteiro (Normal):</span>
-                            <span class="spec-value">{{ $spec['front_normal'] ?? $pressureSpecs['pressure_empty_front'] ?? '32' }}</span>
+                            <span class="spec-value">{{ $spec['front_normal'] ?? $pressureSpecs['pressure_empty_front'] ?? '32' }} PSI</span>
                         </div>
                         <div class="spec-row">
                             <span class="spec-label">Traseiro (Normal):</span>
-                            <span class="spec-value">{{ $spec['rear_normal'] ?? $pressureSpecs['pressure_empty_rear'] ?? '32' }}</span>
+                            <span class="spec-value">{{ $spec['rear_normal'] ?? $pressureSpecs['pressure_empty_rear'] ?? '32' }} PSI</span>
                         </div>
                         <div class="spec-row">
                             <span class="spec-label">Dianteiro (Carregado):</span>
-                            <span class="spec-value">{{ $spec['front_loaded'] ?? $pressureSpecs['pressure_max_front'] ?? '32' }}</span>
+                            <span class="spec-value">{{ $spec['front_loaded'] ?? $pressureSpecs['pressure_max_front'] ?? '32' }} PSI</span>
                         </div>
                         <div class="spec-row">
                             <span class="spec-label">Traseiro (Carregado):</span>
-                            <span class="spec-value">{{ $spec['rear_loaded'] ?? $pressureSpecs['pressure_max_rear'] ?? '35' }}</span>
+                            <span class="spec-value">{{ $spec['rear_loaded'] ?? $pressureSpecs['pressure_max_rear'] ?? '35' }} PSI</span>
                         </div>
                     </div>
                 </div>
@@ -264,7 +264,7 @@ h2{font-size:20px}
                 <tbody>
                     @foreach($fullLoadTable['conditions'] as $condition)
                     <tr>
-                        <td><strong>{{ $condition['condition'] ?? $condition['version'] ?? 'Uso' }}</strong></td>
+                        <td><strong>{{ $condition['condition'] ??  \Str::of($condition['version'])->title() ?? 'Uso' }}</strong></td>
                         <td>{{ $condition['occupants'] ?? '4-5' }}</td>
                         <td>{{ $condition['luggage'] ?? $condition['baggage'] ?? 'Normal' }}</td>
                         <td><span class="pressure-badge">{{ $condition['front_pressure'] ?? $condition['pressure_front'] ?? '32' }}</span></td>

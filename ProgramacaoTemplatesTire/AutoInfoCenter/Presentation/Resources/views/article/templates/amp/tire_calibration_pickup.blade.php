@@ -263,19 +263,19 @@ h2{font-size:20px}
                         @endif
                         <div class="spec-row">
                             <span class="spec-label">Dianteiro (Normal):</span>
-                            <span class="spec-value">{{ $spec['front_normal'] ?? $spec['pressao_dianteiro_normal'] ?? $pressureSpecs['pressure_empty_front'] ?? '35' }} PSI</span>
+                            <span class="spec-value">{{ $spec['front_normal'] ?? $spec['pressao_dianteiro_normal'] ?? $pressureSpecs['pressure_empty_front'] ?? '35' }}</span>
                         </div>
                         <div class="spec-row">
                             <span class="spec-label">Traseiro (Normal):</span>
-                            <span class="spec-value">{{ $spec['rear_normal'] ?? $spec['pressao_traseiro_normal'] ?? $pressureSpecs['pressure_empty_rear'] ?? '40' }} PSI</span>
+                            <span class="spec-value">{{ $spec['rear_normal'] ?? $spec['pressao_traseiro_normal'] ?? $pressureSpecs['pressure_empty_rear'] ?? '40' }}</span>
                         </div>
                         <div class="spec-row">
                             <span class="spec-label">Dianteiro (c/ Carga):</span>
-                            <span class="spec-value loaded">{{ $spec['front_loaded'] ?? $spec['pressao_dianteiro_carregado'] ?? $pressureSpecs['pressure_max_front'] ?? '38' }} PSI</span>
+                            <span class="spec-value loaded">{{ $spec['front_loaded'] ?? $spec['pressao_dianteiro_carregado'] ?? $pressureSpecs['pressure_max_front'] ?? '38' }}</span>
                         </div>
                         <div class="spec-row">
                             <span class="spec-label">Traseiro (c/ Carga):</span>
-                            <span class="spec-value loaded">{{ $spec['rear_loaded'] ?? $spec['pressao_traseiro_carregado'] ?? $pressureSpecs['pressure_max_rear'] ?? '45' }} PSI</span>
+                            <span class="spec-value loaded">{{ $spec['rear_loaded'] ?? $spec['pressao_traseiro_carregado'] ?? $pressureSpecs['pressure_max_rear'] ?? '45' }}</span>
                         </div>
                     </div>
                 </div>
