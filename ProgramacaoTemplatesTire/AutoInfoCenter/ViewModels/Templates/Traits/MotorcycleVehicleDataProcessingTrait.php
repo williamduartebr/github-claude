@@ -55,7 +55,7 @@ trait MotorcycleVehicleDataProcessingTrait
     private function processMotorcyclePressureSpecifications(): array
     {
         $originalData = $this->article ?? null;
-        $vehicleData = $originalData->vehicle_data ?? [];
+        $vehicleData = $originalData->vehicle_info ?? [];
         $pressureSpecs = $vehicleData['pressure_specifications'] ?? [];
 
         // Usar dados diretos do TireCalibration
@@ -96,7 +96,7 @@ trait MotorcycleVehicleDataProcessingTrait
         $originalData = $this->article ?? null;
         $vehicleData = $originalData->vehicle_data ?? [];
         $tireSpecs = $vehicleData['tire_specifications'] ?? [];
-        
+
         $tireSize = $this->getMotorcycleTireSize($originalData, $vehicleData);
 
         return [
@@ -142,7 +142,7 @@ trait MotorcycleVehicleDataProcessingTrait
     {
         // Usar main_category diretamente se for de moto
         $mainCategory = $originalData->main_category ?? $vehicleData['main_category'] ?? '';
-        
+
         if (str_contains($mainCategory, 'motorcycle')) {
             return $mainCategory;
         }
@@ -161,8 +161,8 @@ trait MotorcycleVehicleDataProcessingTrait
             return $originalData->pressure_specifications['tire_size'];
         }
 
-        return $vehicleData['tire_size'] ?? 
-               $vehicleData['tire_specifications']['tire_size'] ?? '';
+        return $vehicleData['tire_size'] ??
+            $vehicleData['tire_specifications']['tire_size'] ?? '';
     }
 
     /**
@@ -214,8 +214,17 @@ trait MotorcycleVehicleDataProcessingTrait
         // Lógica para marcas premium de motos
         $make = strtolower($originalData->vehicle_make ?? $vehicleData['make'] ?? $vehicleInfo['marca'] ?? '');
         $premiumMotorcycleBrands = [
-            'bmw', 'ducati', 'triumph', 'harley-davidson', 'harley davidson', 
-            'ktm', 'aprilia', 'mv agusta', 'moto guzzi', 'indian', 'zero'
+            'bmw',
+            'ducati',
+            'triumph',
+            'harley-davidson',
+            'harley davidson',
+            'ktm',
+            'aprilia',
+            'mv agusta',
+            'moto guzzi',
+            'indian',
+            'zero'
         ];
 
         if (in_array($make, $premiumMotorcycleBrands)) {
@@ -254,7 +263,7 @@ trait MotorcycleVehicleDataProcessingTrait
         // Detectar por marca
         $make = strtolower($originalData->vehicle_make ?? $vehicleInfo['marca'] ?? '');
         $electricBrands = ['zero', 'energica', 'lightning', 'sur-ron'];
-        
+
         if (in_array($make, $electricBrands)) {
             return true;
         }
@@ -281,7 +290,7 @@ trait MotorcycleVehicleDataProcessingTrait
         // Motos premium/elétricas podem ter TPMS
         $isPremium = $this->determineIfPremiumMotorcycle($originalData, $vehicleData, []);
         $isElectric = $this->detectElectricMotorcycle($originalData, $vehicleData, []);
-        
+
         return $isPremium || $isElectric;
     }
 
@@ -291,8 +300,8 @@ trait MotorcycleVehicleDataProcessingTrait
     private function getMotorcycleSegment($originalData, array $vehicleData, array $vehicleInfo): string
     {
         $mainCategory = $originalData->main_category ?? '';
-        
-        return match($mainCategory) {
+
+        return match ($mainCategory) {
             'motorcycle_street' => 'Motocicletas Street',
             'motorcycle_sport' => 'Motocicletas Esportivas',
             'motorcycle_adventure' => 'Motocicletas Adventure',
@@ -312,10 +321,10 @@ trait MotorcycleVehicleDataProcessingTrait
     private function getMotorcycleCategoryNormalized($originalData): string
     {
         $mainCategory = $originalData->main_category ?? '';
-        
-        return match($mainCategory) {
+
+        return match ($mainCategory) {
             'motorcycle_street' => 'Motocicletas Street',
-            'motorcycle_sport' => 'Motocicletas Esportivas', 
+            'motorcycle_sport' => 'Motocicletas Esportivas',
             'motorcycle_adventure' => 'Motocicletas Adventure',
             'motorcycle_trail' => 'Motocicletas Trail',
             'motorcycle_scooter' => 'Scooters',
@@ -333,7 +342,7 @@ trait MotorcycleVehicleDataProcessingTrait
     private function getMotorcycleRecommendedOil(array $vehicleData): string
     {
         $recommendedOil = $vehicleData['vehicle_features']['recommended_oil'] ?? '';
-        
+
         if (!empty($recommendedOil)) {
             return $recommendedOil;
         }
@@ -389,7 +398,7 @@ trait MotorcycleVehicleDataProcessingTrait
     private function getMotorcycleTireBrands(array $tireSpecs, $originalData): array
     {
         $brands = $tireSpecs['recommended_brands'] ?? [];
-        
+
         if (!empty($brands)) {
             return $brands;
         }
@@ -404,14 +413,14 @@ trait MotorcycleVehicleDataProcessingTrait
     private function getMotorcycleSeasonalTires(array $tireSpecs, $originalData): array
     {
         $seasonal = $tireSpecs['seasonal_recommendations'] ?? [];
-        
+
         if (!empty($seasonal)) {
             return $seasonal;
         }
 
         // Verificar se é esportiva
         $mainCategory = $originalData->main_category ?? '';
-        
+
         if (str_contains($mainCategory, 'sport')) {
             return ['Pirelli Diablo Rosso IV', 'Michelin Power 5'];
         }
@@ -437,7 +446,7 @@ trait MotorcycleVehicleDataProcessingTrait
             preg_match('/^([^(]+)\s*\(DIANTEIRO\)/', $tireSize, $matches);
             return trim($matches[1] ?? $tireSize);
         }
-        
+
         // Se não tem indicação, assumir que é o primeiro tamanho
         $parts = explode(' ', $tireSize);
         return trim($parts[0] ?? $tireSize);
@@ -454,17 +463,17 @@ trait MotorcycleVehicleDataProcessingTrait
             if (!empty($matches[1])) {
                 return trim($matches[1]);
             }
-            
+
             // Tentar extrair após "TRASEIRO"
             preg_match('/.*TRASEIRO.*?(\d+\/\d+[^)]*)/i', $tireSize, $matches);
             return trim($matches[1] ?? $tireSize);
         }
-        
+
         // Se tem dois tamanhos separados por espaço, pegar o segundo
         if (preg_match('/(\d+\/\d+[^\s]*)\s+(\d+\/\d+[^\s]*)/', $tireSize, $matches)) {
             return trim($matches[2]);
         }
-        
+
         return $tireSize;
     }
 
@@ -474,8 +483,8 @@ trait MotorcycleVehicleDataProcessingTrait
     private function determineMotorcycleTireType($originalData): string
     {
         $mainCategory = $originalData->main_category ?? '';
-        
-        return match(true) {
+
+        return match (true) {
             str_contains($mainCategory, 'sport') => 'Esportivo',
             str_contains($mainCategory, 'adventure') => 'Adventure/Trail',
             str_contains($mainCategory, 'trail') => 'Trail/Off-road',
@@ -492,8 +501,8 @@ trait MotorcycleVehicleDataProcessingTrait
     private function determineMotorcycleTireCompound($originalData): string
     {
         $mainCategory = $originalData->main_category ?? '';
-        
-        return match(true) {
+
+        return match (true) {
             str_contains($mainCategory, 'sport') => 'Composto macio (grip)',
             str_contains($mainCategory, 'adventure') => 'Composto dual (on/off)',
             str_contains($mainCategory, 'trail') => 'Composto off-road',

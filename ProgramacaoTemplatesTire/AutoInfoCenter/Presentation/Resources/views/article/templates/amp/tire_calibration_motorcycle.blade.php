@@ -594,20 +594,20 @@ h2{font-size:20px}
         </div>
         @endif
 
-        <!-- RESUMO EXECUTIVO -->
+        <!-- Resumo Rápido -->
         <div class="highlight-box">
-            <div class="highlight-title">🏍️ Resumo Executivo</div>
+            <div class="highlight-title">🏍️ Resumo Rápido</div>
             <div style="text-align: left; max-width: 600px; margin: 0 auto;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div>
-                        <h4 style="margin: 0 0 8px; font-weight: 600; color: #1e40af;">Pressões Solo:</h4>
+                        <h4 style="margin: 0 0 8px; font-weight: 600; color: #1e40af;">Piloto Solo:</h4>
                         <p style="margin: 0; font-size: 14px;">
                             Dianteiro: <strong>{{ $pressureSpecs['pressure_empty_front'] ?? '33' }} PSI</strong><br>
                             Traseiro: <strong>{{ $pressureSpecs['pressure_empty_rear'] ?? '36' }} PSI</strong>
                         </p>
                     </div>
                     <div>
-                        <h4 style="margin: 0 0 8px; font-weight: 600; color: #1e40af;">Com Garupa:</h4>
+                        <h4 style="margin: 0 0 8px; font-weight: 600; color: #1e40af;">Piloto + Garupa:</h4>
                         <p style="margin: 0; font-size: 14px;">
                             Dianteiro: <strong>{{ $pressureSpecs['pressure_max_front'] ?? $pressureSpecs['pressure_empty_front'] ?? '35' }} PSI</strong><br>
                             Traseiro: <strong>{{ $pressureSpecs['pressure_max_rear'] ?? '38' }} PSI</strong>

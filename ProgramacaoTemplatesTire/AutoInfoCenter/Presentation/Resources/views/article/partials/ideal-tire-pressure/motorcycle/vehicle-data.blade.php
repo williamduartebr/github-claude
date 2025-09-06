@@ -1,82 +1,34 @@
 {{--
 Partial: ideal-tire-pressure/motorcycle/vehicle-data.blade.php
-VERSÃO FINAL - Adaptada para nova estrutura vehicle_info embarcada no JSON
+Dados principais do veículo específicos para motocicletas
+Formatação adequada para categorias e tipos de motos
 --}}
 
 @php
-// 🎯 BUSCA OTIMIZADA - Agora com dados embarcados no JSON
 $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
-$contentData = $article->getData()['content'] ?? [];
-
-// 🔍 ACESSO DIRETO AOS DADOS EMBARCADOS (Nova estrutura)
-$frontSolo = 'Consulte manual';
-$rearSolo = 'Consulte manual';
-$frontPassenger = 'Consulte manual';
-$rearPassenger = 'Consulte manual';
-
-// 1ª PRIORIDADE: Dados embarcados no vehicle_info.pressure_specifications
-if (!empty($vehicleInfo['pressure_specifications'])) {
-    $pressureData = $vehicleInfo['pressure_specifications'];
-    
-    $frontSolo = $pressureData['pressure_empty_front'] ?? 'Consulte manual';
-    $rearSolo = $pressureData['pressure_empty_rear'] ?? 'Consulte manual';
-    $frontPassenger = $pressureData['pressure_max_front'] ?? $pressureData['pressure_empty_front'] ?? 'Consulte manual';
-    $rearPassenger = $pressureData['pressure_max_rear'] ?? 'Consulte manual';
-}
-
-// 2ª PRIORIDADE: Dados do content.tabela_pressoes (fallback)
-if ($frontSolo === 'Consulte manual' && !empty($article->content['tabela_pressoes']['pressoes_oficiais'])) {
-    $pressoes = $article->content['tabela_pressoes']['pressoes_oficiais'];
-    
-    if (!empty($pressoes['piloto_solo']['dianteira'])) {
-        $frontSolo = str_replace([' PSI', ' psi'], '', $pressoes['piloto_solo']['dianteira']);
-        $rearSolo = str_replace([' PSI', ' psi'], '', $pressoes['piloto_solo']['traseira']);
-    }
-    if (!empty($pressoes['piloto_garupa']['dianteira'])) {
-        $frontPassenger = str_replace([' PSI', ' psi'], '', $pressoes['piloto_garupa']['dianteira']);
-        $rearPassenger = str_replace([' PSI', ' psi'], '', $pressoes['piloto_garupa']['traseira']);
-    }
-}
-
-// 3ª PRIORIDADE: getData() pressure_specifications (último recurso)
-if ($frontSolo === 'Consulte manual' && !empty($pressureSpecs)) {
-    $frontSolo = $pressureSpecs['pressure_empty_front'] ?? 'Consulte manual';
-    $rearSolo = $pressureSpecs['pressure_empty_rear'] ?? 'Consulte manual';
-    $frontPassenger = $pressureSpecs['pressure_max_front'] ?? $pressureSpecs['pressure_empty_front'] ?? 'Consulte manual';
-    $rearPassenger = $pressureSpecs['pressure_max_rear'] ?? 'Consulte manual';
-}
-
-// 📋 DADOS DO VEÍCULO - Nova estrutura embarcada
-$vehicleName = $vehicleInfo['vehicle_features']['vehicle_full_name'] ?? 
-               $vehicleInfo['full_name'] ?? 
-               ($vehicleInfo['make'] . ' ' . $vehicleInfo['model']) ?? 
-               'Honda CG 160';
-
-$vehicleMake = $vehicleInfo['make'] ?? 'Honda';
-$vehicleModel = $vehicleInfo['model'] ?? 'CG 160';
-$vehicleEngine = $vehicleInfo['engine'] ?? $vehicleInfo['tire_size'] ?? '162,7cc';
 
 // Formatação específica para categoria de moto
 $categoryDisplayMap = [
-    'motorcycle_street' => 'Motocicleta Street',
-    'motorcycle_naked' => 'Motocicleta Naked', 
-    'motorcycle_sport' => 'Motocicleta Esportiva',
-    'motorcycle_touring' => 'Motocicleta Touring',
-    'motorcycle_adventure' => 'Motocicleta Adventure',
-    'motorcycle_cruiser' => 'Motocicleta Cruiser',
-    'motorcycle_scooter' => 'Scooter',
-    'naked' => 'Naked',
-    'sport' => 'Esportiva',
-    'street' => 'Street',
-    'touring' => 'Touring',
-    'adventure' => 'Adventure',
-    'cruiser' => 'Cruiser',
-    'scooter' => 'Scooter'
+'motorcycle_street' => 'Motocicleta Street',
+'motorcycle_naked' => 'Motocicleta Naked',
+'motorcycle_sport' => 'Motocicleta Esportiva',
+'motorcycle_touring' => 'Motocicleta Touring',
+'motorcycle_adventure' => 'Motocicleta Adventure',
+'motorcycle_cruiser' => 'Motocicleta Cruiser',
+'motorcycle_scooter' => 'Scooter',
+'naked' => 'Naked',
+'sport' => 'Esportiva',
+'street' => 'Street',
+'touring' => 'Touring',
+'adventure' => 'Adventure',
+'cruiser' => 'Cruiser',
+'scooter' => 'Scooter'
 ];
 
-$categoryRaw = $vehicleInfo['main_category'] ?? $vehicleInfo['category'] ?? 'street';
-$categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
+$categoryRaw = $vehicleInfo['category'] ?? $vehicleInfo['main_category'] ?? 'street';
+$categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? ucfirst(str_replace(['_', 'motorcycle'], [' ', ''],
+$categoryRaw));
 @endphp
 
 <!-- Dados Técnicos do Veículo -->
@@ -89,7 +41,7 @@ $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
                     Dados Técnicos do Veículo
                 </h2>
                 <p class="text-gray-300 text-sm">
-                    Informações específicas da {{ $vehicleName }}
+                    Informações específicas da {{ $vehicleInfo['full_name'] ?? 'motocicleta' }}
                 </p>
             </div>
         </div>
@@ -100,25 +52,25 @@ $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
             <!-- Marca -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Marca:</h3>
-                <p class="text-lg font-bold text-gray-900">{{ $vehicleMake }}</p>
+                <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['make'] ?? 'N/D' }}</p>
             </div>
 
             <!-- Modelo -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Modelo:</h3>
-                <p class="text-lg font-bold text-gray-900">{{ $vehicleModel }}</p>
+                <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['model'] ?? 'N/D' }}</p>
+            </div>
+
+            <!-- Ano -->
+            <div class="text-center">
+                <h3 class="text-sm font-semibold text-gray-600 mb-2">Ano:</h3>
+                <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['year'] ?? 'N/D' }}</p>
             </div>
 
             <!-- Categoria -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Categoria:</h3>
                 <p class="text-lg font-bold text-gray-900">{{ $categoryDisplay }}</p>
-            </div>
-
-            <!-- Motor/Cilindrada -->
-            <div class="text-center">
-                <h3 class="text-sm font-semibold text-gray-600 mb-2">Motor:</h3>
-                <p class="text-lg font-bold text-gray-900">{{ $vehicleEngine }}</p>
             </div>
         </div>
     </div>
@@ -135,7 +87,7 @@ $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
         <!-- Título Principal -->
         <div class="relative z-10">
             <h2 class="text-2xl lg:text-3xl font-bold mb-2">
-                Pressão Ideal para {{ $vehicleName }}
+                Pressão Ideal para {{ $vehicleInfo['full_name'] ?? 'Sua Motocicleta' }}
             </h2>
             <p class="text-red-100 text-sm mb-6">
                 Valores oficiais da montadora em PSI (padrão brasileiro)
@@ -158,13 +110,19 @@ $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
                 <div class="grid grid-cols-2 gap-3">
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Dianteiro</div>
-                        <div class="text-2xl font-bold">{{ $frontSolo }}</div>
-                        <div class="text-xs text-red-200">{{ $frontSolo !== 'Consulte manual' ? 'PSI' : '' }}</div>
+                        <div class="text-2xl font-bold">
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['front_solo'] ??
+                            $pressureSpecs['pressure_empty_front'] ?? 'Consulte manual') }}
+                        </div>
+                        <div class="text-xs text-red-200">PSI</div>
                     </div>
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Traseiro</div>
-                        <div class="text-2xl font-bold">{{ $rearSolo }}</div>
-                        <div class="text-xs text-red-200">{{ $rearSolo !== 'Consulte manual' ? 'PSI' : '' }}</div>
+                        <div class="text-2xl font-bold">
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['rear_solo'] ??
+                            $pressureSpecs['pressure_empty_rear'] ?? 'Consulte manual') }}
+                        </div>
+                        <div class="text-xs text-red-200">PSI</div>
                     </div>
                 </div>
             </div>
@@ -183,13 +141,19 @@ $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
                 <div class="grid grid-cols-2 gap-3">
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Dianteiro</div>
-                        <div class="text-2xl font-bold">{{ $frontPassenger }}</div>
-                        <div class="text-xs text-red-200">{{ $frontPassenger !== 'Consulte manual' ? 'PSI' : '' }}</div>
+                        <div class="text-2xl font-bold">
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['front_passenger'] ??
+                            $pressureSpecs['pressure_max_front'] ?? 'Consulte manual') }}
+                        </div>
+                        <div class="text-xs text-red-200">PSI</div>
                     </div>
                     <div class="text-center">
                         <div class="text-sm text-red-200 mb-1">Traseiro</div>
-                        <div class="text-2xl font-bold">{{ $rearPassenger }}</div>
-                        <div class="text-xs text-red-200">{{ $rearPassenger !== 'Consulte manual' ? 'PSI' : '' }}</div>
+                        <div class="text-2xl font-bold">
+                            {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['rear_passenger'] ??
+                            $pressureSpecs['pressure_max_rear'] ?? 'Consulte manual') }}
+                        </div>
+                        <div class="text-xs text-red-200">PSI</div>
                     </div>
                 </div>
             </div>
@@ -200,22 +164,10 @@ $categoryDisplay = $categoryDisplayMap[$categoryRaw] ?? 'Motocicleta';
             <div class="flex items-center">
                 <span class="text-yellow-300 mr-3 text-xl">⚠️</span>
                 <p class="text-yellow-100 text-sm">
-                    <strong>Importante:</strong> Sempre calibre com pneus frios. Em motocicletas, pressões incorretas podem ser fatais.
+                    <strong>Importante:</strong> Sempre calibre com pneus frios. Em motocicletas, pressões incorretas
+                    podem ser fatais.
                 </p>
             </div>
         </div>
-
-        {{-- DEBUG: Nova estrutura embarcada --}}
-        @if(app()->environment('local'))
-        <div class="mt-4 bg-red-500/20 border border-red-400/30 rounded-lg p-3 text-xs">
-            <strong>Debug - Dados Originais TireCalibration:</strong>
-            <br><strong>article->pressure_specifications:</strong>
-            @dump($article->pressure_specifications ?? 'VAZIO')
-            <br><strong>article->vehicle_data:</strong>
-            @dump($article->vehicle_data ?? 'VAZIO')
-            <br><strong>article->content (primeiras linhas):</strong>
-            @dump(array_slice($article->content ?? [], 0, 3, true))
-        </div>
-        @endif
     </div>
 </section>
