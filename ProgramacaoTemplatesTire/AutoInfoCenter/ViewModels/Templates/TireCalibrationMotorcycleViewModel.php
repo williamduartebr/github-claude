@@ -4,11 +4,12 @@ namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Illuminate\Support\Str;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
-use Src\AutoInfoCenter\ViewModels\Templates\Traits\VehicleDataProcessingTrait;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\MotorcycleVehicleDataProcessingTrait;
+
 
 class TireCalibrationMotorcycleViewModel extends TemplateViewModel
 {
-    use VehicleDataProcessingTrait;
+    use MotorcycleVehicleDataProcessingTrait;
 
     /**
      * Nome do template a ser utilizado
@@ -22,7 +23,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     {
         $content = $this->article->content;
 
-        // dd($content);
+        //  dd($content);
 
         $this->processedData['introduction'] = $content['introducao'] ?? '';
         $this->processedData['tire_specifications'] = $this->processMotorcycleTireSpecifications($content['especificacoes_pneus'] ?? []);
@@ -38,43 +39,18 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
         
         // OTIMIZADA: Usar dados embarcados primeiro
-        $this->processedData['vehicle_info'] = $this->processVehicleInfo();
-        $this->processedData['pressure_specifications'] = $this->processPressureSpecifications();
-        $this->processedData['tire_specs_embedded'] = $this->processTireSpecificationsEmbedded();
+         $this->processedData['vehicle_info'] = $this->processMotorcycleVehicleInfo();
+        $this->processedData['pressure_specifications'] = $this->processMotorcyclePressureSpecifications();
+        $this->processedData['tire_specs_embedded'] = $this->processMotorcycleTireSpecifications();
         
         // Dados auxiliares
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
-        $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
+        $this->processedData['breadcrumbs'] = $this->getMotorcycleBreadcrumbs();
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
     }
 
-    /**
-     * Processa especificações dos pneus específicas para motocicletas OTIMIZADA
-     */
-    private function processMotorcycleTireSpecifications(array $specs): array
-    {
-        if (empty($specs)) {
-            return $this->generateTireSpecsFromEmbeddedData();
-        }
-
-        $processed = [];
-
-        foreach ($specs as $spec) {
-            if (!empty($spec['posicao'])) {
-                $processed[$spec['posicao']] = [
-                    'position' => $spec['posicao'],
-                    'tire_size' => $spec['medida'] ?? '',
-                    'load_speed_index' => $spec['indice_carga_velocidade'] ?? '',
-                    'recommended_brands' => $spec['marcas_recomendadas'] ?? [],
-                    'average_price' => $spec['preco_medio'] ?? '',
-                    'durability_km' => $spec['durabilidade_km'] ?? ''
-                ];
-            }
-        }
-
-        return $processed;
-    }
+  
 
     /**
      * Gera especificações de pneus a partir de dados embarcados
