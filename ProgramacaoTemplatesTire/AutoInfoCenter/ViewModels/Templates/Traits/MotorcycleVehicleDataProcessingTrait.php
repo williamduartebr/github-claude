@@ -457,24 +457,14 @@ trait MotorcycleVehicleDataProcessingTrait
      */
     private function extractMotorcycleRearTire(string $tireSize): string
     {
-        if (str_contains(strtoupper($tireSize), 'TRASEIRO')) {
-            // Formato: "120/70-17 (DIANTEIRO) 180/55-17 (TRASEIRO)"
-            preg_match('/\(TRASEIRO\)\s*([^)]+)/', $tireSize, $matches);
-            if (!empty($matches[1])) {
-                return trim($matches[1]);
-            }
+        // Para: "110/70-17 (DIANTEIRO) 140/70-17 (TRASEIRO)"
+        // Pegar apenas "140/70-17"
 
-            // Tentar extrair após "TRASEIRO"
-            preg_match('/.*TRASEIRO.*?(\d+\/\d+[^)]*)/i', $tireSize, $matches);
-            return trim($matches[1] ?? $tireSize);
+        if (preg_match('/\s+(\d+\/\d+[^(]*)\s*\(TRASEIRO\)/', $tireSize, $matches)) {
+            return trim($matches[1]);
         }
 
-        // Se tem dois tamanhos separados por espaço, pegar o segundo
-        if (preg_match('/(\d+\/\d+[^\s]*)\s+(\d+\/\d+[^\s]*)/', $tireSize, $matches)) {
-            return trim($matches[2]);
-        }
-
-        return $tireSize;
+        return '';
     }
 
     /**

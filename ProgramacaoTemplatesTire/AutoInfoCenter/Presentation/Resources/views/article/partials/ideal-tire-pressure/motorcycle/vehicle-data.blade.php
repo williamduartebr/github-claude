@@ -61,16 +61,10 @@ $categoryRaw));
                 <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['model'] ?? 'N/D' }}</p>
             </div>
 
-            <!-- Ano -->
-            <div class="text-center">
-                <h3 class="text-sm font-semibold text-gray-600 mb-2">Ano:</h3>
-                <p class="text-lg font-bold text-gray-900">{{ $vehicleInfo['year'] ?? 'N/D' }}</p>
-            </div>
-
-            <!-- Categoria -->
+             <!-- Categoria -->
             <div class="text-center">
                 <h3 class="text-sm font-semibold text-gray-600 mb-2">Categoria:</h3>
-                <p class="text-lg font-bold text-gray-900">{{ $categoryDisplay }}</p>
+                <p class="text-lg font-bold text-gray-900">Motocicletas</p>
             </div>
         </div>
     </div>

@@ -2,7 +2,6 @@
 
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
-use Illuminate\Support\Str;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
 use Src\AutoInfoCenter\ViewModels\Templates\Traits\MotorcycleVehicleDataProcessingTrait;
 
@@ -11,7 +10,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     use MotorcycleVehicleDataProcessingTrait;
 
     protected string $templateName = 'tire_calibration_motorcycle';
-    
+
     /** @var array Cache para evitar reprocessamento */
     private array $dataCache = [];
 
@@ -25,10 +24,10 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
 
         // 1. DADOS FUNDAMENTAIS (sempre necessários)
         $this->processFundamentalData($content);
-        
+
         // 2. DADOS ESPECÍFICOS DE MOTOCICLETA (embarcados + content)
         $this->processMotorcycleSpecificData($content);
-        
+
         // 3. DADOS AUXILIARES E SEO
         $this->processAuxiliaryData();
     }
@@ -56,14 +55,14 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     {
         // Tabela de pressões (prioridade: content -> embarcado)
         $this->processedData['pressure_table'] = $this->processOptimizedPressureTable($content);
-        
+
         // Especificações técnicas
         $this->processedData['tire_specifications'] = $this->processOptimizedTireSpecs($content);
-        
+
         // Dados de segurança e manutenção
         $this->processedData['critical_alerts'] = $this->processOptimizedCriticalAlerts($content);
         $this->processedData['calibration_procedure'] = $this->processOptimizedCalibrationProcedure($content);
-        
+
         // Dados complementares (apenas se disponíveis)
         $this->processOptionalData($content);
     }
@@ -161,11 +160,71 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     {
         // 1ª prioridade: dados do content
         if (!empty($content['especificacoes_pneus'])) {
-            return $this->processMotorcycleTireSpecifications($content['especificacoes_pneus']);
+            return $this->processMotorcycleTireSpecsFromContent($content['especificacoes_pneus']);
         }
 
-        // 2ª prioridade: gerar a partir de dados embarcados
-        return $this->generateTireSpecsFromEmbeddedData();
+        // 2ª prioridade: dados embarcados (só se realmente existirem)
+        $embeddedSpecs = $this->getCachedTireSpecs();
+        if (!empty($embeddedSpecs['tire_size']) && $embeddedSpecs['tire_size'] !== 'N/A') {
+            return $this->generateTireSpecsFromEmbeddedData();
+        }
+
+        // Se não há dados, retorna array vazio
+        return [];
+    }
+
+    private function processMotorcycleTireSpecsFromContent(array $especificacoesPneus): array
+    {
+        $dianteiro = $especificacoesPneus['pneu_dianteiro'] ?? [];
+        $traseiro = $especificacoesPneus['pneu_traseiro'] ?? [];
+
+        if (empty($dianteiro['medida_original']) || $dianteiro['medida_original'] === '(DIANTEIRO)') {
+            return [];
+        }
+
+        $result['front_tire'] = [
+            'position' => 'Dianteiro',
+            'tire_size' => $dianteiro['medida_original'],
+            'load_speed_index' => $this->buildLoadSpeedIndex(
+                $dianteiro['indice_carga'] ?? '',
+                $dianteiro['indice_velocidade'] ?? ''
+            ),
+            'original_brand' => $dianteiro['marca_original'] ?? null
+        ];
+
+        // Pneu traseiro com fallback
+        $medidaTraseira = $traseiro['medida_original'] ?? '';
+
+        if ($medidaTraseira === '(DIANTEIRO)' || empty($medidaTraseira)) {
+            // CORREÇÃO: Buscar nos dados corretos do article
+            $tireSizeComplete = $this->article->vehicle_info['tire_size'] ?? '';
+            $medidaTraseira = $this->extractMotorcycleRearTire($tireSizeComplete);
+        }
+
+        if (!empty($medidaTraseira) && $medidaTraseira !== '(DIANTEIRO)') {
+            $result['rear_tire'] = [
+                'position' => 'Traseiro',
+                'tire_size' => $medidaTraseira,
+                'load_speed_index' => $this->buildLoadSpeedIndex(
+                    $traseiro['indice_carga'] ?? '',
+                    $traseiro['indice_velocidade'] ?? ''
+                ),
+                'original_brand' => $traseiro['marca_original'] ?? null
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Build do índice de carga/velocidade
+     */
+    private function buildLoadSpeedIndex(string $carga, string $velocidade): ?string
+    {
+        if (!empty($carga) && !empty($velocidade)) {
+            return $carga . $velocidade;
+        }
+        return null;
     }
 
     /**
@@ -271,7 +330,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function generateSpecialConditionsFromCategory(string $category): array
     {
         $pressureSpecs = $this->getCachedPressureSpecs();
-        
+
         $baseConditions = [
             [
                 'situation' => 'Uso urbano',
@@ -319,7 +378,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     {
         $vehicleInfo = $this->getCachedVehicleInfo();
         $tireSpecs = $this->getCachedTireSpecs();
-        
+
         if (empty($tireSpecs['tire_size'])) {
             return [];
         }
@@ -338,7 +397,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
                 'durability_km' => $this->estimateDurability($vehicleInfo['main_category'] ?? '', 'front')
             ],
             'rear_tire' => [
-                'position' => 'Traseiro', 
+                'position' => 'Traseiro',
                 'tire_size' => $rearSize,
                 'load_speed_index' => $this->inferLoadSpeedIndex($rearSize),
                 'recommended_brands' => $tireSpecs['recommended_brands'] ?? [],
@@ -362,7 +421,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         if (str_contains($tireSize, '140/70')) return '66H';
         if (str_contains($tireSize, '150/70')) return '69W';
         if (str_contains($tireSize, '190/55')) return '75W';
-        
+
         return 'Consulte fabricante';
     }
 
@@ -372,22 +431,22 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function estimateAveragePrice(string $tireSize, bool $isPremium): string
     {
         $basePrice = 150; // Preço base em reais
-        
+
         // Ajuste por largura
         if (preg_match('/^(\d+)\//', $tireSize, $matches)) {
             $width = (int)$matches[1];
             if ($width > 150) $basePrice += 100;
             elseif ($width > 120) $basePrice += 50;
         }
-        
+
         // Ajuste por categoria premium
         if ($isPremium) {
             $basePrice *= 1.5;
         }
-        
+
         $minPrice = (int)($basePrice * 0.8);
         $maxPrice = (int)($basePrice * 1.2);
-        
+
         return "R$ {$minPrice} - R$ {$maxPrice}";
     }
 
@@ -397,16 +456,16 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function estimateDurability(string $category, string $position): string
     {
         $baseDurability = $position === 'front' ? 15000 : 12000;
-        
+
         if (str_contains($category, 'sport')) {
             $baseDurability *= 0.7; // Pneus esportivos duram menos
         } elseif (str_contains($category, 'scooter')) {
             $baseDurability *= 1.2; // Scooters são mais leves
         }
-        
+
         $min = (int)($baseDurability * 0.8);
         $max = (int)($baseDurability * 1.2);
-        
+
         return number_format($min) . ' - ' . number_format($max) . ' km';
     }
 
@@ -418,7 +477,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         $originalData = $this->article ?? null;
         $vehicleData = $originalData->vehicle_data ?? [];
         $tireSpecs = $vehicleData['tire_specifications'] ?? [];
-        
+
         $tireSize = $this->getMotorcycleTireSize($originalData, $vehicleData);
 
         return [
@@ -548,7 +607,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function generateInformationLocationFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         return [
             'owner_manual' => [
                 'location' => 'Manual do Proprietário',
@@ -603,7 +662,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function generateUnitConversionFromEmbeddedData(): array
     {
         $pressureSpecs = $this->getCachedPressureSpecs();
-        
+
         $pressures = array_filter([
             $pressureSpecs['pressure_empty_front'] ?? null,
             $pressureSpecs['pressure_empty_rear'] ?? null,
@@ -725,7 +784,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         ];
 
         // Remove entradas vazias
-        $considerations = array_filter($considerations, function($item) {
+        $considerations = array_filter($considerations, function ($item) {
             return !empty($item['orientations']) || !empty($item['factors']) || !empty($item['types']);
         });
 
@@ -768,7 +827,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function generateMotorcycleBenefitsFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         return [
             [
                 'category' => 'seguranca',
@@ -987,7 +1046,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function generateMotorcycleCalibrationProcedureFromEmbeddedData(): array
     {
         $pressureSpecs = $this->getCachedPressureSpecs();
-        
+
         return [
             [
                 'number' => 1,
@@ -1040,13 +1099,13 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
             $vehicleInfo = $this->getCachedVehicleInfo();
             $mainCategory = $vehicleInfo['main_category'] ?? '';
             $model = strtolower($vehicleInfo['model'] ?? '');
-            
-            $this->dataCache['is_sport'] = str_contains($mainCategory, 'sport') || 
-                                          str_contains($model, 'gsx-r') || 
-                                          str_contains($model, 'cbr') ||
-                                          str_contains($model, 'ninja');
+
+            $this->dataCache['is_sport'] = str_contains($mainCategory, 'sport') ||
+                str_contains($model, 'gsx-r') ||
+                str_contains($model, 'cbr') ||
+                str_contains($model, 'ninja');
         }
-        
+
         return $this->dataCache['is_sport'];
     }
 
@@ -1259,7 +1318,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         $seoData = $this->article->seo_data ?? [];
 
         $pressureDisplay = $pressureSpecs['pressure_display'] ?? '';
-        
+
         return [
             'title' => $seoData['page_title'] ?? "Calibragem do Pneu da {$vehicleInfo['full_name']} – Guia Completo para Motociclistas",
             'meta_description' => $seoData['meta_description'] ?? "Guia específico de calibragem dos pneus da {$vehicleInfo['full_name']}. {$pressureDisplay}. Procedimento seguro e dicas críticas para motociclistas.",
@@ -1375,7 +1434,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     private function getRelatedTopics(): array
     {
         $vehicleInfo = $this->getCachedVehicleInfo();
-        
+
         $topics = [];
 
         // Tópicos gerais de manutenção
@@ -1422,7 +1481,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         ];
     }
 
-    
+
 
     /**
      * Verifica se propriedade existe
