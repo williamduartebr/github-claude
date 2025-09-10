@@ -99,7 +99,7 @@ $motorcycleCategory = $vehicleInfo['category'] ?? 'standard';
             </div>
         </div>
 
-        <!-- Sinais de Desgaste -->
+        {{-- <!-- Sinais de Desgaste -->
         <div class="p-6 border-t border-gray-200">
             <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                 <span class="text-orange-600 mr-2">📊</span>
@@ -235,7 +235,7 @@ $motorcycleCategory = $vehicleInfo['category'] ?? 'standard';
                 @endforeach
             </div>
             @endif
-        </div>
+        </div> --}}
 
         <!-- Cuidados por Categoria de Moto -->
         <div class="p-6 bg-gray-50 border-t border-gray-200">

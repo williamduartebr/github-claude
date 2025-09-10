@@ -224,13 +224,13 @@ Otimizado para pickups com pressões diferenciadas e capacidade de carga
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs text-gray-600">Dianteiro:</span>
                                         <span class="text-sm font-semibold text-blue-600">
-                                            {{ $spec['front_normal'] ?? $spec['pressao_dianteiro_normal'] ?? $pressureSpecs['pressure_empty_front'] ?? '35' }}
+                                            {{ $spec['front_normal'] ?? $spec['pressao_dianteiro_normal'] ?? $pressureSpecs['pressure_empty_front'] ?? '35' }} PSI
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs text-gray-600">Traseiro:</span>
                                         <span class="text-sm font-semibold text-blue-600">
-                                            {{ $spec['rear_normal'] ?? $spec['pressao_traseiro_normal'] ?? $pressureSpecs['pressure_empty_rear'] ?? '40' }}
+                                            {{ $spec['rear_normal'] ?? $spec['pressao_traseiro_normal'] ?? $pressureSpecs['pressure_empty_rear'] ?? '40' }} PSI
                                         </span>
                                     </div>
                                 </div>
@@ -242,13 +242,13 @@ Otimizado para pickups com pressões diferenciadas e capacidade de carga
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs text-gray-600">Dianteiro:</span>
                                         <span class="text-sm font-semibold text-orange-600">
-                                            {{ $spec['front_loaded'] ?? $spec['pressao_dianteiro_carregado'] ?? $pressureSpecs['pressure_max_front'] ?? '38' }}
+                                            {{ $spec['front_loaded'] ?? $spec['pressao_dianteiro_carregado'] ?? $pressureSpecs['pressure_max_front'] ?? '38' }} PSI
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs text-gray-600">Traseiro:</span>
                                         <span class="text-sm font-semibold text-orange-600">
-                                            {{ $spec['rear_loaded'] ?? $spec['pressao_traseiro_carregado'] ?? $pressureSpecs['pressure_max_rear'] ?? '45' }}
+                                            {{ $spec['rear_loaded'] ?? $spec['pressao_traseiro_carregado'] ?? $pressureSpecs['pressure_max_rear'] ?? '450' }} PSI
                                         </span>
                                     </div>
                                 </div>
@@ -377,7 +377,7 @@ Otimizado para pickups com pressões diferenciadas e capacidade de carga
                         
                         <div class="bg-white/70 rounded-lg p-4 mb-4">
                             <div class="text-center">
-                                <div class="text-xs text-gray-600 mb-1">Ajuste Recomendado</div>
+                                <div class="text-xs text-gray-600 mb-1">Ajuste recomendado: consulte o manual</div>
                                 <div class="text-lg font-bold text-gray-800">
                                     {{ $condition['recommended_adjustment'] ?? $condition['ajuste_recomendado'] ?? '' }}
                                 </div>

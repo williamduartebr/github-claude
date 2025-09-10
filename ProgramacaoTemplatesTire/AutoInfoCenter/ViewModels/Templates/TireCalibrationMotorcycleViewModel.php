@@ -59,6 +59,9 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         // Especificações técnicas
         $this->processedData['tire_specifications'] = $this->processOptimizedTireSpecs($content);
 
+        // NOVO: Especificações detalhadas por versão
+        $this->processedData['tire_specifications_by_version'] = $this->processMotorcycleTireSpecificationsByVersion($content);
+
         // Dados de segurança e manutenção
         $this->processedData['critical_alerts'] = $this->processOptimizedCriticalAlerts($content);
         $this->processedData['calibration_procedure'] = $this->processOptimizedCalibrationProcedure($content);
@@ -171,6 +174,114 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
 
         // Se não há dados, retorna array vazio
         return [];
+    }
+
+    /**
+     * NOVO: Processa especificações detalhadas por versão da motocicleta
+     */
+    private function processMotorcycleTireSpecificationsByVersion(array $content): array
+    {
+        // 1ª prioridade: dados do content especificacoes_por_versao
+        if (!empty($content['especificacoes_por_versao'])) {
+            return $this->processVersionSpecificationsFromContent($content['especificacoes_por_versao']);
+        }
+
+        // 2ª prioridade: gerar a partir de dados embarcados
+        return $this->generateVersionSpecificationsFromEmbeddedData();
+    }
+
+    /**
+     * Processa especificações por versão do content
+     */
+    private function processVersionSpecificationsFromContent(array $specifications): array
+    {
+        $processed = [];
+
+        foreach ($specifications as $spec) {
+            $version = $spec['versao'] ?? 'Padrão';
+            $tireSize = $spec['medida_pneus'] ?? '';
+
+            // Extrair tamanhos específicos
+            $frontSize = $this->extractMotorcycleFrontTire($tireSize);
+            $rearSize = $this->extractMotorcycleRearTire($tireSize);
+
+            $processed[] = [
+                'version' => $this->normalizeVersionName($version),
+                'front_tire_size' => $frontSize,
+                'rear_tire_size' => $rearSize ?: $this->inferRearTireFromFront($frontSize),
+                'load_speed_index' => $spec['indice_carga_velocidade'] ?? 'Consulte manual',
+                'front_solo' => ($spec['pressao_dianteiro_normal'] ?? '') . ' PSI',
+                'rear_solo' => ($spec['pressao_traseiro_normal'] ?? '') . ' PSI',
+                'front_passenger' => ($spec['pressao_dianteiro_carregado'] ?? '') . ' PSI',
+                'rear_passenger' => ($spec['pressao_traseiro_carregado'] ?? '') . ' PSI',
+                'is_main_version' => $loop->first ?? false
+            ];
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera especificações por versão a partir de dados embarcados
+     */
+    private function generateVersionSpecificationsFromEmbeddedData(): array
+    {
+        $vehicleInfo = $this->getCachedVehicleInfo();
+        $pressureSpecs = $this->getCachedPressureSpecs();
+        $tireSpecs = $this->getCachedTireSpecs();
+
+        if (empty($pressureSpecs) || empty($tireSpecs['tire_size'])) {
+            return [];
+        }
+
+        $frontSize = $this->extractMotorcycleFrontTire($tireSpecs['tire_size']);
+        $rearSize = $this->extractMotorcycleRearTire($tireSpecs['tire_size']);
+
+        return [[
+            'version' => 'Padrão',
+            'front_tire_size' => $frontSize,
+            'rear_tire_size' => $rearSize ?: $this->inferRearTireFromFront($frontSize),
+            'load_speed_index' => $this->inferLoadSpeedIndex($frontSize),
+            'front_solo' => ($pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
+            'rear_solo' => ($pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
+            'front_passenger' => ($pressureSpecs['pressure_max_front'] ?? '') . ' PSI',
+            'rear_passenger' => ($pressureSpecs['pressure_max_rear'] ?? '') . ' PSI',
+            'is_main_version' => true
+        ]];
+    }
+
+    /**
+     * Normaliza nome da versão para exibição
+     */
+    private function normalizeVersionName(string $version): string
+    {
+        return match (true) {
+            str_contains(strtolower($version), 'lx') => 'LX',
+            str_contains(strtolower($version), 'ex') => 'EX',
+            str_contains(strtolower($version), 'exl') => 'EXL',
+            str_contains(strtolower($version), 'comfort') => 'Comfort',
+            str_contains(strtolower($version), 'style') => 'Style',
+            str_contains(strtolower($version), 'premium') => 'Premium',
+            default => ucfirst(str_replace(['_', '-'], ' ', $version))
+        };
+    }
+
+    /**
+     * Infere pneu traseiro baseado no dianteiro (para casos de dados incompletos)
+     */
+    private function inferRearTireFromFront(string $frontSize): string
+    {
+        // Padrões comuns para motocicletas brasileiras
+        $rearPatterns = [
+            '80/100-18' => '90/90-18',      // CG 160, Factor 150
+            '110/70-17' => '140/70-17',     // CB 300F, CB 600F
+            '120/70-17' => '180/55-17',     // Esportivas médias
+            '120/70ZR17' => '190/55ZR17',   // Superbikes
+            '90/90-12' => '100/90-10',      // Scooters
+            '110/80R19' => '150/70R17'      // Adventure
+        ];
+
+        return $rearPatterns[$frontSize] ?? 'Consulte manual';
     }
 
     private function processMotorcycleTireSpecsFromContent(array $especificacoesPneus): array

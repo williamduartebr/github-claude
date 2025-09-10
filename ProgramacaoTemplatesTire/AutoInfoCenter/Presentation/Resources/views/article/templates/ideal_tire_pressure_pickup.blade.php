@@ -382,7 +382,7 @@ Adaptado para pickups - Mantém estrutura original com melhorias específicas
                         
                         <div class="bg-white/70 rounded-lg p-4 mb-4">
                             <div class="text-center">
-                                <div class="text-xs text-gray-600 mb-1">Ajuste Recomendado</div>
+                                <div class="text-xs text-gray-600 mb-1">Ajuste recomendado: consulte o manual</div>
                                 <div class="text-lg font-bold text-gray-800">
                                     {{ $condition['recommended_adjustment'] ?? '' }}
                                 </div>
