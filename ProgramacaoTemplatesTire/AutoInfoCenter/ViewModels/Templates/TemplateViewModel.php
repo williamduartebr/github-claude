@@ -51,6 +51,7 @@ abstract class TemplateViewModel
            'created_at' => $this->article->created_at,
            'author' => $this->article->author,
            'vehicle_info' => $this->article->vehicle_info,
+           'extracted_entities' => $this->article->extracted_entities,
            'related_topics' => $this->article->related_topics,
            'metadata' => $this->article->metadata,
            'seo_data' => $this->article->seo_data,

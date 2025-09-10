@@ -312,6 +312,14 @@ trait VehicleDataProcessingTrait
     }
 
     /**
+     * Obtém URL canônica do artigo
+     */
+    private function getExtractedEntities(): array
+    {
+        return $this->article->extracted_entities ?? [];
+    }
+
+    /**
      * Processa breadcrumbs para navegação
      */
     private function getBreadcrumbs(): array

@@ -33,6 +33,7 @@ class TireCalibrationCarViewModel extends TemplateViewModel
         
         // OTIMIZADA: Usar dados embarcados primeiro
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
+        $this->processedData['extracted_entities'] = $this->getExtractedEntities();
         $this->processedData['pressure_specifications'] = $this->processPressureSpecifications();
         $this->processedData['tire_specs_embedded'] = $this->processTireSpecificationsEmbedded();
         
@@ -45,6 +46,8 @@ class TireCalibrationCarViewModel extends TemplateViewModel
         $this->processedData['seo_data'] = $this->processSeoData();
         $this->processedData['breadcrumbs'] = $this->getBreadcrumbs();
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
+
+
     }
 
     /**
