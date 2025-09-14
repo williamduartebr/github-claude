@@ -2,6 +2,8 @@
 
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
 
+
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\FixPhase2TemplateCommand;
 use Illuminate\Support\ServiceProvider;
 use Src\ArticleGenerator\Infrastructure\Console\HumanizeArticleDates;
 use Src\ContentGeneration\TireCalibration\Application\Services\TestArticleService;
@@ -278,6 +280,7 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 ResetPickupRecordsCommand::class,
                 ReprocessFailedArticlesCommand::class,
                 FixIncompletePickupArticlesCommand::class,
+                FixPhase2TemplateCommand::class,
 
                 // ✅ Commands Publicar e Testes
                 PublishTireCalibrationDirectCommand::class,

@@ -25,7 +25,7 @@ use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3AServ
 class RefineWithClaudePhase3ACommand extends Command
 {
     protected $signature = 'tire-calibration:refine-3a
-                            {--limit=10 : Número máximo de artigos a processar}
+                            {--limit=1 : Número máximo de artigos a processar}
                             {--category= : Filtrar por categoria específica}
                             {--dry-run : Simular execução sem salvar}
                             {--force : Reprocessar artigos já refinados na 3A}

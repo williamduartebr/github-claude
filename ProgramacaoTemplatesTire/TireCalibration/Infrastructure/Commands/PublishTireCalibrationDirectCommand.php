@@ -32,7 +32,7 @@ class PublishTireCalibrationDirectCommand extends Command
      * Nome e assinatura do comando.
      */
     protected $signature = 'tire-calibration:publish-direct
-                           {--limit=10 : Número máximo de artigos a processar}
+                           {--limit=100 : Número máximo de artigos a processar}
                            {--dry-run : Simular execução sem persistir dados}
                            {--force : Republicar artigos mesmo se slug já existir}
                            {--debug : Exibir informações detalhadas}
@@ -87,7 +87,6 @@ class PublishTireCalibrationDirectCommand extends Command
             }
 
             return $results['errors'] === 0 ? Command::SUCCESS : Command::FAILURE;
-
         } catch (\Exception $e) {
             $this->error("Erro fatal: {$e->getMessage()}");
             Log::error('PublishTireCalibrationDirectCommand failed', [
@@ -123,8 +122,8 @@ class PublishTireCalibrationDirectCommand extends Command
             'version' => 'v2',
             'enrichment_phase' => 'claude_3b_completed'
         ])
-        ->whereNotNull('article_refined')
-        ->whereNotNull('claude_enhancements');
+            ->whereNotNull('article_refined')
+            ->whereNotNull('claude_enhancements');
 
         // Filtro por veículo específico
         if ($vehicleFilter) {
@@ -132,9 +131,9 @@ class PublishTireCalibrationDirectCommand extends Command
             if (count($vehicleParts) >= 2) {
                 $make = ucfirst($vehicleParts[0]);
                 $model = ucfirst($vehicleParts[1]);
-                
+
                 $query->where('vehicle_make', $make)
-                      ->where('vehicle_model', 'like', "%{$model}%");
+                    ->where('vehicle_model', 'like', "%{$model}%");
             }
         }
 
@@ -142,12 +141,12 @@ class PublishTireCalibrationDirectCommand extends Command
         if (!$force) {
             $query->where(function ($q) {
                 $q->whereNull('direct_published_at')
-                  ->orWhere('direct_publish_status', '!=', 'published');
+                    ->orWhere('direct_publish_status', '!=', 'published');
             });
         }
 
         $query->orderBy('claude_completed_at', 'desc')
-              ->limit($limit);
+            ->limit($limit);
 
         return $query->get();
     }
@@ -158,16 +157,16 @@ class PublishTireCalibrationDirectCommand extends Command
     private function displayFoundArticles($articles, bool $dryRun): void
     {
         $this->info("Encontrados {$articles->count()} artigos para publicação:");
-        
+
         foreach ($articles as $index => $article) {
             $vehicle = "{$article->vehicle_make} {$article->vehicle_model}";
             $slug = $this->generateFinalSlug($article);
-            
+
             $this->line("   " . ($index + 1) . ". {$vehicle} → {$slug}");
         }
 
         $this->newLine();
-        
+
         if ($dryRun) {
             $this->warn('MODO SIMULAÇÃO - Nenhuma alteração será persistida');
         }
@@ -203,7 +202,7 @@ class PublishTireCalibrationDirectCommand extends Command
 
             try {
                 $result = $this->publishDirectly($article, $dryRun, $debug);
-                
+
                 if ($result['published']) {
                     $results['published']++;
                 } else {
@@ -211,7 +210,6 @@ class PublishTireCalibrationDirectCommand extends Command
                 }
 
                 $results['details'][] = $result;
-
             } catch (\Exception $e) {
                 $results['errors']++;
                 $results['details'][] = [
@@ -312,7 +310,7 @@ class PublishTireCalibrationDirectCommand extends Command
     {
         $make = Str::slug($tireArticle->vehicle_make);
         $model = Str::slug($tireArticle->vehicle_model);
-        
+
         return "calibragem-pneu-{$make}-{$model}";
     }
 
@@ -376,7 +374,7 @@ class PublishTireCalibrationDirectCommand extends Command
     {
         $lowerVehicle = strtolower($vehicle);
         $finalSlug = $this->generateFinalSlug($tireArticle);
-        
+
         return [
             'page_title' => "Calibragem de Pneus {$vehicle} - Guia Completo",
             'meta_description' => "Descubra a pressão ideal dos pneus do {$vehicle}. Guia completo com procedimentos, especificações técnicas e dicas de segurança.",
@@ -389,7 +387,7 @@ class PublishTireCalibrationDirectCommand extends Command
                 "especificação pneu {$lowerVehicle}"
             ],
             'url_slug' =>  $finalSlug,
-            'canonical_url' => "https://mercadoveiculos.com.br/info/".  $finalSlug,
+            'canonical_url' => "https://mercadoveiculos.com.br/info/" .  $finalSlug,
             'og_title' => "Calibragem de Pneus {$vehicle} - Guia Completo",
             'og_description' => "Procedimento completo de calibragem dos pneus do {$vehicle}. Pressões específicas e dicas especializadas."
         ];
@@ -431,13 +429,13 @@ class PublishTireCalibrationDirectCommand extends Command
             $tireArticle->vehicle_make,
             $tireArticle->vehicle_model,
             "{$tireArticle->vehicle_make} {$tireArticle->vehicle_model}",
-            
+
             // Tags técnicas
             'calibragem de pneus',
             'pressão dos pneus',
             'manutenção automotiva',
             'segurança veicular',
-            
+
             // Tags por categoria
             $this->mapCategory($tireArticle->main_category),
             $this->mapVehicleType($tireArticle->vehicle_features['vehicle_type'] ?? 'car')
@@ -467,7 +465,7 @@ class PublishTireCalibrationDirectCommand extends Command
     private function extractRelatedTopics($tireArticle): array
     {
         $vehicle = "{$tireArticle->vehicle_make} {$tireArticle->vehicle_model}";
-        
+
         return [
             [
                 'title' => "Óleo Recomendado para {$vehicle}",
@@ -521,11 +519,25 @@ class PublishTireCalibrationDirectCommand extends Command
      */
     private function assignAuthor($tireArticle): array
     {
+
+
         $authors = [
-            ['name' => 'Carlos Santos', 'bio' => 'Especialista em manutenção automotiva'],
-            ['name' => 'Ana Oliveira', 'bio' => 'Engenheira mecânica especializada em pneus'],
-            ['name' => 'Ricardo Lima', 'bio' => 'Técnico automotivo com 15 anos de experiência'],
-            ['name' => 'Marina Costa', 'bio' => 'Especialista em segurança veicular']
+            [
+                'name' => 'Equipe Editorial',
+                'bio' => 'Equipe especializada em conteúdo automotivo'
+            ],
+            [
+                'name' => 'Departamento Técnico',
+                'bio' => 'Engenheiros e mecânicos especializados'
+            ],
+            [
+                'name' => 'Redação',
+                'bio' => 'Editores especialistas em veículos'
+            ],
+            [
+                'name' => 'Equipe de Conteúdo',
+                'bio' => 'Especialistas em informação automotiva'
+            ]
         ];
 
         $index = crc32($tireArticle->vehicle_make . $tireArticle->vehicle_model) % count($authors);
@@ -544,7 +556,7 @@ class PublishTireCalibrationDirectCommand extends Command
     // Métodos de mapeamento
     private function mapCategory(string $category): string
     {
-        return match($category) {
+        return match ($category) {
             'sedan' => 'Sedan',
             'hatch' => 'Hatchback',
             'suv' => 'SUV',
@@ -556,7 +568,7 @@ class PublishTireCalibrationDirectCommand extends Command
 
     private function mapVehicleType(string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'car' => 'Carro',
             'suv' => 'SUV',
             'pickup' => 'Picape',
@@ -588,7 +600,7 @@ class PublishTireCalibrationDirectCommand extends Command
     {
         if ($this->option('humanize-dates')) {
             $this->info('Humanizando datas dos artigos publicados...');
-            
+
             $this->call('articles:humanize-dates', [
                 '--days' => $this->option('days'),
                 '--direct-published-only' => true

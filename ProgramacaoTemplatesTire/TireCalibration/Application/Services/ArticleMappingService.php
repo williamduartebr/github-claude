@@ -8,45 +8,54 @@ use Src\ContentGeneration\TireCalibration\Domain\Entities\TireCalibration;
 use Carbon\Carbon;
 
 /**
- * ArticleMappingService - Mapear dados JSON físicos para estrutura completa de artigos
+ * ArticleMappingService - MAPEAMENTO CORRIGIDO V3.0
  * 
- * Serviço responsável por:
- * - Ler dados JSON de database/vehicle-data/
- * - Mapear para estrutura idêntica aos mocks/articles/
- * - Gerar conteúdo rico baseado nos templates (car, motorcycle, pickup)
- * - Aplicar SEO, metadados e estrutura completa
- * 
- * BASEADO NOS EXEMPLOS DOS DOCUMENTOS:
- * - tire-calibration-honda-cg-160-2019.json (motorcycle)  
- * - tire-calibration-mercedes-eqa-2025.json (car)
- * - tire-calibration-peugeot-3008-2025.json (suv)
- * - tire-calibration-toyota-corolla-hybrid-2025.json (hybrid)
- * - tire-calibration-suzuki-gsx-s-1000-2023.json (sport motorcycle)
+ * CORREÇÃO CRÍTICA:
+ * - TEMPLATE_MAPPING completo com TODAS as categorias motorcycle_*
+ * - Prevenção do fallback incorreto para tire_calibration_car
+ * - Validação rigorosa de mapeamento de templates
  * 
  * @author Claude Sonnet 4
- * @version 2.0
+ * @version 3.0 - Correção crítica do mapeamento de templates
  */
 class ArticleMappingService
 {
     /**
-     * Templates por categoria
+     * ✅ MAPEAMENTO COMPLETO - TODAS AS CATEGORIAS
+     * 
+     * CORREÇÃO: Adicionadas TODAS as categorias motorcycle_* identificadas no relatório
      */
     private const TEMPLATE_MAPPING = [
-        // Carros
-        'sedan' => 'tire_calibration_car',
-        'hatch' => 'tire_calibration_car',
-        'suv' => 'tire_calibration_car',
-        'car_electric' => 'tire_calibration_car',
-        'car_hybrid' => 'tire_calibration_car',
-        
-        // Motocicletas  
+        // ===== MOTOCICLETAS - TODAS AS CATEGORIAS =====
         'motorcycle' => 'tire_calibration_motorcycle',
         'motorcycle_street' => 'tire_calibration_motorcycle',
         'motorcycle_sport' => 'tire_calibration_motorcycle',
         'motorcycle_naked' => 'tire_calibration_motorcycle',
         'motorcycle_scooter' => 'tire_calibration_motorcycle',
+        'motorcycle_trail' => 'tire_calibration_motorcycle',           // ✅ ADICIONADO
+        'motorcycle_adventure' => 'tire_calibration_motorcycle',       // ✅ ADICIONADO
+        'motorcycle_electric' => 'tire_calibration_motorcycle',        // ✅ ADICIONADO
+        'motorcycle_cruiser' => 'tire_calibration_motorcycle',         // ✅ ADICIONADO
+        'motorcycle_custom' => 'tire_calibration_motorcycle',          // ✅ ADICIONADO
+        'motorcycle_touring' => 'tire_calibration_motorcycle',         // ✅ ADICIONADO
         
-        // Picapes e caminhões
+        // ===== CARROS - TODAS AS CATEGORIAS =====
+        'sedan' => 'tire_calibration_car',
+        'hatch' => 'tire_calibration_car',
+        'suv' => 'tire_calibration_car',
+        'car_electric' => 'tire_calibration_car',
+        'car_hybrid' => 'tire_calibration_car',
+        'car_hatchback' => 'tire_calibration_car',                    // ✅ ADICIONADO
+        'car_sedan' => 'tire_calibration_car',                        // ✅ ADICIONADO
+        'car_sports' => 'tire_calibration_car',                       // ✅ ADICIONADO
+        'van' => 'tire_calibration_car',                              // ✅ ADICIONADO
+        'minivan' => 'tire_calibration_car',                          // ✅ ADICIONADO
+        'suv_hybrid' => 'tire_calibration_car',                       // ✅ ADICIONADO
+        'suv_electric' => 'tire_calibration_car',                     // ✅ ADICIONADO
+        'sedan_electric' => 'tire_calibration_car',                   // ✅ ADICIONADO
+        'hatch_electric' => 'tire_calibration_car',                   // ✅ ADICIONADO
+        
+        // ===== PICAPES E CAMINHÕES =====
         'pickup' => 'tire_calibration_pickup',
         'truck' => 'tire_calibration_pickup',
     ];
@@ -57,14 +66,26 @@ class ArticleMappingService
     public function mapVehicleDataToArticle(array $vehicleData, TireCalibration $calibration): array
     {
         try {
+            // ✅ VALIDAÇÃO CRÍTICA: Verificar mapeamento antes de processar
+            $this->validateTemplateMapping($vehicleData, $calibration);
+            
             // Determinar template baseado na categoria
-            $template = $this->getTemplate($vehicleData['main_category'] ?? $calibration->main_category);
+            $template = $this->getTemplate($vehicleData['main_category'] ?? '');
+            
+            // ✅ LOG CRÍTICO: Rastrear mapeamentos para debug
+            Log::info('ArticleMappingService: Template mapeado', [
+                'vehicle' => $vehicleData['make'] . ' ' . $vehicleData['model'],
+                'category' => $vehicleData['main_category'] ?? 'unknown',
+                'vehicle_type' => $vehicleData['vehicle_type'] ?? 'unknown', 
+                'template_mapped' => $template,
+                'calibration_id' => $calibration->_id ?? 'unknown'
+            ]);
             
             // Estrutura base do artigo (igual aos mocks)
             $article = [
                 'title' => $this->generateTitle($vehicleData),
                 'slug' => $this->generateSlug($vehicleData),
-                'template' => $template,
+                'template' => $template,  // ✅ TEMPLATE CORRIGIDO
                 'category_id' => 1,
                 'category_name' => 'Calibragem de Pneus',
                 'category_slug' => 'calibragem-pneus',
@@ -75,6 +96,9 @@ class ArticleMappingService
                 'formated_updated_at' => now()->format('d \d\e F \d\e Y'),
                 'canonical_url' => $this->generateCanonicalUrl($vehicleData),
             ];
+
+            // ✅ VALIDAÇÃO PÓS-MAPEAMENTO
+            $this->validateMappedArticle($article, $vehicleData);
 
             Log::info('ArticleMappingService: Artigo mapeado com sucesso', [
                 'vehicle' => $vehicleData['make'] . ' ' . $vehicleData['model'],
@@ -87,7 +111,8 @@ class ArticleMappingService
 
         } catch (\Exception $e) {
             Log::error('ArticleMappingService: Erro no mapeamento', [
-                'vehicle_data' => $vehicleData['make'] ?? 'Unknown',
+                'vehicle_data' => ($vehicleData['make'] ?? 'Unknown') . ' ' . ($vehicleData['model'] ?? ''),
+                'category' => $vehicleData['main_category'] ?? 'unknown',
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -96,11 +121,103 @@ class ArticleMappingService
     }
 
     /**
-     * Obter template baseado na categoria
+     * ✅ VALIDAÇÃO CRÍTICA: Verificar se mapeamento está correto ANTES do processamento
+     */
+    private function validateTemplateMapping(array $vehicleData, TireCalibration $calibration): void
+    {
+        $category = $vehicleData['main_category'] ?? '';
+        $vehicleType = $vehicleData['vehicle_type'] ?? '';
+        
+        // VALIDAÇÃO 1: Categoria deve existir no mapeamento
+        if (!isset(self::TEMPLATE_MAPPING[$category]) && !empty($category)) {
+            Log::warning('ArticleMappingService: Categoria não mapeada', [
+                'category' => $category,
+                'vehicle_type' => $vehicleType,
+                'vehicle' => ($vehicleData['make'] ?? '') . ' ' . ($vehicleData['model'] ?? ''),
+                'calibration_id' => $calibration->_id ?? 'unknown'
+            ]);
+        }
+
+        // VALIDAÇÃO 2: Consistência entre vehicle_type e categoria
+        $isMotorcycleCategory = str_starts_with($category, 'motorcycle');
+        $isMotorcycleType = $vehicleType === 'motorcycle';
+        
+        if ($isMotorcycleCategory !== $isMotorcycleType) {
+            Log::warning('ArticleMappingService: Inconsistência vehicle_type vs categoria', [
+                'category' => $category,
+                'vehicle_type' => $vehicleType,
+                'is_motorcycle_category' => $isMotorcycleCategory,
+                'is_motorcycle_type' => $isMotorcycleType,
+                'vehicle' => ($vehicleData['make'] ?? '') . ' ' . ($vehicleData['model'] ?? ''),
+                'calibration_id' => $calibration->_id ?? 'unknown'
+            ]);
+        }
+    }
+
+    /**
+     * ✅ VALIDAÇÃO PÓS-MAPEAMENTO: Verificar se artigo foi mapeado corretamente
+     */
+    private function validateMappedArticle(array $article, array $vehicleData): void
+    {
+        $template = $article['template'];
+        $vehicleType = $vehicleData['vehicle_type'] ?? '';
+        $category = $vehicleData['main_category'] ?? '';
+
+        // REGRA: Motocicletas NUNCA devem usar template de carro
+        if ($vehicleType === 'motorcycle' && $template === 'tire_calibration_car') {
+            $error = "ERRO CRÍTICO: Motocicleta mapeada com template de carro";
+            Log::error('ArticleMappingService: ' . $error, [
+                'vehicle_type' => $vehicleType,
+                'category' => $category,
+                'template' => $template,
+                'vehicle' => ($vehicleData['make'] ?? '') . ' ' . ($vehicleData['model'] ?? '')
+            ]);
+            throw new \Exception($error);
+        }
+
+        // REGRA: Categorias motorcycle_* NUNCA devem usar template de carro
+        if (str_starts_with($category, 'motorcycle') && $template === 'tire_calibration_car') {
+            $error = "ERRO CRÍTICO: Categoria {$category} mapeada com template de carro";
+            Log::error('ArticleMappingService: ' . $error, [
+                'vehicle_type' => $vehicleType,
+                'category' => $category,
+                'template' => $template,
+                'vehicle' => ($vehicleData['make'] ?? '') . ' ' . ($vehicleData['model'] ?? '')
+            ]);
+            throw new \Exception($error);
+        }
+    }
+
+    /**
+     * ✅ OBTER TEMPLATE COM FALLBACK INTELIGENTE
      */
     private function getTemplate(string $category): string
     {
-        return self::TEMPLATE_MAPPING[$category] ?? 'tire_calibration_car';
+        // 1. Mapeamento direto
+        if (isset(self::TEMPLATE_MAPPING[$category])) {
+            return self::TEMPLATE_MAPPING[$category];
+        }
+
+        // 2. Fallback inteligente baseado em prefixos
+        if (str_starts_with($category, 'motorcycle')) {
+            Log::info('ArticleMappingService: Fallback motorcycle para categoria não mapeada', [
+                'category' => $category
+            ]);
+            return 'tire_calibration_motorcycle';
+        }
+
+        if (str_starts_with($category, 'pickup') || str_starts_with($category, 'truck')) {
+            Log::info('ArticleMappingService: Fallback pickup para categoria não mapeada', [
+                'category' => $category
+            ]);
+            return 'tire_calibration_pickup';
+        }
+
+        // 3. Fallback padrão (carros)
+        Log::info('ArticleMappingService: Fallback car para categoria não mapeada', [
+            'category' => $category
+        ]);
+        return 'tire_calibration_car';
     }
 
     /**
@@ -136,32 +253,29 @@ class ArticleMappingService
     {
         $make = $data['make'] ?? '';
         $model = $data['model'] ?? '';
-        $fullName = trim("{$make} {$model}");
+        $slug = $this->generateSlug($data);
         
-        $pressureDisplay = $this->getPressureDisplay($data);
+        $pressureDisplay = $this->generatePressureDisplay($data);
         
-        $title = $this->generateTitle($data);
-        $primaryKeyword = strtolower("calibragem pneu {$make} {$model}");
-
         return [
-            'page_title' => $title,
-            'meta_description' => "Guia completo de calibragem dos pneus do {$fullName}. {$pressureDisplay}. Procedimento específico e dicas especializadas.",
-            'h1' => $title,
-            'primary_keyword' => $primaryKeyword,
+            'page_title' => $this->generateTitle($data),
+            'meta_description' => "Guia completo de calibragem dos pneus do {$make} {$model}. {$pressureDisplay}. Procedimento específico e dicas especializadas.",
+            'h1' => $this->generateTitle($data),
+            'primary_keyword' => "calibragem pneu {$make} {$model}",
             'secondary_keywords' => [
                 "como calibrar pneu {$make} {$model}",
                 "pressão pneu {$make}",
                 "calibrar pneu {$model}",
                 "procedimento calibragem {$make}"
             ],
-            'og_title' => $title,
-            'og_description' => "Procedimento completo de calibragem dos pneus do {$fullName}. Pressões específicas e dicas especializadas.",
-            'canonical_url' => $this->generateCanonicalUrl($data)
+            'og_title' => $this->generateTitle($data),
+            'og_description' => "Procedimento completo de calibragem dos pneus do {$make} {$model}. Pressões específicas e dicas especializadas.",
+            'canonical_url' => "https://mercadoveiculos.com.br/info/{$slug}"
         ];
     }
 
     /**
-     * Mapear seção vehicle_data (VERSION V2 - SEM ANO)
+     * Mapear seção vehicle_data completa
      */
     private function mapVehicleDataSection(array $data): array
     {
@@ -169,59 +283,64 @@ class ArticleMappingService
             'make' => $data['make'] ?? '',
             'model' => $data['model'] ?? '',
             'tire_size' => $data['tire_size'] ?? '',
-            'main_category' => $data['main_category'] ?? 'car',
+            'main_category' => $data['main_category'] ?? '',
             'vehicle_segment' => $this->getVehicleSegment($data),
-            'vehicle_type' => $this->getVehicleType($data),
-            'pressure_specifications' => $this->mapPressureSpecs($data),
-            'tire_specifications' => $this->mapTireSpecs($data),
-            'vehicle_features' => $this->mapVehicleFeatures($data),
+            'vehicle_type' => $data['vehicle_type'] ?? 'car',
+            'pressure_specifications' => $this->generatePressureSpecifications($data),
+            'tire_specifications' => $this->generateTireSpecs($data),
+            'vehicle_features' => $this->generateVehicleFeatures($data),
             'is_premium' => $this->isPremium($data),
             'has_tpms' => $data['has_tpms'] ?? false,
             'is_motorcycle' => $this->isMotorcycle($data),
             'is_electric' => $this->isElectric($data),
             'is_hybrid' => $this->isHybrid($data),
-            'data_quality_score' => (int) ($data['data_quality_score'] ?? 8)
+            'data_quality_score' => $data['data_quality_score'] ?? 8
         ];
     }
 
     /**
-     * Mapear especificações de pressão
+     * Gerar especificações de pressão
      */
-    private function mapPressureSpecs(array $data): array
+    private function generatePressureSpecifications(array $data): array
     {
-        $pressureFront = (int) ($data['pressure_empty_front'] ?? 32);
-        $pressureRear = (int) ($data['pressure_empty_rear'] ?? 32);
+        $frontPressure = $data['pressure_empty_front'] ?? 32;
+        $rearPressure = $data['pressure_empty_rear'] ?? 30;
         
         return [
-            'pressure_empty_front' => $pressureFront,
-            'pressure_empty_rear' => $pressureRear,
-            'pressure_light_front' => $pressureFront,
-            'pressure_light_rear' => $pressureRear,
-            'pressure_max_front' => $pressureFront + 3,
-            'pressure_max_rear' => $pressureRear + 3,
-            'pressure_spare' => $this->isMotorcycle($data) ? null : 60,
-            'pressure_display' => $this->getPressureDisplay($data, $pressureFront, $pressureRear),
-            'empty_pressure_display' => "{$pressureFront}/{$pressureRear} PSI",
-            'loaded_pressure_display' => ($pressureFront + 3) . "/" . ($pressureRear + 3) . " PSI"
+            'pressure_empty_front' => $frontPressure,
+            'pressure_empty_rear' => $rearPressure,
+            'pressure_light_front' => $frontPressure,
+            'pressure_light_rear' => $rearPressure,
+            'pressure_max_front' => $frontPressure + 3,
+            'pressure_max_rear' => $rearPressure + 3,
+            'pressure_spare' => $data['pressure_spare'] ?? null,
+            'pressure_display' => "Dianteiro: {$frontPressure} PSI / Traseiro: {$rearPressure} PSI",
+            'empty_pressure_display' => "{$frontPressure}/{$rearPressure} PSI",
+            'loaded_pressure_display' => ($frontPressure + 3) . "/" . ($rearPressure + 3) . " PSI"
         ];
     }
 
     /**
-     * Mapear especificações de pneus
+     * Gerar especificações de pneus
      */
-    private function mapTireSpecs(array $data): array
+    private function generateTireSpecs(array $data): array
     {
         return [
             'tire_size' => $data['tire_size'] ?? '',
-            'recommended_brands' => $this->getRecommendedBrands($data),
+            'recommended_brands' => [
+                'Michelin',
+                'Pirelli', 
+                'Bridgestone',
+                'Continental'
+            ],
             'seasonal_recommendations' => $this->getSeasonalRecommendations($data)
         ];
     }
 
     /**
-     * Mapear características do veículo (VERSION V2 - SEM ANO)
+     * Gerar características do veículo
      */
-    private function mapVehicleFeatures(array $data): array
+    private function generateVehicleFeatures(array $data): array
     {
         $make = $data['make'] ?? '';
         $model = $data['model'] ?? '';
@@ -286,17 +405,20 @@ class ArticleMappingService
     private function isMotorcycle(array $data): bool
     {
         $category = $data['main_category'] ?? '';
-        return str_contains($category, 'motorcycle');
+        $vehicleType = $data['vehicle_type'] ?? '';
+        return str_starts_with($category, 'motorcycle') || $vehicleType === 'motorcycle';
     }
 
     private function isElectric(array $data): bool
     {
-        return ($data['main_category'] ?? '') === 'car_electric';
+        $category = $data['main_category'] ?? '';
+        return str_contains($category, '_electric') || $category === 'car_electric';
     }
 
     private function isHybrid(array $data): bool
     {
-        return ($data['main_category'] ?? '') === 'car_hybrid';
+        $category = $data['main_category'] ?? '';
+        return str_contains($category, '_hybrid') || $category === 'car_hybrid';
     }
 
     private function isPremium(array $data): bool
@@ -311,42 +433,70 @@ class ArticleMappingService
         if ($this->isMotorcycle($data)) return 'MOTO';
         
         $category = $data['main_category'] ?? '';
-        $segmentMap = [
-            'hatch' => 'B',
-            'sedan' => 'C', 
-            'suv' => 'D',
-            'pickup' => 'F',
-            'truck' => 'F'
-        ];
-        
-        return $segmentMap[$category] ?? 'C';
+        return match(true) {
+            str_contains($category, 'pickup') => 'PICAPE',
+            str_contains($category, 'suv') => 'SUV',
+            str_contains($category, 'sedan') => 'SEDAN',
+            str_contains($category, 'hatch') => 'HATCH',
+            default => 'CARRO'
+        };
     }
 
-    private function getVehicleType(array $data): string
+    private function generatePressureDisplay(array $data): string
     {
-        if ($this->isMotorcycle($data)) return 'motorcycle';
+        $front = $data['pressure_empty_front'] ?? 32;
+        $rear = $data['pressure_empty_rear'] ?? 30;
+        return "Dianteiro: {$front} PSI / Traseiro: {$rear} PSI";
+    }
+
+    private function getCategoryNormalized(array $data): string
+    {
+        $category = $data['main_category'] ?? '';
+        
+        return match($category) {
+            'motorcycle', 'motorcycle_street' => 'Motocicleta',
+            'motorcycle_sport' => 'Motocicleta Esportiva',
+            'motorcycle_trail' => 'Motocicleta Trail',
+            'motorcycle_adventure' => 'Motocicleta Adventure',
+            'motorcycle_scooter' => 'Scooter',
+            'sedan' => 'Sedan',
+            'hatch' => 'Hatchback', 
+            'suv' => 'SUV',
+            'pickup' => 'Picape',
+            default => 'Veículo'
+        };
+    }
+
+    private function getMainCategoryPortuguese(array $data): string
+    {
+        if ($this->isMotorcycle($data)) return 'motocicleta';
         
         $category = $data['main_category'] ?? '';
-        return in_array($category, ['pickup', 'truck']) ? $category : 'car';
+        return match(true) {
+            str_contains($category, 'pickup') => 'picape',
+            str_contains($category, 'suv') => 'suv',
+            default => 'automóvel'
+        };
     }
 
-    private function getPressureDisplay(array $data, ?int $front = null, ?int $rear = null): string
+    private function getMotorization(array $data): string
     {
-        $front = $front ?? (int) ($data['pressure_empty_front'] ?? 32);
-        $rear = $rear ?? (int) ($data['pressure_empty_rear'] ?? 32);
-        
-        return $this->isMotorcycle($data) 
-            ? "Dianteiro: {$front} PSI / Traseiro: {$rear} PSI"
-            : "Dianteiros: {$front} PSI / Traseiros: {$rear} PSI";
+        // Placeholder - pode ser implementado baseado nos dados disponíveis
+        return $data['engine_displacement'] ?? '1.0L';
     }
 
-    private function getRecommendedBrands(array $data): array
+    private function getFuelType(array $data): string
     {
-        if ($this->isMotorcycle($data)) {
-            return ['Michelin', 'Pirelli', 'Bridgestone', 'Continental'];
-        }
-        
-        return ['Continental', 'Michelin', 'Bridgestone', 'Goodyear'];
+        if ($this->isElectric($data)) return 'Elétrico';
+        if ($this->isHybrid($data)) return 'Híbrido';
+        return 'Gasolina';
+    }
+
+    private function getRecommendedOil(array $data): string
+    {
+        if ($this->isMotorcycle($data)) return '10W40 Sintético';
+        if ($this->isPremium($data)) return '5W30 Full Sintético';
+        return '10W40 Semissintético';
     }
 
     private function getSeasonalRecommendations(array $data): array
@@ -355,525 +505,425 @@ class ArticleMappingService
             return ['Michelin Pilot Street', 'Pirelli Diablo Rosso III'];
         }
         
-        if ($this->isElectric($data)) {
-            return ['Continental EcoContact 6', 'Michelin e-Primacy'];
-        }
-        
-        return ['Continental PremiumContact 6', 'Michelin Energy XM2+'];
+        return ['Michelin Primacy 4', 'Continental Premium Contact 6'];
     }
 
-    private function getCategoryNormalized(array $data): string
-    {
-        if ($this->isMotorcycle($data)) {
-            return 'Motocicleta';
-        }
-        
-        if ($this->isElectric($data)) {
-            return 'SUV Elétrico Premium';
-        }
-        
-        if ($this->isHybrid($data)) {
-            return 'Sedan Híbrido Flex';
-        }
-        
-        $category = $data['main_category'] ?? '';
-        $categoryMap = [
-            'sedan' => 'Sedan',
-            'hatch' => 'Hatchback',
-            'suv' => 'SUV Premium',
-            'pickup' => 'Picape',
-            'truck' => 'Caminhão'
-        ];
-        
-        return $categoryMap[$category] ?? 'Automóvel';
-    }
-
-    private function getRecommendedOil(array $data): string
-    {
-        if ($this->isMotorcycle($data)) {
-            return '10W40 Sintético';
-        }
-        
-        if ($this->isElectric($data)) {
-            return 'N/A';
-        }
-        
-        return '5W30 Sintético';
-    }
-
-    private function getMainCategoryPortuguese(array $data): string
-    {
-        $category = $data['main_category'] ?? '';
-        $categoryMap = [
-            'sedan' => 'sedan',
-            'hatch' => 'hatches',
-            'suv' => 'suv',
-            'pickup' => 'pickup',
-            'motorcycle' => 'naked',
-            'motorcycle_street' => 'street',
-            'motorcycle_sport' => 'sport',
-            'motorcycle_naked' => 'naked'
-        ];
-        
-        return $categoryMap[$category] ?? 'automóvel';
-    }
-
-    private function getMotorization(array $data): string
-    {
-        if ($this->isElectric($data)) return 'Elétrico';
-        if ($this->isHybrid($data)) return 'Híbrido Flex';
-        if ($this->isMotorcycle($data)) return '321cc'; // Exemplo padrão
-        
-        return '1.6 Turbo'; // Exemplo padrão para carros
-    }
-
-    private function getFuelType(array $data): string
-    {
-        if ($this->isElectric($data)) return 'Elétrico';
-        if ($this->isHybrid($data)) return 'Híbrido Flex';
-        if ($this->isMotorcycle($data)) return 'Gasolina';
-        
-        return 'Flex';
-    }
-
-    // ===== GERAÇÃO DE CONTEÚDO POR TEMPLATE =====
+    // ===== GERAÇÃO DE CONTEÚDO ESPECÍFICO =====
 
     private function generateIntroduction(array $data): string
     {
         $make = $data['make'] ?? '';
         $model = $data['model'] ?? '';
-        $fullName = trim("{$make} {$model}");
         
         if ($this->isMotorcycle($data)) {
-            return "A calibragem correta dos pneus da sua {$fullName} é crucial para a segurança, desempenho e durabilidade. Esta motocicleta exige atenção especial à pressão dos pneus para aproveitar todo seu potencial com máxima segurança.";
+            return "A calibragem correta dos pneus da sua {$make} {$model} é crucial para a segurança, desempenho e durabilidade. Esta motocicleta exige atenção especial à pressão dos pneus para aproveitar todo seu potencial com máxima segurança.";
         }
         
-        return "Manter os pneus do seu {$fullName} com a pressão correta é fundamental para garantir segurança, economia de combustível e prolongar a vida útil dos pneus.";
+        return "A calibragem adequada dos pneus do seu {$make} {$model} é essencial para garantir segurança, economia de combustível e vida útil dos pneus. Este guia apresenta as especificações exatas e procedimentos recomendados.";
     }
 
     private function generateFAQ(array $data): array
     {
         $make = $data['make'] ?? '';
         $model = $data['model'] ?? '';
-        $fullName = trim("{$make} {$model}");
-        $pressureDisplay = $this->getPressureDisplay($data);
+        $pressureDisplay = $this->generatePressureDisplay($data);
         
-        return [
+        $baseFaq = [
             [
-                'pergunta' => "Qual a pressão ideal do {$fullName} em PSI?",
-                'resposta' => "Para o {$fullName}, use {$pressureDisplay} para uso normal. Sempre verifique com pneus frios para manter segurança e economia."
+                'pergunta' => "Qual a pressão ideal do {$make} {$model} em PSI?",
+                'resposta' => "Para o {$make} {$model}, use {$pressureDisplay} para uso normal. Sempre verifique com pneus frios para manter segurança e economia."
             ],
             [
                 'pergunta' => "Com que frequência verificar a pressão?",
-                'resposta' => $this->isMotorcycle($data) 
-                    ? "Semanalmente é obrigatório para motocicletas. Verifique sempre com pneus frios."
-                    : "Mensalmente é recomendado, e sempre antes de viagens longas."
+                'resposta' => $this->isMotorcycle($data) ? 
+                    "Semanalmente é obrigatório para motocicletas. Verifique sempre com pneus frios." :
+                    "Mensalmente é recomendado, mas semanalmente é ideal. Sempre com pneus frios."
             ]
         ];
+
+        return $baseFaq;
     }
 
     private function generateFinalConsiderations(array $data): string
     {
         $make = $data['make'] ?? '';
         $model = $data['model'] ?? '';
-        $fullName = trim("{$make} {$model}");
-        $pressureDisplay = $this->getPressureDisplay($data);
+        $pressureDisplay = $this->generatePressureDisplay($data);
         
         if ($this->isMotorcycle($data)) {
-            return "A {$fullName} merece cuidado especial na calibragem dos pneus. Em motos não há margem para erro - sua segurança depende diretamente da pressão correta. Mantenha {$pressureDisplay} e lembre-se: verificação semanal é obrigatória, sempre com pneus frios.";
+            return "A {$make} {$model} merece cuidado especial na calibragem dos pneus. Em motos não há margem para erro - sua segurança depende diretamente da pressão correta. Mantenha {$pressureDisplay} e lembre-se: verificação semanal é obrigatória, sempre com pneus frios.";
         }
         
-        return "O {$fullName} recompensa o cuidado adequado com os pneus. Manter a pressão correta ({$pressureDisplay}) garante economia, segurança e durabilidade. A verificação regular é simples e evita problemas maiores.";
-    }
-
-    private function generateCarContent(array $data): array
-    {
-        $pressureFront = (int) ($data['pressure_empty_front'] ?? 32);
-        $pressureRear = (int) ($data['pressure_empty_rear'] ?? 32);
-        
-        return [
-            'especificacoes_por_versao' => [
-                [
-                    'versao' => 'Versão Base',
-                    'medida_pneus' => $data['tire_size'] ?? '205/55 R16',
-                    'indice_carga_velocidade' => '91V',
-                    'pressao_dianteiro_normal' => $pressureFront,
-                    'pressao_traseiro_normal' => $pressureRear,
-                    'pressao_dianteiro_carregado' => $pressureFront + 3,
-                    'pressao_traseiro_carregado' => $pressureRear + 3
-                ]
-            ],
-            
-            'tabela_carga_completa' => [
-                'titulo' => 'Pressões para Carga Completa',
-                'descricao' => 'Valores recomendados quando o veículo estiver com 5 passageiros e bagagem',
-                'condicoes' => [
-                    [
-                        'versao' => 'Versão Base',
-                        'ocupantes' => '5 pessoas',
-                        'bagagem' => 'Porta-malas cheio',
-                        'pressao_dianteira' => ($pressureFront + 3) . ' PSI',
-                        'pressao_traseira' => ($pressureRear + 3) . ' PSI',
-                        'observacao' => 'Ideal para viagens familiares'
-                    ]
-                ]
-            ],
-            
-            'localizacao_etiqueta' => [
-                'local_principal' => 'Coluna da porta do motorista',
-                'descricao' => 'A etiqueta oficial de pressão está na coluna da porta do motorista, visível quando a porta está aberta.',
-                'locais_alternativos' => [
-                    'Manual do proprietário na seção "Especificações Técnicas"',
-                    'Display digital do painel (se disponível)',
-                    'Tampa do tanque de combustível'
-                ],
-                'observacao' => 'Use sempre os valores oficiais da etiqueta como referência.'
-            ],
-            
-            'condicoes_especiais' => [
-                [
-                    'condicao' => 'Viagens Longas',
-                    'ajuste_recomendado' => '+3 PSI',
-                    'aplicacao' => 'Rodovias, velocidades sustentadas acima de 120 km/h',
-                    'justificativa' => 'Compensa o aquecimento dos pneus em altas velocidades.'
-                ],
-                [
-                    'condicao' => 'Carga Máxima',
-                    'ajuste_recomendado' => 'Ver tabela carga completa',
-                    'aplicacao' => '5 passageiros + bagagem completa',
-                    'justificativa' => 'Mantém dirigibilidade e segurança com carga total.'
-                ],
-                [
-                    'condicao' => 'Uso Urbano',
-                    'ajuste_recomendado' => 'Pressão padrão',
-                    'aplicacao' => 'Cidade, baixas velocidades, conforto máximo',
-                    'justificativa' => 'Pressão ideal para conforto e economia urbana.'
-                ]
-            ],
-            
-            'conversao_unidades' => [
-                'tabela_conversao' => [
-                    [
-                        'psi' => (string) $pressureRear,
-                        'kgf_cm2' => number_format($pressureRear / 14.22, 2),
-                        'bar' => number_format($pressureRear / 14.5, 2)
-                    ],
-                    [
-                        'psi' => (string) $pressureFront,
-                        'kgf_cm2' => number_format($pressureFront / 14.22, 2),
-                        'bar' => number_format($pressureFront / 14.5, 2)
-                    ],
-                    [
-                        'psi' => (string) ($pressureFront + 3),
-                        'kgf_cm2' => number_format(($pressureFront + 3) / 14.22, 2),
-                        'bar' => number_format(($pressureFront + 3) / 14.5, 2)
-                    ],
-                    [
-                        'psi' => '60',
-                        'kgf_cm2' => '4,22',
-                        'bar' => '4,14'
-                    ]
-                ],
-                'formulas' => [
-                    'psi_para_kgf' => 'kgf/cm² = PSI ÷ 14,22',
-                    'kgf_para_psi' => 'PSI = kgf/cm² × 14,22',
-                    'psi_para_bar' => 'Bar = PSI ÷ 14,5'
-                ],
-                'observacao' => 'No Brasil, PSI é o padrão usado nos postos de combustível.'
-            ],
-            
-            'cuidados_recomendacoes' => [
-                [
-                    'categoria' => 'Verificação Mensal',
-                    'descricao' => 'Verifique a pressão dos pneus pelo menos uma vez por mês e sempre antes de viagens longas.'
-                ],
-                [
-                    'categoria' => 'Pneus Frios',
-                    'descricao' => 'Calibre sempre com os pneus frios, preferencialmente pela manhã ou após 3 horas parado.'
-                ],
-                [
-                    'categoria' => 'Calibradores Confiáveis',
-                    'descricao' => 'Use calibradores digitais quando possível. Equipamentos analógicos podem ter margem de erro.'
-                ],
-                [
-                    'categoria' => 'Rodízio de Pneus',
-                    'descricao' => 'Faça o rodízio a cada 10.000 km. Após o rodízio, ajuste a pressão conforme a nova posição.'
-                ]
-            ],
-            
-            'impacto_pressao' => [
-                'subcalibrado' => [
-                    'titulo' => 'Pneu Subcalibrado',
-                    'problemas' => [
-                        'Maior consumo de combustível (+10% a 15%)',
-                        'Desgaste acelerado nas bordas',
-                        'Menor estabilidade em curvas',
-                        'Alto risco de estouro no calor brasileiro'
-                    ]
-                ],
-                'ideal' => [
-                    'titulo' => 'Calibragem Correta (' . $pressureFront . '/' . $pressureRear . ' PSI)',
-                    'beneficios' => [
-                        'Consumo otimizado de combustível',
-                        'Desgaste uniforme e vida útil máxima',
-                        'Aderência e comportamento previsíveis',
-                        'Distâncias de frenagem otimizadas'
-                    ]
-                ],
-                'sobrecalibrado' => [
-                    'titulo' => 'Pneu Sobrecalibrado',
-                    'problemas' => [
-                        'Desgaste excessivo no centro',
-                        'Menor área de contato com o solo',
-                        'Redução na aderência em piso molhado',
-                        'Maior rigidez, reduzindo o conforto'
-                    ]
-                ]
-            ]
-        ];
+        return "Manter a calibragem correta do {$make} {$model} é um investimento em segurança e economia. Use sempre {$pressureDisplay} para uso normal e ajuste conforme a carga. A verificação regular é a chave para maximizar a vida útil dos pneus e o desempenho do veículo.";
     }
 
     private function generateMotorcycleContent(array $data): array
     {
-        $tireSizes = explode(' ', $data['tire_size'] ?? '120/70-17 140/70-17');
-        $pressureFront = (int) ($data['pressure_empty_front'] ?? 33);
-        $pressureRear = (int) ($data['pressure_empty_rear'] ?? 36);
-        
         return [
-            'especificacoes_pneus' => [
-                'pneu_dianteiro' => [
-                    'medida_original' => $tireSizes[0] ?? '120/70-17',
-                    'indice_carga' => '54',
-                    'indice_velocidade' => 'H',
-                    'tipo_construcao' => 'Radial',
-                    'marca_original' => 'Dunlop',
-                    'alternativas_recomendadas' => [
-                        'Michelin Pilot Street',
-                        'Pirelli Diablo Rosso III',
-                        'Continental ContiMotion'
-                    ]
-                ],
-                'pneu_traseiro' => [
-                    'medida_original' => $tireSizes[1] ?? '140/70-17',
-                    'indice_carga' => '66',
-                    'indice_velocidade' => 'H',
-                    'tipo_construcao' => 'Radial',
-                    'marca_original' => 'Dunlop',
-                    'alternativas_recomendadas' => [
-                        'Michelin Pilot Street',
-                        'Pirelli Diablo Rosso III',
-                        'Continental ContiMotion'
-                    ]
-                ],
-                'observacao' => 'Use sempre pneus radiais com especificação adequada para motocicletas.'
-            ],
-            
-            'tabela_pressoes' => [
-                'pressoes_oficiais' => [
-                    'piloto_solo' => [
-                        'dianteira' => $pressureFront . ' PSI',
-                        'traseira' => $pressureRear . ' PSI',
-                        'observacao' => 'Para piloto até 80kg + equipamentos'
-                    ],
-                    'piloto_garupa' => [
-                        'dianteira' => ($pressureFront + 2) . ' PSI',
-                        'traseira' => ($pressureRear + 2) . ' PSI',
-                        'observacao' => 'Piloto + garupa até peso máximo'
-                    ]
-                ],
-                'condicoes_especiais' => [
-                    [
-                        'situacao' => 'Uso urbano',
-                        'terreno' => 'Cidade/trânsito',
-                        'pressao_dianteira' => $pressureFront . ' PSI',
-                        'pressao_traseira' => $pressureRear . ' PSI',
-                        'temperatura_ideal' => 'Pneus frios (manhã)',
-                        'observacao' => 'Ideal para uso diário na cidade.'
-                    ],
-                    [
-                        'situacao' => 'Viagem rodoviária',
-                        'terreno' => 'Rodovias',
-                        'pressao_dianteira' => ($pressureFront + 2) . ' PSI',
-                        'pressao_traseira' => ($pressureRear + 2) . ' PSI',
-                        'temperatura_ideal' => 'Pneus frios',
-                        'observacao' => 'Para viagens longas acima de 100 km/h.'
-                    ]
-                ]
-            ],
-            
-            'localizacao_informacoes' => [
-                'manual_proprietario' => [
-                    'localizacao' => 'Seção Especificações Técnicas',
-                    'secao' => 'Rodas e Pneus',
-                    'pagina_aproximada' => 'Consulte índice do manual'
-                ],
-                'etiqueta_moto' => [
-                    'localizacao_principal' => 'Braço da suspensão traseira (swing arm)',
-                    'localizacoes_alternativas' => [
-                        'Próximo ao número do chassi (lado direito)',
-                        'Manual do proprietário (compartimento sob o assento)',
-                        'Etiqueta no chassi principal'
-                    ]
-                ],
-                'dica_importante' => 'Use sempre PSI como referência padrão brasileiro.'
-            ],
-            
-            'conversao_unidades' => [
-                'tabela_conversao' => [
-                    [
-                        'psi' => (string) ($pressureFront - 2),
-                        'kgf_cm2' => number_format(($pressureFront - 2) / 14.22, 2),
-                        'bar' => number_format(($pressureFront - 2) / 14.5, 2),
-                        'is_recommended' => false
-                    ],
-                    [
-                        'psi' => (string) $pressureFront,
-                        'kgf_cm2' => number_format($pressureFront / 14.22, 2),
-                        'bar' => number_format($pressureFront / 14.5, 2),
-                        'is_recommended' => true
-                    ],
-                    [
-                        'psi' => (string) $pressureRear,
-                        'kgf_cm2' => number_format($pressureRear / 14.22, 2),
-                        'bar' => number_format($pressureRear / 14.5, 2),
-                        'is_recommended' => true
-                    ],
-                    [
-                        'psi' => (string) ($pressureRear + 2),
-                        'kgf_cm2' => number_format(($pressureRear + 2) / 14.22, 2),
-                        'bar' => number_format(($pressureRear + 2) / 14.5, 2),
-                        'is_recommended' => false
-                    ]
-                ],
-                'observacao' => 'Para motocicleta, a precisão na calibragem é ainda mais crítica.'
-            ],
-            
-            'consideracoes_especiais' => [
-                [
-                    'categoria' => 'temperatura',
-                    'titulo' => 'Impacto da Temperatura',
-                    'descricao' => 'Motocicletas são mais sensíveis a variações de temperatura devido ao peso leve.',
-                    'fatores' => [
-                        'No calor brasileiro (35°C+), pressão pode aumentar 4-5 PSI',
-                        'Sempre calibre com pneus frios (manhã ou após 3h parado)',
-                        'Pneus quentes podem mostrar até 6 PSI a mais que o real'
-                    ],
-                    'importancia' => 'crítica'
-                ],
-                [
-                    'categoria' => 'carga',
-                    'titulo' => 'Ajustes por Carga e Peso',
-                    'descricao' => 'O peso influencia significativamente a calibragem em motocicletas.',
-                    'tipos' => [
-                        'Piloto leve (≤65kg): reduzir 1 PSI no traseiro',
-                        'Piloto médio (66-85kg): usar pressões padrão',
-                        'Piloto pesado (≥86kg): aumentar 2 PSI no traseiro',
-                        'Com garupa: sempre usar pressões para "piloto + garupa"'
-                    ],
-                    'importancia' => 'alta'
-                ]
-            ],
-            
-            'beneficios_calibragem' => [
-                [
-                    'categoria' => 'seguranca',
-                    'titulo' => 'Segurança Máxima',
-                    'descricao' => 'Pressão correta é fundamental para estabilidade e frenagem em motocicletas.',
-                    'aspectos' => [
-                        'Aderência otimizada em curvas e frenagens',
-                        'Estabilidade em altas velocidades',
-                        'Redução do risco de derrapagem',
-                        'Comportamento previsível da motocicleta'
-                    ],
-                    'economia_estimada' => 'Valor inestimável - sua vida',
-                    'prioridade' => 'crítica'
-                ]
-            ],
-            
-            'dicas_manutencao' => [
-                [
-                    'categoria' => 'Verificação Semanal',
-                    'frequencia' => 'A cada 7 dias ou 300km',
-                    'importancia' => 'crítica',
-                    'itens' => [
-                        'Verificar pressão com pneus frios',
-                        'Inspecionar desgaste visual dos pneus',
-                        'Checar se válvulas estão bem fechadas',
-                        'Observar rachaduras ou objetos cravados',
-                        'Medir profundidade do sulco (mínimo 1,6mm)'
-                    ]
-                ]
-            ],
-            
-            'alertas_criticos' => [
-                [
-                    'tipo' => 'crítico',
-                    'titulo' => 'Verificação Semanal Obrigatória',
-                    'descricao' => 'Motocicletas perdem pressão mais rapidamente que carros.',
-                    'consequencia' => 'Pneus com 5 PSI baixos podem causar instabilidade fatal a 80 km/h.'
-                ],
-                [
-                    'tipo' => 'importante',
-                    'titulo' => 'Nunca Calibrar com Pneus Quentes',
-                    'descricao' => 'Calibrar após pilotagem resulta em subcalibragem perigosa.',
-                    'consequencia' => 'Quando esfriam, ficam muito baixos, causando risco de acidente.'
-                ]
-            ],
-            
-            'procedimento_calibragem' => [
-                'passos' => [
-                    [
-                        'numero' => 1,
-                        'titulo' => 'Preparação',
-                        'descricao' => 'Verifique sempre com pneus frios',
-                        'detalhes' => [
-                            'Moto parada há pelo menos 3 horas',
-                            'Ou menos de 2 km rodados',
-                            'Preferencialmente pela manhã',
-                            'Em local com sombra'
-                        ]
-                    ],
-                    [
-                        'numero' => 2,
-                        'titulo' => 'Verificação',
-                        'descricao' => 'Use calibrador confiável',
-                        'detalhes' => [
-                            'Prefira calibradores digitais',
-                            'Retire a tampa da válvula',
-                            'Encaixe firmemente o calibrador',
-                            'Anote a pressão atual'
-                        ]
-                    ],
-                    [
-                        'numero' => 3,
-                        'titulo' => 'Ajuste',
-                        'descricao' => 'Calibre conforme necessidade',
-                        'detalhes' => [
-                            'Dianteiro: ' . $pressureFront . ' PSI (uso normal)',
-                            'Traseiro: ' . $pressureRear . ' PSI (uso normal)',
-                            'Ajuste conforme condições especiais',
-                            'Recoloque as tampas das válvulas'
-                        ]
-                    ]
-                ]
-            ]
+            'especificacoes_por_versao' => $this->generateMotorcycleVersions($data),
+            'tabela_carga_completa' => $this->generateMotorcycleLoadTable($data),
+            'localizacao_etiqueta' => $this->generateMotorcycleEtiquetaInfo($data),
+            'condicoes_especiais' => $this->generateMotorcycleSpecialConditions($data),
+            'conversao_unidades' => $this->generateUnitConversion($data),
+            'cuidados_recomendacoes' => $this->generateMotorcycleCareTips($data),
+            'impacto_pressao' => $this->generatePressureImpact($data)
+        ];
+    }
+
+    private function generateCarContent(array $data): array
+    {
+        return [
+            'especificacoes_por_versao' => $this->generateCarVersions($data),
+            'tabela_carga_completa' => $this->generateCarLoadTable($data),
+            'localizacao_etiqueta' => $this->generateCarEtiquetaInfo($data),
+            'condicoes_especiais' => $this->generateCarSpecialConditions($data),
+            'conversao_unidades' => $this->generateUnitConversion($data),
+            'cuidados_recomendacoes' => $this->generateCarCareTips($data),
+            'impacto_pressao' => $this->generatePressureImpact($data)
         ];
     }
 
     private function generatePickupContent(array $data): array
     {
-        $pressureFront = (int) ($data['pressure_empty_front'] ?? 35);
-        $pressureRear = (int) ($data['pressure_empty_rear'] ?? 35);
+        return [
+            'especificacoes_por_versao' => $this->generatePickupVersions($data),
+            'tabela_carga_completa' => $this->generatePickupLoadTable($data),
+            'localizacao_etiqueta' => $this->generateCarEtiquetaInfo($data),
+            'condicoes_especiais' => $this->generatePickupSpecialConditions($data),
+            'conversao_unidades' => $this->generateUnitConversion($data),
+            'cuidados_recomendacoes' => $this->generatePickupCareTips($data),
+            'impacto_pressao' => $this->generatePressureImpact($data)
+        ];
+    }
+
+    // Implementar métodos específicos de geração de conteúdo...
+    // (Os métodos generateMotorcycleVersions, generateCarVersions, etc. 
+    //  podem ser implementados conforme necessário)
+
+    private function generateMotorcycleVersions(array $data): array
+    {
+        return [
+            [
+                'versao' => 'Versão Base',
+                'medida_pneus' => $data['tire_size'] ?? '',
+                'indice_carga_velocidade' => '91V',
+                'pressao_dianteiro_normal' => $data['pressure_empty_front'] ?? 28,
+                'pressao_traseiro_normal' => $data['pressure_empty_rear'] ?? 28,
+                'pressao_dianteiro_carregado' => ($data['pressure_empty_front'] ?? 28) + 3,
+                'pressao_traseiro_carregado' => ($data['pressure_empty_rear'] ?? 28) + 3
+            ]
+        ];
+    }
+
+    private function generateCarVersions(array $data): array
+    {
+        return [
+            [
+                'versao' => 'Versão Base',
+                'medida_pneus' => $data['tire_size'] ?? '',
+                'indice_carga_velocidade' => '91V',
+                'pressao_dianteiro_normal' => $data['pressure_empty_front'] ?? 32,
+                'pressao_traseiro_normal' => $data['pressure_empty_rear'] ?? 30,
+                'pressao_dianteiro_carregado' => ($data['pressure_empty_front'] ?? 32) + 3,
+                'pressao_traseiro_carregado' => ($data['pressure_empty_rear'] ?? 30) + 3
+            ]
+        ];
+    }
+
+    private function generatePickupVersions(array $data): array
+    {
+        return $this->generateCarVersions($data); // Similar aos carros
+    }
+
+    private function generateMotorcycleLoadTable(array $data): array
+    {
+        return [
+            'titulo' => 'Pressões para Carga Completa',
+            'descricao' => 'Valores recomendados quando a motocicleta estiver com garupa e bagagem',
+            'condicoes' => [
+                [
+                    'versao' => 'Versão Base',
+                    'ocupantes' => '2 pessoas',
+                    'bagagem' => 'Bagageiro carregado',
+                    'pressao_dianteira' => (($data['pressure_empty_front'] ?? 28) + 3) . ' PSI',
+                    'pressao_traseira' => (($data['pressure_empty_rear'] ?? 28) + 3) . ' PSI',
+                    'observacao' => 'Ideal para viagens com garupa'
+                ]
+            ]
+        ];
+    }
+
+    private function generateCarLoadTable(array $data): array
+    {
+        return [
+            'titulo' => 'Pressões para Carga Completa',
+            'descricao' => 'Valores recomendados quando o veículo estiver com 5 passageiros e bagagem',
+            'condicoes' => [
+                [
+                    'versao' => 'Versão Base',
+                    'ocupantes' => '5 pessoas',
+                    'bagagem' => 'Porta-malas cheio',
+                    'pressao_dianteira' => (($data['pressure_empty_front'] ?? 32) + 3) . ' PSI',
+                    'pressao_traseira' => (($data['pressure_empty_rear'] ?? 30) + 3) . ' PSI',
+                    'observacao' => 'Ideal para viagens familiares'
+                ]
+            ]
+        ];
+    }
+
+    private function generatePickupLoadTable(array $data): array
+    {
+        return [
+            'titulo' => 'Pressões para Carga Completa',
+            'descricao' => 'Valores recomendados para diferentes condições de carga da picape',
+            'condicoes' => [
+                [
+                    'versao' => 'Versão Base',
+                    'ocupantes' => '5 pessoas',
+                    'bagagem' => 'Caçamba carregada',
+                    'pressao_dianteira' => (($data['pressure_empty_front'] ?? 35) + 5) . ' PSI',
+                    'pressao_traseira' => (($data['pressure_empty_rear'] ?? 35) + 8) . ' PSI',
+                    'observacao' => 'Para carga pesada na caçamba'
+                ]
+            ]
+        ];
+    }
+
+    private function generateMotorcycleEtiquetaInfo(array $data): array
+    {
+        return [
+            'local_principal' => 'Corrente da suspensão traseira ou manual do proprietário',
+            'descricao' => 'Em motocicletas, a informação geralmente está no manual ou próximo à suspensão.',
+            'locais_alternativos' => [
+                'Manual do proprietário na seção "Especificações Técnicas"',
+                'Etiqueta no braço da suspensão traseira',
+                'Display digital (se disponível)'
+            ],
+            'observacao' => 'Consulte sempre o manual para valores oficiais.'
+        ];
+    }
+
+    private function generateCarEtiquetaInfo(array $data): array
+    {
+        return [
+            'local_principal' => 'Coluna da porta do motorista',
+            'descricao' => 'A etiqueta oficial de pressão está na coluna da porta do motorista, visível quando a porta está aberta.',
+            'locais_alternativos' => [
+                'Manual do proprietário na seção "Especificações Técnicas"',
+                'Display digital do painel (se disponível)',
+                'Tampa do tanque de combustível'
+            ],
+            'observacao' => 'Use sempre os valores oficiais da etiqueta como referência.'
+        ];
+    }
+
+    private function generateMotorcycleSpecialConditions(array $data): array
+    {
+        return [
+            [
+                'condicao' => 'Uso Off-road',
+                'ajuste_recomendado' => '-2 a -3 PSI',
+                'aplicacao' => 'Trilhas, terra batida, areia',
+                'justificativa' => 'Maior área de contato melhora aderência em terrenos irregulares.'
+            ],
+            [
+                'condicao' => 'Garupa',
+                'ajuste_recomendado' => '+3 PSI traseiro',
+                'aplicacao' => 'Pilotando com passageiro',
+                'justificativa' => 'Compensa peso adicional mantendo estabilidade.'
+            ],
+            [
+                'condicao' => 'Viagens Longas',
+                'ajuste_recomendado' => '+2 PSI',
+                'aplicacao' => 'Rodovias, alta velocidade',
+                'justificativa' => 'Compensa aquecimento em velocidades sustentadas.'
+            ]
+        ];
+    }
+
+    private function generateCarSpecialConditions(array $data): array
+    {
+        return [
+            [
+                'condicao' => 'Viagens Longas',
+                'ajuste_recomendado' => '+3 PSI',
+                'aplicacao' => 'Rodovias, velocidades sustentadas acima de 120 km/h',
+                'justificativa' => 'Compensa o aquecimento dos pneus em altas velocidades.'
+            ],
+            [
+                'condicao' => 'Carga Máxima',
+                'ajuste_recomendado' => 'Ver tabela carga completa',
+                'aplicacao' => '5 passageiros + bagagem completa',
+                'justificativa' => 'Mantém dirigibilidade e segurança com carga total.'
+            ],
+            [
+                'condicao' => 'Uso Urbano',
+                'ajuste_recomendado' => 'Pressão padrão',
+                'aplicacao' => 'Cidade, baixas velocidades, conforto máximo',
+                'justificativa' => 'Pressão ideal para conforto e economia urbana.'
+            ]
+        ];
+    }
+
+    private function generatePickupSpecialConditions(array $data): array
+    {
+        return [
+            [
+                'condicao' => 'Carga na Caçamba',
+                'ajuste_recomendado' => '+5 PSI traseiro',
+                'aplicacao' => 'Transporte de materiais pesados',
+                'justificativa' => 'Suporta peso adicional sem comprometer dirigibilidade.'
+            ],
+            [
+                'condicao' => 'Reboque',
+                'ajuste_recomendado' => '+3 PSI',
+                'aplicacao' => 'Puxando trailer ou reboque',
+                'justificativa' => 'Compensa carga adicional e mantém estabilidade.'
+            ],
+            [
+                'condicao' => 'Terrenos Irregulares',
+                'ajuste_recomendado' => '-2 PSI',
+                'aplicacao' => 'Terra, cascalho, trilhas leves',
+                'justificativa' => 'Maior área de contato melhora tração.'
+            ]
+        ];
+    }
+
+    private function generateMotorcycleCareTips(array $data): array
+    {
+        return [
+            [
+                'categoria' => 'Verificação Semanal',
+                'descricao' => 'Para motocicletas, verificação semanal é obrigatória devido aos pneus menores.'
+            ],
+            [
+                'categoria' => 'Pneus Frios',
+                'descricao' => 'Espere pelo menos 30 minutos após parar antes de calibrar.'
+            ],
+            [
+                'categoria' => 'Calibradores Precisos',
+                'descricao' => 'Use calibradores digitais - a margem de erro em motos é crítica.'
+            ],
+            [
+                'categoria' => 'Inspeção Visual',
+                'descricao' => 'Verifique desgaste, cortes e objetos cravados a cada calibragem.'
+            ]
+        ];
+    }
+
+    private function generateCarCareTips(array $data): array
+    {
+        return [
+            [
+                'categoria' => 'Verificação Mensal',
+                'descricao' => 'Verifique a pressão dos pneus pelo menos uma vez por mês e sempre antes de viagens longas.'
+            ],
+            [
+                'categoria' => 'Pneus Frios',
+                'descricao' => 'Calibre sempre com os pneus frios, preferencialmente pela manhã ou após 3 horas parado.'
+            ],
+            [
+                'categoria' => 'Calibradores Confiáveis',
+                'descricao' => 'Use calibradores digitais quando possível. Equipamentos analógicos podem ter margem de erro.'
+            ],
+            [
+                'categoria' => 'Rodízio de Pneus',
+                'descricao' => 'Faça o rodízio a cada 10.000 km. Após o rodízio, ajuste a pressão conforme a nova posição.'
+            ]
+        ];
+    }
+
+    private function generatePickupCareTips(array $data): array
+    {
+        return [
+            [
+                'categoria' => 'Verificação Quinzenal',
+                'descricao' => 'Picapes exigem verificação mais frequente devido ao uso variado.'
+            ],
+            [
+                'categoria' => 'Pneus Traseiros',
+                'descricao' => 'Ajuste a pressão traseira conforme a carga transportada.'
+            ],
+            [
+                'categoria' => 'Uso Misto',
+                'descricao' => 'Adapte a pressão ao tipo de terreno: mais para asfalto, menos para terra.'
+            ],
+            [
+                'categoria' => 'Desgaste Irregular',
+                'descricao' => 'Monitore o desgaste - use diferencial indica problemas de alinhamento.'
+            ]
+        ];
+    }
+
+    private function generateUnitConversion(array $data): array
+    {
+        $frontPsi = $data['pressure_empty_front'] ?? 32;
+        $rearPsi = $data['pressure_empty_rear'] ?? 30;
         
         return [
-            'especificacoes_carga' => [
-                'uso_normal' => [
-                    'pressao_dianteira' => $pressureFront,
-                    'pressao_traseira' => $pressureRear
+            'tabela_conversao' => [
+                [
+                    'psi' => (string) $frontPsi,
+                    'kgf_cm2' => number_format($frontPsi / 14.22, 2),
+                    'bar' => number_format($frontPsi / 14.5, 2)
                 ],
-                'carga_maxima' => [
-                    'pressao_dianteira' => $pressureFront + 5,
-                    'pressao_traseira' => $pressureRear + 10
+                [
+                    'psi' => (string) $rearPsi,
+                    'kgf_cm2' => number_format($rearPsi / 14.22, 2),
+                    'bar' => number_format($rearPsi / 14.5, 2)
+                ],
+                [
+                    'psi' => (string) ($frontPsi + 3),
+                    'kgf_cm2' => number_format(($frontPsi + 3) / 14.22, 2),
+                    'bar' => number_format(($frontPsi + 3) / 14.5, 2)
+                ],
+                [
+                    'psi' => '60',
+                    'kgf_cm2' => '4,22',
+                    'bar' => '4,14'
+                ]
+            ],
+            'formulas' => [
+                'psi_para_kgf' => 'kgf/cm² = PSI ÷ 14,22',
+                'kgf_para_psi' => 'PSI = kgf/cm² × 14,22',
+                'psi_para_bar' => 'Bar = PSI ÷ 14,5'
+            ],
+            'observacao' => 'No Brasil, PSI é o padrão usado nos postos de combustível.'
+        ];
+    }
+
+    private function generatePressureImpact(array $data): array
+    {
+        $frontPsi = $data['pressure_empty_front'] ?? 32;
+        $rearPsi = $data['pressure_empty_rear'] ?? 30;
+        $pressureDisplay = "{$frontPsi}/{$rearPsi} PSI";
+        
+        return [
+            'subcalibrado' => [
+                'titulo' => 'Pneu Subcalibrado',
+                'problemas' => [
+                    'Maior consumo de combustível (+10% a 15%)',
+                    'Desgaste acelerado nas bordas',
+                    'Menor estabilidade em curvas',
+                    'Alto risco de estouro no calor brasileiro'
+                ]
+            ],
+            'ideal' => [
+                'titulo' => "Calibragem Correta ({$pressureDisplay})",
+                'beneficios' => [
+                    'Consumo otimizado de combustível',
+                    'Desgaste uniforme e vida útil máxima',
+                    'Aderência e comportamento previsíveis',
+                    'Distâncias de frenagem otimizadas'
+                ]
+            ],
+            'sobrecalibrado' => [
+                'titulo' => 'Pneu Sobrecalibrado',
+                'problemas' => [
+                    'Desgaste excessivo no centro',
+                    'Menor área de contato com o solo',
+                    'Redução na aderência em piso molhado',
+                    'Maior rigidez, reduzindo o conforto'
                 ]
             ]
         ];

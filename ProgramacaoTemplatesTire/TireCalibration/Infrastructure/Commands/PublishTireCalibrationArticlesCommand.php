@@ -87,7 +87,6 @@ class PublishTireCalibrationArticlesCommand extends Command
             }
 
             return $results['errors'] === 0 ? Command::SUCCESS : Command::FAILURE;
-
         } catch (\Exception $e) {
             $this->error("Erro fatal: {$e->getMessage()}");
             Log::error('PublishTireCalibrationArticlesCommand failed', [
@@ -118,7 +117,7 @@ class PublishTireCalibrationArticlesCommand extends Command
 
         return TempArticle::where('status', 'draft')
             ->where('source_collection', 'tire_calibrations')
-            ->where('template', 'like', 'tire_calibration%')
+            // ->where('template', 'like', 'tire_calibration%')
             ->whereNotNull('source_document_id')
             ->orderBy('created_at', 'desc')
             ->limit($limit)
@@ -143,7 +142,7 @@ class PublishTireCalibrationArticlesCommand extends Command
         foreach ($draftArticles as $draftArticle) {
             try {
                 $result = $this->publishTireArticle($draftArticle, $dryRun, $force);
-                
+
                 if ($result['published']) {
                     $results['published']++;
                 } else {
@@ -151,7 +150,6 @@ class PublishTireCalibrationArticlesCommand extends Command
                 }
 
                 $results['details'][] = $result;
-
             } catch (\Exception $e) {
                 $results['errors']++;
                 $results['details'][] = [
@@ -175,14 +173,14 @@ class PublishTireCalibrationArticlesCommand extends Command
         return $results;
     }
 
-        /**
+    /**
      * Gera slug final para Article
      */
     private function generateFinalSlug($draftArticle): string
     {
         $make = Str::slug($draftArticle->vehicle_make);
         $model = Str::slug($draftArticle->vehicle_model);
-        
+
         return "calibragem-pneu-{$make}-{$model}";
     }
 
@@ -197,7 +195,7 @@ class PublishTireCalibrationArticlesCommand extends Command
         // Verificar se o slug já existe
         if (!$force) {
             $slugExists = Article::where('slug', $finalSlug)->exists();
-            
+
             if ($slugExists) {
                 return [
                     'published' => false,
@@ -252,10 +250,10 @@ class PublishTireCalibrationArticlesCommand extends Command
     {
         // Tags específicas para calibragem de pneus
         $tags = $this->extractTireCalibrationTags($draftArticle);
-        
+
         // Tópicos relacionados específicos
         $relatedTopics = $this->extractTireRelatedTopics($draftArticle);
-        
+
         // Dados de SEO e filtros
         $seoFilterData = $this->extractTireSeoFilterData($draftArticle);
 
@@ -292,12 +290,12 @@ class PublishTireCalibrationArticlesCommand extends Command
     private function extractTireCalibrationTags($draftArticle): array
     {
         $tags = [];
-        
+
         // Tags base de SEO
         if (!empty($draftArticle->seo_data['primary_keyword'])) {
             $tags[] = $draftArticle->seo_data['primary_keyword'];
         }
-        
+
         if (!empty($draftArticle->seo_data['secondary_keywords']) && is_array($draftArticle->seo_data['secondary_keywords'])) {
             $tags = array_merge($tags, $draftArticle->seo_data['secondary_keywords']);
         }
@@ -305,7 +303,7 @@ class PublishTireCalibrationArticlesCommand extends Command
         // Tags específicas de veículos
         $entities = $draftArticle->extracted_entities ?? [];
         $vehicleTags = ['marca', 'modelo', 'categoria', 'tipo_veiculo'];
-        
+
         foreach ($vehicleTags as $entity) {
             if (!empty($entities[$entity])) {
                 $tags[] = $entities[$entity];
@@ -341,11 +339,11 @@ class PublishTireCalibrationArticlesCommand extends Command
     {
         $topics = [];
         $entities = $draftArticle->extracted_entities ?? [];
-        
+
         // Se há informações de veículo, criar tópicos relacionados
         if (!empty($entities['marca']) && !empty($entities['modelo'])) {
             $vehicle = $entities['marca'] . ' ' . $entities['modelo'];
-            
+
             // Tópicos relacionados padrão para calibragem
             $relatedTopics = [
                 [
@@ -420,7 +418,7 @@ class PublishTireCalibrationArticlesCommand extends Command
 
             foreach ($vehicleFields as $sourceField => $targetField) {
                 $value = $entities[$sourceField] ?? $vehicleInfo[$sourceField] ?? null;
-                
+
                 if (!empty($value)) {
                     $vehicleInfoData[$targetField] = $value;
                     $filterData[$sourceField] = $value;
@@ -443,7 +441,7 @@ class PublishTireCalibrationArticlesCommand extends Command
                     $modelSlug = Str::slug($vehicleInfoData['model']);
                     $vehicleInfoData['model_slug'] = $modelSlug;
                     $filterData['modelo_slug'] = $modelSlug;
-                    
+
                     // Slug combinado
                     $vehicleInfoData['make_model_slug'] = $makeSlug . '-' . $modelSlug;
                     $filterData['marca_modelo_slug'] = $makeSlug . '-' . $modelSlug;
@@ -463,17 +461,17 @@ class PublishTireCalibrationArticlesCommand extends Command
     private function enrichTireMetadata($draftArticle): array
     {
         $metadata = $draftArticle->metadata ?? [];
-        
+
         // Adicionar informações específicas de calibragem
         $metadata['article_type'] = 'tire_calibration';
         $metadata['content_focus'] = 'procedimento técnico';
         $metadata['target_audience'] = 'proprietários de veículos';
-        
+
         // Informações de processamento
         $metadata['processing_pipeline'] = 'TireCalibration->TempArticle->Article';
         $metadata['published_via'] = 'PublishTireCalibrationArticlesCommand';
         $metadata['final_published_at'] = now()->toISOString();
-        
+
         // Manter dados técnicos importantes
         if (!empty($draftArticle->metadata['vehicle_specifications'])) {
             $metadata['technical_data'] = $draftArticle->metadata['vehicle_specifications'];
@@ -490,20 +488,20 @@ class PublishTireCalibrationArticlesCommand extends Command
         // Autores especializados em manutenção automotiva
         $authors = [
             [
-                'name' => 'Carlos Santos',
-                'bio' => 'Especialista em manutenção automotiva e calibragem de pneus'
+                'name' => 'Equipe Editorial',
+                'bio' => 'Equipe especializada em conteúdo automotivo'
             ],
             [
-                'name' => 'Ana Oliveira',
-                'bio' => 'Engenheira mecânica especializada em sistemas automotivos'
+                'name' => 'Departamento Técnico',
+                'bio' => 'Engenheiros e mecânicos especializados'
             ],
             [
-                'name' => 'Ricardo Lima',
-                'bio' => 'Técnico automotivo com 15 anos de experiência'
+                'name' => 'Redação',
+                'bio' => 'Editores especialistas em veículos'
             ],
             [
-                'name' => 'Marina Costa',
-                'bio' => 'Especialista em segurança veicular e manutenção preventiva'
+                'name' => 'Equipe de Conteúdo',
+                'bio' => 'Especialistas em informação automotiva'
             ]
         ];
 
@@ -520,7 +518,7 @@ class PublishTireCalibrationArticlesCommand extends Command
         $entities = $draftArticle->extracted_entities ?? [];
         $make = $entities['marca'] ?? 'Unknown';
         $model = $entities['modelo'] ?? 'Unknown';
-        
+
         return "{$make} {$model}";
     }
 
@@ -532,18 +530,18 @@ class PublishTireCalibrationArticlesCommand extends Command
         // Humanizar as datas, se solicitado
         if ($this->option('humanize-dates')) {
             $this->info('Iniciando humanização de datas...');
-            
+
             $humanizeOptions = [
                 '--days' => $this->option('days'),
                 // '--tire-calibration-only' => true // Flag específica para artigos de calibragem
             ];
-            
+
             if ($this->option('start-date')) {
                 $humanizeOptions['--start-date'] = $this->option('start-date');
             }
-            
+
             $this->call('articles:humanize-dates', $humanizeOptions);
-            
+
             $this->info('Humanização concluída.');
         }
     }
@@ -557,7 +555,7 @@ class PublishTireCalibrationArticlesCommand extends Command
 
         // Buscar artigos de calibragem já publicados
         $query = Article::where('template', 'like', 'tire_calibration%')
-                       ->where('source_collection', 'tire_calibrations');
+            ->where('source_collection', 'tire_calibrations');
 
         $articlesCount = $query->count();
 
@@ -599,7 +597,6 @@ class PublishTireCalibrationArticlesCommand extends Command
             $articles = null;
             gc_collect_cycles();
             $page++;
-
         } while (true);
 
         $bar->finish();
@@ -633,7 +630,7 @@ class PublishTireCalibrationArticlesCommand extends Command
         if ($results['published'] > 0) {
             $this->newLine();
             $this->info('Artigos de calibragem publicados com sucesso!');
-            
+
             if (!$this->option('humanize-dates')) {
                 $this->line('Dica: Use --humanize-dates para distribuir as datas de publicação.');
             }
