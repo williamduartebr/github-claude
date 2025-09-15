@@ -3,7 +3,6 @@
 namespace Src\ContentGeneration\TireCalibration\Infrastructure\Providers;
 
 
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\FixPhase2TemplateCommand;
 use Illuminate\Support\ServiceProvider;
 use Src\ArticleGenerator\Infrastructure\Console\HumanizeArticleDates;
 use Src\ContentGeneration\TireCalibration\Application\Services\TestArticleService;
@@ -11,6 +10,7 @@ use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3AServ
 use Src\ContentGeneration\TireCalibration\Application\Services\ClaudePhase3BService;
 use Src\ContentGeneration\TireCalibration\Application\Services\ArticleGenerationService;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudeCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\FixPhase2TemplateCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ResetPickupRecordsCommand;
 
 // Services V4 + Dependências
@@ -24,14 +24,14 @@ use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClau
 // Commands V4
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\RefineWithClaudePhase3BCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ReprocessFailedArticlesCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\ClaudeEscalationManagementCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\FixIncompletePickupArticlesCommand;
 use Src\ContentGeneration\TireCalibration\Application\Services\ArticleMappingService;  // ✅ ADICIONADO
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\PublishTireCalibrationDirectCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\PublishTireCalibrationArticlesCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateCalibrationStructureCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateTemplateInconsistencyCommand;
-use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateGenericVersionPatternsCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\CorrectGenericVersionsTempArticleCommand;
 use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\PublishTempTireCalibrationArticlesCommand;
+use Src\ContentGeneration\TireCalibration\Infrastructure\Commands\InvestigateGenericVersionPatternsTempArticleCommand;
 use Src\ContentGeneration\TireCalibration\Application\Services\ClaudeRefinementService; // ✅ ADICIONADO (compatibilidade V3)
 
 /**
@@ -274,9 +274,11 @@ class TireCalibrationServiceProvider extends ServiceProvider
                 GenerateTestArticlesCommand::class,         // Depende: TestArticleService ✅
                 TireCalibrationStatsCommand::class,         // Depende: ArticleGenerationService + ClaudeRefinementService + TestArticleService ✅
 
-                InvestigateCalibrationStructureCommand::class,
-                InvestigateTemplateInconsistencyCommand::class,
-                InvestigateGenericVersionPatternsCommand::class,
+                InvestigateGenericVersionPatternsTempArticleCommand::class,
+                CorrectGenericVersionsTempArticleCommand::class,
+                ClaudeEscalationManagementCommand::class,
+
+
                 ResetPickupRecordsCommand::class,
                 ReprocessFailedArticlesCommand::class,
                 FixIncompletePickupArticlesCommand::class,
