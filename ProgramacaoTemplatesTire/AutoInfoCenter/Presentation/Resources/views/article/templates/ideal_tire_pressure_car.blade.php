@@ -90,7 +90,7 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                                 <tbody>
                                     @foreach($article->getData()['tire_specifications_by_version'] as $spec)
                                     <tr class="border-b border-gray-200 {{ $spec['css_class'] }}">
-                                        <td class="py-2 px-3 text-xs">{{ $spec['version'] }}</td>
+                                        <td class="py-2 px-3 text-xs">{{ \Str::upper($spec['version']) }}</td>
                                         <td class="py-2 px-3 text-xs">{{ $spec['tire_size'] }}</td>
                                         <td class="py-2 px-3 text-xs">{{ $spec['load_speed_index'] }}</td>
                                     </tr>

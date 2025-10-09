@@ -926,7 +926,8 @@
                             <p class="text-gray-700">
                                 Para viagens longas em estradas com a Ténéré 250, recomenda-se utilizar o limite
                                 superior da faixa recomendada: 31 PSI no pneu dianteiro e 34 PSI no traseiro (para
-                                piloto solo). Se estiver com bagagem ou passageiro, aumente para 32 PSI no dianteiro e
+                                apenas o piloto). Se estiver com bagagem ou passageiro, aumente para 32 PSI no dianteiro
+                                e
                                 36 PSI no traseiro. Esta calibragem ligeiramente superior melhora a estabilidade em alta
                                 velocidade, reduz o aquecimento dos pneus e aumenta a eficiência de combustível. Durante
                                 a viagem, verifique a pressão a cada 500 km ou quando houver mudanças significativas de

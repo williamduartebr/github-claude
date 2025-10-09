@@ -11,7 +11,7 @@ trait VehicleDataProcessingTrait
      */
     private function processVehicleInfo(): array
     {
-        $vehicleData = $this->article->vehicle_data ?? [];
+        $vehicleData = $this->article->vehicle_info ?? [];
         $vehicleInfo = $this->article->extracted_entities ?? [];
 
         return [
@@ -44,7 +44,7 @@ trait VehicleDataProcessingTrait
      */
     private function processPressureSpecifications(): array
     {
-        $vehicleData = $this->article->vehicle_data ?? [];
+        $vehicleData = $this->article->vehicle_info ?? [];
         $pressureSpecs = $vehicleData['pressure_specifications'] ?? [];
 
         if (empty($pressureSpecs)) {
@@ -155,8 +155,8 @@ trait VehicleDataProcessingTrait
         }
 
         $vehicleType = $vehicleData['vehicle_type'] ?? 'car';
-        
-        return match($vehicleType) {
+
+        return match ($vehicleType) {
             'motorcycle' => 'motorcycles',
             'suv' => 'vehicles',
             'car' => 'vehicles',
@@ -181,7 +181,7 @@ trait VehicleDataProcessingTrait
         // Fallback para lógica anterior
         $category = strtolower($vehicleInfo['categoria'] ?? '');
 
-        return match($category) {
+        return match ($category) {
             'suv' => 'SUVs',
             'sedan' => 'Sedans',
             'hatch' => 'Hatches',
@@ -201,7 +201,7 @@ trait VehicleDataProcessingTrait
      */
     private function mapVehicleSegment(string $segment): string
     {
-        return match($segment) {
+        return match ($segment) {
             'A' => 'Carros Populares',
             'B' => 'Carros Compactos',
             'C' => 'Carros Médios',
@@ -241,7 +241,7 @@ trait VehicleDataProcessingTrait
     {
         $isElectric = $vehicleData['is_electric'] ?? false;
         $spare = $pressureSpecs['pressure_spare'] ?? null;
-        
+
         return $isElectric && ($spare === 0 || $spare === null);
     }
 
@@ -273,8 +273,8 @@ trait VehicleDataProcessingTrait
     private function isMotorcycleTireSize(string $tireSize): bool
     {
         // Motocicletas geralmente têm padrões específicos como "120/70 ZR17"
-        return preg_match('/\d{2,3}\/\d{2,3}[A-Z]*R?\d{2}/', $tireSize) && 
-               (str_contains(strtoupper($tireSize), 'DIANTEIRO') || str_contains(strtoupper($tireSize), 'TRASEIRO'));
+        return preg_match('/\d{2,3}\/\d{2,3}[A-Z]*R?\d{2}/', $tireSize) &&
+            (str_contains(strtoupper($tireSize), 'DIANTEIRO') || str_contains(strtoupper($tireSize), 'TRASEIRO'));
     }
 
     /**
@@ -286,7 +286,7 @@ trait VehicleDataProcessingTrait
             $parts = explode('(', $tireSize);
             return trim($parts[0] ?? '');
         }
-        
+
         return $tireSize;
     }
 
@@ -299,7 +299,7 @@ trait VehicleDataProcessingTrait
             preg_match('/\(TRASEIRO\)([^(]+)/', strtoupper($tireSize), $matches);
             return trim($matches[1] ?? '');
         }
-        
+
         return $tireSize;
     }
 
@@ -309,14 +309,6 @@ trait VehicleDataProcessingTrait
     private function getCanonicalUrl(): string
     {
         return $this->article->canonical_url ?? route('info.article.show', $this->article->slug);
-    }
-
-    /**
-     * Obtém URL canônica do artigo
-     */
-    private function getExtractedEntities(): array
-    {
-        return $this->article->extracted_entities ?? [];
     }
 
     /**

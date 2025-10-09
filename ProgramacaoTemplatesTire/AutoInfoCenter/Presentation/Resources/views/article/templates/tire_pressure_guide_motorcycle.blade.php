@@ -1,7 +1,6 @@
 @extends('auto-info-center::layouts.app')
 
 @push('head')
-<link rel="amphtml" href="{{ route('info.article.show.amp', $article->slug) }}">
 <link rel="canonical" href="{{ route('info.article.show', $article->slug) }}">
 
 <script type="application/ld+json">

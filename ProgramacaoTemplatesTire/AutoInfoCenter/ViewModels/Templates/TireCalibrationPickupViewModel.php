@@ -3,12 +3,15 @@
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Src\AutoInfoCenter\ViewModels\Templates\Traits\VehicleDataProcessingTrait;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\GenericTermsValidationTrait;
 
 class TireCalibrationPickupViewModel extends TemplateViewModel
 {
-    use VehicleDataProcessingTrait;
 
-        /**
+    use VehicleDataProcessingTrait,
+        GenericTermsValidationTrait;
+
+    /**
      * Nome do template a ser utilizado
      */
     protected string $templateName = 'tire_calibration_pickup';
@@ -21,7 +24,13 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         $content = $this->article->content;
 
         $this->processedData['introduction'] = $content['introducao'] ?? '';
+        $this->processedData['specifications_load'] = $content['especificacoes_carga'] ?? '';
+
         $this->processedData['tire_specifications_by_version'] = $this->processTireSpecificationsByVersion($content['especificacoes_por_versao'] ?? []);
+
+        // NOVA LINHA: Detecta se há medidas diferentes
+        $this->processedData['has_different_tire_sizes'] = $this->hasDifferentTireSizes($this->processedData['tire_specifications_by_version']);
+
         $this->processedData['full_load_table'] = $this->processFullLoadTable($content['tabela_carga_completa'] ?? []);
         $this->processedData['label_location'] = $this->processLabelLocation($content['localizacao_etiqueta'] ?? []);
         $this->processedData['special_conditions'] = $this->processSpecialConditions($content['condicoes_especiais'] ?? []);
@@ -30,15 +39,15 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         $this->processedData['pressure_impact'] = $this->processPressureImpact($content['impacto_pressao'] ?? []);
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-        
+
         // OTIMIZADA: Usar dados embarcados primeiro
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
         $this->processedData['pressure_specifications'] = $this->processPressureSpecifications();
         $this->processedData['tire_specs_embedded'] = $this->processTireSpecificationsEmbedded();
-        
+
         // NOVA LÓGICA: Processa tipo de equipamento de emergência
         $this->processedData['emergency_equipment'] = $this->processEmergencyEquipment();
-        
+
         // Dados auxiliares
         $this->processedData['related_topics'] = $this->getRelatedTopics();
         $this->processedData['structured_data'] = $this->buildStructuredData();
@@ -47,6 +56,21 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         $this->processedData['canonical_url'] = $this->getCanonicalUrl();
     }
 
+
+    /**
+     * Verifica se existem medidas diferentes entre versões
+     */
+    private function hasDifferentTireSizes(array $tireSpecs): bool
+    {
+        foreach ($tireSpecs as $spec) {
+            if ($spec['has_different_tire_sizes'] ?? false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * 🔧 NOVA FUNÇÃO: Processa tipo de equipamento de emergência (estepe vs kit)
      */
@@ -54,7 +78,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     {
         $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         $sparePressure = $pressureSpecs['pressure_spare'] ?? 0;
         $hasSpareTire = $sparePressure > 0; // 🎯 LÓGICA PRINCIPAL
         $isElectric = $vehicleInfo['is_electric'] ?? false;
@@ -74,7 +98,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function processSpareTireData(int $sparePressure, array $vehicleInfo): array
     {
         $spareType = $this->determineSpareTireType($sparePressure);
-        
+
         return [
             'type' => 'spare_tire',
             'has_spare' => true,
@@ -96,7 +120,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function processRepairKitData(bool $isElectric, bool $isHybrid, bool $isPremium, array $vehicleInfo): array
     {
         $normalPressure = $this->processedData['pressure_specifications']['pressure_empty_front'] ?? 35;
-        
+
         return [
             'type' => 'repair_kit',
             'has_spare' => false,
@@ -125,7 +149,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
             'procedure' => $this->getRepairKitProcedure($normalPressure),
             'safety_warnings' => $this->getRepairKitSafetyWarnings(),
             'emergency_contacts' => $isPremium ? $this->getPremiumAssistanceInfo($vehicleInfo) : [],
-            
+
             // 🔋 Benefícios específicos por tipo de veículo
             'electric_benefits' => $isElectric ? [
                 'Mais espaço para bateria (até 50L extras)',
@@ -133,14 +157,14 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
                 'Maior autonomia elétrica',
                 'Melhor distribuição de peso'
             ] : [],
-            
+
             // 🔄 Benefícios para híbridos
             'hybrid_benefits' => $isHybrid ? [
                 'Otimização do espaço para bateria híbrida',
                 'Menor peso melhora eficiência do sistema',
                 'Mais espaço no porta-malas'
             ] : [],
-            
+
             'why_no_spare' => $this->getWhyNoSpareExplanation($isElectric, $isHybrid, $isPremium)
         ];
     }
@@ -164,7 +188,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
      */
     private function getSpareTireTypeName(string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'temporary' => 'Estepe Temporário (Donut)',
             'compact' => 'Estepe Compacto',
             'full_size' => 'Estepe Tamanho Original',
@@ -177,7 +201,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
      */
     private function getMaxSpeedForSpare(string $type): int
     {
-        return match($type) {
+        return match ($type) {
             'temporary' => 80,  // km/h - muito restritivo
             'compact' => 100,   // km/h - moderadamente restritivo  
             'full_size' => 120, // km/h - menos restritivo
@@ -190,7 +214,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
      */
     private function getMaxDistanceForSpare(string $type): int
     {
-        return match($type) {
+        return match ($type) {
             'temporary' => 80,   // km - muito limitado
             'compact' => 200,    // km - moderadamente limitado
             'full_size' => 999,  // km - sem limite prático
@@ -205,7 +229,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     {
         return [
             'Verificar pressão mensalmente',
-            'Inspecionar visualmente a cada 3 meses', 
+            'Inspecionar visualmente a cada 3 meses',
             'Verificar fixação e ferramentas',
             'Limpar área de armazenamento',
             'Testar macaco e ferramentas semestralmente'
@@ -217,10 +241,10 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
      */
     private function getSpareVerificationFrequency(string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'temporary' => 'Quinzenal (perde pressão mais rápido)',
             'compact' => 'Mensal',
-            'full_size' => 'Mensal', 
+            'full_size' => 'Mensal',
             default => 'Mensal'
         };
     }
@@ -244,7 +268,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
      */
     private function getSpareReplacementInterval(string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'temporary' => '6-8 anos (mesmo sem uso)',
             'compact' => '8-10 anos',
             'full_size' => '10-12 anos',
@@ -291,7 +315,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function getPremiumAssistanceInfo(array $vehicleInfo): array
     {
         $make = $vehicleInfo['make'] ?? 'Montadora';
-        
+
         return [
             'service_name' => "{$make} Assistência 24h",
             'coverage' => 'Reboque até concessionária mais próxima',
@@ -299,7 +323,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
             'availability' => '24h por dia, 7 dias por semana',
             'included_services' => [
                 'Reboque gratuito (até 150km)',
-                'Pneu de cortesia (se disponível)', 
+                'Pneu de cortesia (se disponível)',
                 'Borracharia móvel (em algumas regiões)',
                 'Chaveiro 24h',
                 'Auxílio em pane seca'
@@ -314,7 +338,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function getWhyNoSpareExplanation(bool $isElectric, bool $isHybrid, bool $isPremium): array
     {
         $reasons = [];
-        
+
         if ($isElectric) {
             $reasons[] = [
                 'title' => '🔋 Prioridade para Bateria',
@@ -325,14 +349,14 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
                 'description' => 'Menos peso = maior eficiência energética e autonomia.'
             ];
         }
-        
+
         if ($isHybrid) {
             $reasons[] = [
                 'title' => '🔄 Sistema Híbrido Complexo',
                 'description' => 'Espaço otimizado para bateria híbrida e componentes elétricos.'
             ];
         }
-        
+
         if ($isPremium) {
             $reasons[] = [
                 'title' => '🛠️ Assistência Premium',
@@ -343,39 +367,81 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
                 'description' => 'Mais espaço útil no porta-malas para bagagens.'
             ];
         }
-        
+
         if (empty($reasons)) {
             $reasons[] = [
                 'title' => '🚗 Tendência Moderna',
                 'description' => 'Muitos veículos modernos priorizam eficiência e espaço.'
             ];
         }
-        
+
         return $reasons;
     }
 
     /**
-     * Processa especificações dos pneus por versão OTIMIZADA
+     * Processa especificações dos pneus por versão
+     * Rejeita termos genéricos retornando array vazio
      */
     private function processTireSpecificationsByVersion(array $specs): array
     {
         if (empty($specs)) {
-            return $this->generateSpecsFromEmbeddedData();
+            return [];
+        }
+
+        // Verificar se há termos genéricos na lista
+        foreach ($specs as $spec) {
+            $version = $spec['versao'] ?? '';
+            if (!empty($version) && $this->containsGenericTerms($version)) {
+                return []; // Retorna vazio se encontrar termo genérico
+            }
         }
 
         $processed = [];
 
         foreach ($specs as $spec) {
-            if (!empty($spec['versao'])) {
+            $version = $spec['versao'] ?? '';
+            if (!empty($version)) {
+                // Lógica para medida dos pneus - suporta múltiplas estruturas
+                $tireSize = '';
+                $frontTire = '';
+                $rearTire = '';
+                $hasDifferentSizes = false;
+
+                if (!empty($spec['medida_pneus'])) {
+                    // Estrutura Hilux: campo único
+                    $tireSize = $spec['medida_pneus'];
+                    $frontTire = $spec['medida_pneus'];
+                    $rearTire = $spec['medida_pneus'];
+                } elseif (!empty($spec['pneu_dianteiro']) || !empty($spec['pneu_traseiro'])) {
+                    // Estrutura Frontier: campos separados
+                    $frontTire = $spec['pneu_dianteiro'] ?? '';
+                    $rearTire = $spec['pneu_traseiro'] ?? '';
+                    $hasDifferentSizes = $frontTire !== $rearTire;
+                    $tireSize = $hasDifferentSizes ? "{$frontTire} (Diant.) / {$rearTire} (Tras.)" : $frontTire;
+                }
+
+                // Lógica para pressões - LIMPA PSI DUPLICADO
+                $frontNormal = $this->cleanPressureValue($spec['pressao_dianteiro_normal'] ?? $spec['pressao_dianteira'] ?? '');
+                $rearNormal = $this->cleanPressureValue($spec['pressao_traseiro_normal'] ?? $spec['pressao_traseira'] ?? '');
+                $frontLoaded = $this->cleanPressureValue($spec['pressao_dianteiro_carregado'] ?? $spec['pressao_dianteira_carregado'] ?? $frontNormal);
+                $rearLoaded = $this->cleanPressureValue($spec['pressao_traseiro_carregado'] ?? $spec['pressao_traseira_carregado'] ?? $rearNormal);
+
                 $processed[] = [
-                    'version' => $spec['versao'],
-                    'tire_size' => $spec['medida_pneus'] ?? '',
+                    'version' => $version,
+                    'motor' => $spec['motor'] ?? '',
+                    'potencia' => $spec['potencia'] ?? '',
+                    'transmissao' => $spec['transmissao'] ?? '',
+                    'tracao' => $spec['tracao'] ?? '',
+                    'tire_size' => $tireSize,
+                    'front_tire_size' => $frontTire,
+                    'rear_tire_size' => $rearTire,
                     'load_speed_index' => $spec['indice_carga_velocidade'] ?? '',
-                    'front_normal' => $spec['pressao_dianteiro_normal'] ?? '',
-                    'rear_normal' => $spec['pressao_traseiro_normal'] ?? '',
-                    'front_loaded' => $spec['pressao_dianteiro_carregado'] ?? '',
-                    'rear_loaded' => $spec['pressao_traseiro_carregado'] ?? '',
-                    'css_class' => $this->getVersionCssClass($spec['versao'])
+                    'front_normal' => $frontNormal,
+                    'rear_normal' => $rearNormal,
+                    'front_loaded' => $frontLoaded,
+                    'rear_loaded' => $rearLoaded,
+                    'css_class' => $this->getVersionCssClass($version),
+                    'has_different_tire_sizes' => $hasDifferentSizes
                 ];
             }
         }
@@ -384,39 +450,13 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     }
 
     /**
-     * Gera especificações a partir de dados embarcados
-     */
-    private function generateSpecsFromEmbeddedData(): array
-    {
-        $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
-        $tireSpecs = $this->processedData['tire_specs_embedded'] ?? [];
-        $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-
-        if (empty($pressureSpecs) || empty($tireSpecs['tire_size'])) {
-            return [];
-        }
-
-        return [
-            [
-                'version' => $vehicleInfo['version'] ?: 'Versão Principal',
-                'tire_size' => $tireSpecs['tire_size'],
-                'load_speed_index' => '',
-                'front_normal' => ($pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
-                'rear_normal' => ($pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
-                'front_loaded' => ($pressureSpecs['pressure_max_front'] ?? '') . ' PSI',
-                'rear_loaded' => ($pressureSpecs['pressure_max_rear'] ?? '') . ' PSI',
-                'css_class' => 'bg-white'
-            ]
-        ];
-    }
-
-    /**
-     * Processa tabela de carga completa OTIMIZADA
+     * Processa tabela de carga completa
+     * Rejeita termos genéricos retornando array vazio
      */
     private function processFullLoadTable(array $table): array
     {
-        if (empty($table)) {
-            return $this->generateLoadTableFromEmbeddedData();
+        if (empty($table) || $this->hasGenericVersionTerms($table)) {
+            return [];
         }
 
         $processed = [
@@ -427,67 +467,47 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
 
         if (!empty($table['condicoes']) && is_array($table['condicoes'])) {
             foreach ($table['condicoes'] as $condition) {
-                $processed['conditions'][] = [
-                    'version' => $condition['versao'] ?? '',
-                    'occupants' => $condition['ocupantes'] ?? '',
-                    'luggage' => $condition['bagagem'] ?? '',
-                    'front_pressure' => $condition['pressao_dianteira'] ?? '',
-                    'rear_pressure' => $condition['pressao_traseira'] ?? '',
-                    'observation' => $condition['observacao'] ?? '',
-                    'css_class' => $this->getLoadConditionCssClass($condition['ocupantes'] ?? '')
-                ];
+                $version = $condition['versao'] ?? '';
+
+                if (!empty($version) && !$this->containsGenericTerms($version)) {
+                    $processed['conditions'][] = [
+                        'version' => $version,
+                        'occupants' => $condition['ocupantes'] ?? '',
+                        'luggage' => $condition['bagagem'] ?? '',
+                        'front_pressure' => $condition['pressao_dianteira'] ?? '',
+                        'rear_pressure' => $condition['pressao_traseira'] ?? '',
+                        'observation' => $condition['observacao'] ?? '',
+                        'css_class' => $this->getLoadConditionCssClass($condition['ocupantes'] ?? '')
+                    ];
+                }
             }
         }
 
-        return $processed;
+        return empty($processed['conditions']) ? [] : $processed;
     }
+
 
     /**
-     * Gera tabela de carga a partir de dados embarcados
+     * Remove "psi" ou "PSI" dos valores de pressão para evitar duplicação
      */
-    private function generateLoadTableFromEmbeddedData(): array
+    private function cleanPressureValue($value): string
     {
-        $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
-        $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-
-        if (empty($pressureSpecs)) {
-            return [];
+        if (empty($value)) {
+            return '';
         }
 
-        return [
-            'title' => 'Pressões para Diferentes Condições de Carga',
-            'description' => 'Use estas pressões conforme a ocupação e bagagem do veículo.',
-            'conditions' => [
-                [
-                    'version' => 'Uso Normal',
-                    'occupants' => '1-2 pessoas',
-                    'luggage' => 'Bagagem leve',
-                    'front_pressure' => ($pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
-                    'rear_pressure' => ($pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
-                    'observation' => 'Uso urbano e rodoviário',
-                    'css_class' => 'bg-green-50 border-green-200'
-                ],
-                [
-                    'version' => 'Carga Média',
-                    'occupants' => '3-4 pessoas',
-                    'luggage' => 'Bagagem moderada',
-                    'front_pressure' => ($pressureSpecs['pressure_light_front'] ?? $pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
-                    'rear_pressure' => ($pressureSpecs['pressure_light_rear'] ?? $pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
-                    'observation' => 'Família com bagagem',
-                    'css_class' => 'bg-yellow-50 border-yellow-200'
-                ],
-                [
-                    'version' => 'Carga Completa',
-                    'occupants' => '4-5 pessoas',
-                    'luggage' => 'Porta-malas cheio',
-                    'front_pressure' => ($pressureSpecs['pressure_max_front'] ?? '') . ' PSI',
-                    'rear_pressure' => ($pressureSpecs['pressure_max_rear'] ?? '') . ' PSI',
-                    'observation' => $vehicleInfo['is_electric'] ? 'Peso da bateria considerado' : 'Ideal para viagens',
-                    'css_class' => 'bg-blue-50 border-blue-200'
-                ]
-            ]
-        ];
+        // Convert to string se for numérico
+        $cleanValue = (string) $value;
+
+        // Remove variações de "psi" (case insensitive) e espaços extras
+        $cleanValue = preg_replace('/\s*(psi|PSI)\s*$/i', '', $cleanValue);
+
+        // Remove espaços extras
+        $cleanValue = trim($cleanValue);
+
+        return $cleanValue;
     }
+
 
     /**
      * Processa localização da etiqueta OTIMIZADA
@@ -499,10 +519,9 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         }
 
         $processed = [
-            'main_location' => $location['localizacao_principal'] ?? '',
-            'alternative_locations' => $location['localizacoes_alternativas'] ?? [],
+            'main_location' => $location['local_principal'] ?? '',
+            'alternative_locations' => $location['locais_alternativos'] ?? [],
             'description' => $location['descricao'] ?? '',
-            'visual_guide' => $location['guia_visual'] ?? [],
             'note' => $location['observacao'] ?? ''
         ];
 
@@ -515,7 +534,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function generateLabelLocationFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         return [
             'main_location' => 'Porta do motorista (coluna B)',
             'alternative_locations' => [
@@ -653,7 +672,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function generateUnitConversionFromEmbeddedData(): array
     {
         $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
-        
+
         $pressures = array_filter([
             $pressureSpecs['pressure_empty_front'] ?? null,
             $pressureSpecs['pressure_empty_rear'] ?? null,
@@ -722,7 +741,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function generateCareRecommendationsFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         return [
             [
                 'category' => 'verificacao_mensal',
@@ -802,7 +821,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function generateImpactFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         $impacts = [
             [
                 'type' => 'subcalibrado',
@@ -854,7 +873,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function getRelatedTopics(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         $topics = [];
 
         // Tópicos gerais de manutenção
@@ -907,15 +926,15 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     private function getVersionCssClass(string $version): string
     {
         $lowercaseVersion = strtolower($version);
-        
+
         if (str_contains($lowercaseVersion, 'sport') || str_contains($lowercaseVersion, 'gts')) {
             return 'bg-red-50 border-red-200';
         }
-        
+
         if (str_contains($lowercaseVersion, 'luxury') || str_contains($lowercaseVersion, 'premium')) {
             return 'bg-purple-50 border-purple-200';
         }
-        
+
         return 'bg-gray-50 border-gray-200';
     }
 
@@ -924,34 +943,34 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         if (str_contains($occupants, '1-2')) {
             return 'bg-green-50 border-green-200';
         }
-        
+
         if (str_contains($occupants, '3-4')) {
             return 'bg-yellow-50 border-yellow-200';
         }
-        
+
         return 'bg-blue-50 border-blue-200';
     }
 
     private function getConditionIconClass(string $condition): string
     {
         $lowercaseCondition = strtolower($condition);
-        
+
         if (str_contains($lowercaseCondition, 'viagem') || str_contains($lowercaseCondition, 'rodovia')) {
             return 'trending-up';
         }
-        
+
         if (str_contains($lowercaseCondition, 'carga')) {
             return 'package';
         }
-        
+
         if (str_contains($lowercaseCondition, 'elétrico') || str_contains($lowercaseCondition, 'eco')) {
             return 'battery';
         }
-        
+
         if (str_contains($lowercaseCondition, 'novo')) {
             return 'refresh-cw';
         }
-        
+
         return 'settings';
     }
 
@@ -1037,7 +1056,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         return "from-{$color}-100 to-{$color}-200";
     }
 
-     /**
+    /**
      * Sobrescreve dados de SEO para foco em "calibragem" para automóveis
      */
     protected function processSeoData(): array
@@ -1047,7 +1066,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
         $seoData = $this->article->seo_data ?? [];
 
         $pressureDisplay = $pressureSpecs['pressure_display'] ?? '';
-        
+
         return [
             'title' => $seoData['page_title'] ?? "Calibragem do Pneu do {$vehicleInfo['full_name']} – Guia Completo",
             'meta_description' => $seoData['meta_description'] ?? "Guia completo de calibragem dos pneus do {$vehicleInfo['full_name']}. {$pressureDisplay}. Procedimento passo-a-passo e dicas para o Brasil.",
@@ -1089,7 +1108,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
             'description' => "Guia específico de calibragem dos pneus do {$vehicleFullName}, incluindo procedimento passo-a-passo e pressões por condição de uso.",
             'image' => [
                 '@type' => 'ImageObject',
-                'url' => $vehicleInfo['image_url'] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/vehicles/default-car.jpg',
+                'url' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/tire-calibration.png',
                 'width' => 1200,
                 'height' => 630
             ],
@@ -1121,7 +1140,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
 
         if (!empty($vehicleInfo['make']) && !empty($vehicleInfo['model'])) {
             $vehicleType = $vehicleInfo['is_electric'] ? 'Vehicle' : 'Car';
-            
+
             $structuredData['mainEntity'] = [
                 '@type' => $vehicleType,
                 'name' => 'Calibragem de pneus para ' . $vehicleInfo['make'] . ' ' . $vehicleInfo['model'],
@@ -1158,7 +1177,7 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
 
         return $structuredData;
     }
- 
+
 
     /**
      * Verifica se é veículo elétrico
@@ -1303,5 +1322,4 @@ class TireCalibrationPickupViewModel extends TemplateViewModel
     {
         return $this->processedData;
     }
-  
 }

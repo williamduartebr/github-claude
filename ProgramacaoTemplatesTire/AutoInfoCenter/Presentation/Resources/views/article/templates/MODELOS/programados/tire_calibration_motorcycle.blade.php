@@ -59,7 +59,7 @@ Estrutura modular com includes específicos para características de motos
             <!-- Especificações de Pneus por Versão (Motorcycle Specific) -->
             @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.tire-specifications')
 
-            <!-- Tabela Principal de Pressões (Piloto Solo/Garupa) -->
+            <!-- Tabela Principal de Pressões (Apenas o Piloto/Garupa) -->
             @include('auto-info-center::article.partials.ideal-tire-pressure.motorcycle.pressure-table')
 
             <!-- Alertas Críticos de Segurança (Motorcycle Specific) -->

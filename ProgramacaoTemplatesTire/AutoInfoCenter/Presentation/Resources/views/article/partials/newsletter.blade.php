@@ -1,4 +1,4 @@
-<section class="max-w-4xl mx-auto mb-12 md:mb-16">
+<section class="hidden md:block max-w-4xl mx-auto mb-12 md:mb-16">
     <div class="bg-[#151C25] text-white rounded-lg shadow-md p-6">
         <div class="md:flex md:items-center">
             <div class="md:w-2/3 md:pr-8 mb-6 md:mb-0">

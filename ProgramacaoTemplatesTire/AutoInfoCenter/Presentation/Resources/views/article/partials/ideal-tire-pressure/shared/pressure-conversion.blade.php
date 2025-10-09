@@ -6,12 +6,48 @@ Usado tanto em templates de carros quanto motos
 
 @php
 $unitConversion = $article->getData()['unit_conversion'] ?? [];
-$mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
+$mainTireSpec = $article->getData()['tire_specifications_by_version'] ?? null;
 $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 
 // Valores de exemplo para conversão (usa a primeira versão disponível)
-$frontPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $mainTireSpec['front_normal']) : 30;
-$rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $mainTireSpec['rear_normal']) : 28;
+$frontPressurePSI = $mainTireSpec['front_normal'] ?? 
+    ($vehicleInfo['pressure_specifications']['pressure_empty_front'] ?? 30);
+$rearPressurePSI = $mainTireSpec['rear_normal'] ?? 
+    ($vehicleInfo['pressure_specifications']['pressure_empty_rear'] ?? 28);
+
+// Converter para inteiro caso venha como string
+$frontPressurePSI = (int) str_replace([' PSI', ' psi'], '', $frontPressurePSI);
+$rearPressurePSI = (int) str_replace([' PSI', ' psi'], '', $rearPressurePSI);
+
+// Gerar range dinâmico baseado nas pressões do veículo
+$minPressure = min(22, $frontPressurePSI - 6, $rearPressurePSI - 6);
+$maxPressure = max(50, $frontPressurePSI + 10, $rearPressurePSI + 10);
+
+// Garantir que as pressões do veículo estejam sempre incluídas
+$pressureRange = range($minPressure, $maxPressure, 2);
+if (!in_array($frontPressurePSI, $pressureRange)) {
+    $pressureRange[] = $frontPressurePSI;
+}
+if (!in_array($rearPressurePSI, $pressureRange)) {
+    $pressureRange[] = $rearPressurePSI;
+}
+sort($pressureRange);
+
+// Função helper para categorizar uso
+function getPressureCategory($psi) {
+    if ($psi <= 28) return ['text' => 'Carros pequenos', 'color' => 'text-blue-600'];
+    if ($psi <= 32) return ['text' => 'Carros médios', 'color' => 'text-green-600'];
+    if ($psi <= 38) return ['text' => 'SUVs/Sedãs grandes', 'color' => 'text-orange-600'];
+    if ($psi <= 44) return ['text' => 'Carga/Van', 'color' => 'text-red-600'];
+    return ['text' => 'Carga pesada', 'color' => 'text-purple-600'];
+}
+
+// Fatores de conversão
+$conversionFactors = [
+    'psi_to_bar' => 0.0689476,
+    'psi_to_kpa' => 6.89476,
+    'psi_to_kgf' => 0.0703070
+];
 @endphp
 
 <section class="mb-12">
@@ -56,15 +92,15 @@ $rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $main
                             </div>
                             <div class="bg-white/20 rounded-lg p-3 text-center">
                                 <div class="text-xs text-green-200 mb-1">Bar (Europa)</div>
-                                <div class="text-xl font-bold">{{ number_format($frontPressurePSI * 0.0689, 1) }}</div>
+                                <div class="text-xl font-bold">{{ number_format($frontPressurePSI * $conversionFactors['psi_to_bar'], 1) }}</div>
                             </div>
                             <div class="bg-white/20 rounded-lg p-3 text-center">
                                 <div class="text-xs text-green-200 mb-1">kPa (Técnico)</div>
-                                <div class="text-xl font-bold">{{ round($frontPressurePSI * 6.895) }}</div>
+                                <div class="text-xl font-bold">{{ round($frontPressurePSI * $conversionFactors['psi_to_kpa']) }}</div>
                             </div>
                             <div class="bg-white/20 rounded-lg p-3 text-center">
                                 <div class="text-xs text-green-200 mb-1">kgf/cm² (Antigo)</div>
-                                <div class="text-xl font-bold">{{ number_format($frontPressurePSI * 0.0703, 1) }}</div>
+                                <div class="text-xl font-bold">{{ number_format($frontPressurePSI * $conversionFactors['psi_to_kgf'], 2) }}</div>
                             </div>
                         </div>
                     </div>
@@ -82,15 +118,15 @@ $rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $main
                             </div>
                             <div class="bg-white/20 rounded-lg p-3 text-center">
                                 <div class="text-xs text-green-200 mb-1">Bar (Europa)</div>
-                                <div class="text-xl font-bold">{{ number_format($rearPressurePSI * 0.0689, 1) }}</div>
+                                <div class="text-xl font-bold">{{ number_format($rearPressurePSI * $conversionFactors['psi_to_bar'], 1) }}</div>
                             </div>
                             <div class="bg-white/20 rounded-lg p-3 text-center">
                                 <div class="text-xs text-green-200 mb-1">kPa (Técnico)</div>
-                                <div class="text-xl font-bold">{{ round($rearPressurePSI * 6.895) }}</div>
+                                <div class="text-xl font-bold">{{ round($rearPressurePSI * $conversionFactors['psi_to_kpa']) }}</div>
                             </div>
                             <div class="bg-white/20 rounded-lg p-3 text-center">
                                 <div class="text-xs text-green-200 mb-1">kgf/cm² (Antigo)</div>
-                                <div class="text-xl font-bold">{{ number_format($rearPressurePSI * 0.0703, 1) }}</div>
+                                <div class="text-xl font-bold">{{ number_format($rearPressurePSI * $conversionFactors['psi_to_kgf'], 2) }}</div>
                             </div>
                         </div>
                     </div>
@@ -105,7 +141,7 @@ $rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $main
             <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                 <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2 2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
                 Tabela de Conversão Completa
             </h3>
@@ -127,28 +163,25 @@ $rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $main
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach([26, 28, 30, 32, 34, 36, 38, 40, 42, 44] as $psi)
+                    @foreach($pressureRange as $psi)
+                    @php
+                        $isVehiclePressure = ($psi == $frontPressurePSI || $psi == $rearPressurePSI);
+                        $category = getPressureCategory($psi);
+                    @endphp
                     <tr
-                        class="border-b border-gray-200 hover:bg-gray-50 transition-colors {{ ($psi == $frontPressurePSI || $psi == $rearPressurePSI) ? 'bg-green-50 border-green-200' : '' }}">
+                        class="border-b border-gray-200 hover:bg-gray-50 transition-colors {{ $isVehiclePressure ? 'bg-green-50 border-green-200' : '' }}">
                         <td
-                            class="py-3 px-4 text-sm font-semibold {{ ($psi == $frontPressurePSI || $psi == $rearPressurePSI) ? 'text-green-800' : 'text-gray-900' }}">
+                            class="py-3 px-4 text-sm font-semibold {{ $isVehiclePressure ? 'text-green-800' : 'text-gray-900' }}">
                             {{ $psi }} PSI
-                            @if($psi == $frontPressurePSI || $psi == $rearPressurePSI)
+                            @if($isVehiclePressure)
                             <span class="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded">Seu carro</span>
                             @endif
                         </td>
-                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * 0.0689, 1) }}
-                        </td>
-                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ round($psi * 6.895) }}</td>
-                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * 0.0703, 1) }}
-                        </td>
-                        <td class="py-3 px-4 text-sm text-center text-gray-600">
-                            @if($psi <= 28) <span class="text-blue-600">Carros pequenos</span>
-                                @elseif($psi <= 32) <span class="text-green-600">Carros médios</span>
-                                    @elseif($psi <= 36) <span class="text-orange-600">SUVs/Carregado</span>
-                                        @else
-                                        <span class="text-red-600">Carga pesada</span>
-                                        @endif
+                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * $conversionFactors['psi_to_bar'], 1) }}</td>
+                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ round($psi * $conversionFactors['psi_to_kpa']) }}</td>
+                        <td class="py-3 px-4 text-sm text-center text-gray-700">{{ number_format($psi * $conversionFactors['psi_to_kgf'], 2) }}</td>
+                        <td class="py-3 px-4 text-sm text-center {{ $category['color'] }}">
+                            {{ $category['text'] }}
                         </td>
                     </tr>
                     @endforeach
@@ -232,7 +265,7 @@ $rearPressurePSI = $mainTireSpec ? (int) str_replace([' PSI', ' psi'], '', $main
                 <ul class="space-y-2 text-sm text-gray-700">
                     <li class="flex justify-between items-center bg-white p-2 rounded">
                         <span>PSI → Bar:</span>
-                        <code class="bg-gray-100 px-2 py-1 rounded text-xs">PSI × 0.0689</code>
+                        <code class="bg-gray-100 px-2 py-1 rounded text-xs">PSI × 0.069</code>
                     </li>
                     <li class="flex justify-between items-center bg-white p-2 rounded">
                         <span>PSI → kPa:</span>

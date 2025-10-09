@@ -25,79 +25,69 @@
             itemtype="https://schema.org/Article">
             <div class="relative">
                 @php
-                // Gera uma imagem baseada no veículo ou categoria
-                $imageSlug = $article->vehicle_info['make_slug'] ?? 'default';
-                $modelSlug = $article->vehicle_info['model_slug'] ?? '';
-                $imageName = $imageSlug . ($modelSlug ? '-' . $modelSlug : '') . '.jpg';
                 $altText = $article->vehicle_info['make'] ?? $category->name;
                 if (!empty($article->vehicle_info['model'])) {
                     $altText .= ' ' . $article->vehicle_info['model'];
                 }
 
-                if (empty($article->vehicle_info['vehicle_type'])) {
-                    $imageDefault = 'default-car.png';
-                } else {
-                    $imageDefault = \Str::slug( sprintf("%s-%s", $category_slug, $article->vehicle_info['vehicle_type'] ));
-                }
-
+                $imageDefault = match(mb_strtolower($article->vehicle_info['vehicle_type']) ?? null) {
+                    'motorcycle' => 'default-motorcycle',
+                    'moto' => 'default-motorcycle',
+                    default => 'default-car'
+                };
                 @endphp
 
-                <img src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/{{  $imageDefault  }}.png"
+                <img src="https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/{{ $imageDefault }}.png"
                     alt="{{ $altText }}" class="w-full h-40 sm:h-48 object-cover" width="300" height="200"
                     loading="lazy" decoding="async" itemprop="image"
-                    onerror="this.src='https:\/\/mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/default-car.png'">
+                    onerror="this.src='https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/default-car.png'">
 
-                {{-- <img src="/images/{{ $imageName }}" alt="{{ $altText }}" class="w-full h-40 sm:h-48 object-cover"
-                    width="300" height="200" loading="lazy" decoding="async" itemprop="image"
-                    onerror="this.src='/images/default-car.jpg'"> --}}
-
-                @if($index < 2) <div
-                    class="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-2 py-1 m-2 rounded font-montserrat">
+                @if($index < 2)
+                <div class="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-2 py-1 m-2 rounded font-montserrat">
                     POPULAR
+                </div>
+                @elseif($article->created_at->diffInDays() < 7)
+                <div class="absolute top-0 right-0 bg-green-600 text-white text-xs font-bold px-2 py-1 m-2 rounded font-montserrat">
+                    NOVO
+                </div>
+                @endif
             </div>
-            @elseif($article->created_at->diffInDays() < 7) <div
-                class="absolute top-0 right-0 bg-green-600 text-white text-xs font-bold px-2 py-1 m-2 rounded font-montserrat">
-                NOVO
-    </div>
-    @endif
-    </div>
 
-    <div class="p-4 flex flex-col flex-grow">
-        <h3 class="text-lg md:text-xl font-semibold mb-2 font-montserrat" itemprop="headline">
-            <a href="{{ route('info.article.show', $article->slug) }}" class="text-blue-700 hover:underline">
-                {{ $article->title }}
-            </a>
-        </h3>
+            <div class="p-4 flex flex-col flex-grow">
+                <h3 class="text-lg md:text-xl font-semibold mb-2 font-montserrat" itemprop="headline">
+                    <a href="{{ route('info.article.show', $article->slug) }}" class="text-blue-700 hover:underline">
+                        {{ $article->title }}
+                    </a>
+                </h3>
 
-        <p class="text-sm md:text-base text-gray-600 mb-4 flex-grow font-roboto" itemprop="abstract">
-            @if(!empty($article->content['introducao']))
-            {{ Str::limit(strip_tags($article->content['introducao']), 120) }}
-            @else
-            Guia completo sobre {{ strtolower($category->name) }}
-            @if(!empty($article->vehicle_info['make']) && !empty($article->vehicle_info['model']))
-            para {{ $article->vehicle_info['make'] }} {{ $article->vehicle_info['model'] }}
-            @endif
-            . Informações técnicas e recomendações especializadas.
-            @endif
-        </p>
+                <p class="text-sm md:text-base text-gray-600 mb-4 flex-grow font-roboto" itemprop="abstract">
+                    @if(!empty($article->content['introducao']))
+                    {{ Str::limit(strip_tags($article->content['introducao']), 120) }}
+                    @else
+                    Guia completo sobre {{ strtolower($category->name) }}
+                    @if(!empty($article->vehicle_info['make']) && !empty($article->vehicle_info['model']))
+                    para {{ $article->vehicle_info['make'] }} {{ $article->vehicle_info['model'] }}
+                    @endif
+                    . Informações técnicas e recomendações especializadas.
+                    @endif
+                </p>
 
-        <div class="flex items-center justify-between mt-2">
-            <span class="text-xs text-gray-500 font-roboto" itemprop="datePublished"
-                content="{{ $article->created_at->format('Y-m-d') }}">
-                Publicado em: {{ $article->created_at->format('d/m/Y') }}
-            </span>
-            <a href="{{ route('info.article.show', $article->slug) }}"
-                class="text-blue-600 hover:underline text-sm font-medium font-montserrat">
-                Leia mais »
-            </a>
-        </div>
-    </div>
-    </article>
-    @endforeach
+                <div class="flex items-center justify-between mt-2">
+                    <span class="text-xs text-gray-500 font-roboto" itemprop="datePublished"
+                        content="{{ $article->created_at->format('Y-m-d') }}">
+                        Publicado em: {{ $article->created_at->format('d/m/Y') }}
+                    </span>
+                    <a href="{{ route('info.article.show', $article->slug) }}"
+                        class="text-blue-600 hover:underline text-sm font-medium font-montserrat">
+                        Leia mais »
+                    </a>
+                </div>
+            </div>
+        </article>
+        @endforeach
     </div>
     @endif
 
-    <!-- Paginação -->
     @if($pagination['total_pages'] > 1)
     <div class="flex justify-center mt-8" role="navigation" aria-label="Paginação">
         <nav class="inline-flex rounded-md shadow overflow-hidden text-sm font-roboto">
@@ -121,33 +111,34 @@
             @endif
             @endif
 
-            @for($page = $start; $page <= $end; $page++) @if($page==$pagination['current_page']) <span
-                class="py-2 px-3 bg-blue-600 text-white font-medium border border-blue-600"
+            @for($page = $start; $page <= $end; $page++)
+            @if($page == $pagination['current_page'])
+            <span class="py-2 px-3 bg-blue-600 text-white font-medium border border-blue-600"
                 aria-label="Página {{ $page }}" aria-current="page">{{ $page }}</span>
-                @else
-                <a href="{{ request()->fullUrlWithQuery(['page' => $page]) }}"
-                    class="py-2 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                    aria-label="Página {{ $page }}">{{ $page }}</a>
-                @endif
-                @endfor
+            @else
+            <a href="{{ request()->fullUrlWithQuery(['page' => $page]) }}"
+                class="py-2 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                aria-label="Página {{ $page }}">{{ $page }}</a>
+            @endif
+            @endfor
 
-                @if($end < $pagination['total_pages']) @if($end < $pagination['total_pages'] - 1) <span
-                    class="py-2 px-3 bg-white border border-gray-300 text-gray-500">...</span>
-                    @endif
-                    <a href="{{ request()->fullUrlWithQuery(['page' => $pagination['total_pages']]) }}"
-                        class="py-2 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                        aria-label="Página {{ $pagination['total_pages'] }}">{{ $pagination['total_pages'] }}</a>
-                    @endif
+            @if($end < $pagination['total_pages'])
+            @if($end < $pagination['total_pages'] - 1)
+            <span class="py-2 px-3 bg-white border border-gray-300 text-gray-500">...</span>
+            @endif
+            <a href="{{ request()->fullUrlWithQuery(['page' => $pagination['total_pages']]) }}"
+                class="py-2 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                aria-label="Página {{ $pagination['total_pages'] }}">{{ $pagination['total_pages'] }}</a>
+            @endif
 
-                    @if($pagination['has_next'])
-                    <a href="{{ request()->fullUrlWithQuery(['page' => $pagination['next_page']]) }}"
-                        class="py-2 px-3 bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 rounded-r-md"
-                        rel="next" aria-label="Próxima página">Próxima</a>
-                    @endif
+            @if($pagination['has_next'])
+            <a href="{{ request()->fullUrlWithQuery(['page' => $pagination['next_page']]) }}"
+                class="py-2 px-3 bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 rounded-r-md"
+                rel="next" aria-label="Próxima página">Próxima</a>
+            @endif
         </nav>
     </div>
 
-    <!-- Informações da paginação -->
     <div class="text-center mt-4 text-sm text-gray-600">
         Mostrando {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + 1 }} -
         {{ min($pagination['current_page'] * $pagination['per_page'], $pagination['total']) }}
@@ -155,7 +146,6 @@
     </div>
     @endif
 
-    <!-- INSERIR BANNER AQUI - POSIÇÃO 2 -->
     <div class="container mx-auto px-4 md:px-0 pt-6">
         [ADSENSE-2]
     </div>

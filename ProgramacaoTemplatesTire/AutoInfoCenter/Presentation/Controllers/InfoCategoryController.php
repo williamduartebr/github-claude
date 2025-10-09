@@ -20,7 +20,7 @@ class InfoCategoryController extends Controller
     {
         $cacheKey = "info_category_index";
 
-        $html = Cache::remember($cacheKey, 86400 * 7, function () { // 7 dias
+        $html = Cache::remember($cacheKey, 86400 * 3, function () { // 3 dias
             $categories = $this->categoriesViewModel->getAllCategories();
 
             // ✅ META TAGS PARA INDEX

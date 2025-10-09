@@ -36,12 +36,12 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         $this->processedData['calibration_procedure'] = $this->processCalibrationProcedure($content['procedimento_calibragem'] ?? []);
         $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
         $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
-        
+
         // OTIMIZADA: Usar dados embarcados primeiro
         $this->processedData['vehicle_info'] = $this->processVehicleInfo();
         $this->processedData['pressure_specifications'] = $this->processPressureSpecifications();
         $this->processedData['tire_specs_embedded'] = $this->processTireSpecificationsEmbedded();
-        
+
         // Dados auxiliares
         $this->processedData['structured_data'] = $this->buildStructuredData();
         $this->processedData['seo_data'] = $this->processSeoData();
@@ -83,7 +83,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
         $tireSpecs = $this->processedData['tire_specs_embedded'] ?? [];
-        
+
         if (empty($tireSpecs['tire_size'])) {
             return [];
         }
@@ -98,7 +98,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
                 'durability_km' => $vehicleInfo['is_premium'] ? '15.000-20.000 km' : '12.000-15.000 km'
             ],
             'rear_tire' => [
-                'position' => 'Traseiro', 
+                'position' => 'Traseiro',
                 'tire_size' => $tireSpecs['rear_tire_size'] ?: $tireSpecs['tire_size'],
                 'load_speed_index' => '',
                 'recommended_brands' => $tireSpecs['recommended_brands'] ?? [],
@@ -200,7 +200,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         return [
             'official_pressures' => [
                 'solo_rider' => [
-                    'condition' => 'Piloto Solo',
+                    'condition' => 'Apenas o Piloto',
                     'front' => ($pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
                     'rear' => ($pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
                     'observation' => 'Uso urbano e rodoviário normal'
@@ -267,7 +267,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     private function generateInformationLocationFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         return [
             'owner_manual' => [
                 'location' => 'Manual do Proprietário',
@@ -322,7 +322,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     private function generateUnitConversionFromEmbeddedData(): array
     {
         $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
-        
+
         $pressures = array_filter([
             $pressureSpecs['pressure_empty_front'] ?? null,
             $pressureSpecs['pressure_empty_rear'] ?? null,
@@ -444,7 +444,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         ];
 
         // Remove entradas vazias
-        $considerations = array_filter($considerations, function($item) {
+        $considerations = array_filter($considerations, function ($item) {
             return !empty($item['orientations']) || !empty($item['factors']) || !empty($item['types']);
         });
 
@@ -487,7 +487,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     private function generateMotorcycleBenefitsFromEmbeddedData(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         return [
             [
                 'category' => 'seguranca',
@@ -706,7 +706,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     private function generateMotorcycleCalibrationProcedureFromEmbeddedData(): array
     {
         $pressureSpecs = $this->processedData['pressure_specifications'] ?? [];
-        
+
         return [
             [
                 'number' => 1,
@@ -758,7 +758,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
         $mainCategory = $vehicleInfo['main_category'] ?? '';
         $type = strtolower($this->article->extracted_entities['categoria'] ?? '');
-        
+
         return str_contains($mainCategory, 'sport') || $type === 'sport';
     }
 
@@ -971,7 +971,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
         $seoData = $this->article->seo_data ?? [];
 
         $pressureDisplay = $pressureSpecs['pressure_display'] ?? '';
-        
+
         return [
             'title' => $seoData['page_title'] ?? "Pressão Ideal para Pneus da {$vehicleInfo['full_name']} - Guia Completo",
             'meta_description' => $seoData['meta_description'] ?? "Pressões ideais para pneus da {$vehicleInfo['full_name']}. {$pressureDisplay}. Dicas específicas para motociclistas brasileiros.",
@@ -1009,7 +1009,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
             '@context' => 'https://schema.org',
             '@type' => 'Article',
             'name' => "Pressão Ideal para Pneus da {$vehicleFullName}",
-            'description' => "Guia completo de pressões ideais para os pneus da {$vehicleFullName}, incluindo ajustes para piloto solo e garupa.",
+            'description' => "Guia completo de pressões ideais para os pneus da {$vehicleFullName}, incluindo ajustes para apenas o piloto e garupa.",
             'image' => [
                 '@type' => 'ImageObject',
                 'url' => $vehicleInfo['image_url'] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/motorcycles/default-motorcycle.jpg',
@@ -1081,7 +1081,7 @@ class IdealTirePressureMotorcycleViewModel extends TemplateViewModel
     private function getRelatedTopics(): array
     {
         $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
-        
+
         $topics = [];
 
         // Tópicos gerais de manutenção

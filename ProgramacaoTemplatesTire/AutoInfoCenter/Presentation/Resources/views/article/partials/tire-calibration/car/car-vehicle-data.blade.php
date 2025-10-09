@@ -6,13 +6,9 @@ Usa dados embarcados das ViewModels
 
 @php
 $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
-$extractedEntities = $article->getData()['extracted_entities'] ?? [];
-
 $pressureSpecs = $article->getData()['pressure_specifications'] ?? [];
-$mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
 @endphp
 
-@dump($extractedEntities)
 <!-- Destaque Principal da Pressão Ideal -->
 <section class="mb-10">
     <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-xl p-8 relative overflow-hidden">
@@ -32,7 +28,7 @@ $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null
         </div>
 
         <!-- Grid de Pressões -->
-        @if($mainTireSpec)
+        @if($pressureSpecs)
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
             <!-- Pneus Dianteiros -->
             <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
@@ -47,7 +43,7 @@ $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null
                 </div>
                 <div class="text-center">
                     <div class="text-4xl font-bold mb-1">
-                        {{ str_replace([' PSI', ' psi'], '', $mainTireSpec['front_normal'] ?? '30') }}
+                        {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['pressure_empty_front'] ?? '30') }}
                     </div>
                     <div class="text-blue-100 text-sm">PSI (libras por pol²)</div>
                 </div>
@@ -66,7 +62,7 @@ $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null
                 </div>
                 <div class="text-center">
                     <div class="text-4xl font-bold mb-1">
-                        {{ str_replace([' PSI', ' psi'], '', $mainTireSpec['rear_normal'] ?? '28') }}
+                        {{ str_replace([' PSI', ' psi'], '', $pressureSpecs['pressure_empty_rear'] ?? '28') }}
                     </div>
                     <div class="text-blue-100 text-sm">PSI (libras por pol²)</div>
                 </div>
@@ -77,10 +73,10 @@ $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null
         <!-- Informações Adicionais -->
         <div class="mt-6 pt-6 border-t border-white/20 relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                @if(!empty($mainTireSpec['tire_size']))
+                @if(!empty($vehicleInfo['tire_size']))
                 <div class="flex items-center">
                     <span class="w-2 h-2 bg-white/60 rounded-full mr-2"></span>
-                    <span>Medida: <strong>{{ $mainTireSpec['tire_size'] }}</strong></span>
+                    <span>Medida: <strong>{{ $vehicleInfo['tire_size'] }}</strong></span>
                 </div>
                 @endif
 
@@ -125,40 +121,6 @@ $mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null
     </div>
 </section>
 
-<!-- Informações Técnicas do Veículo -->
-@if(!empty($extractedEntities))
-<section class="mb-8">
-    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Dados Técnicos do Veículo
-        </h3>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            @if(!empty($extractedEntities['marca']))
-            <div>
-                <span class="text-gray-600">Marca:</span>
-                <div class="font-semibold">{{ $extractedEntities['marca'] }}</div>
-            </div>
-            @endif
-
-            @if(!empty($extractedEntities['modelo']))
-            <div>
-                <span class="text-gray-600">Modelo:</span>
-                <div class="font-semibold">{{ $extractedEntities['modelo'] }}</div>
-            </div>
-            @endif
-
-            @if(!empty($extractedEntities['categoria']))
-            <div>
-                <span class="text-gray-600">Categoria:</span>
-                <div class="font-semibold capitalize">{{ $extractedEntities['categoria'] }}</div>
-            </div>
-            @endif
-        </div>
-    </div>
-</section>
-@endif
+<!-- Dados Técnicos do Veículo -->
+@include('auto-info-center::article.partials.tire-calibration.car._vehicle-data-specs')

@@ -18,7 +18,7 @@ class MaintenanceCategoryService
         return $this->repository->getPopularCategories($limit);
     }
 
-    public function getAllCategories($limit = 40)
+    public function getAllCategories($limit = 60)
     {
         return $this->repository->getAllCategories($limit);
     }

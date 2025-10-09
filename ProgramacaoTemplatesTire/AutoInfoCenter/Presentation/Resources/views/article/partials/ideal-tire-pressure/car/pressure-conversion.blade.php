@@ -6,7 +6,7 @@ Usado tanto em templates de carros quanto motos
 
 @php
 $unitConversion = $article->getData()['unit_conversion'] ?? [];
-$mainTireSpec = $article->getData()['tire_specifications_by_version'][0] ?? null;
+$mainTireSpec = $article->getData()['tire_specifications_by_version'] ?? null;
 $vehicleInfo = $article->getData()['vehicle_info'] ?? [];
 
 // Valores de exemplo para conversão (usa a primeira versão disponível)

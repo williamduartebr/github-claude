@@ -61,6 +61,7 @@ Usando dados embarcados das ViewModels e includes modulares DENTRO da estrutura 
                 <h2 class="text-2xl font-semibold text-[#151C25] mb-6 pb-2 border-b border-gray-200">
                     Especificações dos Pneus Originais
                 </h2>
+                
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Especificações Técnicas -->

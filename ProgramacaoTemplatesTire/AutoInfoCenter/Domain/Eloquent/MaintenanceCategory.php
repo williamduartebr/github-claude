@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MaintenanceCategory extends Model
 {
-    
     protected $connection = 'mysql';
     protected $table = 'maintenance_categories';
 
@@ -32,8 +31,18 @@ class MaintenanceCategory extends Model
         'info_sections' => 'array'
     ];
 
-    // public function articles(): HasMany
-    // {
-    //     return $this->hasMany(Article::class, 'category_id', 'id');
-    // }
+    public function subcategories(): HasMany
+    {
+        return $this->hasMany(MaintenanceSubcategory::class, 'maintenance_category_id');
+    }
+
+    public function activeSubcategories(): HasMany
+    {
+        return $this->subcategories()->where('is_active', true);
+    }
+
+    public function publishedSubcategories(): HasMany
+    {
+        return $this->subcategories()->published();
+    }
 }

@@ -6,7 +6,7 @@
 
 <title>Pressão Ideal para Pneus Honda CB 600F Hornet 2023 - Guia Completo | Mercado Veículos</title>
 <meta name="description"
-    content="Guia completo sobre calibragem de pneus para Honda CB 600F Hornet 2023. Pressões ideais em PSI para piloto solo e garupa, dicas de segurança para motociclistas brasileiros.">
+    content="Guia completo sobre calibragem de pneus para Honda CB 600F Hornet 2023. Pressões ideais em PSI para apenas o piloto e garupa, dicas de segurança para motociclistas brasileiros.">
 
 <!-- Canonical e Idiomas -->
 <link rel="canonical" href="https://mercadoveiculos.com.br/info/calibragem/honda-cb600f-hornet-2023.html" />
@@ -17,7 +17,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Pressão Ideal para Pneus Honda CB 600F Hornet 2023 - Guia Completo" />
 <meta property="og:description"
-    content="Guia completo sobre calibragem de pneus para Honda CB 600F Hornet 2023. Pressões ideais em PSI para piloto solo e garupa, dicas de segurança para motociclistas." />
+    content="Guia completo sobre calibragem de pneus para Honda CB 600F Hornet 2023. Pressões ideais em PSI para apenas o piloto e garupa, dicas de segurança para motociclistas." />
 <meta property="og:image" content="https://mercadoveiculos.com.br/images/honda-cb600f-hornet-2023.jpg" />
 <meta property="og:url" content="https://mercadoveiculos.com.br/info/calibragem/honda-cb600f-hornet-2023.html" />
 <meta property="og:site_name" content="Mercado Veículos" />
@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pressão Ideal para Pneus Honda CB 600F Hornet 2023 - Guia Completo">
 <meta name="twitter:description"
-    content="Guia completo sobre calibragem de pneus para Honda CB 600F Hornet 2023. Pressões ideais em PSI para piloto solo e garupa, dicas de segurança.">
+    content="Guia completo sobre calibragem de pneus para Honda CB 600F Hornet 2023. Pressões ideais em PSI para apenas o piloto e garupa, dicas de segurança.">
 <meta name="twitter:image" content="https://mercadoveiculos.com.br/images/honda-cb600f-hornet-2023.jpg">
 
 <!-- Preload de recursos críticos -->
@@ -173,7 +173,7 @@
                                 </div>
                                 <p class="text-sm text-gray-700">
                                     <span class="font-medium">Corrente (Chain Case):</span> Adesivo na tampa da corrente
-                                    com valores PSI para piloto solo e com garupa.
+                                    com valores PSI para apenas o piloto e com garupa.
                                 </p>
                             </div>
 
@@ -237,7 +237,7 @@
                             </thead>
                             <tbody>
                                 <tr class="border-b border-gray-200 bg-white">
-                                    <td class="py-3 px-4 text-sm font-medium">🏍️ Piloto Solo<br><span
+                                    <td class="py-3 px-4 text-sm font-medium">🏍️ Apenas o Piloto<br><span
                                             class="text-gray-600 text-xs">Até 90kg + equipamentos</span></td>
                                     <td class="py-3 px-4 text-sm text-center font-bold text-[#DC2626]">36 PSI</td>
                                     <td class="py-3 px-4 text-sm text-center font-bold text-[#DC2626]">42 PSI</td>
@@ -698,7 +698,7 @@
                                 <h4 class="font-medium text-green-800 text-sm mb-1">✅ Solução:</h4>
                                 <p class="text-xs text-green-700">
                                     Verificar pressão imediatamente. Geralmente pneu traseiro 5-8 PSI baixo.
-                                    Calibrar para 42 PSI (piloto solo) e testar.
+                                    Calibrar para 42 PSI (apenas o piloto) e testar.
                                 </p>
                             </div>
                         </div>
@@ -889,7 +889,7 @@
                     </div>
                 </div>
             </section>
-            
+
 
             <!-- Conclusão -->
             <section class="mb-12 bg-gray-50 rounded-lg p-6">

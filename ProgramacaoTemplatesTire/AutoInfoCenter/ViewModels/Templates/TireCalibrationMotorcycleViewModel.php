@@ -3,11 +3,13 @@
 namespace Src\AutoInfoCenter\ViewModels\Templates;
 
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\GenericTermsValidationTrait;
 use Src\AutoInfoCenter\ViewModels\Templates\Traits\MotorcycleVehicleDataProcessingTrait;
 
 class TireCalibrationMotorcycleViewModel extends TemplateViewModel
 {
-    use MotorcycleVehicleDataProcessingTrait;
+    use MotorcycleVehicleDataProcessingTrait,
+        GenericTermsValidationTrait;
 
     protected string $templateName = 'tire_calibration_motorcycle';
 
@@ -60,7 +62,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
         $this->processedData['tire_specifications'] = $this->processOptimizedTireSpecs($content);
 
         // NOVO: Especificações detalhadas por versão
-        $this->processedData['tire_specifications_by_version'] = $this->processMotorcycleTireSpecificationsByVersion($content);
+        $this->processedData['tire_specifications_by_version'] = $this->processVersionSpecificationsFromContent($content['especificacoes_por_versao'] ?? []);
 
         // Dados de segurança e manutenção
         $this->processedData['critical_alerts'] = $this->processOptimizedCriticalAlerts($content);
@@ -177,93 +179,178 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
     }
 
     /**
-     * NOVO: Processa especificações detalhadas por versão da motocicleta
-     */
-    private function processMotorcycleTireSpecificationsByVersion(array $content): array
-    {
-        // 1ª prioridade: dados do content especificacoes_por_versao
-        if (!empty($content['especificacoes_por_versao'])) {
-            return $this->processVersionSpecificationsFromContent($content['especificacoes_por_versao']);
-        }
-
-        // 2ª prioridade: gerar a partir de dados embarcados
-        return $this->generateVersionSpecificationsFromEmbeddedData();
-    }
-
-    /**
      * Processa especificações por versão do content
+     * Suporta formato legado e novo formato de dados
+     * Rejeita termos genéricos retornando array vazio
+     * 
+     * @param array $specifications
+     * @return array
      */
     private function processVersionSpecificationsFromContent(array $specifications): array
     {
+
+        if (empty($specifications)) {
+            return [];
+        }
+
+        // Verificar se há termos genéricos na lista
+        foreach ($specifications as $spec) {
+            $version = $spec['versao'] ?? '';
+            if (!empty($version) && $this->containsGenericTerms($version)) {
+                return []; // Retorna vazio se encontrar termo genérico
+            }
+        }
+
         $processed = [];
 
-        foreach ($specifications as $spec) {
-            $version = $spec['versao'] ?? 'Padrão';
-            $tireSize = $spec['medida_pneus'] ?? '';
+        foreach ($specifications as $index => $spec) {
+            $version = $spec['versao'] ?? '';
 
-            // Extrair tamanhos específicos
-            $frontSize = $this->extractMotorcycleFrontTire($tireSize);
-            $rearSize = $this->extractMotorcycleRearTire($tireSize);
+            if (!empty($version)) {
+                $processedSpec = $this->isLegacyFormat($spec)
+                    ? $this->processLegacySpecification($spec, $index)
+                    : $this->processNewSpecification($spec, $index);
 
-            $processed[] = [
-                'version' => $this->normalizeVersionName($version),
-                'front_tire_size' => $frontSize,
-                'rear_tire_size' => $rearSize ?: $this->inferRearTireFromFront($frontSize),
-                'load_speed_index' => $spec['indice_carga_velocidade'] ?? 'Consulte manual',
-                'front_solo' => ($spec['pressao_dianteiro_normal'] ?? '') . ' PSI',
-                'rear_solo' => ($spec['pressao_traseiro_normal'] ?? '') . ' PSI',
-                'front_passenger' => ($spec['pressao_dianteiro_carregado'] ?? '') . ' PSI',
-                'rear_passenger' => ($spec['pressao_traseiro_carregado'] ?? '') . ' PSI',
-                'is_main_version' => $loop->first ?? false
-            ];
+                if ($processedSpec !== null) {
+                    $processed[] = $processedSpec;
+                }
+            }
         }
 
         return $processed;
     }
 
     /**
-     * Gera especificações por versão a partir de dados embarcados
+     * Verifica se é formato legado baseado na estrutura dos dados
+     * 
+     * @param array $spec
+     * @return bool
      */
-    private function generateVersionSpecificationsFromEmbeddedData(): array
+    private function isLegacyFormat(array $spec): bool
     {
-        $vehicleInfo = $this->getCachedVehicleInfo();
-        $pressureSpecs = $this->getCachedPressureSpecs();
-        $tireSpecs = $this->getCachedTireSpecs();
-
-        if (empty($pressureSpecs) || empty($tireSpecs['tire_size'])) {
-            return [];
-        }
-
-        $frontSize = $this->extractMotorcycleFrontTire($tireSpecs['tire_size']);
-        $rearSize = $this->extractMotorcycleRearTire($tireSpecs['tire_size']);
-
-        return [[
-            'version' => 'Padrão',
-            'front_tire_size' => $frontSize,
-            'rear_tire_size' => $rearSize ?: $this->inferRearTireFromFront($frontSize),
-            'load_speed_index' => $this->inferLoadSpeedIndex($frontSize),
-            'front_solo' => ($pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
-            'rear_solo' => ($pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
-            'front_passenger' => ($pressureSpecs['pressure_max_front'] ?? '') . ' PSI',
-            'rear_passenger' => ($pressureSpecs['pressure_max_rear'] ?? '') . ' PSI',
-            'is_main_version' => true
-        ]];
+        return isset($spec['versao']) &&
+            isset($spec['medida_pneus']) &&
+            (isset($spec['pressao_dianteiro_normal']) || isset($spec['pressao_traseiro_normal']));
     }
 
     /**
-     * Normaliza nome da versão para exibição
+     * Processa especificação no formato legado
+     * 
+     * @param array $spec
+     * @param int $index
+     * @return array
      */
-    private function normalizeVersionName(string $version): string
+    private function processLegacySpecification(array $spec, int $index): array
     {
-        return match (true) {
-            str_contains(strtolower($version), 'lx') => 'LX',
-            str_contains(strtolower($version), 'ex') => 'EX',
-            str_contains(strtolower($version), 'exl') => 'EXL',
-            str_contains(strtolower($version), 'comfort') => 'Comfort',
-            str_contains(strtolower($version), 'style') => 'Style',
-            str_contains(strtolower($version), 'premium') => 'Premium',
-            default => ucfirst(str_replace(['_', '-'], ' ', $version))
-        };
+        $version = $spec['versao'] ?? 'Padrão';
+        $tireSize = $spec['medida_pneus'] ?? '';
+
+        $frontSize = $this->extractMotorcycleFrontTire($tireSize);
+        $rearSize = $this->extractMotorcycleRearTire($tireSize)
+            ?: $this->inferRearTireFromFront($frontSize);
+
+        return [
+            'version' => $version,
+            'front_tire_size' => $frontSize,
+            'rear_tire_size' => $rearSize,
+            'load_speed_index' => $spec['indice_carga_velocidade'] ?? 'Consulte manual',
+            'front_solo' => $this->formatPressureValue($spec['pressao_dianteiro_normal'] ?? null),
+            'rear_solo' => $this->formatPressureValue($spec['pressao_traseiro_normal'] ?? null),
+            'front_passenger' => $this->formatPressureValue($spec['pressao_dianteiro_carregado'] ?? null),
+            'rear_passenger' => $this->formatPressureValue($spec['pressao_traseiro_carregado'] ?? null),
+            'is_main_version' => $index === 0,
+        ];
+    }
+
+    /**
+     * Processa especificação no novo formato
+     * 
+     * @param array $spec
+     * @param int $index
+     * @return array|null
+     */
+    private function processNewSpecification(array $spec, int $index): ?array
+    {
+        if (!isset($spec['versao'])) {
+            return null;
+        }
+
+        $version = $spec['versao'];
+        $frontTire = $spec['pneu_dianteiro'] ?? 'Consulte manual';
+        $rearTire = $spec['pneu_traseiro'] ?? 'Consulte manual';
+
+        // No novo formato, extrair pressão da string
+        $frontPressure = $this->extractPressureFromString($spec['pressao_dianteira'] ?? '');
+        $rearPressure = $this->extractPressureFromString($spec['pressao_traseira'] ?? '');
+
+        // Inferir pressão com garupa (aproximadamente +2 PSI no traseiro)
+        $frontPassenger = $frontPressure ? ($frontPressure + 1) : null;
+        $rearPassenger = $rearPressure ? ($rearPressure + 2) : null;
+
+        return [
+            'version' => $version,
+            'front_tire_size' => $frontTire,
+            'rear_tire_size' => $rearTire,
+            'load_speed_index' => $this->inferLoadSpeedIndex($frontTire),
+            'front_solo' => $this->formatPressureValue($frontPressure),
+            'rear_solo' => $this->formatPressureValue($rearPressure),
+            'front_passenger' => $this->formatPressureValue($frontPassenger),
+            'rear_passenger' => $this->formatPressureValue($rearPassenger),
+            'is_main_version' => $index === 0,
+            // Dados adicionais disponíveis no novo formato
+            'engine_info' => $this->buildEngineInfo($spec),
+            'transmission' => $spec['transmissao'] ?? null,
+            'power' => $spec['potencia'] ?? null,
+        ];
+    }
+
+    /**
+     * Extrai valor numérico da pressão da string
+     * 
+     * @param string $pressureString
+     * @return int|null
+     */
+    private function extractPressureFromString(string $pressureString): ?int
+    {
+        if (empty($pressureString)) {
+            return null;
+        }
+
+        // Extrai números da string "25 psi" -> 25
+        if (preg_match('/(\d+)/', $pressureString, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Formata valor de pressão com unidade
+     * 
+     * @param int|null $pressure
+     * @return string
+     */
+    private function formatPressureValue(?int $pressure): string
+    {
+        return $pressure ? $pressure . ' PSI' : 'N/A';
+    }
+
+    /**
+     * Constrói informações do motor a partir dos dados disponíveis
+     * 
+     * @param array $spec
+     * @return string|null
+     */
+    private function buildEngineInfo(array $spec): ?string
+    {
+        $motor = $spec['motor'] ?? null;
+        $potencia = $spec['potencia'] ?? null;
+
+        if ($motor && $potencia) {
+            return $motor . ' - ' . $potencia;
+        }
+
+        return $motor ?: $potencia;
     }
 
     /**
@@ -839,7 +926,7 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
      */
     private function generateSpecialConsiderationsFromEmbeddedData(): array
     {
-        $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
+
         $considerations = [];
 
         // Peso do piloto
@@ -1468,10 +1555,10 @@ class TireCalibrationMotorcycleViewModel extends TemplateViewModel
             '@context' => 'https://schema.org',
             '@type' => 'Article',
             'name' => "Calibragem do Pneu da {$vehicleFullName}",
-            'description' => "Guia específico de calibragem dos pneus da {$vehicleFullName}, incluindo procedimentos de segurança e ajustes para piloto solo e garupa.",
+            'description' => "Guia específico de calibragem dos pneus da {$vehicleFullName}, incluindo procedimentos de segurança e ajustes para apenas o piloto e garupa.",
             'image' => [
                 '@type' => 'ImageObject',
-                'url' => $vehicleInfo['image_url'] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/vehicles/default-motorcycle.jpg',
+                'url' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/tire-calibration.png',
                 'width' => 1200,
                 'height' => 630
             ],
