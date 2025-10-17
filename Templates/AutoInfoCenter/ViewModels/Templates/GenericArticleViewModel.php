@@ -23,23 +23,8 @@ use Illuminate\Support\Str;
  * - 15 tipos de blocos cobrem 99% dos casos
  * - Fácil adicionar novos tipos sem quebrar existentes
  * 
- * ESTRUTURA JSON ESPERADA:
- * {
- *   "article_metadata": {...},
- *   "content_blocks": [
- *     {
- *       "block_id": "intro",
- *       "block_type": "intro",
- *       "display_order": 1,
- *       "heading": "Título (opcional)",
- *       "content": {...}
- *     }
- *   ],
- *   "metadata": {...}
- * }
- * 
- * @author Claude Sonnet 4 - Engenheiro de Software Elite
- * @version 1.0 - Universal Generic Article System
+ * @author Claude Sonnet 4.5
+ * @version 2.0 - Refatorado para compatibilidade com JSONs reais
  */
 class GenericArticleViewModel extends TemplateViewModel
 {
@@ -146,7 +131,7 @@ class GenericArticleViewModel extends TemplateViewModel
     /**
      * Processar blocos de conteúdo
      * 
-     *核心 DO SISTEMA: Processa array de blocos modulares
+     * CORE DO SISTEMA: Processa array de blocos modulares
      * 
      * @return void
      */
@@ -156,7 +141,6 @@ class GenericArticleViewModel extends TemplateViewModel
         $contentBlocks = $metadata['content_blocks'] ?? [];
 
         if (empty($contentBlocks)) {
-            // Fallback: tentar estrutura antiga
             $contentBlocks = $this->convertLegacyContent();
         }
 
@@ -266,6 +250,7 @@ class GenericArticleViewModel extends TemplateViewModel
     private function processTextBlock(array $content): array
     {
         return [
+            'text' => $content['text'] ?? '',
             'paragraphs' => $content['paragraphs'] ?? [],
             'emphasis' => $content['emphasis'] ?? null
         ];
@@ -273,30 +258,72 @@ class GenericArticleViewModel extends TemplateViewModel
 
     /**
      * Processar bloco TABLE (Tabela)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "table": {
+     *     "headers": [...],
+     *     "rows": [...]
+     *   },
+     *   "caption": "Legenda",
+     *   "conclusion": "Conclusão"
+     * }
      */
     private function processTableBlock(array $content): array
     {
+        // Suporta ambas estruturas: direta ou aninhada em "table"
+        $tableData = $content['table'] ?? $content;
+        
         return [
+            'intro' => $content['intro'] ?? null,
             'description' => $content['description'] ?? null,
-            'headers' => $content['headers'] ?? [],
-            'rows' => $content['rows'] ?? [],
-            'footer' => $content['footer'] ?? null
+            'headers' => $tableData['headers'] ?? [],
+            'rows' => $tableData['rows'] ?? [],
+            'caption' => $content['caption'] ?? null,
+            'footer' => $content['footer'] ?? null,
+            'conclusion' => $content['conclusion'] ?? null
         ];
     }
 
     /**
      * Processar bloco LIST (Lista)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "list_type": "ordered | bullet | checklist",
+     *   "items": [
+     *     {"title": "...", "description": "..."}
+     *     ou
+     *     "String simples"
+     *   ],
+     *   "conclusion": "Texto de conclusão"
+     * }
      */
     private function processListBlock(array $content): array
     {
         return [
-            'list_style' => $content['list_style'] ?? 'bullet', // bullet | numbered | checklist
-            'items' => $content['items'] ?? []
+            'intro' => $content['intro'] ?? null,
+            'list_type' => $content['list_type'] ?? 'bullet',
+            'list_style' => $content['list_style'] ?? $content['list_type'] ?? 'bullet',
+            'items' => $content['items'] ?? [],
+            'conclusion' => $content['conclusion'] ?? null
         ];
     }
 
     /**
      * Processar bloco ALERT (Alerta)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "alert_type": "info | warning | danger | success",
+     *   "title": "Título",
+     *   "message": "Mensagem",
+     *   "details": ["item1", "item2"],
+     *   "action": "Ação recomendada",
+     *   "recommendation": "Recomendação"
+     * }
      */
     private function processAlertBlock(array $content): array
     {
@@ -306,96 +333,285 @@ class GenericArticleViewModel extends TemplateViewModel
             'alert_type' => $alertType,
             'alert_type_label' => self::ALERT_TYPES[$alertType] ?? 'Informação',
             'title' => $content['title'] ?? null,
-            'message' => $content['message'] ?? ''
+            'message' => $content['message'] ?? '',
+            'details' => $content['details'] ?? [],
+            'action' => $content['action'] ?? null,
+            'recommendation' => $content['recommendation'] ?? null
         ];
     }
 
     /**
      * Processar bloco COMPARISON (Comparação)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "items": [
+     *     {
+     *       "title": "Opção A",
+     *       "aspect": "Aspecto comparado",
+     *       "option_a": "Descrição A",
+     *       "option_b": "Descrição B",
+     *       "features": [...],
+     *       "pros": [...],
+     *       "cons": [...],
+     *       "conclusion": "..."
+     *     }
+     *   ],
+     *   "conclusion": "Conclusão geral"
+     * }
      */
     private function processComparisonBlock(array $content): array
     {
         $items = $content['items'] ?? [];
         
-        foreach ($items as &$item) {
-            $item['pros'] = $item['pros'] ?? [];
-            $item['cons'] = $item['cons'] ?? [];
-            $item['conclusion'] = $item['conclusion'] ?? null;
+        $processedItems = [];
+        foreach ($items as $item) {
+            $processedItems[] = [
+                'title' => $item['title'] ?? $item['label'] ?? '',
+                'aspect' => $item['aspect'] ?? null,
+                'option_a' => $item['option_a'] ?? null,
+                'option_b' => $item['option_b'] ?? null,
+                'features' => $item['features'] ?? [],
+                'pros' => $item['pros'] ?? [],
+                'cons' => $item['cons'] ?? [],
+                'conclusion' => $item['conclusion'] ?? null
+            ];
         }
         
-        return ['items' => $items];
+        return [
+            'intro' => $content['intro'] ?? null,
+            'items' => $processedItems,
+            'conclusion' => $content['conclusion'] ?? null
+        ];
     }
 
     /**
      * Processar bloco STEPS (Passo a passo)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "steps": [
+     *     {
+     *       "number": 1,
+     *       "title": "...",
+     *       "description": "...",
+     *       "details": [...],
+     *       "tip": "..."
+     *     }
+     *   ],
+     *   "conclusion": "Conclusão"
+     * }
      */
     private function processStepsBlock(array $content): array
     {
         $steps = $content['steps'] ?? [];
         
-        foreach ($steps as &$step) {
-            $step['number'] = $step['number'] ?? 0;
-            $step['title'] = $step['title'] ?? '';
-            $step['description'] = $step['description'] ?? '';
-            $step['details'] = $step['details'] ?? [];
-            $step['tip'] = $step['tip'] ?? null;
+        $processedSteps = [];
+        foreach ($steps as $index => $step) {
+            $processedSteps[] = [
+                'number' => $step['number'] ?? ($index + 1),
+                'title' => $step['title'] ?? '',
+                'description' => $step['description'] ?? '',
+                'details' => $step['details'] ?? [],
+                'tip' => $step['tip'] ?? null
+            ];
         }
         
-        return ['steps' => $steps];
+        return [
+            'intro' => $content['intro'] ?? null,
+            'steps' => $processedSteps,
+            'conclusion' => $content['conclusion'] ?? null
+        ];
     }
 
     /**
      * Processar bloco TESTIMONIAL (Depoimentos)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "quote": "Depoimento textual",
+     *   "author": "Nome do autor",
+     *   "vehicle": "Veículo usado",
+     *   "context": "Contexto adicional",
+     *   
+     *   OU (estrutura alternativa):
+     *   
+     *   "cases": [
+     *     {
+     *       "user": "Nome",
+     *       "situation": "...",
+     *       "result": "...",
+     *       "observation": "..."
+     *     }
+     *   ]
+     * }
      */
     private function processTestimonialBlock(array $content): array
     {
-        $cases = $content['cases'] ?? [];
-        
-        foreach ($cases as &$case) {
-            $case['user'] = $case['user'] ?? 'Anônimo';
-            $case['situation'] = $case['situation'] ?? '';
-            $case['result'] = $case['result'] ?? '';
-            $case['observation'] = $case['observation'] ?? null;
+        // Estrutura simples (quote)
+        if (!empty($content['quote'])) {
+            return [
+                'quote' => $content['quote'] ?? '',
+                'author' => $content['author'] ?? 'Anônimo',
+                'vehicle' => $content['vehicle'] ?? null,
+                'context' => $content['context'] ?? null
+            ];
         }
         
-        return ['cases' => $cases];
+        // Estrutura de cases múltiplos
+        $cases = $content['cases'] ?? [];
+        $processedCases = [];
+        
+        foreach ($cases as $case) {
+            $processedCases[] = [
+                'user' => $case['user'] ?? 'Anônimo',
+                'situation' => $case['situation'] ?? '',
+                'result' => $case['result'] ?? '',
+                'observation' => $case['observation'] ?? null
+            ];
+        }
+        
+        return ['cases' => $processedCases];
     }
 
     /**
      * Processar bloco COST (Análise de custo)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "cost_items": [
+     *     {
+     *       "item": "Descrição",
+     *       "cost": "R$ 100",
+     *       "notes": "Observações"
+     *     }
+     *   ],
+     *   "total_investment": "R$ 500",
+     *   "savings": [
+     *     {
+     *       "description": "...",
+     *       "amount": "R$ 200",
+     *       "calculation": "..."
+     *     }
+     *   ],
+     *   "total_savings": "R$ 1000",
+     *   "roi": "150%",
+     *   "payback_period": "6 meses",
+     *   "break_even": "10.000 km",
+     *   "conclusion": "Conclusão",
+     *   
+     *   OU (estrutura alternativa - scenarios):
+     *   
+     *   "scenarios": [
+     *     {
+     *       "option": "Opção A",
+     *       "cost": "R$ 200",
+     *       "duration": "...",
+     *       "recommendation": "...",
+     *       "savings": "..."
+     *     }
+     *   ]
+     * }
      */
     private function processCostBlock(array $content): array
     {
-        $scenarios = $content['scenarios'] ?? [];
-        
-        foreach ($scenarios as &$scenario) {
-            $scenario['option'] = $scenario['option'] ?? '';
-            $scenario['cost'] = $scenario['cost'] ?? '';
-            $scenario['duration'] = $scenario['duration'] ?? null;
-            $scenario['recommendation'] = $scenario['recommendation'] ?? '';
-            $scenario['savings'] = $scenario['savings'] ?? null;
+        // Estrutura completa de análise financeira
+        if (!empty($content['cost_items']) || !empty($content['savings'])) {
+            return [
+                'intro' => $content['intro'] ?? null,
+                'cost_items' => $content['cost_items'] ?? [],
+                'total_investment' => $content['total_investment'] ?? null,
+                'savings' => $content['savings'] ?? [],
+                'total_savings' => $content['total_savings'] ?? null,
+                'roi' => $content['roi'] ?? null,
+                'payback_period' => $content['payback_period'] ?? null,
+                'break_even' => $content['break_even'] ?? null,
+                'conclusion' => $content['conclusion'] ?? null
+            ];
         }
         
-        return ['scenarios' => $scenarios];
+        // Estrutura alternativa: scenarios
+        $scenarios = $content['scenarios'] ?? [];
+        $processedScenarios = [];
+        
+        foreach ($scenarios as $scenario) {
+            // Suporta "scenario" ou "items" dentro de scenario
+            if (is_string($scenario)) {
+                $processedScenarios[] = ['description' => $scenario];
+                continue;
+            }
+            
+            $processedScenarios[] = [
+                'scenario' => $scenario['scenario'] ?? null,
+                'option' => $scenario['option'] ?? '',
+                'cost' => $scenario['cost'] ?? '',
+                'duration' => $scenario['duration'] ?? null,
+                'recommendation' => $scenario['recommendation'] ?? '',
+                'savings' => $scenario['savings'] ?? null,
+                'items' => $scenario['items'] ?? []
+            ];
+        }
+        
+        return [
+            'intro' => $content['intro'] ?? null,
+            'scenarios' => $processedScenarios,
+            'savings' => $content['savings'] ?? null,
+            'break_even' => $content['break_even'] ?? null,
+            'conclusion' => $content['conclusion'] ?? null
+        ];
     }
 
     /**
      * Processar bloco MYTH (Mito vs Realidade)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "myths": [
+     *     {
+     *       "myth": "Afirmação popular",
+     *       "reality": "VERDADEIRO | FALSO | PARCIALMENTE VERDADEIRO | MITO",
+     *       "explanation": "Explicação técnica",
+     *       "evidence": "Evidências do teste"
+     *     }
+     *   ]
+     * }
      */
     private function processMythBlock(array $content): array
     {
-        $items = $content['items'] ?? [];
+        $myths = $content['myths'] ?? [];
         
-        foreach ($items as &$item) {
-            $reality = $item['reality'] ?? 'partial';
+        $processedMyths = [];
+        foreach ($myths as $myth) {
+            // Normalizar campo reality
+            $realityRaw = strtoupper(trim($myth['reality'] ?? 'PARCIALMENTE VERDADEIRO'));
             
-            $item['myth'] = $item['myth'] ?? '';
-            $item['reality'] = $reality;
-            $item['reality_label'] = $this->getRealityLabel($reality);
-            $item['explanation'] = $item['explanation'] ?? '';
+            $reality = match(true) {
+                $realityRaw === 'VERDADEIRO' => 'true',
+                $realityRaw === 'VERDADE' => 'true',
+                str_contains($realityRaw, 'VERDADEIRO') && !str_contains($realityRaw, 'PARCIAL') => 'true',
+                $realityRaw === 'FALSO' => 'false',
+                $realityRaw === 'MITO' => 'false',
+                str_contains($realityRaw, 'FALSO') => 'false',
+                default => 'partial'
+            };
+            
+            $processedMyths[] = [
+                'myth' => $myth['myth'] ?? '',
+                'reality' => $reality,
+                'reality_label' => $this->getRealityLabel($reality),
+                'explanation' => $myth['explanation'] ?? '',
+                'evidence' => $myth['evidence'] ?? null
+            ];
         }
         
-        return ['items' => $items];
+        return [
+            'intro' => $content['intro'] ?? null,
+            'myths' => $processedMyths
+        ];
     }
 
     /**
@@ -405,60 +621,135 @@ class GenericArticleViewModel extends TemplateViewModel
     {
         $questions = $content['questions'] ?? [];
         
-        foreach ($questions as &$faq) {
-            $faq['question'] = $faq['question'] ?? '';
-            $faq['answer'] = $faq['answer'] ?? '';
-            $faq['related_topics'] = $faq['related_topics'] ?? [];
+        $processedQuestions = [];
+        foreach ($questions as $faq) {
+            $processedQuestions[] = [
+                'question' => $faq['question'] ?? '',
+                'answer' => $faq['answer'] ?? '',
+                'related_topics' => $faq['related_topics'] ?? []
+            ];
         }
         
-        return ['questions' => $questions];
+        return ['questions' => $processedQuestions];
     }
 
     /**
      * Processar bloco DECISION (Matriz de decisão)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "scenarios": [
+     *     {
+     *       "title": "Vale a pena se:",
+     *       "points": ["ponto 1", "ponto 2"],
+     *       
+     *       OU
+     *       
+     *       "condition": "Se X",
+     *       "action": "Faça Y",
+     *       "urgency": "low | medium | high | critical",
+     *       "reason": "Porque..."
+     *     }
+     *   ],
+     *   "conclusion": "Conclusão"
+     * }
      */
     private function processDecisionBlock(array $content): array
     {
         $scenarios = $content['scenarios'] ?? [];
         
-        foreach ($scenarios as &$scenario) {
+        $processedScenarios = [];
+        foreach ($scenarios as $scenario) {
+            // Estrutura com title + points
+            if (!empty($scenario['title']) && !empty($scenario['points'])) {
+                $processedScenarios[] = [
+                    'title' => $scenario['title'],
+                    'points' => $scenario['points']
+                ];
+                continue;
+            }
+            
+            // Estrutura com condition + action + urgency
             $urgency = $scenario['urgency'] ?? 'medium';
             
-            $scenario['condition'] = $scenario['condition'] ?? '';
-            $scenario['action'] = $scenario['action'] ?? '';
-            $scenario['urgency'] = $urgency;
-            $scenario['urgency_label'] = self::URGENCY_LEVELS[$urgency] ?? 'Média';
-            $scenario['reason'] = $scenario['reason'] ?? null;
+            $processedScenarios[] = [
+                'condition' => $scenario['condition'] ?? '',
+                'action' => $scenario['action'] ?? '',
+                'urgency' => $urgency,
+                'urgency_label' => self::URGENCY_LEVELS[$urgency] ?? 'Média',
+                'reason' => $scenario['reason'] ?? null
+            ];
         }
         
-        return ['scenarios' => $scenarios];
+        return [
+            'intro' => $content['intro'] ?? null,
+            'scenarios' => $processedScenarios,
+            'conclusion' => $content['conclusion'] ?? null
+        ];
     }
 
     /**
      * Processar bloco TIMELINE (Linha do tempo)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "intro": "Texto introdutório",
+     *   "events": [
+     *     {
+     *       "milestone": "0km",
+     *       "date": "Janeiro 2025",
+     *       "title": "Título do evento",
+     *       "action": "Ação realizada",
+     *       "description": "Descrição"
+     *     }
+     *   ],
+     *   "conclusion": "Conclusão"
+     * }
      */
     private function processTimelineBlock(array $content): array
     {
         $events = $content['events'] ?? [];
         
-        foreach ($events as &$event) {
-            $event['milestone'] = $event['milestone'] ?? '';
-            $event['action'] = $event['action'] ?? '';
-            $event['description'] = $event['description'] ?? null;
+        $processedEvents = [];
+        foreach ($events as $event) {
+            $processedEvents[] = [
+                'milestone' => $event['milestone'] ?? '',
+                'date' => $event['date'] ?? null,
+                'title' => $event['title'] ?? '',
+                'action' => $event['action'] ?? '',
+                'description' => $event['description'] ?? null
+            ];
         }
         
-        return ['events' => $events];
+        return [
+            'intro' => $content['intro'] ?? null,
+            'events' => $processedEvents,
+            'conclusion' => $content['conclusion'] ?? null
+        ];
     }
 
     /**
      * Processar bloco CONCLUSION (Conclusão)
+     * 
+     * Estrutura esperada:
+     * {
+     *   "summary": "Resumo",
+     *   "key_takeaways": ["ponto 1", "ponto 2"],
+     *   "key_takeaway": "Principal aprendizado",
+     *   "final_thought": "Pensamento final",
+     *   "cta": "Call to action",
+     *   "call_to_action": "Call to action alternativo"
+     * }
      */
     private function processConclusionBlock(array $content): array
     {
         return [
             'summary' => $content['summary'] ?? '',
+            'key_takeaways' => $content['key_takeaways'] ?? [],
             'key_takeaway' => $content['key_takeaway'] ?? null,
-            'cta' => $content['cta'] ?? null
+            'final_thought' => $content['final_thought'] ?? null,
+            'cta' => $content['cta'] ?? $content['call_to_action'] ?? null
         ];
     }
 
@@ -616,9 +907,9 @@ class GenericArticleViewModel extends TemplateViewModel
     private function getRealityLabel(string $reality): string
     {
         return match($reality) {
-            'true' => '✅ Verdade',
+            'true' => '✅ Verdadeiro',
             'false' => '❌ Mito',
-            'partial' => '⚠️ Parcialmente Verdade',
+            'partial' => '⚠️ Parcialmente Verdadeiro',
             default => 'Não definido'
         };
     }
@@ -639,7 +930,6 @@ class GenericArticleViewModel extends TemplateViewModel
         // Média 200 palavras por minuto em português
         return max(1, (int) ceil($wordCount / 200));
     }
-
 
     /**
      * Obter imagem OG padrão baseada no tópico
@@ -678,6 +968,6 @@ class GenericArticleViewModel extends TemplateViewModel
      */
     public function getCanonicalUrl(): string
     {
-        return $this->processedData['seo_data']['canonical_url'] ?? $this->getCanonicalUrl();
+        return route('info.article.show', $this->article->slug);
     }
 }

@@ -23,7 +23,6 @@ Estrutura esperada:
 @author Claude Sonnet 4
 @version 1.0
 --}}
-
 <div class="mb-8">
     {{-- Heading --}}
     @if(!empty($block['heading']))

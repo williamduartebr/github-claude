@@ -3,19 +3,22 @@ Componente: ALERT (Caixa de Alerta)
 
 Uso: Avisos importantes (info, warning, danger, success)
 
-Estrutura esperada:
+Estrutura esperada (baseada nos JSONs reais):
 {
   "block_type": "alert",
+  "heading": "Atenção: Quando o Lubrax 5W30 NÃO é Recomendado",
   "content": {
     "alert_type": "info | warning | danger | success",
-    "alert_type_label": "Informação | Aviso | Perigo | Sucesso",
-    "title": "Título do Alerta",
-    "message": "Mensagem detalhada do alerta"
+    "title": "Título do Alerta (opcional)",
+    "message": "Mensagem principal",
+    "details": ["Detalhe 1", "Detalhe 2"],  // Array de strings
+    "action": "Ação recomendada (opcional)",
+    "recommendation": "Recomendação final (opcional)"
   }
 }
 
-@author Claude Sonnet 4
-@version 1.0
+@author Claude Sonnet 4.5
+@version 2.0 - Suporta details[], action e recommendation
 --}}
 
 @php
@@ -56,6 +59,10 @@ Estrutura esperada:
     $config = $alertConfig[$alertType] ?? $alertConfig['info'];
 @endphp
 
+@if(!empty($block['heading']))
+    <hr class="my-12 border-t border-gray-200" />
+@endif
+
 <div class="{{ $config['bg'] }} border-l-4 {{ $config['border'] }} p-4 mb-8 rounded-r-md shadow-sm">
     <div class="flex">
         {{-- Icon --}}
@@ -67,6 +74,13 @@ Estrutura esperada:
 
         {{-- Content --}}
         <div class="ml-3 flex-1">
+            {{-- Heading (se houver no nível superior do bloco) --}}
+            @if(!empty($block['heading']))
+                <h3 class="text-base font-semibold {{ $config['text'] }} mb-3">
+                    {{ $block['heading'] }}
+                </h3>
+            @endif
+
             {{-- Title --}}
             @if(!empty($block['content']['title']))
                 <h3 class="text-sm font-semibold {{ $config['text'] }} mb-2">
@@ -76,8 +90,40 @@ Estrutura esperada:
 
             {{-- Message --}}
             @if(!empty($block['content']['message']))
-                <div class="text-sm {{ $config['text'] }} leading-relaxed">
+                <div class="text-sm {{ $config['text'] }} leading-relaxed mb-3">
                     {!! nl2br(e($block['content']['message'])) !!}
+                </div>
+            @endif
+
+            {{-- Details (lista de itens) --}}
+            @if(!empty($block['content']['details']) && is_array($block['content']['details']))
+                <ul class="mt-3 space-y-2">
+                    @foreach($block['content']['details'] as $detail)
+                        <li class="text-sm {{ $config['text'] }} flex items-start">
+                            <svg class="h-4 w-4 {{ $config['icon_color'] }} mr-2 mt-0.5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>{{ $detail }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+
+            {{-- Action (ação recomendada) --}}
+            @if(!empty($block['content']['action']))
+                <div class="mt-4 pt-3 border-t {{ $config['border'] }}">
+                    <p class="text-sm {{ $config['text'] }} font-medium">
+                        <strong>⚡ Ação:</strong> {{ $block['content']['action'] }}
+                    </p>
+                </div>
+            @endif
+
+            {{-- Recommendation (recomendação final) --}}
+            @if(!empty($block['content']['recommendation']))
+                <div class="mt-3 p-3 bg-white rounded-md border {{ $config['border'] }}">
+                    <p class="text-sm {{ $config['text'] }} leading-relaxed">
+                        <strong>💡 Recomendação:</strong> {{ $block['content']['recommendation'] }}
+                    </p>
                 </div>
             @endif
         </div>

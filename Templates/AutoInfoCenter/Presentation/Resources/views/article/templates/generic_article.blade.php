@@ -24,45 +24,7 @@ Compatível com:
 @extends('auto-info-center::layouts.app')
 
 @push('head')
-    {{-- AdSense --}}
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5108844086542870"
-        crossorigin="anonymous"></script>
-
-    {{-- SEO Meta Tags --}}
-    <title>{{ $article->getData()['seo_data']['page_title'] ?? $article->getData()['title'] }}</title>
-    <meta name="description" content="{{ $article->getData()['seo_data']['meta_description'] ?? '' }}">
-    
-    {{-- Keywords --}}
-    @if(!empty($article->getData()['seo_data']['secondary_keywords']))
-        <meta name="keywords" content="{{ implode(', ', $article->getData()['seo_data']['secondary_keywords']) }}">
-    @endif
-
-    {{-- Canonical URL --}}
-    <link rel="canonical" href="{{ $article->getData()['seo_data']['canonical_url'] ?? url()->current() }}" />
-    <link rel="alternate" hreflang="pt-BR" href="{{ $article->getData()['seo_data']['canonical_url'] ?? url()->current() }}" />
-
-    {{-- Open Graph / Facebook --}}
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="{{ $article->getData()['seo_data']['og_title'] ?? $article->getData()['title'] }}" />
-    <meta property="og:description" content="{{ $article->getData()['seo_data']['og_description'] ?? '' }}" />
-    <meta property="og:image" content="{{ $article->getData()['seo_data']['og_image'] ?? '' }}" />
-    <meta property="og:url" content="{{ $article->getData()['seo_data']['canonical_url'] ?? url()->current() }}" />
-    <meta property="og:site_name" content="Mercado Veículos" />
-    <meta property="article:published_time" content="{{ $article->getData()['created_at'] ?? now()->toISOString() }}" />
-    <meta property="article:modified_time" content="{{ $article->getData()['updated_at'] ?? now()->toISOString() }}" />
-
-    {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $article->getData()['seo_data']['og_title'] ?? $article->getData()['title'] }}">
-    <meta name="twitter:description" content="{{ $article->getData()['seo_data']['og_description'] ?? '' }}">
-    <meta name="twitter:image" content="{{ $article->getData()['seo_data']['og_image'] ?? '' }}">
-
-    {{-- Preload de recursos críticos --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos-write.svg" as="image">
-
-    {{-- Schema.org Structured Data (Article) --}}
+     {{-- Schema.org Structured Data (Article) --}}
     @if(!empty($article->getData()['structured_data']))
         <script type="application/ld+json">
         {!! json_encode($article->getData()['structured_data'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
@@ -76,6 +38,7 @@ Compatível com:
         </script>
     @endif
 @endpush
+
 
 @section('content')
 
@@ -226,30 +189,15 @@ Compatível com:
                 </aside>
             @endif
 
-            {{-- Footer do Artigo --}}
-            <footer class="mt-12 pt-8 border-t-2 border-gray-200">
-                <div class="bg-gray-50 rounded-lg p-6">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <svg class="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-700 leading-relaxed">
-                                <strong>Importante:</strong> Este artigo contém informações técnicas baseadas em experiências reais e fontes confiáveis. 
-                                Sempre consulte um profissional qualificado para serviços específicos em seu veículo.
-                            </p>
-                            <p class="text-xs text-gray-500 mt-2">
-                                Última verificação: {{ $article->getData()['formated_updated_at'] ?? now()->format('d/m/Y') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </footer>
 
         </article>
     </div>
+
+        <!-- Créditos Equipe Editorial -->
+    @include('auto-info-center::article.partials.editorial_team')
+
+    <!-- Newsletter Simplificada -->
+    @include('auto-info-center::article.partials.newsletter')
 </main>
 
 @endsection

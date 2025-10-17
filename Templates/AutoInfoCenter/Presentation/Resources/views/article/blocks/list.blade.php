@@ -25,6 +25,10 @@ Estrutura esperada:
 @version 2.0
 --}}
 
+@if(!empty($block['heading']))
+    <hr class="my-12 border-t border-gray-200" />
+@endif
+
 <div class="mb-10">
     {{-- Heading --}}
     @if(!empty($block['heading']))
