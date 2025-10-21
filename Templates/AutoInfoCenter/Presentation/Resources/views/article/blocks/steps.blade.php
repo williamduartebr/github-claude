@@ -23,12 +23,24 @@ Estrutura esperada:
 @author Claude Sonnet 4
 @version 1.0
 --}}
+
+@if(!empty($block['heading']))
+    <hr class="my-12 border-t border-gray-200" />
+@endif
+
 <div class="mb-8">
     {{-- Heading --}}
     @if(!empty($block['heading']))
         <h2 class="text-2xl font-semibold text-[#151C25] mb-6">
             {{ $block['heading'] }}
         </h2>
+    @endif
+
+       {{-- Intro --}}
+    @if(!empty($block['content']['intro']))
+        <p class="text-gray-700 leading-relaxed mb-6">
+            {{ $block['content']['intro'] }}
+        </p>
     @endif
 
     {{-- Steps --}}

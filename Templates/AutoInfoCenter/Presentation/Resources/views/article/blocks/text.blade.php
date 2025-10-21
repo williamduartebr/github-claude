@@ -51,7 +51,7 @@ Estrutura esperada (baseada nos JSONs reais):
             @foreach(explode("\n\n", $textContent) as $paragraph)
                 @if(trim($paragraph))
                     <p class="text-gray-800 leading-relaxed mb-4">
-                        {!! nl2br(e(trim($paragraph))) !!}
+                        {!! markdown($paragraph) !!}
                     </p>
                 @endif
             @endforeach
@@ -61,7 +61,7 @@ Estrutura esperada (baseada nos JSONs reais):
         <div class="prose prose-lg max-w-none">
             @foreach($paragraphs as $paragraph)
                 <p class="text-gray-800 leading-relaxed mb-4">
-                    {!! nl2br(e($paragraph)) !!}
+                    {!! markdown($paragraph) !!}
                 </p>
             @endforeach
         </div>

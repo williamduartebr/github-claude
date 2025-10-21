@@ -59,6 +59,10 @@ Estrutura esperada (baseada nos JSONs reais):
     $config = $alertConfig[$alertType] ?? $alertConfig['info'];
 @endphp
 
+@dump('alert')
+
+@dump($block['content'])
+
 @if(!empty($block['heading']))
     <hr class="my-12 border-t border-gray-200" />
 @endif

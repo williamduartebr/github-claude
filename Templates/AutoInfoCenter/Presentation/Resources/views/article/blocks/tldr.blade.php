@@ -21,6 +21,10 @@ Estrutura esperada:
 @version 2.0 - Design moderno com gradientes e animações
 --}}
 
+@if(!empty($block['heading']))
+    <hr class="my-12 border-t border-gray-200" />
+@endif
+
 <div class="relative mb-10">
     {{-- Container principal com gradiente --}}
     <div class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-2xl overflow-hidden">

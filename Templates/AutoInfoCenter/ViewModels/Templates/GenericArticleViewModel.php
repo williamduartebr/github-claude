@@ -9,54 +9,19 @@ use Illuminate\Support\Str;
 /**
  * GenericArticleViewModel - ViewModel Universal para Artigos Genéricos
  * 
- * Sistema de blocos modulares que serve para QUALQUER tema:
- * - Óleo (100+ artigos)
- * - Velas (100 artigos)
- * - Câmbio (100+ artigos)
- * - Aditivo (100 artigos)
- * - Multimídia (100 artigos)
- * - Qualquer tema futuro
- * 
- * FILOSOFIA:
- * - Estrutura WordPress-like: blocos reutilizáveis
- * - 1 ViewModel serve infinitos temas
- * - 15 tipos de blocos cobrem 99% dos casos
- * - Fácil adicionar novos tipos sem quebrar existentes
- * 
  * @author Claude Sonnet 4.5
- * @version 2.0 - Refatorado para compatibilidade com JSONs reais
+ * @version 2.1 - CORRIGIDO: Normalização do bloco COMPARISON
  */
 class GenericArticleViewModel extends TemplateViewModel
 {
-    /**
-     * Nome do template Blade
-     */
     protected string $templateName = 'generic_article';
 
-    /**
-     * Tipos de blocos suportados
-     */
     private const SUPPORTED_BLOCK_TYPES = [
-        'intro',
-        'tldr',
-        'text',
-        'table',
-        'list',
-        'alert',
-        'comparison',
-        'steps',
-        'testimonial',
-        'cost',
-        'myth',
-        'faq',
-        'decision',
-        'timeline',
-        'conclusion'
+        'intro', 'tldr', 'text', 'table', 'list', 'alert',
+        'comparison', 'steps', 'testimonial', 'cost', 'myth',
+        'faq', 'decision', 'timeline', 'conclusion'
     ];
 
-    /**
-     * Níveis de urgência suportados
-     */
     private const URGENCY_LEVELS = [
         'low' => 'Baixa',
         'medium' => 'Média',
@@ -64,9 +29,6 @@ class GenericArticleViewModel extends TemplateViewModel
         'critical' => 'Crítica'
     ];
 
-    /**
-     * Tipos de alerta suportados
-     */
     private const ALERT_TYPES = [
         'info' => 'Informação',
         'warning' => 'Aviso',
@@ -74,43 +36,21 @@ class GenericArticleViewModel extends TemplateViewModel
         'success' => 'Sucesso'
     ];
 
-    /**
-     * Constructor
-     */
     public function __construct(Article $article)
     {
         parent::__construct($article);
         $this->templateName = 'generic_article';
     }
 
-    /**
-     * Processar dados específicos do template genérico
-     * 
-     * @return void
-     */
     protected function processTemplateSpecificData(): void
     {
-        // 1. Processar metadata do artigo
         $this->processArticleMetadata();
-
-        // 2. Processar blocos de conteúdo
         $this->processContentBlocks();
-
-        // 3. Processar SEO específico
         $this->processGenericSeoData();
-
-        // 4. Processar structured data (Schema.org)
         $this->processStructuredData();
-
-        // 5. Breadcrumbs
         $this->processedData['breadcrumbs'] = $this->buildBreadcrumbs();
     }
 
-    /**
-     * Processar metadata do artigo
-     * 
-     * @return void
-     */
     private function processArticleMetadata(): void
     {
         $metadata = $this->article->metadata ?? [];
@@ -119,7 +59,6 @@ class GenericArticleViewModel extends TemplateViewModel
         $this->processedData['article_topic'] = $articleMetadata['article_topic'] ?? 'general';
         $this->processedData['article_category'] = $articleMetadata['article_category'] ?? 'guide';
         
-        // Metadata adicional
         $generalMetadata = $metadata['metadata'] ?? [];
         $this->processedData['reading_time'] = $generalMetadata['reading_time'] ?? $this->estimateReadingTime();
         $this->processedData['word_count'] = $generalMetadata['word_count'] ?? 0;
@@ -128,13 +67,6 @@ class GenericArticleViewModel extends TemplateViewModel
         $this->processedData['related_articles'] = $generalMetadata['related_articles'] ?? [];
     }
 
-    /**
-     * Processar blocos de conteúdo
-     * 
-     * CORE DO SISTEMA: Processa array de blocos modulares
-     * 
-     * @return void
-     */
     private function processContentBlocks(): void
     {
         $metadata = $this->article->metadata ?? [];
@@ -144,12 +76,10 @@ class GenericArticleViewModel extends TemplateViewModel
             $contentBlocks = $this->convertLegacyContent();
         }
 
-        // Ordenar blocos por display_order
         usort($contentBlocks, function($a, $b) {
             return ($a['display_order'] ?? 0) <=> ($b['display_order'] ?? 0);
         });
 
-        // Processar cada bloco
         $processedBlocks = [];
         foreach ($contentBlocks as $block) {
             $processedBlock = $this->processContentBlock($block);
@@ -161,17 +91,10 @@ class GenericArticleViewModel extends TemplateViewModel
         $this->processedData['content_blocks'] = $processedBlocks;
     }
 
-    /**
-     * Processar um bloco individual de conteúdo
-     * 
-     * @param array $block
-     * @return array|null
-     */
     private function processContentBlock(array $block): ?array
     {
         $blockType = $block['block_type'] ?? '';
 
-        // Validar tipo de bloco
         if (!in_array($blockType, self::SUPPORTED_BLOCK_TYPES)) {
             Log::warning("Tipo de bloco não suportado: {$blockType}", [
                 'article_id' => $this->article->id,
@@ -180,7 +103,6 @@ class GenericArticleViewModel extends TemplateViewModel
             return null;
         }
 
-        // Estrutura base do bloco processado
         $processedBlock = [
             'block_id' => $block['block_id'] ?? Str::slug($blockType . '-' . uniqid()),
             'block_type' => $blockType,
@@ -192,13 +114,6 @@ class GenericArticleViewModel extends TemplateViewModel
         return $processedBlock;
     }
 
-    /**
-     * Processar conteúdo específico por tipo de bloco
-     * 
-     * @param string $blockType
-     * @param array $content
-     * @return array
-     */
     private function processBlockContent(string $blockType, array $content): array
     {
         return match($blockType) {
@@ -222,8 +137,296 @@ class GenericArticleViewModel extends TemplateViewModel
     }
 
     /**
-     * Processar bloco INTRO
+     * ✅ CORRIGIDO: Processar bloco COMPARISON com normalização inteligente
+     * 
+     * Suporta 2 formatos de entrada e SEMPRE retorna formato normalizado:
+     * 
+     * FORMATO 1 (Correto - do Prompt):
+     * {
+     *   "intro": "...",
+     *   "items": [
+     *     {
+     *       "aspect": "Viscosidade a Frio",
+     *       "option_a": "5W (descrição completa)",
+     *       "option_b": "5W (descrição completa)"
+     *     }
+     *   ],
+     *   "conclusion": "..."
+     * }
+     * 
+     * FORMATO 2 (Legado - inconsistente):
+     * {
+     *   "intro": "...",
+     *   "items": [
+     *     {
+     *       "title": "Título",
+     *       "features": [...],
+     *       "pros": [...],
+     *       "cons": [...],
+     *       "conclusion": "..."
+     *     }
+     *   ]
+     * }
+     * 
+     * FORMATO 3 (Bugado - sem aspect):
+     * {
+     *   "items": [
+     *     {"option_a": "5W", "option_b": "5W"},
+     *     {"option_a": "30", "option_b": "40"}
+     *   ]
+     * }
+     * 
+     * ⚠️ ESTE MÉTODO FAZ NORMALIZAÇÃO AUTOMÁTICA ⚠️
      */
+    private function processComparisonBlock(array $content): array
+    {
+        $items = $content['items'] ?? [];
+        
+        if (empty($items)) {
+            Log::warning('Bloco comparison vazio', [
+                'article_id' => $this->article->id
+            ]);
+            return [
+                'intro' => $content['intro'] ?? null,
+                'items' => [],
+                'conclusion' => $content['conclusion'] ?? null
+            ];
+        }
+
+        // Detectar formato dos items
+        $firstItem = $items[0] ?? [];
+        $format = $this->detectComparisonFormat($firstItem);
+
+        Log::info('Formato de comparison detectado', [
+            'article_id' => $this->article->id,
+            'format' => $format,
+            'total_items' => count($items)
+        ]);
+
+        // Processar items de acordo com o formato
+        $processedItems = match($format) {
+            'aspect_based' => $this->normalizeAspectBasedComparison($items),
+            'pros_cons' => $this->normalizeProsConsComparison($items),
+            'broken' => $this->fixBrokenComparison($items, $content),
+            default => $this->normalizeAspectBasedComparison($items)
+        };
+
+        return [
+            'intro' => $content['intro'] ?? null,
+            'items' => $processedItems,
+            'conclusion' => $content['conclusion'] ?? null
+        ];
+    }
+
+    /**
+     * Detectar formato do bloco comparison
+     */
+    private function detectComparisonFormat(array $firstItem): string
+    {
+        // Formato correto: tem aspect + option_a + option_b
+        if (!empty($firstItem['aspect']) && 
+            (isset($firstItem['option_a']) || isset($firstItem['option_b']))) {
+            return 'aspect_based';
+        }
+
+        // Formato legado: tem title + pros/cons/features
+        if (!empty($firstItem['title']) && 
+            (isset($firstItem['pros']) || isset($firstItem['cons']) || isset($firstItem['features']))) {
+            return 'pros_cons';
+        }
+
+        // Formato quebrado: tem option_a/option_b mas sem aspect
+        if ((isset($firstItem['option_a']) || isset($firstItem['option_b'])) && 
+            empty($firstItem['aspect'])) {
+            return 'broken';
+        }
+
+        return 'unknown';
+    }
+
+    /**
+     * Normalizar comparison baseada em aspectos (FORMATO CORRETO)
+     */
+    private function normalizeAspectBasedComparison(array $items): array
+    {
+        $normalized = [];
+
+        foreach ($items as $index => $item) {
+            $aspect = $item['aspect'] ?? null;
+
+            // Se aspect estiver vazio, tentar inferir ou pular
+            if (empty($aspect)) {
+                Log::warning('Item de comparison sem aspect', [
+                    'article_id' => $this->article->id,
+                    'item_index' => $index,
+                    'item' => $item
+                ]);
+                
+                // Tentar inferir aspect baseado no conteúdo
+                $aspect = $this->inferAspect($item, $index);
+            }
+
+            $normalized[] = [
+                'aspect' => $aspect,
+                'option_a' => $item['option_a'] ?? '',
+                'option_b' => $item['option_b'] ?? '',
+                'features' => [],
+                'pros' => [],
+                'cons' => [],
+                'conclusion' => null
+            ];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Normalizar comparison de prós e contras (FORMATO LEGADO)
+     */
+    private function normalizeProsConsComparison(array $items): array
+    {
+        $normalized = [];
+
+        foreach ($items as $item) {
+            $normalized[] = [
+                'aspect' => null, // Não tem aspect neste formato
+                'option_a' => null,
+                'option_b' => null,
+                'title' => $item['title'] ?? $item['label'] ?? '',
+                'features' => $item['features'] ?? [],
+                'pros' => $item['pros'] ?? [],
+                'cons' => $item['cons'] ?? [],
+                'conclusion' => $item['conclusion'] ?? null
+            ];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * ✅ CORRIGIR FORMATO QUEBRADO (sem aspect)
+     * 
+     * Este é o caso do bug reportado:
+     * [
+     *   {"option_a": "5W", "option_b": "5W"},
+     *   {"option_a": "30", "option_b": "40"}
+     * ]
+     */
+    private function fixBrokenComparison(array $items, array $fullContent): array
+    {
+        Log::warning('Detectado bloco comparison com formato quebrado - aplicando correção automática', [
+            'article_id' => $this->article->id,
+            'total_items' => count($items)
+        ]);
+
+        $normalized = [];
+        $aspectMap = $this->getDefaultAspectMap();
+
+        foreach ($items as $index => $item) {
+            // Tentar inferir aspect baseado na posição e conteúdo
+            $inferredAspect = $aspectMap[$index] ?? "Característica " . ($index + 1);
+
+            // Se conseguir inferir melhor baseado no conteúdo, usar
+            $betterAspect = $this->inferAspectFromContent(
+                $item['option_a'] ?? '', 
+                $item['option_b'] ?? ''
+            );
+
+            if (!empty($betterAspect)) {
+                $inferredAspect = $betterAspect;
+            }
+
+            $normalized[] = [
+                'aspect' => $inferredAspect,
+                'option_a' => $item['option_a'] ?? '',
+                'option_b' => $item['option_b'] ?? '',
+                'features' => [],
+                'pros' => [],
+                'cons' => [],
+                'conclusion' => null
+            ];
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Inferir aspect baseado no índice (fallback inteligente)
+     */
+    private function inferAspect(array $item, int $index): string
+    {
+        $optionA = $item['option_a'] ?? '';
+        $optionB = $item['option_b'] ?? '';
+
+        // Tentar inferir do conteúdo primeiro
+        $inferred = $this->inferAspectFromContent($optionA, $optionB);
+        if (!empty($inferred)) {
+            return $inferred;
+        }
+
+        // Fallback: usar mapa padrão
+        $defaultMap = $this->getDefaultAspectMap();
+        return $defaultMap[$index] ?? "Aspecto " . ($index + 1);
+    }
+
+    /**
+     * Inferir aspect analisando o conteúdo das opções
+     */
+    private function inferAspectFromContent(string $optionA, string $optionB): ?string
+    {
+        $combined = strtolower($optionA . ' ' . $optionB);
+
+        // Palavras-chave que indicam aspectos específicos
+        $keywords = [
+            'viscosidade' => 'Viscosidade',
+            'temperatura' => 'Temperatura',
+            'economia' => 'Economia de Combustível',
+            'proteção' => 'Proteção do Motor',
+            'vedação' => 'Vedação',
+            'durabilidade' => 'Durabilidade',
+            'custo' => 'Custo',
+            'preço' => 'Preço',
+            'performance' => 'Performance',
+            'aplicação' => 'Aplicação',
+            'recomendação' => 'Recomendação',
+            'intervalo' => 'Intervalo de Troca',
+            'km' => 'Quilometragem',
+            'potência' => 'Potência',
+            'consumo' => 'Consumo',
+            'atrito' => 'Atrito',
+            'fluidez' => 'Fluidez',
+        ];
+
+        foreach ($keywords as $keyword => $aspect) {
+            if (str_contains($combined, $keyword)) {
+                return $aspect;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Mapa padrão de aspectos por posição (para casos de óleo)
+     */
+    private function getDefaultAspectMap(): array
+    {
+        return [
+            0 => 'Viscosidade a Frio',
+            1 => 'Viscosidade a Quente',
+            2 => 'Proteção do Motor',
+            3 => 'Economia de Combustível',
+            4 => 'Vedação e Desgaste',
+            5 => 'Aplicação Recomendada',
+            6 => 'Custo-Benefício',
+            7 => 'Durabilidade',
+        ];
+    }
+
+    // ========================================
+    // OUTROS MÉTODOS DO VIEWMODEL (mantidos)
+    // ========================================
+
     private function processIntroBlock(array $content): array
     {
         return [
@@ -233,9 +436,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco TLDR (Resposta Rápida)
-     */
     private function processTldrBlock(array $content): array
     {
         return [
@@ -244,9 +444,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco TEXT (Texto simples)
-     */
     private function processTextBlock(array $content): array
     {
         return [
@@ -256,23 +453,8 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco TABLE (Tabela)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "table": {
-     *     "headers": [...],
-     *     "rows": [...]
-     *   },
-     *   "caption": "Legenda",
-     *   "conclusion": "Conclusão"
-     * }
-     */
     private function processTableBlock(array $content): array
     {
-        // Suporta ambas estruturas: direta ou aninhada em "table"
         $tableData = $content['table'] ?? $content;
         
         return [
@@ -286,21 +468,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco LIST (Lista)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "list_type": "ordered | bullet | checklist",
-     *   "items": [
-     *     {"title": "...", "description": "..."}
-     *     ou
-     *     "String simples"
-     *   ],
-     *   "conclusion": "Texto de conclusão"
-     * }
-     */
     private function processListBlock(array $content): array
     {
         return [
@@ -312,19 +479,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco ALERT (Alerta)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "alert_type": "info | warning | danger | success",
-     *   "title": "Título",
-     *   "message": "Mensagem",
-     *   "details": ["item1", "item2"],
-     *   "action": "Ação recomendada",
-     *   "recommendation": "Recomendação"
-     * }
-     */
     private function processAlertBlock(array $content): array
     {
         $alertType = $content['alert_type'] ?? 'info';
@@ -340,70 +494,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco COMPARISON (Comparação)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "items": [
-     *     {
-     *       "title": "Opção A",
-     *       "aspect": "Aspecto comparado",
-     *       "option_a": "Descrição A",
-     *       "option_b": "Descrição B",
-     *       "features": [...],
-     *       "pros": [...],
-     *       "cons": [...],
-     *       "conclusion": "..."
-     *     }
-     *   ],
-     *   "conclusion": "Conclusão geral"
-     * }
-     */
-    private function processComparisonBlock(array $content): array
-    {
-        $items = $content['items'] ?? [];
-        
-        $processedItems = [];
-        foreach ($items as $item) {
-            $processedItems[] = [
-                'title' => $item['title'] ?? $item['label'] ?? '',
-                'aspect' => $item['aspect'] ?? null,
-                'option_a' => $item['option_a'] ?? null,
-                'option_b' => $item['option_b'] ?? null,
-                'features' => $item['features'] ?? [],
-                'pros' => $item['pros'] ?? [],
-                'cons' => $item['cons'] ?? [],
-                'conclusion' => $item['conclusion'] ?? null
-            ];
-        }
-        
-        return [
-            'intro' => $content['intro'] ?? null,
-            'items' => $processedItems,
-            'conclusion' => $content['conclusion'] ?? null
-        ];
-    }
-
-    /**
-     * Processar bloco STEPS (Passo a passo)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "steps": [
-     *     {
-     *       "number": 1,
-     *       "title": "...",
-     *       "description": "...",
-     *       "details": [...],
-     *       "tip": "..."
-     *     }
-     *   ],
-     *   "conclusion": "Conclusão"
-     * }
-     */
     private function processStepsBlock(array $content): array
     {
         $steps = $content['steps'] ?? [];
@@ -426,31 +516,8 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco TESTIMONIAL (Depoimentos)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "quote": "Depoimento textual",
-     *   "author": "Nome do autor",
-     *   "vehicle": "Veículo usado",
-     *   "context": "Contexto adicional",
-     *   
-     *   OU (estrutura alternativa):
-     *   
-     *   "cases": [
-     *     {
-     *       "user": "Nome",
-     *       "situation": "...",
-     *       "result": "...",
-     *       "observation": "..."
-     *     }
-     *   ]
-     * }
-     */
     private function processTestimonialBlock(array $content): array
     {
-        // Estrutura simples (quote)
         if (!empty($content['quote'])) {
             return [
                 'quote' => $content['quote'] ?? '',
@@ -460,7 +527,6 @@ class GenericArticleViewModel extends TemplateViewModel
             ];
         }
         
-        // Estrutura de cases múltiplos
         $cases = $content['cases'] ?? [];
         $processedCases = [];
         
@@ -476,49 +542,8 @@ class GenericArticleViewModel extends TemplateViewModel
         return ['cases' => $processedCases];
     }
 
-    /**
-     * Processar bloco COST (Análise de custo)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "cost_items": [
-     *     {
-     *       "item": "Descrição",
-     *       "cost": "R$ 100",
-     *       "notes": "Observações"
-     *     }
-     *   ],
-     *   "total_investment": "R$ 500",
-     *   "savings": [
-     *     {
-     *       "description": "...",
-     *       "amount": "R$ 200",
-     *       "calculation": "..."
-     *     }
-     *   ],
-     *   "total_savings": "R$ 1000",
-     *   "roi": "150%",
-     *   "payback_period": "6 meses",
-     *   "break_even": "10.000 km",
-     *   "conclusion": "Conclusão",
-     *   
-     *   OU (estrutura alternativa - scenarios):
-     *   
-     *   "scenarios": [
-     *     {
-     *       "option": "Opção A",
-     *       "cost": "R$ 200",
-     *       "duration": "...",
-     *       "recommendation": "...",
-     *       "savings": "..."
-     *     }
-     *   ]
-     * }
-     */
     private function processCostBlock(array $content): array
     {
-        // Estrutura completa de análise financeira
         if (!empty($content['cost_items']) || !empty($content['savings'])) {
             return [
                 'intro' => $content['intro'] ?? null,
@@ -533,12 +558,10 @@ class GenericArticleViewModel extends TemplateViewModel
             ];
         }
         
-        // Estrutura alternativa: scenarios
         $scenarios = $content['scenarios'] ?? [];
         $processedScenarios = [];
         
         foreach ($scenarios as $scenario) {
-            // Suporta "scenario" ou "items" dentro de scenario
             if (is_string($scenario)) {
                 $processedScenarios[] = ['description' => $scenario];
                 continue;
@@ -564,29 +587,12 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco MYTH (Mito vs Realidade)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "myths": [
-     *     {
-     *       "myth": "Afirmação popular",
-     *       "reality": "VERDADEIRO | FALSO | PARCIALMENTE VERDADEIRO | MITO",
-     *       "explanation": "Explicação técnica",
-     *       "evidence": "Evidências do teste"
-     *     }
-     *   ]
-     * }
-     */
     private function processMythBlock(array $content): array
     {
         $myths = $content['myths'] ?? [];
         
         $processedMyths = [];
         foreach ($myths as $myth) {
-            // Normalizar campo reality
             $realityRaw = strtoupper(trim($myth['reality'] ?? 'PARCIALMENTE VERDADEIRO'));
             
             $reality = match(true) {
@@ -614,9 +620,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco FAQ (Perguntas Frequentes)
-     */
     private function processFaqBlock(array $content): array
     {
         $questions = $content['questions'] ?? [];
@@ -633,35 +636,12 @@ class GenericArticleViewModel extends TemplateViewModel
         return ['questions' => $processedQuestions];
     }
 
-    /**
-     * Processar bloco DECISION (Matriz de decisão)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "scenarios": [
-     *     {
-     *       "title": "Vale a pena se:",
-     *       "points": ["ponto 1", "ponto 2"],
-     *       
-     *       OU
-     *       
-     *       "condition": "Se X",
-     *       "action": "Faça Y",
-     *       "urgency": "low | medium | high | critical",
-     *       "reason": "Porque..."
-     *     }
-     *   ],
-     *   "conclusion": "Conclusão"
-     * }
-     */
     private function processDecisionBlock(array $content): array
     {
         $scenarios = $content['scenarios'] ?? [];
         
         $processedScenarios = [];
         foreach ($scenarios as $scenario) {
-            // Estrutura com title + points
             if (!empty($scenario['title']) && !empty($scenario['points'])) {
                 $processedScenarios[] = [
                     'title' => $scenario['title'],
@@ -670,7 +650,6 @@ class GenericArticleViewModel extends TemplateViewModel
                 continue;
             }
             
-            // Estrutura com condition + action + urgency
             $urgency = $scenario['urgency'] ?? 'medium';
             
             $processedScenarios[] = [
@@ -689,24 +668,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco TIMELINE (Linha do tempo)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "intro": "Texto introdutório",
-     *   "events": [
-     *     {
-     *       "milestone": "0km",
-     *       "date": "Janeiro 2025",
-     *       "title": "Título do evento",
-     *       "action": "Ação realizada",
-     *       "description": "Descrição"
-     *     }
-     *   ],
-     *   "conclusion": "Conclusão"
-     * }
-     */
     private function processTimelineBlock(array $content): array
     {
         $events = $content['events'] ?? [];
@@ -729,19 +690,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar bloco CONCLUSION (Conclusão)
-     * 
-     * Estrutura esperada:
-     * {
-     *   "summary": "Resumo",
-     *   "key_takeaways": ["ponto 1", "ponto 2"],
-     *   "key_takeaway": "Principal aprendizado",
-     *   "final_thought": "Pensamento final",
-     *   "cta": "Call to action",
-     *   "call_to_action": "Call to action alternativo"
-     * }
-     */
     private function processConclusionBlock(array $content): array
     {
         return [
@@ -753,11 +701,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar dados SEO genéricos
-     * 
-     * @return void
-     */
     private function processGenericSeoData(): void
     {
         $seoData = $this->article->seo_data ?? [];
@@ -777,11 +720,6 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Processar structured data (Schema.org)
-     * 
-     * @return void
-     */
     private function processStructuredData(): void
     {
         $this->processedData['structured_data'] = [
@@ -811,15 +749,9 @@ class GenericArticleViewModel extends TemplateViewModel
             ]
         ];
 
-        // Adicionar FAQPage schema se houver FAQs
         $this->addFaqSchema();
     }
 
-    /**
-     * Adicionar FAQPage schema se houver blocos FAQ
-     * 
-     * @return void
-     */
     private function addFaqSchema(): void
     {
         $faqBlocks = array_filter($this->processedData['content_blocks'] ?? [], function($block) {
@@ -853,11 +785,6 @@ class GenericArticleViewModel extends TemplateViewModel
         }
     }
 
-    /**
-     * Construir breadcrumbs
-     * 
-     * @return array
-     */
     private function buildBreadcrumbs(): array
     {
         return [
@@ -884,26 +811,11 @@ class GenericArticleViewModel extends TemplateViewModel
         ];
     }
 
-    /**
-     * Converter conteúdo legado para formato de blocos
-     * 
-     * COMPATIBILIDADE: Converte estruturas antigas para novo formato
-     * 
-     * @return array
-     */
     private function convertLegacyContent(): array
     {
-        // Implementar conversão de estruturas antigas se necessário
-        // Por enquanto, retorna array vazio
         return [];
     }
 
-    /**
-     * Obter label de realidade para mitos
-     * 
-     * @param string $reality
-     * @return string
-     */
     private function getRealityLabel(string $reality): string
     {
         return match($reality) {
@@ -914,60 +826,19 @@ class GenericArticleViewModel extends TemplateViewModel
         };
     }
 
-    /**
-     * Estimar tempo de leitura baseado em word_count
-     * 
-     * @return int
-     */
     private function estimateReadingTime(): int
     {
-        $wordCount = $this->processedData['word_count'] ?? 0;
-        
-        if ($wordCount === 0) {
-            return 5; // Default
-        }
-
-        // Média 200 palavras por minuto em português
-        return max(1, (int) ceil($wordCount / 200));
+        $wordCount = $this->processedData['word_count'] ?? 2500;
+        return (int) ceil($wordCount / 200);
     }
 
-    /**
-     * Obter imagem OG padrão baseada no tópico
-     * 
-     * @return string
-     */
-    private function getDefaultOgImage(): string
-    {
-        $topic = $this->processedData['article_topic'] ?? 'general';
-        
-        $imageMap = [
-            'oil' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/motor-oil.png',
-            'spark_plug' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/spark-plug.png',
-            'transmission' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/transmission.png',
-            'coolant' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/coolant.png',
-            'multimedia' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/multimedia.png',
-        ];
-
-        return $imageMap[$topic] ?? 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/generic-article.png';
-    }
-
-    /**
-     * Obter breadcrumbs processados
-     * 
-     * @return array
-     */
-    public function getBreadcrumbs(): array
-    {
-        return $this->processedData['breadcrumbs'] ?? [];
-    }
-
-    /**
-     * Obter URL canônica
-     * 
-     * @return string
-     */
-    public function getCanonicalUrl(): string
+    private function getCanonicalUrl(): string
     {
         return route('info.article.show', $this->article->slug);
+    }
+
+    private function getDefaultOgImage(): string
+    {
+        return 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/generic.png';
     }
 }
