@@ -1,0 +1,1707 @@
+<?php
+
+namespace Src\AutoInfoCenter\ViewModels\Templates;
+
+use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\GenericTermsValidationTrait;
+use Src\AutoInfoCenter\ViewModels\Templates\Traits\MotorcycleVehicleDataProcessingTrait;
+
+class TireCalibrationMotorcycleViewModel extends TemplateViewModel
+{
+    use MotorcycleVehicleDataProcessingTrait,
+        GenericTermsValidationTrait;
+
+    protected string $templateName = 'tire_calibration_motorcycle';
+
+    /** @var array Cache para evitar reprocessamento */
+    private array $dataCache = [];
+
+    /**
+     * Processa dados específicos do template de pressão ideal para motocicletas
+     * OTIMIZADO: Ordem de processamento otimizada e cache implementado
+     */
+    protected function processTemplateSpecificData(): void
+    {
+        $content = $this->article->content;
+
+        // 1. DADOS FUNDAMENTAIS (sempre necessários)
+        $this->processFundamentalData($content);
+
+        // 2. DADOS ESPECÍFICOS DE MOTOCICLETA (embarcados + content)
+        $this->processMotorcycleSpecificData($content);
+
+        // 3. DADOS AUXILIARES E SEO
+        $this->processAuxiliaryData();
+    }
+
+    /**
+     * Processa dados fundamentais sempre necessários
+     */
+    private function processFundamentalData(array $content): void
+    {
+        // Dados básicos do artigo
+        $this->processedData['introduction'] = $content['introducao'] ?? '';
+        $this->processedData['final_considerations'] = $content['consideracoes_finais'] ?? '';
+        $this->processedData['faq'] = $content['perguntas_frequentes'] ?? [];
+
+        // Dados embarcados críticos (com cache)
+        $this->processedData['vehicle_info'] = $this->getCachedVehicleInfo();
+        $this->processedData['pressure_specifications'] = $this->getCachedPressureSpecs();
+        $this->processedData['tire_specs_embedded'] = $this->getCachedTireSpecs();
+    }
+
+    /**
+     * Processa dados específicos de motocicletas
+     */
+    private function processMotorcycleSpecificData(array $content): void
+    {
+        // Tabela de pressões (prioridade: content -> embarcado)
+        $this->processedData['pressure_table'] = $this->processOptimizedPressureTable($content);
+
+        // Especificações técnicas
+        $this->processedData['tire_specifications'] = $this->processOptimizedTireSpecs($content);
+
+        // NOVO: Especificações detalhadas por versão
+        $this->processedData['tire_specifications_by_version'] = $this->processVersionSpecificationsFromContent($content['especificacoes_por_versao'] ?? []);
+
+        // Dados de segurança e manutenção
+        $this->processedData['critical_alerts'] = $this->processOptimizedCriticalAlerts($content);
+        $this->processedData['calibration_procedure'] = $this->processOptimizedCalibrationProcedure($content);
+
+        // Dados complementares (apenas se disponíveis)
+        $this->processOptionalData($content);
+    }
+
+    /**
+     * Processa dados opcionais (não críticos)
+     */
+    private function processOptionalData(array $content): void
+    {
+        if (!empty($content['localizacao_informacoes'])) {
+            $this->processedData['information_location'] = $this->processInformationLocation($content['localizacao_informacoes']);
+        }
+
+        if (!empty($content['conversao_unidades'])) {
+            $this->processedData['unit_conversion'] = $this->processUnitConversion($content['conversao_unidades']);
+        } else {
+            $this->processedData['unit_conversion'] = $this->generateUnitConversionFromEmbeddedData();
+        }
+
+        if (!empty($content['consideracoes_especiais'])) {
+            $this->processedData['special_considerations'] = $this->processSpecialConsiderations($content['consideracoes_especiais']);
+        }
+
+        if (!empty($content['beneficios_calibragem'])) {
+            $this->processedData['calibration_benefits'] = $this->processMotorcycleCalibrationBenefits($content['beneficios_calibragem']);
+        }
+
+        if (!empty($content['dicas_manutencao'])) {
+            $this->processedData['maintenance_tips'] = $this->processMotorcycleMaintenanceTips($content['dicas_manutencao']);
+        }
+    }
+
+    /**
+     * Processa dados auxiliares
+     */
+    private function processAuxiliaryData(): void
+    {
+        $this->processedData['structured_data'] = $this->buildStructuredData();
+        $this->processedData['seo_data'] = $this->processSeoData();
+        $this->processedData['breadcrumbs'] = $this->getMotorcycleBreadcrumbs();
+        $this->processedData['canonical_url'] = $this->getCanonicalUrl();
+    }
+
+    /**
+     * Cache para informações do veículo
+     */
+    private function getCachedVehicleInfo(): array
+    {
+        if (!isset($this->dataCache['vehicle_info'])) {
+            $this->dataCache['vehicle_info'] = $this->processMotorcycleVehicleInfo();
+        }
+        return $this->dataCache['vehicle_info'];
+    }
+
+    /**
+     * Cache para especificações de pressão
+     */
+    private function getCachedPressureSpecs(): array
+    {
+        if (!isset($this->dataCache['pressure_specs'])) {
+            $this->dataCache['pressure_specs'] = $this->processMotorcyclePressureSpecifications();
+        }
+        return $this->dataCache['pressure_specs'];
+    }
+
+    /**
+     * Cache para especificações de pneus
+     */
+    private function getCachedTireSpecs(): array
+    {
+        if (!isset($this->dataCache['tire_specs'])) {
+            $this->dataCache['tire_specs'] = $this->processMotorcycleTireSpecifications();
+        }
+        return $this->dataCache['tire_specs'];
+    }
+
+    /**
+     * OTIMIZADO: Processa tabela de pressões com fallback inteligente
+     */
+    private function processOptimizedPressureTable(array $content): array
+    {
+        // 1ª prioridade: dados do content
+        if (!empty($content['tabela_pressoes'])) {
+            return $this->processMotorcyclePressureTable($content['tabela_pressoes']);
+        }
+
+        // 2ª prioridade: gerar a partir de dados embarcados
+        return $this->generatePressureTableFromEmbeddedData();
+    }
+
+    /**
+     * OTIMIZADO: Processa especificações de pneus com fallback
+     */
+    private function processOptimizedTireSpecs(array $content): array
+    {
+        // 1ª prioridade: dados do content
+        if (!empty($content['especificacoes_pneus'])) {
+            return $this->processMotorcycleTireSpecsFromContent($content['especificacoes_pneus']);
+        }
+
+        // 2ª prioridade: dados embarcados (só se realmente existirem)
+        $embeddedSpecs = $this->getCachedTireSpecs();
+        if (!empty($embeddedSpecs['tire_size']) && $embeddedSpecs['tire_size'] !== 'N/A') {
+            return $this->generateTireSpecsFromEmbeddedData();
+        }
+
+        // Se não há dados, retorna array vazio
+        return [];
+    }
+
+    /**
+     * Processa especificações por versão do content
+     * Suporta formato legado e novo formato de dados
+     * Rejeita termos genéricos retornando array vazio
+     * 
+     * @param array $specifications
+     * @return array
+     */
+    private function processVersionSpecificationsFromContent(array $specifications): array
+    {
+
+        if (empty($specifications)) {
+            return [];
+        }
+
+        // Verificar se há termos genéricos na lista
+        foreach ($specifications as $spec) {
+            $version = $spec['versao'] ?? '';
+            if (!empty($version) && $this->containsGenericTerms($version)) {
+                return []; // Retorna vazio se encontrar termo genérico
+            }
+        }
+
+        $processed = [];
+
+        foreach ($specifications as $index => $spec) {
+            $version = $spec['versao'] ?? '';
+
+            if (!empty($version)) {
+                $processedSpec = $this->isLegacyFormat($spec)
+                    ? $this->processLegacySpecification($spec, $index)
+                    : $this->processNewSpecification($spec, $index);
+
+                if ($processedSpec !== null) {
+                    $processed[] = $processedSpec;
+                }
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Verifica se é formato legado baseado na estrutura dos dados
+     * 
+     * @param array $spec
+     * @return bool
+     */
+    private function isLegacyFormat(array $spec): bool
+    {
+        return isset($spec['versao']) &&
+            isset($spec['medida_pneus']) &&
+            (isset($spec['pressao_dianteiro_normal']) || isset($spec['pressao_traseiro_normal']));
+    }
+
+    /**
+     * Processa especificação no formato legado
+     * 
+     * @param array $spec
+     * @param int $index
+     * @return array
+     */
+    private function processLegacySpecification(array $spec, int $index): array
+    {
+        $version = $spec['versao'] ?? 'Padrão';
+        $tireSize = $spec['medida_pneus'] ?? '';
+
+        $frontSize = $this->extractMotorcycleFrontTire($tireSize);
+        $rearSize = $this->extractMotorcycleRearTire($tireSize)
+            ?: $this->inferRearTireFromFront($frontSize);
+
+        return [
+            'version' => $version,
+            'front_tire_size' => $frontSize,
+            'rear_tire_size' => $rearSize,
+            'load_speed_index' => $spec['indice_carga_velocidade'] ?? 'Consulte manual',
+            'front_solo' => $this->formatPressureValue($spec['pressao_dianteiro_normal'] ?? null),
+            'rear_solo' => $this->formatPressureValue($spec['pressao_traseiro_normal'] ?? null),
+            'front_passenger' => $this->formatPressureValue($spec['pressao_dianteiro_carregado'] ?? null),
+            'rear_passenger' => $this->formatPressureValue($spec['pressao_traseiro_carregado'] ?? null),
+            'is_main_version' => $index === 0,
+        ];
+    }
+
+    /**
+     * Processa especificação no novo formato
+     * 
+     * @param array $spec
+     * @param int $index
+     * @return array|null
+     */
+    private function processNewSpecification(array $spec, int $index): ?array
+    {
+        if (!isset($spec['versao'])) {
+            return null;
+        }
+
+        $version = $spec['versao'];
+        $frontTire = $spec['pneu_dianteiro'] ?? 'Consulte manual';
+        $rearTire = $spec['pneu_traseiro'] ?? 'Consulte manual';
+
+        // No novo formato, extrair pressão da string
+        $frontPressure = $this->extractPressureFromString($spec['pressao_dianteira'] ?? '');
+        $rearPressure = $this->extractPressureFromString($spec['pressao_traseira'] ?? '');
+
+        // Inferir pressão com garupa (aproximadamente +2 PSI no traseiro)
+        $frontPassenger = $frontPressure ? ($frontPressure + 1) : null;
+        $rearPassenger = $rearPressure ? ($rearPressure + 2) : null;
+
+        return [
+            'version' => $version,
+            'front_tire_size' => $frontTire,
+            'rear_tire_size' => $rearTire,
+            'load_speed_index' => $this->inferLoadSpeedIndex($frontTire),
+            'front_solo' => $this->formatPressureValue($frontPressure),
+            'rear_solo' => $this->formatPressureValue($rearPressure),
+            'front_passenger' => $this->formatPressureValue($frontPassenger),
+            'rear_passenger' => $this->formatPressureValue($rearPassenger),
+            'is_main_version' => $index === 0,
+            // Dados adicionais disponíveis no novo formato
+            'engine_info' => $this->buildEngineInfo($spec),
+            'transmission' => $spec['transmissao'] ?? null,
+            'power' => $spec['potencia'] ?? null,
+        ];
+    }
+
+    /**
+     * Extrai valor numérico da pressão da string
+     * 
+     * @param string $pressureString
+     * @return int|null
+     */
+    private function extractPressureFromString(string $pressureString): ?int
+    {
+        if (empty($pressureString)) {
+            return null;
+        }
+
+        // Extrai números da string "25 psi" -> 25
+        if (preg_match('/(\d+)/', $pressureString, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Formata valor de pressão com unidade
+     * 
+     * @param int|null $pressure
+     * @return string
+     */
+    private function formatPressureValue(?int $pressure): string
+    {
+        return $pressure ? $pressure . ' PSI' : 'N/A';
+    }
+
+    /**
+     * Constrói informações do motor a partir dos dados disponíveis
+     * 
+     * @param array $spec
+     * @return string|null
+     */
+    private function buildEngineInfo(array $spec): ?string
+    {
+        $motor = $spec['motor'] ?? null;
+        $potencia = $spec['potencia'] ?? null;
+
+        if ($motor && $potencia) {
+            return $motor . ' - ' . $potencia;
+        }
+
+        return $motor ?: $potencia;
+    }
+
+    /**
+     * Infere pneu traseiro baseado no dianteiro (para casos de dados incompletos)
+     */
+    private function inferRearTireFromFront(string $frontSize): string
+    {
+        // Padrões comuns para motocicletas brasileiras
+        $rearPatterns = [
+            '80/100-18' => '90/90-18',      // CG 160, Factor 150
+            '110/70-17' => '140/70-17',     // CB 300F, CB 600F
+            '120/70-17' => '180/55-17',     // Esportivas médias
+            '120/70ZR17' => '190/55ZR17',   // Superbikes
+            '90/90-12' => '100/90-10',      // Scooters
+            '110/80R19' => '150/70R17'      // Adventure
+        ];
+
+        return $rearPatterns[$frontSize] ?? 'Consulte manual';
+    }
+
+    private function processMotorcycleTireSpecsFromContent(array $especificacoesPneus): array
+    {
+        $dianteiro = $especificacoesPneus['pneu_dianteiro'] ?? [];
+        $traseiro = $especificacoesPneus['pneu_traseiro'] ?? [];
+
+        if (empty($dianteiro['medida_original']) || $dianteiro['medida_original'] === '(DIANTEIRO)') {
+            return [];
+        }
+
+        $result['front_tire'] = [
+            'position' => 'Dianteiro',
+            'tire_size' => $dianteiro['medida_original'],
+            'load_speed_index' => $this->buildLoadSpeedIndex(
+                $dianteiro['indice_carga'] ?? '',
+                $dianteiro['indice_velocidade'] ?? ''
+            ),
+            'original_brand' => $dianteiro['marca_original'] ?? null
+        ];
+
+        // Pneu traseiro com fallback
+        $medidaTraseira = $traseiro['medida_original'] ?? '';
+
+        if ($medidaTraseira === '(DIANTEIRO)' || empty($medidaTraseira)) {
+            // CORREÇÃO: Buscar nos dados corretos do article
+            $tireSizeComplete = $this->article->vehicle_info['tire_size'] ?? '';
+            $medidaTraseira = $this->extractMotorcycleRearTire($tireSizeComplete);
+        }
+
+        if (!empty($medidaTraseira) && $medidaTraseira !== '(DIANTEIRO)') {
+            $result['rear_tire'] = [
+                'position' => 'Traseiro',
+                'tire_size' => $medidaTraseira,
+                'load_speed_index' => $this->buildLoadSpeedIndex(
+                    $traseiro['indice_carga'] ?? '',
+                    $traseiro['indice_velocidade'] ?? ''
+                ),
+                'original_brand' => $traseiro['marca_original'] ?? null
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Build do índice de carga/velocidade
+     */
+    private function buildLoadSpeedIndex(string $carga, string $velocidade): ?string
+    {
+        if (!empty($carga) && !empty($velocidade)) {
+            return $carga . $velocidade;
+        }
+        return null;
+    }
+
+    /**
+     * OTIMIZADO: Processa alertas críticos com fallback
+     */
+    private function processOptimizedCriticalAlerts(array $content): array
+    {
+        if (!empty($content['alertas_criticos'])) {
+            return $this->processCriticalAlerts($content['alertas_criticos']);
+        }
+
+        // Alertas padrão para motocicletas
+        return $this->generateDefaultMotorcycleCriticalAlerts();
+    }
+
+    /**
+     * OTIMIZADO: Processa procedimento com fallback
+     */
+    private function processOptimizedCalibrationProcedure(array $content): array
+    {
+        if (!empty($content['procedimento_calibragem'])) {
+            return $this->processCalibrationProcedure($content['procedimento_calibragem']);
+        }
+
+        return $this->generateMotorcycleCalibrationProcedureFromEmbeddedData();
+    }
+
+    /**
+     * NOVO: Gera alertas críticos padrão para motocicletas
+     */
+    private function generateDefaultMotorcycleCriticalAlerts(): array
+    {
+        return [
+            [
+                'type' => 'crítico',
+                'title' => 'Verificação Semanal Obrigatória',
+                'description' => 'Motocicletas perdem pressão mais rapidamente que carros.',
+                'consequence' => 'Pneus com 5 PSI baixos podem causar instabilidade fatal a 80 km/h.',
+                'icon_class' => 'alert-triangle',
+                'severity_class' => 'critical',
+                'border_class' => 'border-red-600'
+            ],
+            [
+                'type' => 'importante',
+                'title' => 'Nunca Calibrar com Pneus Quentes',
+                'description' => 'Calibrar após pilotagem resulta em subcalibragem perigosa.',
+                'consequence' => 'Quando esfriam, ficam muito baixos, causando risco de acidente.',
+                'icon_class' => 'thermometer',
+                'severity_class' => 'important',
+                'border_class' => 'border-orange-500'
+            ]
+        ];
+    }
+
+    /**
+     * MELHORADO: Gera tabela de pressões a partir de dados embarcados
+     */
+    private function generatePressureTableFromEmbeddedData(): array
+    {
+        $pressureSpecs = $this->getCachedPressureSpecs();
+        $vehicleInfo = $this->getCachedVehicleInfo();
+
+        if (empty($pressureSpecs)) {
+            return [];
+        }
+
+        return [
+            'official_pressures' => [
+                'piloto_solo' => [
+                    'condition' => 'piloto_solo',
+                    'front' => ($pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
+                    'rear' => ($pressureSpecs['pressure_empty_rear'] ?? '') . ' PSI',
+                    'observation' => 'Uso urbano e rodoviário normal'
+                ],
+                'piloto_garupa' => [
+                    'condition' => 'piloto_garupa',
+                    'front' => ($pressureSpecs['pressure_max_front'] ?? $pressureSpecs['pressure_empty_front'] ?? '') . ' PSI',
+                    'rear' => ($pressureSpecs['pressure_max_rear'] ?? '') . ' PSI',
+                    'observation' => 'Distribuição adequada do peso'
+                ]
+            ],
+            'conditional_adjustments' => [
+                [
+                    'situation' => 'Viagem Longa',
+                    'front_adjustment' => '+1 PSI',
+                    'rear_adjustment' => '+1 PSI',
+                    'justification' => 'Melhora estabilidade em altas velocidades'
+                ],
+                [
+                    'situation' => 'Uso Esportivo',
+                    'front_adjustment' => '-1 PSI',
+                    'rear_adjustment' => '0 PSI',
+                    'justification' => 'Aumenta área de contato (apenas para experientes)'
+                ]
+            ],
+            'special_conditions' => $this->generateSpecialConditionsFromCategory($vehicleInfo['main_category'] ?? '')
+        ];
+    }
+
+    /**
+     * NOVO: Gera condições especiais baseadas na categoria da moto
+     */
+    private function generateSpecialConditionsFromCategory(string $category): array
+    {
+        $pressureSpecs = $this->getCachedPressureSpecs();
+
+        $baseConditions = [
+            [
+                'situation' => 'Uso urbano',
+                'terrain' => 'Cidade/trânsito',
+                'front_pressure' => ($pressureSpecs['pressure_empty_front'] ?? 28) . ' PSI',
+                'rear_pressure' => ($pressureSpecs['pressure_empty_rear'] ?? 30) . ' PSI',
+                'ideal_temperature' => 'Pneus frios (manhã)',
+                'observation' => 'Ideal para uso diário na cidade.',
+                'icon_class' => 'home'
+            ]
+        ];
+
+        // Condições específicas por categoria
+        if (str_contains($category, 'sport')) {
+            $baseConditions[] = [
+                'situation' => 'Uso esportivo',
+                'terrain' => 'Pista/autódromo',
+                'front_pressure' => ($pressureSpecs['pressure_empty_front'] - 2) . ' PSI',
+                'rear_pressure' => $pressureSpecs['pressure_empty_rear'] . ' PSI',
+                'ideal_temperature' => 'Pneus frios',
+                'observation' => 'Pressão inicial para aquecer na pista.',
+                'icon_class' => 'zap'
+            ];
+        }
+
+        if (str_contains($category, 'adventure')) {
+            $baseConditions[] = [
+                'situation' => 'Terra/trilha',
+                'terrain' => 'Off-road leve',
+                'front_pressure' => ($pressureSpecs['pressure_empty_front'] - 3) . ' PSI',
+                'rear_pressure' => ($pressureSpecs['pressure_empty_rear'] - 2) . ' PSI',
+                'ideal_temperature' => 'Pneus frios',
+                'observation' => 'Maior aderência em terra.',
+                'icon_class' => 'map'
+            ];
+        }
+
+        return $baseConditions;
+    }
+
+    /**
+     * MELHORADO: Gera especificações de pneus a partir de dados embarcados
+     */
+    private function generateTireSpecsFromEmbeddedData(): array
+    {
+        $vehicleInfo = $this->getCachedVehicleInfo();
+        $tireSpecs = $this->getCachedTireSpecs();
+
+        if (empty($tireSpecs['tire_size'])) {
+            return [];
+        }
+
+        // Extrai tamanhos específicos
+        $frontSize = $this->extractMotorcycleFrontTire($tireSpecs['tire_size']);
+        $rearSize = $this->extractMotorcycleRearTire($tireSpecs['tire_size']);
+
+        return [
+            'front_tire' => [
+                'position' => 'Dianteiro',
+                'tire_size' => $frontSize,
+                'load_speed_index' => $this->inferLoadSpeedIndex($frontSize),
+                'recommended_brands' => $tireSpecs['recommended_brands'] ?? [],
+                'average_price' => $this->estimateAveragePrice($frontSize, $vehicleInfo['is_premium'] ?? false),
+                'durability_km' => $this->estimateDurability($vehicleInfo['main_category'] ?? '', 'front')
+            ],
+            'rear_tire' => [
+                'position' => 'Traseiro',
+                'tire_size' => $rearSize,
+                'load_speed_index' => $this->inferLoadSpeedIndex($rearSize),
+                'recommended_brands' => $tireSpecs['recommended_brands'] ?? [],
+                'average_price' => $this->estimateAveragePrice($rearSize, $vehicleInfo['is_premium'] ?? false),
+                'durability_km' => $this->estimateDurability($vehicleInfo['main_category'] ?? '', 'rear')
+            ],
+            'observation' => 'Use sempre pneus com especificação adequada para motocicletas.'
+        ];
+    }
+
+    /**
+     * NOVO: Infere índice de carga/velocidade baseado no tamanho
+     */
+    private function inferLoadSpeedIndex(string $tireSize): string
+    {
+        // Padrões comuns para motocicletas
+        if (str_contains($tireSize, '80/100')) return '47M';
+        if (str_contains($tireSize, '90/90')) return '54H';
+        if (str_contains($tireSize, '110/70')) return '54H';
+        if (str_contains($tireSize, '120/70')) return '58W';
+        if (str_contains($tireSize, '140/70')) return '66H';
+        if (str_contains($tireSize, '150/70')) return '69W';
+        if (str_contains($tireSize, '190/55')) return '75W';
+
+        return 'Consulte fabricante';
+    }
+
+    /**
+     * NOVO: Estima preço médio baseado no tamanho e categoria
+     */
+    private function estimateAveragePrice(string $tireSize, bool $isPremium): string
+    {
+        $basePrice = 150; // Preço base em reais
+
+        // Ajuste por largura
+        if (preg_match('/^(\d+)\//', $tireSize, $matches)) {
+            $width = (int)$matches[1];
+            if ($width > 150) $basePrice += 100;
+            elseif ($width > 120) $basePrice += 50;
+        }
+
+        // Ajuste por categoria premium
+        if ($isPremium) {
+            $basePrice *= 1.5;
+        }
+
+        $minPrice = (int)($basePrice * 0.8);
+        $maxPrice = (int)($basePrice * 1.2);
+
+        return "R$ {$minPrice} - R$ {$maxPrice}";
+    }
+
+    /**
+     * NOVO: Estima durabilidade baseada na categoria e posição
+     */
+    private function estimateDurability(string $category, string $position): string
+    {
+        $baseDurability = $position === 'front' ? 15000 : 12000;
+
+        if (str_contains($category, 'sport')) {
+            $baseDurability *= 0.7; // Pneus esportivos duram menos
+        } elseif (str_contains($category, 'scooter')) {
+            $baseDurability *= 1.2; // Scooters são mais leves
+        }
+
+        $min = (int)($baseDurability * 0.8);
+        $max = (int)($baseDurability * 1.2);
+
+        return number_format($min) . ' - ' . number_format($max) . ' km';
+    }
+
+    /**
+     * Processa especificações de pneus específicas para motocicletas
+     */
+    private function processMotorcycleTireSpecifications(array $specs = []): array
+    {
+        $originalData = $this->article ?? null;
+        $vehicleData = $originalData->vehicle_data ?? [];
+        $tireSpecs = $vehicleData['tire_specifications'] ?? [];
+
+        $tireSize = $this->getMotorcycleTireSize($originalData, $vehicleData);
+
+        return [
+            'tire_size' => $tireSize,
+            'recommended_brands' => $this->getMotorcycleTireBrands($tireSpecs, $originalData),
+            'seasonal_recommendations' => $this->getMotorcycleSeasonalTires($tireSpecs, $originalData),
+            'is_motorcycle_size' => true,
+            'front_tire_size' => $this->extractMotorcycleFrontTire($tireSize),
+            'rear_tire_size' => $this->extractMotorcycleRearTire($tireSize),
+            'tire_type' => $this->determineMotorcycleTireType($originalData),
+            'compound_type' => $this->determineMotorcycleTireCompound($originalData)
+        ];
+    }
+
+    /**
+     * Processa tabela de pressões para motocicletas CORRIGIDA
+     */
+    private function processMotorcyclePressureTable(array $table): array
+    {
+        if (empty($table)) {
+            return $this->generatePressureTableFromEmbeddedData();
+        }
+
+        $processed = [
+            'official_pressures' => [],
+            'conditional_adjustments' => [],
+            'special_conditions' => []
+        ];
+
+        // ✅ CORRIGIDO: Usar 'dianteira' e 'traseira' (como nos mocks)
+        if (!empty($table['pressoes_oficiais'])) {
+            foreach ($table['pressoes_oficiais'] as $condition => $pressures) {
+                $processed['official_pressures'][$condition] = [
+                    'condition' => $condition,
+                    'front' => $pressures['dianteira'] ?? '',  // ✅ CORRIGIDO
+                    'rear' => $pressures['traseira'] ?? '',    // ✅ CORRIGIDO
+                    'observation' => $pressures['observacao'] ?? ''
+                ];
+            }
+        }
+
+        // ✅ ADICIONADO: Processar condições especiais
+        if (!empty($table['condicoes_especiais'])) {
+            foreach ($table['condicoes_especiais'] as $condition) {
+                $processed['special_conditions'][] = [
+                    'situation' => $condition['situacao'] ?? '',
+                    'terrain' => $condition['terreno'] ?? '',
+                    'front_pressure' => $condition['pressao_dianteira'] ?? '',
+                    'rear_pressure' => $condition['pressao_traseira'] ?? '',
+                    'ideal_temperature' => $condition['temperatura_ideal'] ?? '',
+                    'observation' => $condition['observacao'] ?? '',
+                    'icon_class' => $this->getConditionIconClass($condition['terreno'] ?? '')
+                ];
+            }
+        }
+
+        // Processar ajustes condicionais (se existir)
+        if (!empty($table['ajustes_condicionais'])) {
+            foreach ($table['ajustes_condicionais'] as $adjustment) {
+                $processed['conditional_adjustments'][] = [
+                    'situation' => $adjustment['situacao'] ?? '',
+                    'front_adjustment' => $adjustment['ajuste_dianteiro'] ?? '',
+                    'rear_adjustment' => $adjustment['ajuste_traseiro'] ?? '',
+                    'justification' => $adjustment['justificativa'] ?? ''
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Obtém classe de ícone baseada no terreno/condição
+     */
+    private function getConditionIconClass(string $terrain): string
+    {
+        $iconMap = [
+            'Cidade/trânsito' => 'home',
+            'Estradas municipais' => 'map',
+            'Rodovias' => 'map',
+            'Curvas/montanha' => 'zap',
+            'Pista/autódromo' => 'zap',
+            'Piso molhado' => 'cloud-rain',
+            'Chuva' => 'cloud-rain',
+            'Uso geral' => 'user',
+            'Delivery/trabalho' => 'package'
+        ];
+
+        return $iconMap[$terrain] ?? 'map';
+    }
+
+    /**
+     * Processa localização das informações OTIMIZADA
+     */
+    private function processInformationLocation(array $location): array
+    {
+        if (empty($location)) {
+            return $this->generateInformationLocationFromEmbeddedData();
+        }
+
+        $processed = [];
+
+        if (!empty($location['manual_proprietario'])) {
+            $processed['owner_manual'] = [
+                'location' => $location['manual_proprietario']['localizacao'] ?? '',
+                'section' => $location['manual_proprietario']['secao'] ?? '',
+                'approximate_page' => $location['manual_proprietario']['pagina_aproximada'] ?? ''
+            ];
+        }
+
+        if (!empty($location['etiqueta_moto'])) {
+            $processed['motorcycle_label'] = [
+                'main_location' => $location['etiqueta_moto']['localizacao_principal'] ?? '',
+                'alternative_locations' => $location['etiqueta_moto']['localizacoes_alternativas'] ?? []
+            ];
+        }
+
+        $processed['important_tip'] = $location['dica_importante'] ?? '';
+        $processed['visual_guide'] = $this->generateMotorcycleVisualGuide($location);
+
+        return $processed;
+    }
+
+    /**
+     * Gera localização das informações a partir de dados embarcados
+     */
+    private function generateInformationLocationFromEmbeddedData(): array
+    {
+        $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
+
+        return [
+            'owner_manual' => [
+                'location' => 'Manual do Proprietário',
+                'section' => 'Especificações Técnicas',
+                'approximate_page' => 'Páginas 15-20 (aproximadamente)'
+            ],
+            'motorcycle_label' => [
+                'main_location' => 'Coluna da direção ou chassi próximo ao motor',
+                'alternative_locations' => [
+                    'Embaixo do banco',
+                    'Lado direito do chassi',
+                    'Manual do proprietário'
+                ]
+            ],
+            'important_tip' => 'Em motocicletas, as informações podem estar em locais menos visíveis. Consulte sempre o manual.',
+            'visual_guide' => []
+        ];
+    }
+
+    /**
+     * Processa conversão de unidades OTIMIZADA
+     */
+    private function processUnitConversion(array $conversion): array
+    {
+        if (empty($conversion)) {
+            return $this->generateUnitConversionFromEmbeddedData();
+        }
+
+        $processed = [
+            'conversion_table' => [],
+            'observation' => $conversion['observacao'] ?? ''
+        ];
+
+        if (!empty($conversion['tabela_conversao']) && is_array($conversion['tabela_conversao'])) {
+            foreach ($conversion['tabela_conversao'] as $row) {
+                $processed['conversion_table'][] = [
+                    'psi' => $row['psi'] ?? '',
+                    'kgf_cm2' => $row['kgf_cm2'] ?? '',
+                    'bar' => $row['bar'] ?? '',
+                    'is_recommended' => $this->isRecommendedMotorcyclePressure($row['psi'] ?? ''),
+                    'highlight_class' => $this->getMotorcyclePressureHighlightClass($row['psi'] ?? '')
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera conversão de unidades a partir de dados embarcados
+     */
+    private function generateUnitConversionFromEmbeddedData(): array
+    {
+        $pressureSpecs = $this->getCachedPressureSpecs();
+
+        $pressures = array_filter([
+            $pressureSpecs['pressure_empty_front'] ?? null,
+            $pressureSpecs['pressure_empty_rear'] ?? null,
+            $pressureSpecs['pressure_max_front'] ?? null,
+            $pressureSpecs['pressure_max_rear'] ?? null
+        ]);
+
+        if (empty($pressures)) {
+            return [];
+        }
+
+        $conversionTable = [];
+        $uniquePressures = array_unique($pressures);
+        sort($uniquePressures);
+
+        foreach ($uniquePressures as $psi) {
+            $conversionTable[] = [
+                'psi' => $psi,
+                'kgf_cm2' => round($psi * 0.070307, 2),
+                'bar' => round($psi * 0.0689476, 2),
+                'is_recommended' => true,
+                'highlight_class' => 'highlight-pressure'
+            ];
+        }
+
+        return [
+            'conversion_table' => $conversionTable,
+            'observation' => 'PSI é a unidade padrão no Brasil para motocicletas.'
+        ];
+    }
+
+    /**
+     * Processa considerações especiais para motocicletas OTIMIZADA
+     */
+    private function processSpecialConsiderations(array $considerations): array
+    {
+        if (empty($considerations)) {
+            return $this->generateSpecialConsiderationsFromEmbeddedData();
+        }
+
+        $processed = [];
+
+        foreach ($considerations as $key => $consideration) {
+            if (!empty($consideration['titulo'])) {
+                $processed[] = [
+                    'category' => $key,
+                    'title' => $consideration['titulo'],
+                    'description' => $consideration['descricao'] ?? '',
+                    'factors' => $consideration['fatores'] ?? [],
+                    'orientations' => $consideration['orientacoes'] ?? [],
+                    'types' => $consideration['tipos'] ?? [],
+                    'icon_class' => $this->getMotorcycleConsiderationIconClass($key),
+                    'importance' => $consideration['importancia'] ?? 'média'
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera considerações especiais a partir de dados embarcados
+     */
+    private function generateSpecialConsiderationsFromEmbeddedData(): array
+    {
+
+        $considerations = [];
+
+        // Peso do piloto
+        $considerations[] = [
+            'category' => 'peso_piloto',
+            'title' => 'Peso do Piloto e Garupa',
+            'description' => 'Ajustes necessários conforme o peso total.',
+            'factors' => [],
+            'orientations' => [],
+            'types' => [
+                'Piloto leve (≤65kg): reduzir 1 PSI no traseiro',
+                'Piloto médio (66-85kg): usar pressões padrão',
+                'Piloto pesado (≥86kg): aumentar 2 PSI no traseiro',
+                'Com garupa: sempre usar pressões para "piloto + garupa"',
+                'Bagagem pesada: considerar +1 PSI no traseiro'
+            ],
+            'icon_class' => 'package',
+            'importance' => 'alta'
+        ];
+
+        // Estilo de pilotagem
+        $considerations[] = [
+            'category' => 'estilo_pilotagem',
+            'title' => 'Estilo de Pilotagem',
+            'description' => 'Ajustes conforme o tipo de uso da motocicleta.',
+            'factors' => [],
+            'orientations' => [
+                'Pilotagem urbana defensiva: usar pressões padrão',
+                $this->isSportMotorcycle() ? 'Pilotagem esportiva: reduzir 2 PSI (somente experientes)' : '',
+                'Viagens longas: aumentar 2 PSI para estabilidade',
+                'Track day: consultar instrutor especializado'
+            ],
+            'types' => [],
+            'icon_class' => 'target',
+            'importance' => 'média'
+        ];
+
+        // Condições climáticas
+        $considerations[] = [
+            'category' => 'condicoes_clima',
+            'title' => 'Condições Climáticas',
+            'description' => 'Ajustes para diferentes condições de tempo.',
+            'factors' => [],
+            'orientations' => [
+                'Chuva: manter pressões exatas para máxima aderência',
+                'Calor extremo: verificar pressão pela manhã',
+                'Frio: aumentar ligeiramente após aquecimento',
+                'Pista molhada: nunca reduzir pressão'
+            ],
+            'types' => [],
+            'icon_class' => 'sun',
+            'importance' => 'alta'
+        ];
+
+        // Remove entradas vazias
+        $considerations = array_filter($considerations, function ($item) {
+            return !empty($item['orientations']) || !empty($item['factors']) || !empty($item['types']);
+        });
+
+        return $considerations;
+    }
+
+    /**
+     * Processa benefícios da calibragem específicos para motos OTIMIZADA
+     */
+    private function processMotorcycleCalibrationBenefits(array $benefits): array
+    {
+        if (empty($benefits)) {
+            return $this->generateMotorcycleBenefitsFromEmbeddedData();
+        }
+
+        $processed = [];
+
+        foreach ($benefits as $key => $benefit) {
+            if (!empty($benefit['titulo'])) {
+                $processed[] = [
+                    'category' => $key,
+                    'title' => $benefit['titulo'],
+                    'description' => $benefit['descricao'] ?? '',
+                    'aspects' => $benefit['aspectos'] ?? [],
+                    'financial_impact' => $benefit['impacto_financeiro'] ?? '',
+                    'estimated_savings' => $benefit['economia_estimada'] ?? '',
+                    'icon_class' => $this->getMotorcycleBenefitIconClass($key),
+                    'color_class' => $this->getMotorcycleBenefitColorClass($key),
+                    'priority' => $this->getMotorcycleBenefitPriority($key)
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera benefícios específicos para motos a partir de dados embarcados
+     */
+    private function generateMotorcycleBenefitsFromEmbeddedData(): array
+    {
+        $vehicleInfo = $this->processedData['vehicle_info'] ?? [];
+
+        return [
+            [
+                'category' => 'seguranca',
+                'title' => 'Segurança Crítica',
+                'description' => 'Em motocicletas, pressão incorreta pode ser fatal.',
+                'aspects' => [
+                    'Estabilidade em curvas mantida',
+                    'Distância de frenagem otimizada',
+                    'Aderência máxima em emergências',
+                    'Comportamento previsível da moto'
+                ],
+                'financial_impact' => 'Prevenção de acidentes',
+                'estimated_savings' => 'Inestimável',
+                'icon_class' => 'shield',
+                'color_class' => 'from-red-100 to-red-200',
+                'priority' => 'crítica'
+            ],
+            [
+                'category' => 'economia',
+                'title' => 'Economia de Combustível',
+                'description' => 'Pressão correta reduz consumo significativamente.',
+                'aspects' => [
+                    'Redução de 5-10% no consumo',
+                    'Menor resistência ao rolamento',
+                    'Motor trabalha com menos esforço',
+                    'Economia mensal perceptível'
+                ],
+                'financial_impact' => 'R$ 30-50/mês',
+                'estimated_savings' => 'R$ 360-600/ano',
+                'icon_class' => 'dollar-sign',
+                'color_class' => 'from-green-100 to-green-200',
+                'priority' => 'alta'
+            ],
+            [
+                'category' => 'durabilidade',
+                'title' => 'Vida Útil dos Pneus',
+                'description' => 'Pneus duram até 40% mais com pressão correta.',
+                'aspects' => [
+                    'Desgaste uniforme garantido',
+                    'Evita deformações permanentes',
+                    'Melhor distribuição de calor',
+                    'Aproveitamento máximo do composto'
+                ],
+                'financial_impact' => 'R$ 400-800/troca',
+                'estimated_savings' => 'R$ 800-1600/ano',
+                'icon_class' => 'clock',
+                'color_class' => 'from-blue-100 to-blue-200',
+                'priority' => 'alta'
+            ]
+        ];
+    }
+
+    /**
+     * Processa dicas de manutenção específicas para motos OTIMIZADA
+     */
+    private function processMotorcycleMaintenanceTips(array $tips): array
+    {
+        if (empty($tips)) {
+            return $this->generateMaintenanceTipsFromEmbeddedData();
+        }
+
+        $processed = [];
+
+        foreach ($tips as $tip) {
+            if (!empty($tip['categoria'])) {
+                $processed[] = [
+                    'category' => $tip['categoria'],
+                    'frequency' => $tip['frequencia'] ?? '',
+                    'procedures' => $tip['procedimentos'] ?? [],
+                    'tools_needed' => $tip['ferramentas_necessarias'] ?? [],
+                    'safety_warnings' => $tip['alertas_seguranca'] ?? [],
+                    'icon_class' => $this->getMotorcycleMaintenanceIconClass($tip['categoria']),
+                    'difficulty_level' => $tip['nivel_dificuldade'] ?? 'básico'
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera dicas de manutenção a partir de dados embarcados
+     */
+    private function generateMaintenanceTipsFromEmbeddedData(): array
+    {
+        return [
+            [
+                'category' => 'Verificação Semanal',
+                'frequency' => 'A cada 7 dias ou 500 km',
+                'procedures' => [
+                    'Verificar pressão com pneus frios',
+                    'Inspecionar visualmente os pneus',
+                    'Verificar profundidade dos sulcos',
+                    'Observar desgaste irregular'
+                ],
+                'tools_needed' => ['Calibrador', 'Compressor'],
+                'safety_warnings' => ['Nunca verificar com pneus quentes'],
+                'icon_class' => 'calendar',
+                'difficulty_level' => 'básico'
+            ],
+            [
+                'category' => 'Cuidados Especiais',
+                'frequency' => 'Conforme necessidade',
+                'procedures' => [
+                    'Calibrar antes de viagens longas',
+                    'Ajustar para carga extra',
+                    'Verificar após mudanças de temperatura',
+                    'Reavaliar após trocar pneus'
+                ],
+                'tools_needed' => ['Calibrador digital', 'Termômetro'],
+                'safety_warnings' => ['Respeitar limites de carga da moto'],
+                'icon_class' => 'tool',
+                'difficulty_level' => 'intermediário'
+            ]
+        ];
+    }
+
+    /**
+     * Processa alertas críticos para motocicletas OTIMIZADA
+     */
+    private function processCriticalAlerts(array $alerts): array
+    {
+        if (empty($alerts)) {
+            return $this->generateCriticalAlertsFromEmbeddedData();
+        }
+
+        $processed = [];
+
+        foreach ($alerts as $alert) {
+            if (!empty($alert['tipo'])) {
+                $processed[] = [
+                    'type' => $alert['tipo'],
+                    'title' => $alert['titulo'] ?? '',
+                    'description' => $alert['descricao'] ?? '',
+                    'consequence' => $alert['consequencia'] ?? '',
+                    'immediate_action' => $alert['acao_imediata'] ?? '',
+                    'icon_class' => $this->getMotorcycleAlertIconClass($alert['tipo']),
+                    'severity_class' => $this->getMotorcycleAlertSeverityClass($alert['tipo']),
+                    'border_class' => $this->getMotorcycleAlertBorderClass($alert['tipo'])
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera alertas críticos a partir de dados embarcados
+     */
+    private function generateCriticalAlertsFromEmbeddedData(): array
+    {
+        return [
+            [
+                'type' => 'crítico',
+                'title' => 'Pressão Baixa - Risco Fatal',
+                'description' => 'Pneus subcalibrados podem causar perda de controle em curvas.',
+                'consequence' => 'Acidente grave ou fatal',
+                'immediate_action' => 'Pare imediatamente e calibre',
+                'icon_class' => 'alert-triangle',
+                'severity_class' => 'critical',
+                'border_class' => 'border-red-600'
+            ],
+            [
+                'type' => 'importante',
+                'title' => 'Verificação com Pneus Quentes',
+                'description' => 'Nunca calibre ou verifique pressão com pneus aquecidos.',
+                'consequence' => 'Leituras incorretas e ajustes perigosos',
+                'immediate_action' => 'Aguarde 3h antes de verificar',
+                'icon_class' => 'thermometer',
+                'severity_class' => 'important',
+                'border_class' => 'border-orange-500'
+            ],
+            [
+                'type' => 'atenção',
+                'title' => 'Diferença Entre Dianteiro e Traseiro',
+                'description' => 'Pressões muito diferentes podem desbalancear a moto.',
+                'consequence' => 'Comportamento imprevisível',
+                'immediate_action' => 'Seguir especificações do fabricante',
+                'icon_class' => 'balance-scale',
+                'severity_class' => 'warning',
+                'border_class' => 'border-yellow-500'
+            ]
+        ];
+    }
+
+    /**
+     * Processa procedimento de calibragem OTIMIZADA
+     */
+    private function processCalibrationProcedure(array $procedure): array
+    {
+        if (empty($procedure)) {
+            return $this->generateMotorcycleCalibrationProcedureFromEmbeddedData();
+        }
+
+        $processed = [];
+
+        foreach ($procedure['passos'] ?? [] as $step) {
+            if (!empty($step['titulo'])) {
+                $processed[] = [
+                    'number' => $step['numero'] ?? 1,
+                    'title' => $step['titulo'],
+                    'description' => $step['descricao'] ?? '',
+                    'details' => $step['detalhes'] ?? [],
+                    'icon_class' => $this->getMotorcycleStepIconClass($step['numero'] ?? 1),
+                    'step_class' => $this->getMotorcycleStepClass($step['numero'] ?? 1)
+                ];
+            }
+        }
+
+        return $processed;
+    }
+
+    /**
+     * Gera procedimento de calibragem específico para motos a partir de dados embarcados
+     */
+    private function generateMotorcycleCalibrationProcedureFromEmbeddedData(): array
+    {
+        $pressureSpecs = $this->getCachedPressureSpecs();
+
+        return [
+            [
+                'number' => 1,
+                'title' => 'Preparação',
+                'description' => 'Verifique sempre com pneus frios',
+                'details' => [
+                    'Moto parada há pelo menos 3 horas',
+                    'Ou menos de 2 km rodados',
+                    'Preferencialmente pela manhã',
+                    'Em local com sombra'
+                ],
+                'icon_class' => 'settings',
+                'step_class' => 'step-preparation'
+            ],
+            [
+                'number' => 2,
+                'title' => 'Verificação',
+                'description' => 'Use calibrador confiável',
+                'details' => [
+                    'Prefira calibradores digitais',
+                    'Retire a tampa da válvula',
+                    'Encaixe firmemente o calibrador',
+                    'Anote a pressão atual'
+                ],
+                'icon_class' => 'search',
+                'step_class' => 'step-verification'
+            ],
+            [
+                'number' => 3,
+                'title' => 'Ajuste',
+                'description' => 'Calibre conforme necessidade',
+                'details' => [
+                    'Dianteiro: ' . ($pressureSpecs['pressure_empty_front'] ?? '33') . ' PSI (uso normal)',
+                    'Traseiro: ' . ($pressureSpecs['pressure_empty_rear'] ?? '36') . ' PSI (uso normal)',
+                    'Ajuste conforme condições especiais',
+                    'Recoloque as tampas das válvulas'
+                ],
+                'icon_class' => 'tool',
+                'step_class' => 'step-adjustment'
+            ]
+        ];
+    }
+
+    /**
+     * MELHORADO: Verifica se é moto esportiva com cache
+     */
+    public function isSportMotorcycle(): bool
+    {
+        if (!isset($this->dataCache['is_sport'])) {
+            $vehicleInfo = $this->getCachedVehicleInfo();
+            $mainCategory = $vehicleInfo['main_category'] ?? '';
+            $model = strtolower($vehicleInfo['model'] ?? '');
+
+            $this->dataCache['is_sport'] = str_contains($mainCategory, 'sport') ||
+                str_contains($model, 'gsx-r') ||
+                str_contains($model, 'cbr') ||
+                str_contains($model, 'ninja');
+        }
+
+        return $this->dataCache['is_sport'];
+    }
+
+    /**
+     * Verifica se é pressão recomendada para moto
+     */
+    private function isRecommendedMotorcyclePressure(string $psi): bool
+    {
+        $pressureSpecs = $this->getCachedPressureSpecs();
+        $recommendedPressures = [
+            $pressureSpecs['pressure_empty_front'] ?? null,
+            $pressureSpecs['pressure_empty_rear'] ?? null,
+            $pressureSpecs['pressure_max_front'] ?? null,
+            $pressureSpecs['pressure_max_rear'] ?? null
+        ];
+
+        return in_array((int)$psi, array_filter($recommendedPressures));
+    }
+
+    /**
+     * Obtém classe de destaque para pressão de moto
+     */
+    private function getMotorcyclePressureHighlightClass(string $psi): string
+    {
+        return $this->isRecommendedMotorcyclePressure($psi) ? 'highlight-pressure' : '';
+    }
+
+    /**
+     * Obtém classe de ícone para considerações
+     */
+    private function getMotorcycleConsiderationIconClass(string $category): string
+    {
+        $iconMap = [
+            'peso_piloto' => 'package',
+            'estilo_pilotagem' => 'target',
+            'condicoes_clima' => 'sun',
+            'tipo_pneu' => 'tool',
+            'temperatura' => 'thermometer',
+            'carga' => 'package'
+        ];
+
+        return $iconMap[$category] ?? 'info';
+    }
+
+    /**
+     * Obtém classe de ícone para benefícios
+     */
+    private function getMotorcycleBenefitIconClass(string $category): string
+    {
+        $iconMap = [
+            'seguranca' => 'shield',
+            'economia' => 'dollar-sign',
+            'durabilidade' => 'clock',
+            'performance' => 'zap',
+            'conforto' => 'heart'
+        ];
+
+        return $iconMap[$category] ?? 'star';
+    }
+
+    /**
+     * Obtém classe de cor para benefícios
+     */
+    private function getMotorcycleBenefitColorClass(string $category): string
+    {
+        $colorMap = [
+            'seguranca' => 'from-red-100 to-red-200',
+            'economia' => 'from-green-100 to-green-200',
+            'durabilidade' => 'from-blue-100 to-blue-200',
+            'performance' => 'from-purple-100 to-purple-200',
+            'conforto' => 'from-pink-100 to-pink-200'
+        ];
+
+        return $colorMap[$category] ?? 'from-gray-100 to-gray-200';
+    }
+
+    /**
+     * Obtém prioridade do benefício
+     */
+    private function getMotorcycleBenefitPriority(string $category): string
+    {
+        $priorityMap = [
+            'seguranca' => 'crítica',
+            'economia' => 'alta',
+            'durabilidade' => 'alta',
+            'performance' => 'média',
+            'conforto' => 'baixa'
+        ];
+
+        return $priorityMap[$category] ?? 'média';
+    }
+
+    /**
+     * Obtém classe de ícone para manutenção
+     */
+    private function getMotorcycleMaintenanceIconClass(string $category): string
+    {
+        $iconMap = [
+            'Verificação Semanal' => 'calendar',
+            'Cuidados Especiais' => 'tool',
+            'Limpeza' => 'droplet',
+            'Inspeção Visual' => 'eye',
+            'Emergência' => 'alert-triangle'
+        ];
+
+        return $iconMap[$category] ?? 'wrench';
+    }
+
+    /**
+     * Obtém classe de ícone para alertas
+     */
+    private function getMotorcycleAlertIconClass(string $type): string
+    {
+        $iconMap = [
+            'crítico' => 'alert-triangle',
+            'importante' => 'alert-circle',
+            'atenção' => 'info',
+            'dica' => 'lightbulb'
+        ];
+
+        return $iconMap[strtolower($type)] ?? 'help-circle';
+    }
+
+    /**
+     * Obtém classe de severidade para alertas
+     */
+    private function getMotorcycleAlertSeverityClass(string $type): string
+    {
+        $severityMap = [
+            'crítico' => 'critical',
+            'importante' => 'important',
+            'atenção' => 'warning',
+            'dica' => 'info'
+        ];
+
+        return $severityMap[strtolower($type)] ?? 'info';
+    }
+
+    /**
+     * Obtém classe de borda para alertas
+     */
+    private function getMotorcycleAlertBorderClass(string $type): string
+    {
+        $borderMap = [
+            'crítico' => 'border-red-600',
+            'importante' => 'border-orange-500',
+            'atenção' => 'border-yellow-500',
+            'dica' => 'border-blue-500'
+        ];
+
+        return $borderMap[strtolower($type)] ?? 'border-gray-500';
+    }
+
+    /**
+     * Obtém classe de ícone para passos
+     */
+    private function getMotorcycleStepIconClass(int $stepNumber): string
+    {
+        $icons = [
+            1 => 'settings',
+            2 => 'search',
+            3 => 'tool',
+            4 => 'check'
+        ];
+
+        return $icons[$stepNumber] ?? 'circle';
+    }
+
+    /**
+     * Obtém classe do passo
+     */
+    private function getMotorcycleStepClass(int $stepNumber): string
+    {
+        $classes = [
+            1 => 'step-preparation',
+            2 => 'step-verification',
+            3 => 'step-adjustment',
+            4 => 'step-completion'
+        ];
+
+        return $classes[$stepNumber] ?? 'step-default';
+    }
+
+    /**
+     * Gera guia visual para motocicleta
+     */
+    private function generateMotorcycleVisualGuide(array $location): array
+    {
+        return [
+            'images' => [
+                'label_location' => 'motorcycle-label-location.jpg',
+                'pressure_check' => 'motorcycle-pressure-check.jpg',
+                'valve_position' => 'motorcycle-valve-position.jpg'
+            ],
+            'descriptions' => [
+                'Localização da etiqueta na motocicleta',
+                'Posição correta para verificar pressão',
+                'Acesso à válvula dos pneus'
+            ]
+        ];
+    }
+
+    /**
+     * Sobrescreve dados de SEO para foco em "calibragem" para motocicletas
+     */
+    protected function processSeoData(): array
+    {
+        $vehicleInfo = $this->getCachedVehicleInfo();
+        $pressureSpecs = $this->getCachedPressureSpecs();
+        $seoData = $this->article->seo_data ?? [];
+
+        $pressureDisplay = $pressureSpecs['pressure_display'] ?? '';
+
+        return [
+            'title' => $seoData['page_title'] ?? "Calibragem do Pneu da {$vehicleInfo['full_name']} – Guia Completo para Motociclistas",
+            'meta_description' => $seoData['meta_description'] ?? "Guia específico de calibragem dos pneus da {$vehicleInfo['full_name']}. {$pressureDisplay}. Procedimento seguro e dicas críticas para motociclistas.",
+            'keywords' => $seoData['secondary_keywords'] ?? [],
+            'focus_keyword' => $seoData['primary_keyword'] ?? "calibragem pneu {$vehicleInfo['make']} {$vehicleInfo['model']} {$vehicleInfo['year']}",
+            'canonical_url' => $this->getCanonicalUrl(),
+            'h1' => $seoData['h1'] ?? "Calibragem do Pneu da {$vehicleInfo['full_name']} – Guia Completo para Motociclistas",
+            'h2_tags' => $seoData['h2_tags'] ?? [
+                'Especificações dos Pneus Originais',
+                'Procedimento de Calibragem para Motocicletas (PSI)',
+                'Tabela de Pressões: Solo vs Garupa',
+                'Ajustes para Condições Especiais de Pilotagem',
+                'Conversão de Unidades para Motociclistas',
+                'Cuidados Específicos na Calibragem de Motos',
+                'Alertas Críticos de Segurança',
+                'Procedimento Correto de Calibragem',
+                'Perguntas Frequentes sobre Calibragem'
+            ],
+            'og_title' => $seoData['og_title'] ?? "Calibragem do Pneu da {$vehicleInfo['full_name']} - Motocicleta",
+            'og_description' => $seoData['og_description'] ?? "Guia específico para motociclistas: procedimento de calibragem, pressões ideais e dicas de segurança para {$vehicleInfo['full_name']}.",
+            'og_image' => $seoData['og_image'] ?? $vehicleInfo['image_url'] ?? '',
+            'og_type' => 'article',
+            'twitter_card' => 'summary_large_image'
+        ];
+    }
+
+    /**
+     * Constrói dados estruturados Schema.org para calibragem de motocicletas
+     */
+    protected function buildStructuredData(): array
+    {
+        $vehicleInfo = $this->getCachedVehicleInfo();
+        $vehicleFullName = $vehicleInfo['full_name'];
+
+        $structuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Article',
+            'name' => "Calibragem do Pneu da {$vehicleFullName}",
+            'description' => "Guia específico de calibragem dos pneus da {$vehicleFullName}, incluindo procedimentos de segurança e ajustes para apenas o piloto e garupa.",
+            'image' => [
+                '@type' => 'ImageObject',
+                'url' => 'https://mercadoveiculos.s3.us-east-1.amazonaws.com/info-center/images/default/tire-calibration.png',
+                'width' => 1200,
+                'height' => 630
+            ],
+            'author' => [
+                '@type' => 'Organization',
+                'name' => 'Mercado Veículos',
+                'url' => 'https://mercadoveiculos.com.br'
+            ],
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'Mercado Veículos',
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => 'https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos.png'
+                ]
+            ],
+            'datePublished' => $this->article->created_at?->toISOString(),
+            'dateModified' => $this->article->updated_at?->toISOString(),
+            'about' => [
+                '@type' => 'Thing',
+                'name' => 'Calibragem de Pneus de Motocicleta',
+                'description' => 'Procedimentos específicos de calibragem para motocicletas'
+            ],
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id' => $this->getCanonicalUrl()
+            ]
+        ];
+
+        if (!empty($vehicleInfo['make']) && !empty($vehicleInfo['model'])) {
+            $structuredData['mainEntity'] = [
+                '@type' => 'Motorcycle',
+                'name' => 'Calibragem de pneus para ' . $vehicleInfo['make'] . ' ' . $vehicleInfo['model'],
+                'brand' => [
+                    '@type' => 'Brand',
+                    'name' => $vehicleInfo['make']
+                ],
+                'model' => $vehicleInfo['model']
+            ];
+
+            if (!empty($vehicleInfo['year'])) {
+                $structuredData['mainEntity']['modelDate'] = (string) $vehicleInfo['year'];
+            }
+
+            if (!empty($vehicleInfo['engine_displacement'])) {
+                $structuredData['mainEntity']['engineDisplacement'] = $vehicleInfo['engine_displacement'];
+            }
+
+            if (!empty($vehicleInfo['fuel'])) {
+                $structuredData['mainEntity']['fuelType'] = $vehicleInfo['fuel'];
+            }
+        }
+
+        // Adiciona informações específicas sobre calibragem de motocicletas
+        $pressureSpecs = $this->getCachedPressureSpecs();
+        if (!empty($pressureSpecs)) {
+            $structuredData['mainEntity']['maintenanceSchedule'] = [
+                '@type' => 'MaintenanceSchedule',
+                'name' => 'Calibragem de Pneus de Motocicleta',
+                'description' => 'Pressões recomendadas para calibragem dos pneus da motocicleta',
+                'frequency' => 'Weekly' // Motocicletas requerem verificação semanal
+            ];
+        }
+
+        return $structuredData;
+    }
+
+    /**
+     * Processa tópicos relacionados OTIMIZADA
+     */
+    private function getRelatedTopics(): array
+    {
+        $vehicleInfo = $this->getCachedVehicleInfo();
+
+        $topics = [];
+
+        // Tópicos gerais de manutenção
+        $topics[] = [
+            'title' => 'Troca de Óleo para ' . $vehicleInfo['make'],
+            'url' => '/info/troca-oleo-' . strtolower($vehicleInfo['make']),
+            'description' => 'Intervalos e especificações para troca de óleo'
+        ];
+
+        // Tópicos específicos por categoria
+        if ($this->isSportMotorcycle()) {
+            $topics[] = [
+                'title' => 'Pneus Esportivos para Track Day',
+                'url' => '/info/pneus-esportivos-track-day',
+                'description' => 'Escolha e calibragem para uso esportivo'
+            ];
+        }
+
+        $topics[] = [
+            'title' => 'Manutenção Preventiva de Motocicletas',
+            'url' => '/info/manutencao-preventiva-motos',
+            'description' => 'Checklist completo de manutenção'
+        ];
+
+        return $topics;
+    }
+
+    /**
+     * NOVO: Método para debugging (apenas em ambiente local)
+     */
+    public function debugData(): array
+    {
+        if (!app()->environment('local')) {
+            return [];
+        }
+
+        return [
+            'cache_keys' => array_keys($this->dataCache),
+            'vehicle_info_quality' => $this->getCachedVehicleInfo()['data_quality_score'] ?? 0,
+            'has_pressure_specs' => !empty($this->getCachedPressureSpecs()),
+            'has_tire_specs' => !empty($this->getCachedTireSpecs()),
+            'content_sections' => array_keys($this->article->content ?? []),
+            'processing_time' => microtime(true) - ($_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true))
+        ];
+    }
+
+
+
+    /**
+     * Verifica se propriedade existe
+     */
+    public function __isset(string $property): bool
+    {
+        return isset($this->processedData[$property]);
+    }
+
+    /**
+     * Obter propriedade específica
+     */
+    public function __get(string $property)
+    {
+        return $this->processedData[$property] ?? null;
+    }
+
+    /**
+     * Obter todos os dados processados
+     */
+    public function toArray(): array
+    {
+        return $this->processedData;
+    }
+}

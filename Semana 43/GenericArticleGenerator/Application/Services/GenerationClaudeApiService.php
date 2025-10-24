@@ -340,14 +340,6 @@ PROMPT;
             throw new \Exception('JSON inválido retornado pela API: ' . json_last_error_msg());
         }
 
-        // Adicionar campos do banco (não vem da API)
-        $json['category_id'] = $params['category_id'];
-        $json['category_name'] = $params['category_name'];
-        $json['category_slug'] = $params['category_slug'];
-        $json['subcategory_id'] = $params['subcategory_id'];
-        $json['subcategory_name'] = $params['subcategory_name'];
-        $json['subcategory_slug'] = $params['subcategory_slug'];
-
         return $json;
     }
 

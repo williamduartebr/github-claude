@@ -2,12 +2,12 @@
 
 namespace Src\GenericArticleGenerator\Infrastructure\Console;
 
-
-
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Src\GenericArticleGenerator\Infrastructure\Eloquent\GenerationTempArticle;
 use Src\GenericArticleGenerator\Application\Services\GenerationClaudeApiService;
+use Src\AutoInfoCenter\Domain\Eloquent\MaintenanceCategory;
+use Src\AutoInfoCenter\Domain\Eloquent\MaintenanceSubcategory;
 
 /**
  * GenerateIntermediateCommand - Modelo Intermediate (Sonnet 4.0)
@@ -17,23 +17,22 @@ use Src\GenericArticleGenerator\Application\Services\GenerationClaudeApiService;
  * QUALIDADE: Superior, mais consistente
  * VELOCIDADE: ~20-40s por artigo
  * 
+ * ✅ CORREÇÕES v2.1:
+ * - Busca category/subcategory do MySQL antes de gerar
+ * - Mescla dados após resposta do Claude
+ * - Atualiza campos na raiz do MongoDB
+ * 
  * QUANDO USAR:
  * - Artigos que falharam com modelo standard
  * - Temas complexos que precisam mais qualidade
  * - Artigos de alta prioridade
  * 
- * ESTRATÉGIA:
- * 1. Processar falhas do standard primeiro
- * 2. Artigos de prioridade alta
- * 3. Temas técnicos complexos
- * 
  * USO:
  * php artisan temp-article:generate-intermediate --limit=5
  * php artisan temp-article:generate-intermediate --only-failed-standard
- * php artisan temp-article:generate-intermediate --priority=high --limit=10
  * 
  * @author Claude Sonnet 4.5
- * @version 2.0 - Atualizado para Claude Sonnet 4.0
+ * @version 2.1 - Corrigido para buscar dados do MySQL
  */
 class GenerateIntermediateCommand extends Command
 {
@@ -50,6 +49,7 @@ class GenerateIntermediateCommand extends Command
     protected $description = 'Gerar artigos usando modelo INTERMEDIATE (claude-sonnet-4) - Escalação';
 
     private GenerationClaudeApiService $claudeService;
+
     private array $stats = [
         'processed' => 0,
         'successful' => 0,
@@ -76,66 +76,58 @@ class GenerateIntermediateCommand extends Command
             return self::FAILURE;
         }
 
-        try {
-            $limit = (int) $this->option('limit');
-            $delay = (int) $this->option('delay');
-            $batchSize = (int) $this->option('batch-size');
-            $dryRun = $this->option('dry-run');
+        $articles = $this->getArticlesToProcess();
 
-            $articles = $this->fetchArticlesToProcess($limit);
-
-            if ($articles->isEmpty()) {
-                $this->info('✅ Nenhum artigo encontrado para processar com modelo INTERMEDIATE');
-                $this->line('💡 Isso é BOM! Significa que o modelo standard está funcionando bem.');
-                return self::SUCCESS;
-            }
-
-            $this->displayArticlesSummary($articles);
-
-            if ($dryRun) {
-                $this->warn('🧪 DRY RUN - Nenhuma geração real será executada');
-                $this->displayDryRunSimulation($articles->count());
-                return self::SUCCESS;
-            }
-
-            if (!$this->confirmExecution($articles->count())) {
-                $this->info('⏹️ Execução cancelada pelo usuário');
-                return self::SUCCESS;
-            }
-
-            $this->processArticlesInBatches($articles, $batchSize, $delay);
-
-            $this->stats['total_time'] = round(microtime(true) - $startTime, 2);
-            $this->displayFinalResults();
-
+        if ($articles->isEmpty()) {
+            $this->warn('⚠️ Nenhum artigo encontrado para processar!');
             return self::SUCCESS;
-
-        } catch (\Exception $e) {
-            $this->error("💥 Erro crítico: " . $e->getMessage());
-            Log::error('GenerateIntermediateCommand failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return self::FAILURE;
         }
+
+        $this->displayArticlesSummary($articles);
+
+        if ($this->option('dry-run')) {
+            $this->info('🏁 DRY-RUN: Simulação concluída');
+            return self::SUCCESS;
+        }
+
+        if (!$this->confirm('Deseja continuar com a geração?', true)) {
+            $this->info('❌ Operação cancelada');
+            return self::SUCCESS;
+        }
+
+        $this->newLine();
+
+        foreach ($articles as $index => $article) {
+            $articles_count = ($index + 1 / $articles->count());
+            $this->info("📄 [{$articles_count}] {$article->title}");
+            $this->processArticle($article);
+
+            if ($index < $articles->count() - 1) {
+                sleep($this->option('delay'));
+            }
+        }
+
+        $totalTime = round(microtime(true) - $startTime, 2);
+        $this->stats['total_time'] = $totalTime;
+
+        $this->displayFinalStats();
+
+        return $this->stats['failed'] > 0 ? self::FAILURE : self::SUCCESS;
     }
 
-    private function fetchArticlesToProcess(int $limit)
+    private function getArticlesToProcess()
     {
         $query = GenerationTempArticle::query();
 
         if ($this->option('only-failed-standard')) {
             $query->where('generation_status', 'failed')
-                  ->where('generation_model_used', 'standard');
+                ->where('generation_model_used', 'standard');
         } else {
-            $query->where(function($q) {
-                $q->where('generation_status', 'pending')
-                  ->where('generation_priority', 'high')
-                  ->orWhere(function($subQ) {
-                      $subQ->where('generation_status', 'failed')
-                           ->where('generation_retry_count', '<', 3);
-                  });
-            });
+            $query->where('generation_status', 'pending')
+                ->orWhere(function ($q) {
+                    $q->where('generation_status', 'failed')
+                        ->where('generation_retry_count', '<', 3);
+                });
         }
 
         if ($priority = $this->option('priority')) {
@@ -143,76 +135,66 @@ class GenerateIntermediateCommand extends Command
         }
 
         if ($category = $this->option('category')) {
-            $query->where('category_slug', $category);
-        }
-
-        if ($this->option('force-retry')) {
-            $query->orWhere(function($q) {
-                $q->where('generation_status', 'failed')
-                  ->where('generation_retry_count', '>=', 3);
-            });
+            $categoryModel = MaintenanceCategory::where('slug', $category)->first();
+            if ($categoryModel) {
+                $query->where('maintenance_category_id', $categoryModel->id);
+            }
         }
 
         return $query->orderBy('generation_priority', 'desc')
-                    ->orderBy('created_at', 'asc')
-                    ->limit($limit)
-                    ->get();
-    }
-
-    private function processArticlesInBatches($articles, int $batchSize, int $delay): void
-    {
-        $batches = $articles->chunk($batchSize);
-        $totalBatches = $batches->count();
-        $currentBatch = 0;
-
-        foreach ($batches as $batch) {
-            $currentBatch++;
-            $this->info("🔄 Processando lote {$currentBatch}/{$totalBatches}");
-            $this->newLine();
-
-            foreach ($batch as $article) {
-                $this->processArticle($article);
-                
-                if (!($currentBatch === $totalBatches && $article === $batch->last())) {
-                    $this->line("⏳ Aguardando {$delay}s...");
-                    sleep($delay);
-                }
-            }
-
-            $this->newLine();
-            $this->displayIntermediateStats($currentBatch, $totalBatches);
-            $this->newLine();
-        }
+            ->limit($this->option('limit'))
+            ->get();
     }
 
     private function processArticle(GenerationTempArticle $article): void
     {
         $articleStartTime = microtime(true);
 
-        $this->line("📝 Processando: {$article->title}");
-        $this->line("   📁 Categoria: {$article->category_name} > {$article->subcategory_name}");
-        $this->line("   🎯 Prioridade: {$article->generation_priority}");
-        $this->line("   🔄 Tentativas anteriores: " . ($article->generation_retry_count ?? 0));
-
         try {
+            // Buscar categoria e subcategoria
+            $category = MaintenanceCategory::find($article->maintenance_category_id);
+            $subcategory = MaintenanceSubcategory::find($article->maintenance_subcategory_id);
+
+            if (!$category || !$subcategory) {
+                $error = "Category/Subcategory não encontrada";
+                $this->error("   ❌ {$error}");
+                $this->stats['skipped']++;
+                return;
+            }
+
+            $this->line("   🏷️ Categoria: {$category->name} > {$subcategory->name}");
+            $this->line("   🔄 Tentativa: " . ($article->generation_retry_count ?? 0));
+
             $article->markAsGenerating('intermediate');
 
             $result = $this->claudeService->generateArticle([
                 'title' => $article->title,
-                'category_id' => $article->category_id,
-                'category_name' => $article->category_name,
-                'category_slug' => $article->category_slug,
-                'subcategory_id' => $article->subcategory_id,
-                'subcategory_name' => $article->subcategory_name,
-                'subcategory_slug' => $article->subcategory_slug,
+                'category_name' => $category->name,
+                'category_slug' => $category->slug,
+                'subcategory_name' => $subcategory->name,
+                'subcategory_slug' => $subcategory->slug,
             ], 'intermediate');
 
             if ($result['success']) {
-                $article->markAsGenerated(
-                    $result['json'],
-                    'intermediate',
-                    $result['cost']
-                );
+                // Mesclar dados
+                $completeData = array_merge($result['json'], [
+                    'category_id' => $category->id,
+                    'category_name' => $category->name,
+                    'category_slug' => $category->slug,
+                    'subcategory_id' => $subcategory->id,
+                    'subcategory_name' => $subcategory->name,
+                    'subcategory_slug' => $subcategory->slug,
+                ]);
+
+                $article->markAsGenerated($completeData, 'intermediate', $result['cost']);
+
+                // Atualizar raiz
+                $article->update([
+                    'category_name' => $category->name,
+                    'category_slug' => $category->slug,
+                    'subcategory_name' => $subcategory->name,
+                    'subcategory_slug' => $subcategory->slug,
+                ]);
 
                 $executionTime = round(microtime(true) - $articleStartTime, 2);
 
@@ -224,18 +206,31 @@ class GenerateIntermediateCommand extends Command
                 $this->stats['successful']++;
                 $this->stats['total_cost'] += $result['cost'];
 
+                Log::info('Claude Intermediate: Sucesso', [
+                    'article_id' => $article->_id,
+                    'title' => $article->title,
+                    'category' => $category->name,
+                    'cost' => $result['cost'],
+                ]);
             } else {
                 $article->markAsFailed($result['error'], 'intermediate');
-
                 $this->error("   ❌ Falha: {$result['error']}");
-
                 $this->stats['failed']++;
-            }
 
+                Log::warning('Claude Intermediate: Falha', [
+                    'article_id' => $article->_id,
+                    'error' => $result['error'],
+                ]);
+            }
         } catch (\Exception $e) {
             $article->markAsFailed($e->getMessage(), 'intermediate');
             $this->error("   💥 Exceção: " . $e->getMessage());
             $this->stats['failed']++;
+
+            Log::error('Claude Intermediate: Exceção', [
+                'article_id' => $article->_id ?? 'N/A',
+                'error' => $e->getMessage(),
+            ]);
         }
 
         $this->stats['processed']++;
@@ -248,7 +243,7 @@ class GenerateIntermediateCommand extends Command
         $this->info('║   🚀 GERAÇÃO DE ARTIGOS - MODELO INTERMEDIATE            ║');
         $this->info('║   📊 Claude Sonnet 4.0 (Escalação)                      ║');
         $this->info('║   💰 Custo: 3.5x                                         ║');
-        $this->info('║   🎯 Uso: Falhas do standard + Alta prioridade          ║');
+        $this->info('║   ✅ v2.1 - Com busca MySQL de categorias               ║');
         $this->info('╚═══════════════════════════════════════════════════════════╝');
         $this->newLine();
     }
@@ -257,129 +252,35 @@ class GenerateIntermediateCommand extends Command
     {
         $this->info('📋 ARTIGOS PARA PROCESSAR:');
         $this->table(
-            ['#', 'Título', 'Categoria', 'Prioridade', 'Status', 'Tentativas'],
-            $articles->map(function($article, $index) {
+            ['#', 'Título', 'Cat.ID', 'SubCat.ID', 'Prioridade', 'Status', 'Tentativas'],
+            $articles->map(function ($article, $index) {
                 return [
                     $index + 1,
                     \Illuminate\Support\Str::limit($article->title, 50),
-                    $article->category_name,
-                    $article->generation_priority ?? 'medium',
+                    $article->maintenance_category_id,
+                    $article->maintenance_subcategory_id,
+                    strtoupper($article->generation_priority ?? 'medium'),
                     $article->generation_status ?? 'pending',
-                    $article->generation_retry_count ?? 0
+                    $article->generation_retry_count ?? 0,
                 ];
             })
         );
         $this->newLine();
     }
 
-    private function displayDryRunSimulation(int $count): void
+    private function displayFinalStats(): void
     {
-        $estimatedCost = $count * 3.5;
-        $estimatedTime = $count * ((int)$this->option('delay') + 30);
-
-        $this->info('🧪 SIMULAÇÃO (DRY RUN):');
-        $this->line("   📊 Artigos a processar: {$count}");
-        $this->line("   💰 Custo estimado: {$estimatedCost} unidades");
-        $this->line("   ⏱️ Tempo estimado: " . gmdate("H:i:s", $estimatedTime));
-        $this->line("   📈 Taxa de sucesso esperada: ~85-95%");
-        $this->newLine();
-        $this->info('💡 Para executar de verdade, remova --dry-run');
-    }
-
-    private function confirmExecution(int $count): bool
-    {
-        $estimatedCost = $count * 3.5;
-        $estimatedTime = $count * ((int)$this->option('delay') + 30);
-
-        $this->warn('⚠️ CONFIRMAÇÃO:');
-        $this->line("📊 Artigos: {$count}");
-        $this->line("💰 Custo estimado: {$estimatedCost} unidades");
-        $this->line("⏱️ Tempo estimado: " . gmdate("H:i:s", $estimatedTime));
-        $this->line("🤖 Modelo: claude-sonnet-4-20250514");
-        $this->newLine();
-
-        return $this->confirm('Continuar com a geração?');
-    }
-
-    private function displayIntermediateStats(int $currentBatch, int $totalBatches): void
-    {
-        $successRate = $this->stats['processed'] > 0 
-            ? round(($this->stats['successful'] / $this->stats['processed']) * 100, 1) 
-            : 0;
-
-        $this->info("📊 PROGRESSO - Lote {$currentBatch}/{$totalBatches}:");
-        $this->line("   ✅ Sucessos: {$this->stats['successful']}");
-        $this->line("   ❌ Falhas: {$this->stats['failed']}");
-        $this->line("   📈 Taxa: {$successRate}%");
-        $this->line("   💰 Custo acumulado: {$this->stats['total_cost']} unidades");
-    }
-
-    private function displayFinalResults(): void
-    {
-        $this->newLine();
         $this->info('╔═══════════════════════════════════════════════════════════╗');
-        $this->info('║         🏆 RESULTADOS FINAIS - INTERMEDIATE              ║');
+        $this->info('║                    📊 ESTATÍSTICAS FINAIS                ║');
         $this->info('╚═══════════════════════════════════════════════════════════╝');
         $this->newLine();
 
-        $successRate = $this->stats['processed'] > 0 
-            ? round(($this->stats['successful'] / $this->stats['processed']) * 100, 1) 
-            : 0;
-
-        $avgCostPerArticle = $this->stats['successful'] > 0 
-            ? round($this->stats['total_cost'] / $this->stats['successful'], 2) 
-            : 0;
-
-        $this->table(
-            ['Métrica', 'Valor'],
-            [
-                ['📊 Processados', $this->stats['processed']],
-                ['✅ Sucessos', $this->stats['successful']],
-                ['❌ Falhas', $this->stats['failed']],
-                ['📈 Taxa de Sucesso', $successRate . '%'],
-                ['💰 Custo Total', $this->stats['total_cost'] . ' unidades'],
-                ['💵 Custo Médio/Artigo', $avgCostPerArticle . ' unidades'],
-                ['⏱️ Tempo Total', $this->stats['total_time'] . 's'],
-            ]
-        );
-
+        $this->line("✅ Processados: {$this->stats['processed']}");
+        $this->line("🎉 Sucesso: {$this->stats['successful']}");
+        $this->line("❌ Falhas: {$this->stats['failed']}");
+        $this->line("⏭️ Pulados: {$this->stats['skipped']}");
+        $this->line("💰 Custo total: {$this->stats['total_cost']} unidades");
+        $this->line("⏱️ Tempo total: {$this->stats['total_time']}s");
         $this->newLine();
-
-        if ($successRate >= 90) {
-            $this->info('🎉 EXCELENTE! Modelo intermediate resolveu os casos complexos.');
-            $this->line('✅ Justifica o custo adicional para estes artigos.');
-        } elseif ($successRate >= 75) {
-            $this->info('👍 BOA performance com intermediate.');
-            $this->line('💡 Continue monitorando os casos de falha.');
-        } else {
-            $this->warn('⚠️ Performance ABAIXO do esperado para intermediate.');
-            $this->line('💡 Considere:');
-            $this->line('   • Revisar qualidade dos títulos de entrada');
-            $this->line('   • Escalar casos críticos para modelo premium');
-            $this->line('   • Verificar logs para erros recorrentes');
-        }
-
-        $this->newLine();
-        $this->info('📝 PRÓXIMAS AÇÕES:');
-        
-        $pendingCount = GenerationTempArticle::pending()->count();
-        $failedCount = GenerationTempArticle::where('generation_status', 'failed')->count();
-        $generatedCount = GenerationTempArticle::where('generation_status', 'generated')->count();
-
-        $this->line("   📊 Ainda pendentes: {$pendingCount}");
-        $this->line("   ❌ Falhados: {$failedCount}");
-        $this->line("   ✅ Gerados (aguardando validação): {$generatedCount}");
-
-        if ($failedCount > 0) {
-            $this->newLine();
-            $this->warn("⚠️ {$failedCount} artigos falharam. Considere:");
-            $this->line('   🔴 php artisan temp-article:generate-premium --limit=3 (casos críticos)');
-        }
-
-        if ($generatedCount > 0) {
-            $this->newLine();
-            $this->info("✅ {$generatedCount} artigos gerados. Próximo passo:");
-            $this->line('   📦 php artisan temp-article:validate');
-        }
     }
 }

@@ -14,60 +14,60 @@ use Illuminate\Support\Facades\Cache;
  */
 class NewGenerationClaudeApiService
 {
-    private const API_URL = 'https://api.anthropic.com/v1/messages';
-    private const API_VERSION = '2023-06-01';
+  private const API_URL = 'https://api.anthropic.com/v1/messages';
+  private const API_VERSION = '2023-06-01';
 
-    private const MODELS = [
-        'standard' => [
-            'id' => 'claude-3-7-sonnet-20250219',
-            'max_tokens' => 12000,
-            'temperature' => 0.2,
-            'cost_multiplier' => 2.3,
-            'timeout' => 180,
-            'description' => 'Standard - Econômico e Eficiente'
-        ],
-        'intermediate' => [
-            'id' => 'claude-sonnet-4-20250514',
-            'max_tokens' => 12000,
-            'temperature' => 0.15,
-            'cost_multiplier' => 3.5,
-            'timeout' => 240,
-            'description' => 'Intermediate - Balanceado (Sonnet 4.0)'
-        ],
-        'premium' => [
-            'id' => 'claude-sonnet-4-5-20250929',
-            'max_tokens' => 12000,
-            'temperature' => 0.1,
-            'cost_multiplier' => 4.0,
-            'timeout' => 300,
-            'description' => 'Premium - Máxima Qualidade (Sonnet 4.5)'
-        ]
-    ];
+  private const MODELS = [
+    'standard' => [
+      'id' => 'claude-3-7-sonnet-20250219',
+      'max_tokens' => 12000,
+      'temperature' => 0.2,
+      'cost_multiplier' => 2.3,
+      'timeout' => 180,
+      'description' => 'Standard - Econômico e Eficiente'
+    ],
+    'intermediate' => [
+      'id' => 'claude-sonnet-4-20250514',
+      'max_tokens' => 12000,
+      'temperature' => 0.15,
+      'cost_multiplier' => 3.5,
+      'timeout' => 240,
+      'description' => 'Intermediate - Balanceado (Sonnet 4.0)'
+    ],
+    'premium' => [
+      'id' => 'claude-sonnet-4-5-20250929',
+      'max_tokens' => 12000,
+      'temperature' => 0.1,
+      'cost_multiplier' => 4.0,
+      'timeout' => 300,
+      'description' => 'Premium - Máxima Qualidade (Sonnet 4.5)'
+    ]
+  ];
 
-    private string $apiKey;
+  private string $apiKey;
 
-    public function __construct()
-    {
-        $this->apiKey = config('services.anthropic.api_key', env('ANTHROPIC_API_KEY'));
-    }
+  public function __construct()
+  {
+    $this->apiKey = config('services.anthropic.api_key', env('ANTHROPIC_API_KEY'));
+  }
 
-    public function isConfigured(): bool
-    {
-        return !empty($this->apiKey);
-    }
+  public function isConfigured(): bool
+  {
+    return !empty($this->apiKey);
+  }
 
-    /**
-     * Construir prompt para geração de artigo
-     * 
-     * ✅ CORRIGIDO: Estrutura do bloco COMPARISON agora é consistente
-     */
-    private function buildPrompt(array $params): string
-    {
-        $title = $params['title'];
-        $categoryName = $params['category_name'];
-        $subcategoryName = $params['subcategory_name'];
+  /**
+   * Construir prompt para geração de artigo
+   * 
+   * ✅ CORRIGIDO: Estrutura do bloco COMPARISON agora é consistente
+   */
+  private function buildPrompt(array $params): string
+  {
+    $title = $params['title'];
+    $categoryName = $params['category_name'];
+    $subcategoryName = $params['subcategory_name'];
 
-        return <<<PROMPT
+    return <<<PROMPT
 Você é um especialista em criar artigos técnicos automotivos para o mercado brasileiro.
 
 # TAREFA
@@ -327,230 +327,223 @@ Antes de retornar o JSON, verifique:
 
 Gere o artigo agora.
 PROMPT;
+  }
+
+  /**
+   * Gerar artigo completo via API
+   */
+  public function generateArticle(array $params, string $model = 'standard'): array
+  {
+    $modelConfig = self::MODELS[$model] ?? self::MODELS['standard'];
+    $startTime = microtime(true);
+
+    try {
+      $prompt = $this->buildPrompt($params);
+      $response = $this->callApi($prompt, $modelConfig);
+      $generatedJson = $this->processResponse($response, $params);
+      $this->validateGeneratedJson($generatedJson);
+
+      $executionTime = round(microtime(true) - $startTime, 2);
+      $this->recordStats($model, $executionTime, true, strlen(json_encode($generatedJson)));
+
+      return [
+        'success' => true,
+        'json' => $generatedJson,
+        'model' => $model,
+        'cost' => $modelConfig['cost_multiplier'],
+        'execution_time' => $executionTime,
+        'tokens_estimated' => $this->estimateTokens($generatedJson)
+      ];
+    } catch (\Exception $e) {
+      $executionTime = round(microtime(true) - $startTime, 2);
+      $this->recordStats($model, $executionTime, false, 0);
+
+      return [
+        'success' => false,
+        'error' => $e->getMessage(),
+        'model' => $model,
+        'cost' => 0,
+        'execution_time' => $executionTime
+      ];
+    }
+  }
+
+  private function callApi(string $prompt, array $modelConfig): array
+  {
+    $response = Http::withHeaders([
+      'x-api-key' => $this->apiKey,
+      'anthropic-version' => self::API_VERSION,
+      'content-type' => 'application/json',
+    ])
+      ->timeout($modelConfig['timeout'])
+      ->post(self::API_URL, [
+        'model' => $modelConfig['id'],
+        'max_tokens' => $modelConfig['max_tokens'],
+        'temperature' => $modelConfig['temperature'],
+        'messages' => [
+          [
+            'role' => 'user',
+            'content' => $prompt
+          ]
+        ]
+      ]);
+
+    if (!$response->successful()) {
+      throw new \Exception('API Error: ' . $response->body());
     }
 
-    /**
-     * Gerar artigo completo via API
-     */
-    public function generateArticle(array $params, string $model = 'standard'): array
-    {
-        $modelConfig = self::MODELS[$model] ?? self::MODELS['standard'];
-        $startTime = microtime(true);
+    return $response->json();
+  }
 
-        try {
-            $prompt = $this->buildPrompt($params);
-            $response = $this->callApi($prompt, $modelConfig);
-            $generatedJson = $this->processResponse($response, $params);
-            $this->validateGeneratedJson($generatedJson);
+  private function processResponse(array $response, array $params): array
+  {
+    $content = $response['content'][0]['text'] ?? '';
 
-            $executionTime = round(microtime(true) - $startTime, 2);
-            $this->recordStats($model, $executionTime, true, strlen(json_encode($generatedJson)));
-
-            return [
-                'success' => true,
-                'json' => $generatedJson,
-                'model' => $model,
-                'cost' => $modelConfig['cost_multiplier'],
-                'execution_time' => $executionTime,
-                'tokens_estimated' => $this->estimateTokens($generatedJson)
-            ];
-        } catch (\Exception $e) {
-            $executionTime = round(microtime(true) - $startTime, 2);
-            $this->recordStats($model, $executionTime, false, 0);
-
-            return [
-                'success' => false,
-                'error' => $e->getMessage(),
-                'model' => $model,
-                'cost' => 0,
-                'execution_time' => $executionTime
-            ];
-        }
+    if (empty($content)) {
+      throw new \Exception('API retornou conteúdo vazio');
     }
 
-    private function callApi(string $prompt, array $modelConfig): array
-    {
-        $response = Http::withHeaders([
-            'x-api-key' => $this->apiKey,
-            'anthropic-version' => self::API_VERSION,
-            'content-type' => 'application/json',
-        ])
-            ->timeout($modelConfig['timeout'])
-            ->post(self::API_URL, [
-                'model' => $modelConfig['id'],
-                'max_tokens' => $modelConfig['max_tokens'],
-                'temperature' => $modelConfig['temperature'],
-                'messages' => [
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
-                ]
-            ]);
+    $content = $this->cleanMarkdown($content);
+    $json = json_decode($content, true);
 
-        if (!$response->successful()) {
-            throw new \Exception('API Error: ' . $response->body());
-        }
-
-        return $response->json();
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      throw new \Exception('JSON inválido: ' . json_last_error_msg());
     }
 
-    private function processResponse(array $response, array $params): array
-    {
-        $content = $response['content'][0]['text'] ?? '';
+    return $json;
+  }
 
-        if (empty($content)) {
-            throw new \Exception('API retornou conteúdo vazio');
-        }
+  private function cleanMarkdown(string $content): string
+  {
+    $content = preg_replace('/^```json\s*/i', '', $content);
+    $content = preg_replace('/\s*```$/', '', $content);
+    return trim($content);
+  }
 
-        $content = $this->cleanMarkdown($content);
-        $json = json_decode($content, true);
+  private function validateGeneratedJson(array $json): void
+  {
+    $requiredFields = ['title', 'slug', 'template', 'seo_data', 'metadata'];
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('JSON inválido: ' . json_last_error_msg());
-        }
-
-        $json['category_id'] = $params['category_id'];
-        $json['category_name'] = $params['category_name'];
-        $json['category_slug'] = $params['category_slug'];
-        $json['subcategory_id'] = $params['subcategory_id'];
-        $json['subcategory_name'] = $params['subcategory_name'];
-        $json['subcategory_slug'] = $params['subcategory_slug'];
-
-        return $json;
+    foreach ($requiredFields as $field) {
+      if (!isset($json[$field])) {
+        throw new \Exception("Campo obrigatório ausente: {$field}");
+      }
     }
 
-    private function cleanMarkdown(string $content): string
-    {
-        $content = preg_replace('/^```json\s*/i', '', $content);
-        $content = preg_replace('/\s*```$/', '', $content);
-        return trim($content);
+    if (empty($json['metadata']['content_blocks'])) {
+      throw new \Exception('content_blocks vazio ou ausente');
     }
 
-    private function validateGeneratedJson(array $json): void
-    {
-        $requiredFields = ['title', 'slug', 'template', 'seo_data', 'metadata'];
+    $blocks = $json['metadata']['content_blocks'];
+    $blockTypes = array_column($blocks, 'block_type');
 
-        foreach ($requiredFields as $field) {
-            if (!isset($json[$field])) {
-                throw new \Exception("Campo obrigatório ausente: {$field}");
-            }
-        }
-
-        if (empty($json['metadata']['content_blocks'])) {
-            throw new \Exception('content_blocks vazio ou ausente');
-        }
-
-        $blocks = $json['metadata']['content_blocks'];
-        $blockTypes = array_column($blocks, 'block_type');
-
-        $requiredBlocks = ['intro', 'tldr', 'faq', 'conclusion'];
-        foreach ($requiredBlocks as $required) {
-            if (!in_array($required, $blockTypes)) {
-                throw new \Exception("Bloco obrigatório ausente: {$required}");
-            }
-        }
-
-        if (count($blocks) < 8) {
-            throw new \Exception('Número insuficiente de blocos (mínimo: 8)');
-        }
-
-        // ✅ NOVA VALIDAÇÃO: Verificar estrutura do bloco comparison
-        $this->validateComparisonBlocks($blocks);
+    $requiredBlocks = ['intro', 'tldr', 'faq', 'conclusion'];
+    foreach ($requiredBlocks as $required) {
+      if (!in_array($required, $blockTypes)) {
+        throw new \Exception("Bloco obrigatório ausente: {$required}");
+      }
     }
 
-    /**
-     * ✅ NOVO: Validar estrutura específica do bloco comparison
-     */
-    private function validateComparisonBlocks(array $blocks): void
-    {
-        foreach ($blocks as $block) {
-            if ($block['block_type'] !== 'comparison') {
-                continue;
-            }
-
-            $items = $block['content']['items'] ?? [];
-            
-            if (empty($items)) {
-                throw new \Exception('Bloco comparison sem items');
-            }
-
-            foreach ($items as $index => $item) {
-                // Verificar se tem a estrutura correta
-                if (empty($item['aspect'])) {
-                    throw new \Exception("Bloco comparison item #{$index}: campo 'aspect' vazio ou ausente");
-                }
-
-                if (!isset($item['option_a']) || !isset($item['option_b'])) {
-                    throw new \Exception("Bloco comparison item #{$index}: campos option_a/option_b ausentes");
-                }
-            }
-        }
+    if (count($blocks) < 8) {
+      throw new \Exception('Número insuficiente de blocos (mínimo: 8)');
     }
 
-    private function estimateTokens(array $json): int
-    {
-        return (int) ceil(strlen(json_encode($json)) / 4);
-    }
+    // ✅ NOVA VALIDAÇÃO: Verificar estrutura do bloco comparison
+    $this->validateComparisonBlocks($blocks);
+  }
 
-    private function recordStats(string $model, float $executionTime, bool $success, int $size): void
-    {
-        $key = "claude_api_stats_{$model}_" . now()->format('Y-m-d');
+  /**
+   * ✅ NOVO: Validar estrutura específica do bloco comparison
+   */
+  private function validateComparisonBlocks(array $blocks): void
+  {
+    foreach ($blocks as $block) {
+      if ($block['block_type'] !== 'comparison') {
+        continue;
+      }
 
-        $stats = Cache::get($key, [
-            'model' => $model,
-            'date' => now()->format('Y-m-d'),
-            'total_calls' => 0,
-            'successful_calls' => 0,
-            'failed_calls' => 0,
-            'total_execution_time' => 0,
-            'total_size' => 0
-        ]);
+      $items = $block['content']['items'] ?? [];
 
-        $stats['total_calls']++;
-        $stats['total_execution_time'] += $executionTime;
-        $stats['total_size'] += $size;
+      if (empty($items)) {
+        throw new \Exception('Bloco comparison sem items');
+      }
 
-        if ($success) {
-            $stats['successful_calls']++;
-        } else {
-            $stats['failed_calls']++;
+      foreach ($items as $index => $item) {
+        // Verificar se tem a estrutura correta
+        if (empty($item['aspect'])) {
+          throw new \Exception("Bloco comparison item #{$index}: campo 'aspect' vazio ou ausente");
         }
 
-        Cache::put($key, $stats, now()->addDays(7));
-    }
-
-    public function getStats(?string $model = null, ?string $date = null): array
-    {
-        $date = $date ?? now()->format('Y-m-d');
-        $models = $model ? [$model] : array_keys(self::MODELS);
-
-        $allStats = [];
-        foreach ($models as $m) {
-            $key = "claude_api_stats_{$m}_{$date}";
-            $stats = Cache::get($key);
-            if ($stats) {
-                $allStats[$m] = $stats;
-            }
+        if (!isset($item['option_a']) || !isset($item['option_b'])) {
+          throw new \Exception("Bloco comparison item #{$index}: campos option_a/option_b ausentes");
         }
+      }
+    }
+  }
 
-        return $allStats;
+  private function estimateTokens(array $json): int
+  {
+    return (int) ceil(strlen(json_encode($json)) / 4);
+  }
+
+  private function recordStats(string $model, float $executionTime, bool $success, int $size): void
+  {
+    $key = "claude_api_stats_{$model}_" . now()->format('Y-m-d');
+
+    $stats = Cache::get($key, [
+      'model' => $model,
+      'date' => now()->format('Y-m-d'),
+      'total_calls' => 0,
+      'successful_calls' => 0,
+      'failed_calls' => 0,
+      'total_execution_time' => 0,
+      'total_size' => 0
+    ]);
+
+    $stats['total_calls']++;
+    $stats['total_execution_time'] += $executionTime;
+    $stats['total_size'] += $size;
+
+    if ($success) {
+      $stats['successful_calls']++;
+    } else {
+      $stats['failed_calls']++;
     }
 
-    public function getModelConfig(string $model): ?array
-    {
-        return self::MODELS[$model] ?? null;
+    Cache::put($key, $stats, now()->addDays(7));
+  }
+
+  public function getStats(?string $model = null, ?string $date = null): array
+  {
+    $date = $date ?? now()->format('Y-m-d');
+    $models = $model ? [$model] : array_keys(self::MODELS);
+
+    $allStats = [];
+    foreach ($models as $m) {
+      $key = "claude_api_stats_{$m}_{$date}";
+      $stats = Cache::get($key);
+      if ($stats) {
+        $allStats[$m] = $stats;
+      }
     }
 
-    public function getAvailableModels(): array
-    {
-        return array_map(function ($config, $key) {
-            return [
-                'key' => $key,
-                'id' => $config['id'],
-                'description' => $config['description'],
-                'cost_multiplier' => $config['cost_multiplier']
-            ];
-        }, self::MODELS, array_keys(self::MODELS));
-    }
+    return $allStats;
+  }
+
+  public function getModelConfig(string $model): ?array
+  {
+    return self::MODELS[$model] ?? null;
+  }
+
+  public function getAvailableModels(): array
+  {
+    return array_map(function ($config, $key) {
+      return [
+        'key' => $key,
+        'id' => $config['id'],
+        'description' => $config['description'],
+        'cost_multiplier' => $config['cost_multiplier']
+      ];
+    }, self::MODELS, array_keys(self::MODELS));
+  }
 }

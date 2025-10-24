@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Src\GenericArticleGenerator\Infrastructure\Eloquent\GenerationTempArticle;
 use Src\GenericArticleGenerator\Application\Services\GenerationClaudeApiService;
+use Src\AutoInfoCenter\Domain\Eloquent\MaintenanceCategory;
+use Src\AutoInfoCenter\Domain\Eloquent\MaintenanceSubcategory;
 
 /**
  * GenerateStandardCommand - Modelo Standard (Econômico)
@@ -15,26 +17,26 @@ use Src\GenericArticleGenerator\Application\Services\GenerationClaudeApiService;
  * QUALIDADE: Boa para maioria dos artigos
  * VELOCIDADE: Rápida (~15-30s por artigo)
  * 
+ * ✅ CORREÇÕES v2.1:
+ * - Busca category/subcategory do MySQL antes de gerar
+ * - Mescla dados após resposta do Claude
+ * - Atualiza campos na raiz do MongoDB para queries
+ * - Validação de existência de category/subcategory
+ * - Logging detalhado de todo o processo
+ * 
  * QUANDO USAR:
  * - Primeira tentativa de geração (sempre)
  * - Artigos de complexidade baixa/média
  * - Processamento em massa
  * - Uso contínuo automatizado
  * 
- * ESTRATÉGIA:
- * 1. Processar artigos pending de qualquer prioridade
- * 2. Batch processing com delay entre requisições
- * 3. Auto-retry limitado (máx 2x neste modelo)
- * 4. Escalar para intermediate em caso de falha
- * 
  * USO:
  * php artisan temp-article:generate-standard --limit=10
  * php artisan temp-article:generate-standard --category=oleo --limit=5
  * php artisan temp-article:generate-standard --priority=high
- * php artisan temp-article:generate-standard --batch-size=5 --delay=3
  * 
  * @author Claude Sonnet 4.5
- * @version 2.0 - Atualizado para Claude 3.7 Sonnet
+ * @version 2.1 - Corrigido para buscar dados do MySQL
  */
 class GenerateStandardCommand extends Command
 {
@@ -79,133 +81,120 @@ class GenerateStandardCommand extends Command
 
         if (!$this->claudeService->isConfigured()) {
             $this->error('❌ Claude API Key não configurada!');
-            $this->line('💡 Configure em: .env → ANTHROPIC_API_KEY=sk-ant-...');
+            $this->line('   Configure CLAUDE_API_KEY no arquivo .env');
             return self::FAILURE;
         }
 
-        try {
-            $limit = (int) $this->option('limit');
-            $delay = max((int) $this->option('delay'), 1);
-            $batchSize = (int) $this->option('batch-size');
-            $dryRun = $this->option('dry-run');
-            $showStats = $this->option('show-stats');
+        $articles = $this->getArticlesToProcess();
 
-            if ($showStats) {
-                $this->displaySystemStats();
-            }
-
-            $articles = $this->fetchArticlesToProcess($limit);
-
-            if ($articles->isEmpty()) {
-                $this->info('✅ Nenhum artigo encontrado para processar com modelo STANDARD');
-                $this->line('💡 Possíveis razões:');
-                $this->line('   • Todos artigos pending já foram processados');
-                $this->line('   • Filtros muito restritivos (--priority, --category)');
-                $this->line('   • Execute: php artisan temp-article:seed --count=10');
-                return self::SUCCESS;
-            }
-
-            $this->displayArticlesSummary($articles);
-
-            if ($dryRun) {
-                $this->warn('🧪 DRY RUN - Nenhuma geração real será executada');
-                $this->displayDryRunSimulation($articles->count());
-                return self::SUCCESS;
-            }
-
-            if (!$this->confirmExecution($articles->count(), $delay)) {
-                $this->info('⏹️ Execução cancelada pelo usuário');
-                return self::SUCCESS;
-            }
-
-            $this->processArticlesInBatches($articles, $batchSize, $delay);
-
-            if ($this->option('auto-escalate') && $this->stats['failed'] > 0) {
-                $this->autoEscalateFailures();
-            }
-
-            $this->stats['total_time'] = round(microtime(true) - $startTime, 2);
-            $this->displayFinalResults();
-
+        if ($articles->isEmpty()) {
+            $this->warn('⚠️ Nenhum artigo encontrado para processar!');
+            $this->displaySuggestions();
             return self::SUCCESS;
-        } catch (\Exception $e) {
-            $this->error("💥 Erro crítico: " . $e->getMessage());
-            Log::error('GenerateStandardCommand failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'stats' => $this->stats
-            ]);
-            return self::FAILURE;
         }
+
+        if ($this->option('show-stats')) {
+            $this->displayPreGenerationStats($articles);
+        }
+
+        if ($this->option('dry-run')) {
+            $this->displayArticlesSummary($articles);
+            $this->info('🏁 DRY-RUN: Simulação concluída sem gerar artigos');
+            return self::SUCCESS;
+        }
+
+        $this->displayArticlesSummary($articles);
+
+        if (!$this->confirm('Deseja continuar com a geração?', true)) {
+            $this->info('❌ Operação cancelada pelo usuário');
+            return self::SUCCESS;
+        }
+
+        $this->newLine();
+        $this->processBatchWithProgress($articles);
+
+        if ($this->option('auto-escalate') && $this->stats['failed'] > 0) {
+            $this->autoEscalateFailures();
+        }
+
+        $totalTime = round(microtime(true) - $startTime, 2);
+        $this->stats['total_time'] = $totalTime;
+
+        $this->displayFinalStats();
+
+        return $this->stats['failed'] > 0 ? self::FAILURE : self::SUCCESS;
     }
 
-    private function fetchArticlesToProcess(int $limit)
+    private function getArticlesToProcess()
     {
         $query = GenerationTempArticle::query();
 
-        $query->where(function ($q) {
-            $q->where('generation_status', 'pending')
-                ->whereNull('generated_at');
-        });
-
+        // Status base: pending ou retry-failed se solicitado
         if ($this->option('retry-failed')) {
-            $query->orWhere(function ($q) {
-                $q->where('generation_status', 'failed')
-                    ->where('generation_model_used', 'standard')
-                    ->where('generation_retry_count', '<=', 1);
+            $query->where(function ($q) {
+                $q->where('generation_status', 'pending')
+                    ->orWhere(function ($subQ) {
+                        $subQ->where('generation_status', 'failed')
+                            ->where('generation_model_used', 'standard')
+                            ->where('generation_retry_count', 1);
+                    });
             });
+        } else {
+            $query->where('generation_status', 'pending');
         }
 
+        // Filtros opcionais
         if ($priority = $this->option('priority')) {
             $query->where('generation_priority', $priority);
         }
 
         if ($category = $this->option('category')) {
-            $query->where('category_slug', $category);
+            // Buscar category_id pelo slug
+            $categoryModel = MaintenanceCategory::where('slug', $category)->first();
+            if ($categoryModel) {
+                $query->where('maintenance_category_id', $categoryModel->id);
+            }
         }
 
         if ($subcategory = $this->option('subcategory')) {
-            $query->where('subcategory_slug', $subcategory);
+            // Buscar subcategory_id pelo slug
+            $subcategoryModel = MaintenanceSubcategory::where('slug', $subcategory)->first();
+            if ($subcategoryModel) {
+                $query->where('maintenance_subcategory_id', $subcategoryModel->id);
+            }
         }
 
-        // MongoDB não suporta orderByRaw, então fazemos ordenação manual
-        $results = $query->get();
-        
-        // Ordenar por prioridade manualmente
-        $sorted = $results->sortBy(function($article) {
-            $priority = $article->generation_priority ?? 'medium';
-            return match($priority) {
-                'high' => 1,
-                'medium' => 2,
-                'low' => 3,
-                default => 4
-            };
-        })->sortBy('created_at');
-        
-        return $sorted->take($limit);
+        return $query->orderBy('generation_priority', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->limit($this->option('limit'))
+            ->get();
     }
 
-    private function processArticlesInBatches($articles, int $batchSize, int $delay): void
+    private function processBatchWithProgress($articles): void
     {
+        $delay = max(1, $this->option('delay'));
+        $batchSize = max(1, $this->option('batch-size'));
         $batches = $articles->chunk($batchSize);
         $totalBatches = $batches->count();
-        $currentBatch = 0;
 
         $progressBar = $this->output->createProgressBar($articles->count());
-        $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
+        $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% - %message%');
+        $progressBar->setMessage('Iniciando...');
         $progressBar->start();
 
-        $this->newLine(2);
+        $currentBatch = 0;
 
         foreach ($batches as $batch) {
             $currentBatch++;
 
-            $this->line("🔄 Lote {$currentBatch}/{$totalBatches}");
-
             foreach ($batch as $article) {
+                $progressBar->setMessage("Gerando: " . \Illuminate\Support\Str::limit($article->title, 40));
+
                 $this->processArticle($article);
+
                 $progressBar->advance();
 
+                // Delay entre artigos (exceto no último artigo do último batch)
                 if (!($currentBatch === $totalBatches && $article === $batch->last())) {
                     sleep($delay);
                 }
@@ -223,58 +212,122 @@ class GenerateStandardCommand extends Command
         $this->newLine(2);
     }
 
+    /**
+     * Processa um artigo individual
+     * 
+     * FLUXO CORRIGIDO:
+     * 1. Busca category e subcategory do MySQL
+     * 2. Valida existência dos dados
+     * 3. Envia dados necessários para Claude (name, slug) para prompt
+     * 4. Recebe resposta do Claude
+     * 5. Mescla dados de category/subcategory na resposta
+     * 6. Salva JSON completo em generated_json
+     * 7. Atualiza campos na raiz do MongoDB para facilitar queries
+     */
     private function processArticle(GenerationTempArticle $article): void
     {
         $articleStartTime = microtime(true);
 
         try {
+            // 1. BUSCAR CATEGORIA E SUBCATEGORIA DO MYSQL
+            $category = MaintenanceCategory::find($article->maintenance_category_id);
+            $subcategory = MaintenanceSubcategory::find($article->maintenance_subcategory_id);
+
+            // 2. VALIDAR EXISTÊNCIA
+            if (!$category) {
+                $error = "Category ID {$article->maintenance_category_id} não encontrada no MySQL";
+                $this->logAndSkipArticle($article, $error);
+                return;
+            }
+
+            if (!$subcategory) {
+                $error = "Subcategory ID {$article->maintenance_subcategory_id} não encontrada no MySQL";
+                $this->logAndSkipArticle($article, $error);
+                return;
+            }
+
+            Log::info('Claude Standard: Iniciando geração', [
+                'article_id' => $article->_id,
+                'title' => $article->title,
+                'category' => $category->name,
+                'category_slug' => $category->slug,
+                'subcategory' => $subcategory->name,
+                'subcategory_slug' => $subcategory->slug,
+            ]);
+
+            // 3. MARCAR COMO EM GERAÇÃO
             $article->markAsGenerating('standard');
 
+            // 4. ENVIAR PARA CLAUDE (dados necessários para o prompt)
             $result = $this->claudeService->generateArticle([
                 'title' => $article->title,
-                'category_id' => $article->category_id,
-                'category_name' => $article->category_name,
-                'category_slug' => $article->category_slug,
-                'subcategory_id' => $article->subcategory_id,
-                'subcategory_name' => $article->subcategory_name,
-                'subcategory_slug' => $article->subcategory_slug,
+                'category_name' => $category->name,
+                'category_slug' => $category->slug,
+                'subcategory_name' => $subcategory->name,
+                'subcategory_slug' => $subcategory->slug,
             ], 'standard');
 
+            // 5. PROCESSAR RESULTADO
             if ($result['success']) {
+                // 6. MESCLAR DADOS DE CATEGORIA/SUBCATEGORIA
+                $generatedData = $result['json'];
+
+                $completeData = array_merge($generatedData, [
+                    'category_id' => $category->id,
+                    'category_name' => $category->name,
+                    'category_slug' => $category->slug,
+                    'subcategory_id' => $subcategory->id,
+                    'subcategory_name' => $subcategory->name,
+                    'subcategory_slug' => $subcategory->slug,
+                ]);
+
+                // 7. SALVAR JSON COMPLETO E ATUALIZAR RAIZ
                 $article->markAsGenerated(
-                    $result['json'],
+                    $completeData,
                     'standard',
                     $result['cost']
                 );
+
+                // 8. ATUALIZAR CAMPOS NA RAIZ DO MONGODB (para queries rápidas)
+                $article->update([
+                    'category_name' => $category->name,
+                    'category_slug' => $category->slug,
+                    'subcategory_name' => $subcategory->name,
+                    'subcategory_slug' => $subcategory->slug,
+                ]);
 
                 $executionTime = round(microtime(true) - $articleStartTime, 2);
 
                 $this->stats['successful']++;
                 $this->stats['total_cost'] += $result['cost'];
 
-                $category = $article->category_slug;
-                if (!isset($this->stats['by_category'][$category])) {
-                    $this->stats['by_category'][$category] = ['success' => 0, 'failed' => 0];
+                $categorySlug = $category->slug;
+                if (!isset($this->stats['by_category'][$categorySlug])) {
+                    $this->stats['by_category'][$categorySlug] = ['success' => 0, 'failed' => 0];
                 }
-                $this->stats['by_category'][$category]['success']++;
+                $this->stats['by_category'][$categorySlug]['success']++;
 
-                Log::info('Claude Standard: Artigo gerado', [
+                Log::info('Claude Standard: Artigo gerado com sucesso', [
+                    'article_id' => $article->_id,
                     'title' => $article->title,
-                    'category' => $article->category_name,
+                    'category' => $category->name,
+                    'subcategory' => $subcategory->name,
                     'execution_time' => $executionTime,
-                    'tokens' => $result['tokens_estimated'],
-                    'blocks' => count($result['json']['metadata']['content_blocks'] ?? [])
+                    'tokens' => $result['tokens_estimated'] ?? 'N/A',
+                    'blocks' => count($completeData['metadata']['content_blocks'] ?? []),
+                    'cost' => $result['cost'],
                 ]);
             } else {
+                // FALHA NA GERAÇÃO
                 $article->markAsFailed($result['error'], 'standard');
 
                 $this->stats['failed']++;
 
-                $category = $article->category_slug;
-                if (!isset($this->stats['by_category'][$category])) {
-                    $this->stats['by_category'][$category] = ['success' => 0, 'failed' => 0];
+                $categorySlug = $category->slug ?? 'unknown';
+                if (!isset($this->stats['by_category'][$categorySlug])) {
+                    $this->stats['by_category'][$categorySlug] = ['success' => 0, 'failed' => 0];
                 }
-                $this->stats['by_category'][$category]['failed']++;
+                $this->stats['by_category'][$categorySlug]['failed']++;
 
                 $this->stats['errors'][] = [
                     'title' => $article->title,
@@ -282,7 +335,10 @@ class GenerateStandardCommand extends Command
                 ];
 
                 Log::warning('Claude Standard: Falha na geração', [
+                    'article_id' => $article->_id,
                     'title' => $article->title,
+                    'category' => $category->name ?? 'N/A',
+                    'subcategory' => $subcategory->name ?? 'N/A',
                     'error' => $result['error']
                 ]);
             }
@@ -296,12 +352,38 @@ class GenerateStandardCommand extends Command
             ];
 
             Log::error('Claude Standard: Exceção durante geração', [
+                'article_id' => $article->_id ?? 'N/A',
                 'title' => $article->title,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
 
         $this->stats['processed']++;
+    }
+
+    /**
+     * Loga e pula artigo quando há erro de validação
+     */
+    private function logAndSkipArticle(GenerationTempArticle $article, string $error): void
+    {
+        $this->stats['skipped']++;
+        $this->stats['errors'][] = [
+            'title' => $article->title,
+            'error' => $error
+        ];
+
+        Log::error('Claude Standard: Artigo pulado', [
+            'article_id' => $article->_id,
+            'title' => $article->title,
+            'error' => $error
+        ]);
+
+        // Marcar como failed no banco para não processar novamente
+        $article->update([
+            'generation_status' => 'validation_error',
+            'generation_error' => $error,
+        ]);
     }
 
     private function autoEscalateFailures(): void
@@ -327,38 +409,57 @@ class GenerateStandardCommand extends Command
             $this->line("   🔄 {$article->title}");
 
             try {
+                // Buscar categoria e subcategoria
+                $category = MaintenanceCategory::find($article->maintenance_category_id);
+                $subcategory = MaintenanceSubcategory::find($article->maintenance_subcategory_id);
+
+                if (!$category || !$subcategory) {
+                    $this->error("      ❌ Category/Subcategory não encontrada");
+                    continue;
+                }
+
                 $article->markAsGenerating('intermediate');
 
                 $result = $this->claudeService->generateArticle([
                     'title' => $article->title,
-                    'category_id' => $article->category_id,
-                    'category_name' => $article->category_name,
-                    'category_slug' => $article->category_slug,
-                    'subcategory_id' => $article->subcategory_id,
-                    'subcategory_name' => $article->subcategory_name,
-                    'subcategory_slug' => $article->subcategory_slug,
+                    'category_name' => $category->name,
+                    'category_slug' => $category->slug,
+                    'subcategory_name' => $subcategory->name,
+                    'subcategory_slug' => $subcategory->slug,
                 ], 'intermediate');
 
                 if ($result['success']) {
-                    $article->markAsGenerated($result['json'], 'intermediate', $result['cost']);
-                    $this->info("      ✅ Sucesso com INTERMEDIATE!");
+                    // Mesclar dados
+                    $completeData = array_merge($result['json'], [
+                        'category_id' => $category->id,
+                        'category_name' => $category->name,
+                        'category_slug' => $category->slug,
+                        'subcategory_id' => $subcategory->id,
+                        'subcategory_name' => $subcategory->name,
+                        'subcategory_slug' => $subcategory->slug,
+                    ]);
 
-                    $this->stats['successful']++;
-                    $this->stats['failed']--;
-                    $this->stats['total_cost'] += $result['cost'];
+                    $article->markAsGenerated($completeData, 'intermediate', $result['cost']);
+
+                    // Atualizar raiz
+                    $article->update([
+                        'category_name' => $category->name,
+                        'category_slug' => $category->slug,
+                        'subcategory_name' => $subcategory->name,
+                        'subcategory_slug' => $subcategory->slug,
+                    ]);
+
+                    $this->info("      ✅ Sucesso com INTERMEDIATE! Custo: {$result['cost']}");
                 } else {
                     $article->markAsFailed($result['error'], 'intermediate');
-                    $this->warn("      ❌ Falhou também no INTERMEDIATE");
+                    $this->error("      ❌ Falhou no INTERMEDIATE: {$result['error']}");
                 }
 
                 sleep(5);
-
             } catch (\Exception $e) {
-                $this->error("      💥 Erro: {$e->getMessage()}");
+                $this->error("      💥 Exceção: " . $e->getMessage());
             }
         }
-
-        $this->newLine();
     }
 
     private function displayHeader(): void
@@ -367,242 +468,95 @@ class GenerateStandardCommand extends Command
         $this->info('║   🚀 GERAÇÃO DE ARTIGOS - MODELO STANDARD                ║');
         $this->info('║   📊 Claude 3.7 Sonnet (Econômico)                      ║');
         $this->info('║   💰 Custo: 2.3x (base)                                  ║');
-        $this->info('║   🎯 Uso: Primeira tentativa + Processamento em massa   ║');
+        $this->info('║   ✅ v2.1 - Com busca MySQL de categorias               ║');
         $this->info('╚═══════════════════════════════════════════════════════════╝');
-        $this->newLine();
-    }
-
-    private function displaySystemStats(): void
-    {
-        $this->info('📊 ESTATÍSTICAS DO SISTEMA:');
-        $this->newLine();
-
-        $pending = GenerationTempArticle::pending()->count();
-        $generating = GenerationTempArticle::where('generation_status', 'generating')->count();
-        $generated = GenerationTempArticle::where('generation_status', 'generated')->count();
-        $validated = GenerationTempArticle::where('generation_status', 'validated')->count();
-        $failed = GenerationTempArticle::where('generation_status', 'failed')->count();
-        $published = GenerationTempArticle::where('generation_status', 'published')->count();
-
-        $this->table(
-            ['Status', 'Quantidade'],
-            [
-                ['⏳ Pendentes', $pending],
-                ['🔄 Gerando', $generating],
-                ['✅ Gerados', $generated],
-                ['✔️ Validados', $validated],
-                ['❌ Falhados', $failed],
-                ['🌐 Publicados', $published],
-            ]
-        );
-
-        $byModel = GenerationTempArticle::whereNotNull('generation_model_used')
-            ->selectRaw('generation_model_used as model, COUNT(*) as count')
-            ->groupBy('generation_model_used')
-            ->get();
-
-        if ($byModel->isNotEmpty()) {
-            $this->newLine();
-            $this->info('📈 GERADOS POR MODELO:');
-            $this->table(
-                ['Modelo', 'Quantidade'],
-                $byModel->map(fn($item) => [$item->model, $item->count])
-            );
-        }
-
         $this->newLine();
     }
 
     private function displayArticlesSummary($articles): void
     {
         $this->info('📋 ARTIGOS PARA PROCESSAR:');
-
-        $byCategory = $articles->groupBy('category_name');
-
-        foreach ($byCategory as $category => $items) {
-            $this->line("   📁 {$category}: {$items->count()} artigos");
-        }
-
-        $byPriority = $articles->groupBy('generation_priority');
-        $this->newLine();
-        $this->info('🎯 POR PRIORIDADE:');
-        foreach ($byPriority as $priority => $items) {
-            $emoji = $priority === 'high' ? '🔴' : ($priority === 'medium' ? '🟡' : '🟢');
-            $this->line("   {$emoji} {$priority}: {$items->count()} artigos");
-        }
-
-        $this->newLine();
-
-        $this->info('👀 PREVIEW (primeiros 5):');
-        $preview = $articles->take(5);
         $this->table(
-            ['#', 'Título', 'Categoria', 'Prior.'],
-            $preview->map(function ($article, $index) {
+            ['#', 'Título', 'Cat.ID', 'SubCat.ID', 'Prioridade', 'Status'],
+            $articles->map(function ($article, $index) {
                 return [
                     $index + 1,
                     \Illuminate\Support\Str::limit($article->title, 50),
-                    $article->category_name,
-                    $article->generation_priority ?? 'medium'
+                    $article->maintenance_category_id,
+                    $article->maintenance_subcategory_id,
+                    strtoupper($article->generation_priority ?? 'medium'),
+                    $article->generation_status ?? 'pending',
                 ];
             })
         );
+        $this->newLine();
+    }
 
-        if ($articles->count() > 5) {
-            $this->line("   ... e mais " . ($articles->count() - 5) . " artigos");
+    private function displayBatchStats(int $current, int $total): void
+    {
+        $this->line("📦 Batch {$current}/{$total} concluído");
+        $this->line("   ✅ Sucesso: {$this->stats['successful']}");
+        $this->line("   ❌ Falhas: {$this->stats['failed']}");
+        $this->line("   ⏭️ Pulados: {$this->stats['skipped']}");
+    }
+
+    private function displayPreGenerationStats($articles): void
+    {
+        $priorities = $articles->groupBy('generation_priority');
+        $this->info('📊 ESTATÍSTICAS PRÉ-GERAÇÃO:');
+        foreach ($priorities as $priority => $group) {
+            $this->line("   " . strtoupper($priority) . ": {$group->count()} artigos");
         }
-
         $this->newLine();
     }
 
-    private function displayDryRunSimulation(int $count): void
+    private function displayFinalStats(): void
     {
-        $estimatedCost = $count * 2.3;
-        $estimatedTime = $count * ((int)$this->option('delay') + 20);
-
-        $this->info('🧪 SIMULAÇÃO (DRY RUN):');
-        $this->line("   📊 Artigos a processar: {$count}");
-        $this->line("   💰 Custo estimado: {$estimatedCost} unidades");
-        $this->line("   ⏱️ Tempo estimado: " . gmdate("H:i:s", $estimatedTime));
-        $this->line("   📈 Taxa de sucesso esperada: ~75-85%");
-        $this->line("   ✅ Sucessos esperados: " . round($count * 0.8));
-        $this->line("   ❌ Falhas esperadas: " . round($count * 0.2));
-        $this->newLine();
-        $this->info('💡 Para executar de verdade, remova --dry-run');
-    }
-
-    private function confirmExecution(int $count, int $delay): bool
-    {
-        $estimatedCost = $count * 2.3;
-        $estimatedTime = $count * ($delay + 20);
-
-        $this->warn('⚠️ CONFIRMAÇÃO DE EXECUÇÃO:');
-        $this->line("📊 Artigos: {$count}");
-        $this->line("💰 Custo estimado: {$estimatedCost} unidades");
-        $this->line("⏱️ Tempo estimado: " . gmdate("H:i:s", $estimatedTime));
-        $this->line("🤖 Modelo: claude-3-7-sonnet-20250219");
-        $this->line("⏳ Delay entre artigos: {$delay}s");
-        $this->newLine();
-
-        return $this->confirm('Iniciar geração com modelo STANDARD?', true);
-    }
-
-    private function displayBatchStats(int $currentBatch, int $totalBatches): void
-    {
-        $successRate = $this->stats['processed'] > 0
-            ? round(($this->stats['successful'] / $this->stats['processed']) * 100, 1)
-            : 0;
-
-        $this->line("   ✅ Sucessos: {$this->stats['successful']} | ❌ Falhas: {$this->stats['failed']} | 📈 Taxa: {$successRate}%");
-    }
-
-    private function displayFinalResults(): void
-    {
-        $this->newLine();
         $this->info('╔═══════════════════════════════════════════════════════════╗');
-        $this->info('║            🏆 RESULTADOS FINAIS - STANDARD               ║');
+        $this->info('║                    📊 ESTATÍSTICAS FINAIS                ║');
         $this->info('╚═══════════════════════════════════════════════════════════╝');
         $this->newLine();
 
-        $successRate = $this->stats['processed'] > 0
-            ? round(($this->stats['successful'] / $this->stats['processed']) * 100, 1)
-            : 0;
-
-        $avgTimePerArticle = $this->stats['processed'] > 0
-            ? round($this->stats['total_time'] / $this->stats['processed'], 1)
-            : 0;
-
-        $this->table(
-            ['Métrica', 'Valor'],
-            [
-                ['📊 Total Processado', $this->stats['processed']],
-                ['✅ Sucessos', $this->stats['successful']],
-                ['❌ Falhas', $this->stats['failed']],
-                ['📈 Taxa de Sucesso', $successRate . '%'],
-                ['💰 Custo Total', $this->stats['total_cost'] . ' unidades'],
-                ['⏱️ Tempo Total', $this->stats['total_time'] . 's'],
-                ['⚡ Tempo Médio/Artigo', $avgTimePerArticle . 's'],
-            ]
-        );
+        $this->line("✅ Artigos processados: {$this->stats['processed']}");
+        $this->line("🎉 Gerados com sucesso: {$this->stats['successful']}");
+        $this->line("❌ Falhas: {$this->stats['failed']}");
+        $this->line("⏭️ Pulados (validação): {$this->stats['skipped']}");
+        $this->line("💰 Custo total: {$this->stats['total_cost']} unidades");
+        $this->line("⏱️ Tempo total: {$this->stats['total_time']}s");
 
         if (!empty($this->stats['by_category'])) {
             $this->newLine();
-            $this->info('📊 PERFORMANCE POR CATEGORIA:');
-
-            $categoryData = [];
-            foreach ($this->stats['by_category'] as $category => $data) {
-                $total = $data['success'] + $data['failed'];
-                $rate = $total > 0 ? round(($data['success'] / $total) * 100, 1) : 0;
-                $categoryData[] = [
-                    $category,
-                    $data['success'],
-                    $data['failed'],
-                    $rate . '%'
-                ];
+            $this->info('📂 POR CATEGORIA:');
+            foreach ($this->stats['by_category'] as $category => $stats) {
+                $this->line("   {$category}: ✅ {$stats['success']} | ❌ {$stats['failed']}");
             }
-
-            $this->table(
-                ['Categoria', 'Sucessos', 'Falhas', 'Taxa'],
-                $categoryData
-            );
         }
 
-        if (!empty($this->stats['errors']) && count($this->stats['errors']) <= 5) {
+        if (!empty($this->stats['errors'])) {
             $this->newLine();
-            $this->warn('❌ ERROS DETECTADOS:');
+            $this->error('⚠️ ERROS ENCONTRADOS:');
             foreach (array_slice($this->stats['errors'], 0, 5) as $error) {
-                $this->line("   • " . \Illuminate\Support\Str::limit($error['title'], 40));
-                $this->line("     └─ " . \Illuminate\Support\Str::limit($error['error'], 60));
+                $this->line("   • " . \Illuminate\Support\Str::limit($error['title'], 50));
+                $this->line("     Erro: " . \Illuminate\Support\Str::limit($error['error'], 70));
+            }
+
+            if (count($this->stats['errors']) > 5) {
+                $remaining = count($this->stats['errors']) - 5;
+                $this->line("   ... e mais {$remaining} erros");
             }
         }
 
         $this->newLine();
+    }
 
-        if ($successRate >= 85) {
-            $this->info('🎉 EXCELENTE! Modelo standard está performando muito bem.');
-            $this->line('✅ Continue usando este modelo como primeira opção.');
-        } elseif ($successRate >= 70) {
-            $this->info('👍 BOA performance do modelo standard.');
-            $this->line('💡 Pequenas melhorias podem ser feitas nos títulos de entrada.');
-        } elseif ($successRate >= 50) {
-            $this->warn('⚠️ Performance MODERADA do modelo standard.');
-            $this->line('💡 Recomendações:');
-            $this->line('   • Revisar qualidade dos títulos');
-            $this->line('   • Considerar usar --auto-escalate');
-            $this->line('   • Escalar falhas manualmente: php artisan temp-article:generate-intermediate');
-        } else {
-            $this->error('🚨 Performance BAIXA do modelo standard!');
-            $this->line('⚠️ AÇÃO IMEDIATA:');
-            $this->line('   • Verificar qualidade dos títulos de entrada');
-            $this->line('   • Revisar logs detalhados de erros');
-            $this->line('   • Testar com intermediate: php artisan temp-article:generate-intermediate --limit=3');
-        }
-
+    private function displaySuggestions(): void
+    {
         $this->newLine();
-        $this->info('📝 PRÓXIMAS AÇÕES:');
-
-        $pendingCount = GenerationTempArticle::pending()->count();
-        $failedCount = GenerationTempArticle::where('generation_status', 'failed')
-            ->where('generation_model_used', 'standard')
-            ->count();
-        $generatedCount = GenerationTempArticle::where('generation_status', 'generated')->count();
-
-        if ($failedCount > 0) {
-            $this->warn("   ⚠️ {$failedCount} artigos falharam com standard:");
-            $this->line('      🔄 php artisan temp-article:generate-intermediate --only-failed-standard --limit=5');
-        }
-
-        if ($generatedCount > 0) {
-            $this->info("   ✅ {$generatedCount} artigos gerados (aguardando validação):");
-            $this->line('      📦 php artisan temp-article:validate --limit=10');
-        }
-
-        if ($pendingCount > 0) {
-            $this->info("   📊 {$pendingCount} artigos ainda pendentes:");
-            $this->line('      🔄 php artisan temp-article:generate-standard --limit=10');
-        }
-
-        if ($failedCount == 0 && $generatedCount == 0 && $pendingCount == 0) {
-            $this->info('   🎉 TODOS os artigos foram processados!');
-        }
+        $this->info('💡 SUGESTÕES:');
+        $this->line('   • Use --priority=high para processar artigos prioritários');
+        $this->line('   • Use --category=slug-categoria para filtrar por categoria');
+        $this->line('   • Use --retry-failed para reprocessar falhas do standard');
+        $this->line('   • Use --show-stats para ver estatísticas antes de iniciar');
+        $this->newLine();
     }
 }
