@@ -67,6 +67,12 @@ class GenerateIntermediateCommand extends Command
 
     public function handle(): int
     {
+
+        // Só executa em produção e staging
+        if (app()->environment(['local', 'testing'])) {
+            return Command::FAILURE;
+        }
+
         $startTime = microtime(true);
 
         $this->displayHeader();

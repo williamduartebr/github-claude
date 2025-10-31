@@ -75,6 +75,12 @@ class GenerateStandardCommand extends Command
 
     public function handle(): int
     {
+
+        // Só executa em produção e staging
+        if (app()->environment(['local', 'testing'])) {
+            return Command::FAILURE;
+        }
+
         $startTime = microtime(true);
 
         $this->displayHeader();
@@ -104,11 +110,6 @@ class GenerateStandardCommand extends Command
         }
 
         $this->displayArticlesSummary($articles);
-
-        if (!$this->confirm('Deseja continuar com a geração?', true)) {
-            $this->info('❌ Operação cancelada pelo usuário');
-            return self::SUCCESS;
-        }
 
         $this->newLine();
         $this->processBatchWithProgress($articles);

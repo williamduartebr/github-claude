@@ -43,12 +43,12 @@ class ClaudeGenerationSchedule
         // ========================================
         // FASE 1: GERAÇÃO STANDARD (ECONÔMICA)
         // ========================================
-        
+
         // Gerar com modelo standard (3.7 Sonnet) - execução frequente
         $schedule->command('temp-article:generate-standard --limit=1 --delay=3')
-            ->everyTenMinutes()
+            // ->everyTenMinutes()
+            ->everySixHours(0)
             ->withoutOverlapping(5)
-            ->onOneServer()
             ->runInBackground()
             ->appendOutputTo(storage_path('logs/claude-generation-standard.log'))
             ->before(function () {
@@ -64,12 +64,12 @@ class ClaudeGenerationSchedule
         // ========================================
         // FASE 2: ESCALAÇÃO INTERMEDIATE
         // ========================================
-        
+
         // Processar falhas do standard com intermediate (Sonnet 4.0) - menos frequente
         $schedule->command('temp-article:generate-intermediate --only-failed-standard --limit=1 --delay=5')
-            ->everyThirtyMinutes()
+            //->everyThirtyMinutes()
+            ->everySixHours(0)
             ->withoutOverlapping(10)
-            ->onOneServer()
             ->runInBackground()
             ->appendOutputTo(storage_path('logs/claude-generation-intermediate.log'))
             ->before(function () {
@@ -85,14 +85,14 @@ class ClaudeGenerationSchedule
         // ========================================
         // FASE 3: PREMIUM - DESABILITADO
         // ========================================
-        
+
         // ⚠️ PREMIUM (Sonnet 4.5) NUNCA É AUTOMATIZADO (muito caro)
         // Use apenas manualmente: php artisan temp-article:generate-premium
-        
+
         // ========================================
         // SEED DE TÍTULOS AUTOMÁTICO (OPCIONAL)
         // ========================================
-        
+
         // Gerar novos títulos automaticamente uma vez por dia
         // DESCOMENTE se quiser seed automático:
         // $schedule->command('temp-article:seed --count=20 --category=all --priority=medium')
@@ -107,43 +107,41 @@ class ClaudeGenerationSchedule
         // ========================================
         // VALIDAÇÃO AUTOMÁTICA
         // ========================================
-        
+
         // Validar JSONs gerados a cada hora
-        $schedule->command('temp-article:validate --limit=10 --auto-fix')
-            ->hourly()
-            ->withoutOverlapping(10)
-            ->onOneServer()
-            ->runInBackground()
-            ->appendOutputTo(storage_path('logs/claude-generation-validate.log'))
-            ->onSuccess(function () {
-                Log::info('Claude Generation: Validação automática concluída');
-            });
+        // $schedule->command('temp-article:validate --limit=10 --auto-fix')
+        //     ->hourly()
+        //     ->withoutOverlapping(10)
+        //     ->runInBackground()
+        //     ->appendOutputTo(storage_path('logs/claude-generation-validate.log'))
+        //     ->onSuccess(function () {
+        //         Log::info('Claude Generation: Validação automática concluída');
+        //     });
 
         // ========================================
         // PUBLICAÇÃO AUTOMÁTICA
         // ========================================
-        
+
         // Publicar artigos validados a cada 2 horas
-        $schedule->command('temp-article:publish --limit=5 --auto-approve')
-            ->everyTwoHours()
-            ->withoutOverlapping(15)
-            ->onOneServer()
-            ->runInBackground()
-            ->appendOutputTo(storage_path('logs/claude-generation-publish.log'))
-            ->before(function () {
-                Log::info('Claude Generation: Iniciando publicação automática');
-            })
-            ->onSuccess(function () {
-                $published = GenerationTempArticle::where('generation_status', 'published')
-                    ->whereDate('published_at', today())
-                    ->count();
-                Log::info("Claude Generation: Publicação concluída - {$published} artigos hoje");
-            });
+        // $schedule->command('temp-article:publish --limit=5 --auto-approve')
+        //     ->everyTwoHours()
+        //     ->withoutOverlapping(15)
+        //     ->runInBackground()
+        //     ->appendOutputTo(storage_path('logs/claude-generation-publish.log'))
+        //     ->before(function () {
+        //         Log::info('Claude Generation: Iniciando publicação automática');
+        //     })
+        //     ->onSuccess(function () {
+        //         $published = GenerationTempArticle::where('generation_status', 'published')
+        //             ->whereDate('published_at', today())
+        //             ->count();
+        //         Log::info("Claude Generation: Publicação concluída - {$published} artigos hoje");
+        //     });
 
         // ========================================
         // MONITORAMENTO E HEALTH CHECKS
         // ========================================
-        
+
         // Health check geral do sistema - a cada hora
         $schedule->call(function () {
             self::performHealthCheck();
@@ -203,8 +201,8 @@ class ClaudeGenerationSchedule
             $totalProcessed = GenerationTempArticle::whereNotNull('generated_at')->count();
             $totalSuccess = GenerationTempArticle::whereIn('generation_status', ['generated', 'validated', 'published'])->count();
 
-            $stats['success_rate'] = $totalProcessed > 0 
-                ? round(($totalSuccess / $totalProcessed) * 100, 1) 
+            $stats['success_rate'] = $totalProcessed > 0
+                ? round(($totalSuccess / $totalProcessed) * 100, 1)
                 : 0;
 
             $alerts = [];
@@ -232,7 +230,7 @@ class ClaudeGenerationSchedule
 
             if ($stuck > 0) {
                 $alerts[] = "{$stuck} artigos travados em 'generating' por mais de 2 horas";
-                
+
                 // Auto-recovery
                 GenerationTempArticle::where('generation_status', 'generating')
                     ->where('generation_started_at', '<', now()->subHours(2))
@@ -251,7 +249,6 @@ class ClaudeGenerationSchedule
             } else {
                 Log::info('Claude Generation Health Check: Sistema saudável', $stats);
             }
-
         } catch (\Exception $e) {
             Log::error('Claude Generation Health Check: Erro', [
                 'error' => $e->getMessage()
@@ -327,7 +324,6 @@ class ClaudeGenerationSchedule
             ];
 
             Log::info('Claude Generation: Relatório diário gerado', $report);
-
         } catch (\Exception $e) {
             Log::error('Claude Generation: Erro no relatório diário', [
                 'error' => $e->getMessage()
@@ -385,8 +381,8 @@ class ClaudeGenerationSchedule
                 $costs['alerts'][] = "Projeção mensal acima do limite: {$costs['projected_monthly']} unidades";
             }
 
-            $standardPercentage = $costs['total'] > 0 
-                ? round(($costs['standard'] / $costs['total']) * 100, 1) 
+            $standardPercentage = $costs['total'] > 0
+                ? round(($costs['standard'] / $costs['total']) * 100, 1)
                 : 0;
 
             $costs['efficiency_score'] = $standardPercentage;
@@ -400,7 +396,6 @@ class ClaudeGenerationSchedule
             if (!empty($costs['alerts']) && $costs['total'] > 700) {
                 Log::critical('Claude Generation: ALERTA DE CUSTOS ELEVADOS', $costs);
             }
-
         } catch (\Exception $e) {
             Log::error('Claude Generation: Erro na análise de custos', [
                 'error' => $e->getMessage()
@@ -431,7 +426,6 @@ class ClaudeGenerationSchedule
 
                 Log::info("Claude Generation: Cleanup - {$count} artigos antigos descartados");
             }
-
         } catch (\Exception $e) {
             Log::error('Claude Generation: Erro no cleanup', [
                 'error' => $e->getMessage()
@@ -448,7 +442,7 @@ class ClaudeGenerationSchedule
             $last6Hours = now()->subHours(6);
 
             $recentGenerated = GenerationTempArticle::where('generated_at', '>=', $last6Hours)->get();
-            
+
             $cost6h = 0;
             foreach ($recentGenerated as $article) {
                 $cost6h += self::getCostMultiplier($article->generation_model_used ?? 'standard');
@@ -463,7 +457,6 @@ class ClaudeGenerationSchedule
                     'recommendation' => 'Considere pausar geração automática temporariamente'
                 ]);
             }
-
         } catch (\Exception $e) {
             Log::error('Claude Generation: Erro no check de custos', [
                 'error' => $e->getMessage()
