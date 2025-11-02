@@ -22,26 +22,26 @@ FORMATO 1: Comparação Aspecto vs Aspecto (Padrão)
   }
 }
 
-FORMATO 2: Prós e Contras (Alternativo)
+FORMATO 2: Prós e Contras (Alternativo) - FORMATO DOS JSONs REAIS
 {
   "block_type": "comparison",
-  "heading": "Vela Dupla Iridium vs Comum",
+  "heading": "Aditivo Vedante vs Reparo Tradicional",
   "content": {
-    "intro": "Diferenças fundamentais...",
+    "intro": "Comparação detalhada...",
     "items": [
       {
-        "title": "Vela Dupla Iridium",
-        "features": ["Feature 1", "Feature 2"],
-        "pros": ["Vantagem 1"],
+        "name": "Aditivo Vedante",
+        "pros": ["Vantagem 1", "Vantagem 2"],
         "cons": ["Desvantagem 1"],
-        "conclusion": "Conclusão"
+        "best_for": "Para quem...",
+        "cost": "R$ 35 - R$ 85"
       }
     ]
   }
 }
 
 @author Claude Sonnet 4.5
-@version 2.1 - Produção Ready
+@version 3.0 - Corrigido encoding UTF-8 + Removido @dump
 --}}
 
 @if(!empty($block['heading']))
@@ -73,8 +73,8 @@ FORMATO 2: Prós e Contras (Alternativo)
             $isAspectComparison = !empty($firstItem['aspect']) && 
                                   (!empty($firstItem['option_a']) || !empty($firstItem['option_b']));
             
-            $isProsConsComparison = !empty($firstItem['title']) && 
-                                    (isset($firstItem['pros']) || isset($firstItem['cons']) || isset($firstItem['features']));
+            $isProsConsComparison = !empty($firstItem['name']) && 
+                                    (isset($firstItem['pros']) || isset($firstItem['cons']));
         @endphp
 
         @if($isAspectComparison)
@@ -129,8 +129,21 @@ FORMATO 2: Prós e Contras (Alternativo)
                     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
                         {{-- Título --}}
                         <h3 class="text-lg font-bold text-[#151C25] mb-4 pb-2 border-b-2 border-blue-500">
-                            {{ $item['title'] ?? 'Opção' }}
+                            {{ $item['name'] ?? $item['title'] ?? 'Opção' }}
                         </h3>
+
+                        {{-- Custo (se houver) --}}
+                        @if(!empty($item['cost']))
+                            <div class="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                                <div class="flex items-center">
+                                    <svg class="h-5 w-5 text-green-600 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-sm font-semibold text-green-800">{{ $item['cost'] }}</span>
+                                </div>
+                            </div>
+                        @endif
 
                         {{-- Features --}}
                         @if(!empty($item['features']) && is_array($item['features']))
@@ -187,7 +200,19 @@ FORMATO 2: Prós e Contras (Alternativo)
                             </div>
                         @endif
 
-                        {{-- Conclusion --}}
+                        {{-- Best For --}}
+                        @if(!empty($item['best_for']))
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <p class="text-xs text-gray-600 font-semibold uppercase tracking-wide mb-1">
+                                    👤 Ideal Para:
+                                </p>
+                                <p class="text-sm text-gray-700">
+                                    {{ $item['best_for'] }}
+                                </p>
+                            </div>
+                        @endif
+
+                        {{-- Conclusion (individual do item) --}}
                         @if(!empty($item['conclusion']))
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <p class="text-sm text-gray-600 italic">
@@ -215,7 +240,7 @@ FORMATO 2: Prós e Contras (Alternativo)
                         @if(config('app.debug'))
                             <details class="mt-2">
                                 <summary class="text-xs text-yellow-600 cursor-pointer">Ver dados (debug)</summary>
-                                <pre class="mt-2 text-xs text-gray-600 bg-white p-2 rounded">{{ json_encode($items, JSON_PRETTY_PRINT) }}</pre>
+                                <pre class="mt-2 text-xs text-gray-600 bg-white p-2 rounded overflow-x-auto">{{ json_encode($items, JSON_PRETTY_PRINT) }}</pre>
                             </details>
                         @endif
                     </div>
@@ -224,7 +249,7 @@ FORMATO 2: Prós e Contras (Alternativo)
         @endif
     @endif
 
-    {{-- Conclusion --}}
+    {{-- Conclusion (geral do bloco) --}}
     @if(!empty($block['content']['conclusion']))
         <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
             <p class="text-gray-800 leading-relaxed">

@@ -49,4 +49,15 @@ class ArticleViewModel
             return $templateViewModel->processArticleData();
         });
     }
+
+    /**
+     * Obtém os artigos mais recentes
+     *
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getRecentArticles(int $limit = 6)
+    {
+        return $this->articleService->getRecentArticles($limit);
+    }
 }

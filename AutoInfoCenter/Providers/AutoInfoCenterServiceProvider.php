@@ -2,17 +2,18 @@
 
 namespace Src\AutoInfoCenter\Providers;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
-use Src\AutoInfoCenter\Domain\Repositories\ArticleRepositoryInterface;
+use Src\AutoInfoCenter\ViewModels\ArticleViewModel;
+use Src\AutoInfoCenter\Domain\Services\ArticleService;
+use Src\AutoInfoCenter\Factories\TemplateViewModelFactory;
+// use Src\AutoInfoCenter\ViewModels\Templates\TirePressureViewModel;
 use Src\AutoInfoCenter\Domain\Repositories\ArticleRepository;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
-use Src\AutoInfoCenter\ViewModels\Templates\OilRecommendationViewModel;
-// use Src\AutoInfoCenter\ViewModels\Templates\TirePressureViewModel;
-use Src\AutoInfoCenter\ViewModels\Templates\GenericArticleViewModel;
-use Src\AutoInfoCenter\Domain\Services\ArticleService;
 use Src\AutoInfoCenter\Domain\Services\TemplateDetectorService;
-use Src\AutoInfoCenter\Factories\TemplateViewModelFactory;
-use Src\AutoInfoCenter\ViewModels\ArticleViewModel;
+use Src\AutoInfoCenter\ViewModels\Templates\GenericArticleViewModel;
+use Src\AutoInfoCenter\Domain\Repositories\ArticleRepositoryInterface;
+use Src\AutoInfoCenter\ViewModels\Templates\OilRecommendationViewModel;
 
 class AutoInfoCenterServiceProvider extends ServiceProvider
 {
@@ -64,6 +65,8 @@ class AutoInfoCenterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Carbon::setLocale('pt_BR');
 
         // Registra as views
         $this->loadViewsFrom(base_path('src/AutoInfoCenter/Presentation/Resources/views'), 'auto-info-center');

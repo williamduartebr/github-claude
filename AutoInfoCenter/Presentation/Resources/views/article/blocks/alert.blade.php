@@ -59,10 +59,6 @@ Estrutura esperada (baseada nos JSONs reais):
     $config = $alertConfig[$alertType] ?? $alertConfig['info'];
 @endphp
 
-@dump('alert')
-
-@dump($block['content'])
-
 @if(!empty($block['heading']))
     <hr class="my-12 border-t border-gray-200" />
 @endif
@@ -70,11 +66,11 @@ Estrutura esperada (baseada nos JSONs reais):
 <div class="{{ $config['bg'] }} border-l-4 {{ $config['border'] }} p-4 mb-8 rounded-r-md shadow-sm">
     <div class="flex">
         {{-- Icon --}}
-        <div class="flex-shrink-0">
+        {{-- <div class="flex-shrink-0">
             <svg class="h-6 w-6 {{ $config['icon_color'] }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 {!! $config['icon'] !!}
             </svg>
-        </div>
+        </div> --}}
 
         {{-- Content --}}
         <div class="ml-3 flex-1">

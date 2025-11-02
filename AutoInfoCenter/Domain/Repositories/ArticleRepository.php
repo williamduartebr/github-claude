@@ -109,7 +109,7 @@ class ArticleRepository implements ArticleRepositoryInterface
                 ->orderBy('updated_at', 'desc')
                 ->skip($offset)
                 ->limit($limit)
-                ->select(['_id', 'title', 'slug', 'vehicle_info', 'created_at', 'updated_at', 'metadata', 'content.introducao'])
+                ->select(['_id', 'title', 'slug', 'vehicle_info', 'seo_data', 'created_at', 'updated_at', 'metadata', 'content.introducao'])
                 ->get();
         });
     }
@@ -289,7 +289,7 @@ class ArticleRepository implements ArticleRepositoryInterface
      * @param int $limit
      * @return Collection
      */
-    public function getRecent(int $limit = 5): Collection
+    public function getRecent(int $limit = 6): Collection
     {
         $cacheKey = "recent_articles:{$limit}";
 

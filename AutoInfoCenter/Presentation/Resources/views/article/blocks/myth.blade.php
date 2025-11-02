@@ -3,7 +3,7 @@ Componente: MYTH (Mito vs Realidade)
 
 Uso: Desmistificar crenças comuns com evidências de testes reais
 
-Estrutura esperada (baseada nos JSONs reais):
+Estrutura esperada (ALINHADA COM O PROMPT v3.0):
 {
   "block_type": "myth",
   "heading": "Mitos e Verdades Sobre o Lubrax 5W30",
@@ -12,16 +12,16 @@ Estrutura esperada (baseada nos JSONs reais):
     "myths": [
       {
         "myth": "Afirmação comum do público",
-        "reality": "VERDADEIRO | FALSO | PARCIALMENTE VERDADEIRO | MITO",
+        "reality": "VERDADEIRO | MITO | PARCIALMENTE VERDADEIRO",
         "explanation": "Explicação técnica detalhada",
-        "evidence": "Evidências do teste realizado"
+        "evidence": "Evidências do teste realizado (opcional)"
       }
     ]
   }
 }
 
 @author Claude Sonnet 4.5
-@version 2.1 - Refatorado baseado em JSONs reais do sistema
+@version 3.0 - Corrigido encoding UTF-8 + Alinhado com Prompt v3.0
 --}}
 
 @if(!empty($block['heading']))
@@ -140,7 +140,7 @@ Estrutura esperada (baseada nos JSONs reais):
                         </p>
                     </div>
 
-                    {{-- Evidências do Teste --}}
+                    {{-- Evidências do Teste (OPCIONAL) --}}
                     @if(!empty($item['evidence']))
                         <div class="mt-4 pt-4 border-t border-gray-300">
                             <div class="flex items-start">

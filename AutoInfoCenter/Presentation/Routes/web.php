@@ -12,6 +12,10 @@ Route::middleware('web')->group(function () {
         return redirect('/info/categorias', 301);
     });
 
+    Route::get('/info/oleo-cambio-sintetico-vs-mineral-vale-a-pena-2025', function () {
+        return redirect('/info/oleo-cambio-sintetico-vs-mineral-vale-a-pena', 301);
+    });
+
 
     Route::get('/info/categorias', [InfoCategoryController::class, 'index'])->name('info.category.index');
     // Artigo individual (slug)

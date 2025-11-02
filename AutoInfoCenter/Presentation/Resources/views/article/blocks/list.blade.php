@@ -123,7 +123,7 @@ Estrutura esperada:
                             </svg>
                         </div>
                         <p class="ml-3 text-gray-800 leading-relaxed">
-                            {{ is_array($item) ? ($item['text'] ?? $item[0] ?? '') : $item }}
+                            {!! is_array($item) ? ($item['text'] ?? markdown($item[0]) ?? '') : markdown($item) !!}
                         </p>
                     </div>
                 @endforeach
@@ -138,7 +138,7 @@ Estrutura esperada:
                                      mr-3 mt-2 group-hover:scale-150 transition-transform">
                         </span>
                         <p class="text-gray-800 leading-relaxed">
-                            {{ is_array($item) ? ($item['text'] ?? $item[0] ?? '') : $item }}
+                            {!! is_array($item) ? ($item['text'] ?? markdown($item[0]) ?? '') : markdown($item) !!}
                         </p>
                     </li>
                 @endforeach

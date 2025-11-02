@@ -108,5 +108,5 @@ interface ArticleRepositoryInterface
     * @param int $limit
     * @return Collection
     */
-   public function getRecent(int $limit = 5): Collection;
+   public function getRecent(int $limit = 6): Collection;
 }

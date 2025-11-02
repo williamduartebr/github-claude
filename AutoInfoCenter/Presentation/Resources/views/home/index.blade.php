@@ -13,6 +13,9 @@
 
     <!-- Centro de Informações Automotivas -->
     @include('auto-info-center::home.partials.info-center', ['categories' => $infoCenterCategories])
+    
+    <!-- Ultimos Artigos Publicados em Centro de Informações Automotivas -->
+    @include('auto-info-center::home.partials.latest-articles', ['recentArticles' => $recentArticles])
 
     <!-- Informações de Blog -->
     @include('auto-info-center::home.partials.featured-blog')

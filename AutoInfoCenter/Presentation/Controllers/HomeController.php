@@ -7,14 +7,19 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use Torann\LaravelMetaTags\Facades\MetaTag;
 use Src\AutoInfoCenter\ViewModels\PopularCategoriesViewModel;
+use Src\AutoInfoCenter\ViewModels\ArticleViewModel;
 
 class HomeController extends Controller
 {
     protected $categoriesViewModel;
+    protected $articleViewModel;
 
-    public function __construct(PopularCategoriesViewModel $categoriesViewModel)
-    {
+    public function __construct(
+        PopularCategoriesViewModel $categoriesViewModel,
+        ArticleViewModel $articleViewModel
+    ) {
         $this->categoriesViewModel = $categoriesViewModel;
+        $this->articleViewModel = $articleViewModel;
     }
 
     public function index()
@@ -24,6 +29,9 @@ class HomeController extends Controller
 
         // Busca categorias com artigos para o info-center
         $infoCenterCategories = $this->categoriesViewModel->getCategoriesWithArticles(6);
+
+        // Busca artigos recentes
+        $recentArticles = $this->articleViewModel->getRecentArticles(6);
 
         MetaTag::set('title', "Mercado Veículos - Portal Automotivo");
         MetaTag::set('description', 'Seu portal completo de informações automotivas, com foco em manutenção e cuidados para todos os modelos.');
@@ -39,8 +47,9 @@ class HomeController extends Controller
         MetaTag::set('og:image:height', '630');
         MetaTag::set('robots', 'index, follow');
 
-        $html = Cache::remember('auto_info_center_home', 86400 * 3, function () use ($popularCategories, $infoCenterCategories) {
-            return view('auto-info-center::home.index', compact('popularCategories', 'infoCenterCategories'))->render();
+
+        $html = Cache::remember('auto_info_center_home', 86400 * 3, function () use ($popularCategories, $infoCenterCategories, $recentArticles) {
+            return view('auto-info-center::home.index', compact('popularCategories', 'infoCenterCategories', 'recentArticles'))->render();
         });
 
         return response($html);
