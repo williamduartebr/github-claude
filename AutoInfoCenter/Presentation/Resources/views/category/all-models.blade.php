@@ -144,7 +144,7 @@
         </div>
 
         <!-- Lista de Artigos em Grid Maior -->
-        @include('auto-info-center::partials.articles-grid-all-models')
+        @include('auto-info-center::partials.articles-list')
 
         <!-- INSERIR BANNER AQUI - POSIÇÃO 2 -->
         <div class="container mx-auto px-4 md:px-0 pt-6">

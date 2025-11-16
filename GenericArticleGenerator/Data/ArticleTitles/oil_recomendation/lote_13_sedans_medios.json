@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 13,
+  "description": "Títulos otimizados para Sedans Médios 2000-2025 - Foco em Corolla, Civic e Cruze (alta busca)",
+  "year_range": "2000-2025",
+  "vehicle_focus": "Sedans Médios (Corolla, Civic, Cruze, Jetta, Virtus, City)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + modelos premium + motores específicos + híbridos + versões top",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo Recomendado para Toyota Corolla 2025 2.0 XEi : Motor Dynamic Force",
+      "slug": "oleo-recomendado-toyota-corolla-2025-2-0-xei"
+    },
+    {
+      "id": 2,
+      "title": "Óleo Recomendado para Toyota Corolla 2024 2.0 XEi : Performance",
+      "slug": "oleo-recomendado-toyota-corolla-2024-2-0-xei"
+    },
+    {
+      "id": 3,
+      "title": "Óleo Recomendado para Toyota Corolla 2023 2.0 XEi : Econômico",
+      "slug": "oleo-recomendado-toyota-corolla-2023-2-0-xei"
+    },
+    {
+      "id": 4,
+      "title": "Óleo Recomendado para Toyota Corolla 2022 2.0 XEi : Durabilidade",
+      "slug": "oleo-recomendado-toyota-corolla-2022-2-0-xei"
+    },
+    {
+      "id": 5,
+      "title": "Óleo Recomendado para Toyota Corolla 2021 2.0 XEi : Motor Flex",
+      "slug": "oleo-recomendado-toyota-corolla-2021-2-0-xei"
+    },
+    {
+      "id": 6,
+      "title": "Óleo Recomendado para Honda Civic 2024 2.0 Sport : Motor R20A",
+      "slug": "oleo-recomendado-honda-civic-2024-2-0-sport"
+    },
+    {
+      "id": 7,
+      "title": "Óleo Recomendado para Honda Civic 2023 2.0 Sport : Performance",
+      "slug": "oleo-recomendado-honda-civic-2023-2-0-sport"
+    },
+    {
+      "id": 8,
+      "title": "Óleo Recomendado para Honda Civic 2022 2.0 Sport : Econômico",
+      "slug": "oleo-recomendado-honda-civic-2022-2-0-sport"
+    },
+    {
+      "id": 9,
+      "title": "Óleo Recomendado para Honda Civic 2021 2.0 Sport : Durabilidade",
+      "slug": "oleo-recomendado-honda-civic-2021-2-0-sport"
+    },
+    {
+      "id": 10,
+      "title": "Óleo Recomendado para Honda Civic 2020 2.0 Sport : Geração 10",
+      "slug": "oleo-recomendado-honda-civic-2020-2-0-sport"
+    },
+    {
+      "id": 11,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2024 1.4 Turbo : Motor Turbo",
+      "slug": "oleo-recomendado-chevrolet-cruze-2024-1-4-turbo"
+    },
+    {
+      "id": 12,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2023 1.4 Turbo : Performance",
+      "slug": "oleo-recomendado-chevrolet-cruze-2023-1-4-turbo"
+    },
+    {
+      "id": 13,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2022 1.4 Turbo : Econômico",
+      "slug": "oleo-recomendado-chevrolet-cruze-2022-1-4-turbo"
+    },
+    {
+      "id": 14,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2021 1.4 Turbo : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-cruze-2021-1-4-turbo"
+    },
+    {
+      "id": 15,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2020 1.4 Turbo : Motor Ecotec",
+      "slug": "oleo-recomendado-chevrolet-cruze-2020-1-4-turbo"
+    },
+    {
+      "id": 16,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2024 1.4 TSI : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-jetta-2024-1-4-tsi"
+    },
+    {
+      "id": 17,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2023 1.4 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-jetta-2023-1-4-tsi"
+    },
+    {
+      "id": 18,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2022 1.4 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-jetta-2022-1-4-tsi"
+    },
+    {
+      "id": 19,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2021 1.4 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-jetta-2021-1-4-tsi"
+    },
+    {
+      "id": 20,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2020 1.4 TSI : Motor EA211",
+      "slug": "oleo-recomendado-volkswagen-jetta-2020-1-4-tsi"
+    },
+    {
+      "id": 21,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2024 1.0 TSI : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-virtus-2024-1-0-tsi"
+    },
+    {
+      "id": 22,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2023 1.0 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-virtus-2023-1-0-tsi"
+    },
+    {
+      "id": 23,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2022 1.0 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-virtus-2022-1-0-tsi"
+    },
+    {
+      "id": 24,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2021 1.0 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-virtus-2021-1-0-tsi"
+    },
+    {
+      "id": 25,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2020 1.0 TSI : Motor 3 Cilindros",
+      "slug": "oleo-recomendado-volkswagen-virtus-2020-1-0-tsi"
+    },
+    {
+      "id": 26,
+      "title": "Óleo Recomendado para Honda City 2024 1.5 : Motor L15B",
+      "slug": "oleo-recomendado-honda-city-2024-1-5"
+    },
+    {
+      "id": 27,
+      "title": "Óleo Recomendado para Honda City 2023 1.5 : Performance",
+      "slug": "oleo-recomendado-honda-city-2023-1-5"
+    },
+    {
+      "id": 28,
+      "title": "Óleo Recomendado para Honda City 2022 1.5 : Econômico",
+      "slug": "oleo-recomendado-honda-city-2022-1-5"
+    },
+    {
+      "id": 29,
+      "title": "Óleo Recomendado para Honda City 2021 1.5 : Durabilidade",
+      "slug": "oleo-recomendado-honda-city-2021-1-5"
+    },
+    {
+      "id": 30,
+      "title": "Óleo Recomendado para Honda City 2020 1.5 : Motor i-VTEC",
+      "slug": "oleo-recomendado-honda-city-2020-1-5"
+    },
+    {
+      "id": 31,
+      "title": "Óleo Recomendado para Toyota Corolla 2020 2.0 XEi : Nova Geração",
+      "slug": "oleo-recomendado-toyota-corolla-2020-2-0-xei"
+    },
+    {
+      "id": 32,
+      "title": "Óleo Recomendado para Toyota Corolla 2019 2.0 XEi : Performance",
+      "slug": "oleo-recomendado-toyota-corolla-2019-2-0-xei"
+    },
+    {
+      "id": 33,
+      "title": "Óleo Recomendado para Toyota Corolla 2018 2.0 XEi : Econômico",
+      "slug": "oleo-recomendado-toyota-corolla-2018-2-0-xei"
+    },
+    {
+      "id": 34,
+      "title": "Óleo Recomendado para Toyota Corolla 2017 2.0 XEi : Durabilidade",
+      "slug": "oleo-recomendado-toyota-corolla-2017-2-0-xei"
+    },
+    {
+      "id": 35,
+      "title": "Óleo Recomendado para Toyota Corolla 2016 2.0 XEi : Motor 3ZR-FAE",
+      "slug": "oleo-recomendado-toyota-corolla-2016-2-0-xei"
+    },
+    {
+      "id": 36,
+      "title": "Óleo Recomendado para Honda Civic 2019 2.0 : Motor R20A",
+      "slug": "oleo-recomendado-honda-civic-2019-2-0"
+    },
+    {
+      "id": 37,
+      "title": "Óleo Recomendado para Honda Civic 2018 2.0 : Performance",
+      "slug": "oleo-recomendado-honda-civic-2018-2-0"
+    },
+    {
+      "id": 38,
+      "title": "Óleo Recomendado para Honda Civic 2017 2.0 : Econômico",
+      "slug": "oleo-recomendado-honda-civic-2017-2-0"
+    },
+    {
+      "id": 39,
+      "title": "Óleo Recomendado para Honda Civic 2016 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-honda-civic-2016-2-0"
+    },
+    {
+      "id": 40,
+      "title": "Óleo Recomendado para Honda Civic 2015 2.0 : Motor i-VTEC",
+      "slug": "oleo-recomendado-honda-civic-2015-2-0"
+    },
+    {
+      "id": 41,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2019 1.4 Turbo : Motor Ecotec",
+      "slug": "oleo-recomendado-chevrolet-cruze-2019-1-4-turbo"
+    },
+    {
+      "id": 42,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2018 1.4 Turbo : Performance",
+      "slug": "oleo-recomendado-chevrolet-cruze-2018-1-4-turbo"
+    },
+    {
+      "id": 43,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2017 1.4 Turbo : Econômico",
+      "slug": "oleo-recomendado-chevrolet-cruze-2017-1-4-turbo"
+    },
+    {
+      "id": 44,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2016 1.4 Turbo : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-cruze-2016-1-4-turbo"
+    },
+    {
+      "id": 45,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2015 1.8 : Motor Ecotec",
+      "slug": "oleo-recomendado-chevrolet-cruze-2015-1-8"
+    },
+    {
+      "id": 46,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2019 1.4 TSI : Motor EA211",
+      "slug": "oleo-recomendado-volkswagen-jetta-2019-1-4-tsi"
+    },
+    {
+      "id": 47,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2018 1.4 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-jetta-2018-1-4-tsi"
+    },
+    {
+      "id": 48,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2017 1.4 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-jetta-2017-1-4-tsi"
+    },
+    {
+      "id": 49,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2016 1.4 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-jetta-2016-1-4-tsi"
+    },
+    {
+      "id": 50,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2015 1.4 TSI : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-jetta-2015-1-4-tsi"
+    },
+    {
+      "id": 51,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2019 1.0 TSI : Motor 3 Cilindros",
+      "slug": "oleo-recomendado-volkswagen-virtus-2019-1-0-tsi"
+    },
+    {
+      "id": 52,
+      "title": "Óleo Recomendado para Volkswagen Virtus 2018 1.0 TSI : Lançamento",
+      "slug": "oleo-recomendado-volkswagen-virtus-2018-1-0-tsi"
+    },
+    {
+      "id": 53,
+      "title": "Óleo Recomendado para Honda City 2019 1.5 : Motor L15B",
+      "slug": "oleo-recomendado-honda-city-2019-1-5"
+    },
+    {
+      "id": 54,
+      "title": "Óleo Recomendado para Honda City 2018 1.5 : Performance",
+      "slug": "oleo-recomendado-honda-city-2018-1-5"
+    },
+    {
+      "id": 55,
+      "title": "Óleo Recomendado para Honda City 2017 1.5 : Econômico",
+      "slug": "oleo-recomendado-honda-city-2017-1-5"
+    },
+    {
+      "id": 56,
+      "title": "Óleo Recomendado para Honda City 2016 1.5 : Durabilidade",
+      "slug": "oleo-recomendado-honda-city-2016-1-5"
+    },
+    {
+      "id": 57,
+      "title": "Óleo Recomendado para Honda City 2015 1.5 : Motor i-VTEC",
+      "slug": "oleo-recomendado-honda-city-2015-1-5"
+    },
+    {
+      "id": 58,
+      "title": "Óleo Recomendado para Toyota Corolla 2015 2.0 XEi : Motor 3ZR-FAE",
+      "slug": "oleo-recomendado-toyota-corolla-2015-2-0-xei"
+    },
+    {
+      "id": 59,
+      "title": "Óleo Recomendado para Toyota Corolla 2014 2.0 XEi : Performance",
+      "slug": "oleo-recomendado-toyota-corolla-2014-2-0-xei"
+    },
+    {
+      "id": 60,
+      "title": "Óleo Recomendado para Toyota Corolla 2013 2.0 XEi : Econômico",
+      "slug": "oleo-recomendado-toyota-corolla-2013-2-0-xei"
+    },
+    {
+      "id": 61,
+      "title": "Óleo Recomendado para Toyota Corolla 2012 2.0 XEi : Durabilidade",
+      "slug": "oleo-recomendado-toyota-corolla-2012-2-0-xei"
+    },
+    {
+      "id": 62,
+      "title": "Óleo Recomendado para Toyota Corolla 2011 2.0 XEi : Motor Flex",
+      "slug": "oleo-recomendado-toyota-corolla-2011-2-0-xei"
+    },
+    {
+      "id": 63,
+      "title": "Óleo Recomendado para Honda Civic 2014 2.0 : Motor R20A",
+      "slug": "oleo-recomendado-honda-civic-2014-2-0"
+    },
+    {
+      "id": 64,
+      "title": "Óleo Recomendado para Honda Civic 2013 2.0 : Performance",
+      "slug": "oleo-recomendado-honda-civic-2013-2-0"
+    },
+    {
+      "id": 65,
+      "title": "Óleo Recomendado para Honda Civic 2012 2.0 : Econômico",
+      "slug": "oleo-recomendado-honda-civic-2012-2-0"
+    },
+    {
+      "id": 66,
+      "title": "Óleo Recomendado para Honda Civic 2011 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-honda-civic-2011-2-0"
+    },
+    {
+      "id": 67,
+      "title": "Óleo Recomendado para Honda Civic 2010 1.8 : Motor R18A",
+      "slug": "oleo-recomendado-honda-civic-2010-1-8"
+    },
+    {
+      "id": 68,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2014 1.8 : Motor Ecotec",
+      "slug": "oleo-recomendado-chevrolet-cruze-2014-1-8"
+    },
+    {
+      "id": 69,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2013 1.8 : Performance",
+      "slug": "oleo-recomendado-chevrolet-cruze-2013-1-8"
+    },
+    {
+      "id": 70,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2012 1.8 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-cruze-2012-1-8"
+    },
+    {
+      "id": 71,
+      "title": "Óleo Recomendado para Chevrolet Cruze 2011 1.8 : Lançamento Brasil",
+      "slug": "oleo-recomendado-chevrolet-cruze-2011-1-8"
+    },
+    {
+      "id": 72,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2014 2.0 : Motor EA888",
+      "slug": "oleo-recomendado-volkswagen-jetta-2014-2-0"
+    },
+    {
+      "id": 73,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2013 2.0 : Performance",
+      "slug": "oleo-recomendado-volkswagen-jetta-2013-2-0"
+    },
+    {
+      "id": 74,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2012 2.0 : Econômico",
+      "slug": "oleo-recomendado-volkswagen-jetta-2012-2-0"
+    },
+    {
+      "id": 75,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2011 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-jetta-2011-2-0"
+    },
+    {
+      "id": 76,
+      "title": "Óleo Recomendado para Honda City 2014 1.5 : Motor L15A",
+      "slug": "oleo-recomendado-honda-city-2014-1-5"
+    },
+    {
+      "id": 77,
+      "title": "Óleo Recomendado para Honda City 2013 1.5 : Performance",
+      "slug": "oleo-recomendado-honda-city-2013-1-5"
+    },
+    {
+      "id": 78,
+      "title": "Óleo Recomendado para Honda City 2012 1.5 : Econômico",
+      "slug": "oleo-recomendado-honda-city-2012-1-5"
+    },
+    {
+      "id": 79,
+      "title": "Óleo Recomendado para Honda City 2011 1.5 : Durabilidade",
+      "slug": "oleo-recomendado-honda-city-2011-1-5"
+    },
+    {
+      "id": 80,
+      "title": "Óleo Recomendado para Honda City 2010 1.5 : Lançamento Brasil",
+      "slug": "oleo-recomendado-honda-city-2010-1-5"
+    },
+    {
+      "id": 81,
+      "title": "Óleo Recomendado para Toyota Corolla 2010 1.8 XLi : Motor 1ZZ-FE",
+      "slug": "oleo-recomendado-toyota-corolla-2010-1-8-xli"
+    },
+    {
+      "id": 82,
+      "title": "Óleo Recomendado para Toyota Corolla 2009 1.8 XLi : Performance",
+      "slug": "oleo-recomendado-toyota-corolla-2009-1-8-xli"
+    },
+    {
+      "id": 83,
+      "title": "Óleo Recomendado para Toyota Corolla 2008 1.8 XLi : Econômico",
+      "slug": "oleo-recomendado-toyota-corolla-2008-1-8-xli"
+    },
+    {
+      "id": 84,
+      "title": "Óleo Recomendado para Toyota Corolla 2007 1.8 XLi : Durabilidade",
+      "slug": "oleo-recomendado-toyota-corolla-2007-1-8-xli"
+    },
+    {
+      "id": 85,
+      "title": "Óleo Recomendado para Toyota Corolla 2006 1.8 XLi : Motor Flex",
+      "slug": "oleo-recomendado-toyota-corolla-2006-1-8-xli"
+    },
+    {
+      "id": 86,
+      "title": "Óleo Recomendado para Honda Civic 2009 1.8 : Motor R18A",
+      "slug": "oleo-recomendado-honda-civic-2009-1-8"
+    },
+    {
+      "id": 87,
+      "title": "Óleo Recomendado para Honda Civic 2008 1.8 : Performance",
+      "slug": "oleo-recomendado-honda-civic-2008-1-8"
+    },
+    {
+      "id": 88,
+      "title": "Óleo Recomendado para Honda Civic 2007 1.8 : Econômico",
+      "slug": "oleo-recomendado-honda-civic-2007-1-8"
+    },
+    {
+      "id": 89,
+      "title": "Óleo Recomendado para Honda Civic 2006 1.8 : Durabilidade",
+      "slug": "oleo-recomendado-honda-civic-2006-1-8"
+    },
+    {
+      "id": 90,
+      "title": "Óleo Recomendado para Honda Civic 2005 1.7 : Motor D17A",
+      "slug": "oleo-recomendado-honda-civic-2005-1-7"
+    },
+    {
+      "id": 91,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2010 2.0 : Motor EA113",
+      "slug": "oleo-recomendado-volkswagen-jetta-2010-2-0"
+    },
+    {
+      "id": 92,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2009 2.0 : Performance",
+      "slug": "oleo-recomendado-volkswagen-jetta-2009-2-0"
+    },
+    {
+      "id": 93,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2008 2.0 : Econômico",
+      "slug": "oleo-recomendado-volkswagen-jetta-2008-2-0"
+    },
+    {
+      "id": 94,
+      "title": "Óleo Recomendado para Volkswagen Jetta 2007 2.0 : Lançamento Brasil",
+      "slug": "oleo-recomendado-volkswagen-jetta-2007-2-0"
+    },
+    {
+      "id": 95,
+      "title": "Óleo Recomendado para Toyota Corolla 2005 1.8 XEi : Motor 1ZZ-FE",
+      "slug": "oleo-recomendado-toyota-corolla-2005-1-8-xei"
+    },
+    {
+      "id": 96,
+      "title": "Óleo Recomendado para Toyota Corolla 2004 1.8 XEi : Performance",
+      "slug": "oleo-recomendado-toyota-corolla-2004-1-8-xei"
+    },
+    {
+      "id": 97,
+      "title": "Óleo Recomendado para Toyota Corolla 2003 1.8 XEi : Econômico",
+      "slug": "oleo-recomendado-toyota-corolla-2003-1-8-xei"
+    },
+    {
+      "id": 98,
+      "title": "Óleo Recomendado para Honda Civic 2004 1.7 : Motor D17A",
+      "slug": "oleo-recomendado-honda-civic-2004-1-7"
+    },
+    {
+      "id": 99,
+      "title": "Óleo Recomendado para Honda Civic 2003 1.7 : Performance",
+      "slug": "oleo-recomendado-honda-civic-2003-1-7"
+    },
+    {
+      "id": 100,
+      "title": "Óleo Recomendado para Honda Civic 2002 1.7 : Geração 7",
+      "slug": "oleo-recomendado-honda-civic-2002-1-7"
+    }
+  ]
+}

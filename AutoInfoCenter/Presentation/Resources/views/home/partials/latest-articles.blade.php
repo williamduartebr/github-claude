@@ -8,7 +8,7 @@
             </h2>
             <p class="text-gray-600 text-base font-roboto">Fique por dentro das novidades automotivas</p>
         </div>
-        <a rel="nofollow" href="#" class="hidden md:flex text-blue-700 hover:text-blue-900 items-center text-base transition-colors group">
+        <a href="{{ route('info.recent-articles') }}" class="hidden md:flex text-blue-700 hover:text-blue-900 items-center text-base transition-colors group">
             Ver todos
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -21,11 +21,22 @@
         <article class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden group flex flex-col h-full">
             <div class="p-6 flex flex-col flex-grow">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
-                        {{ $article->category_name ?? 'Artigo' }}
-                    </span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
+                            {{ $article->category_name ?? 'Artigo' }}
+                        </span>
+                        
+                        @if($article->subcategory_name)
+                        <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
+                            {{ $article->subcategory_name }}
+                        </span>
+                        @endif
+                    </div>
+                    
                     @if(isset($article->metadata['reading_time']))
-                    <span class="text-xs text-gray-500 font-roboto">{{ $article->metadata['reading_time'] }} min</span>
+                    <span class="text-xs text-gray-500 font-roboto whitespace-nowrap">
+                        {{ $article->metadata['reading_time'] }} min
+                    </span>
                     @endif
                 </div>
 
@@ -64,7 +75,7 @@
 
     <!-- Link para todos os artigos - versão mobile -->
     <div class="mt-10 text-center md:hidden">
-        <a rel="nofollow" href="#" class="inline-flex items-center justify-center bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-lg transition-all font-montserrat shadow-md hover:shadow-xl w-full sm:w-auto">
+        <a href="{{ route('info.recent-articles') }}" class="inline-flex items-center justify-center bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-8 rounded-lg transition-all font-montserrat shadow-md hover:shadow-xl w-full sm:w-auto">
             Ver todos os artigos
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />

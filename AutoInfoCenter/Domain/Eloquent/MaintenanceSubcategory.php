@@ -12,6 +12,7 @@ class MaintenanceSubcategory extends Model
     protected $table = 'maintenance_subcategories';
 
     protected $fillable = [
+        'id',
         'maintenance_category_id',
         'name',
         'slug',

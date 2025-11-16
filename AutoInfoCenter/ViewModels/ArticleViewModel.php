@@ -3,61 +3,52 @@
 namespace Src\AutoInfoCenter\ViewModels;
 
 use Src\AutoInfoCenter\Domain\Services\ArticleService;
+use Src\AutoInfoCenter\Domain\Services\ArticleCacheService;
 use Src\AutoInfoCenter\Domain\Services\TemplateDetectorService;
 use Src\AutoInfoCenter\Factories\TemplateViewModelFactory;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Collection;
 
 class ArticleViewModel
 {
-    /**
-     * @var int Tempo de cache em minutos (30 dias)
-     */
-    private const CACHE_MINUTES = 43200;
-
-
     public function __construct(
-        private ArticleService $articleService,
-        private TemplateDetectorService $templateDetector,
-        private TemplateViewModelFactory $viewModelFactory
+        private readonly ArticleService $articleService,
+        private readonly ArticleCacheService $cacheService,
+        private readonly TemplateDetectorService $templateDetector,
+        private readonly TemplateViewModelFactory $viewModelFactory
     ) {}
 
     /**
      * Obtém os dados de um artigo processados para seu template específico
-     *
-     * @param string $slug
-     * @return mixed|null
      */
-    public function getArticleBySlug(string $slug)
+    public function getArticleBySlug(string $slug): mixed
     {
-        $cacheKey = "article:{$slug}";
-
-        return Cache::remember($cacheKey, self::CACHE_MINUTES, function () use ($slug) {
-            // Obtém o artigo do repositório
+        return $this->cacheService->rememberArticle($slug, function () use ($slug) {
             $article = $this->articleService->findBySlug($slug);
 
             if (!$article) {
                 return null;
             }
 
-            // Detecta o tipo de template com base no campo template
             $templateType = $this->templateDetector->detectTemplate($article);
-
-            // Cria o ViewModel específico para o tipo de template
             $templateViewModel = $this->viewModelFactory->make($templateType, $article);
 
-            // Processa os dados do artigo para o formato específico do template
             return $templateViewModel->processArticleData();
         });
     }
 
     /**
      * Obtém os artigos mais recentes
-     *
-     * @param int $limit
-     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getRecentArticles(int $limit = 6)
+    public function getRecentArticles(int $limit = 6): Collection
     {
         return $this->articleService->getRecentArticles($limit);
+    }
+
+    /**
+     * Invalida o cache de um artigo
+     */
+    public function invalidateArticleCache(string $slug): bool
+    {
+        return $this->cacheService->forgetArticle($slug);
     }
 }

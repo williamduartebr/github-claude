@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 4,
+  "description": "Títulos otimizados para Clássicos Populares 2000-2019 - Foco em economia, alta quilometragem, motor desgastado e custo-benefício",
+  "year_range": "2000-2019",
+  "vehicle_focus": "Clássicos Populares (Gol, Palio, Celta, Uno, Fiesta, Ka, Fox, Sandero, Corsa, etc)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + economia extrema + motor desgastado + alta quilometragem + comparativos mineral vs sintético",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Gol G4 1.0 2008: Óleo 15W40 Mineral Serve? (300.000km Teste)",
+      "slug": "oleo-gol-g4-1-0-2008"
+    },
+    {
+      "id": 2,
+      "title": "Palio Fire 1.0 2010: Óleo Mais Barato Que Funciona (Honestidade)",
+      "slug": "oleo-palio-fire-1-0-2010"
+    },
+    {
+      "id": 3,
+      "title": "Celta 1.0 2006: Óleo Para Motor com 250k - Engrossar? (Dica)",
+      "slug": "oleo-celta-1-0-2006"
+    },
+    {
+      "id": 4,
+      "title": "Uno Mille 1.0 2005: Óleo 20W50 Em Motor Antigo (Funciona)",
+      "slug": "oleo-uno-mille-1-0-2005"
+    },
+    {
+      "id": 5,
+      "title": "Ford Ka 1.0 2010: Óleo Rocam - 10W40 Ou 15W40? (Comparação)",
+      "slug": "oleo-ford-ka-1-0-2010"
+    },
+    {
+      "id": 6,
+      "title": "Fox 1.6 2008: Óleo VW Após 15 Anos - Mantém 5W30? (Experiência)",
+      "slug": "oleo-fox-1-6-2008"
+    },
+    {
+      "id": 7,
+      "title": "Sandero 1.0 16V 2012: Óleo Renault Ou Genérico? (Economizei R$ 80)",
+      "slug": "oleo-sandero-1-0-16v-2012"
+    },
+    {
+      "id": 8,
+      "title": "Corsa 1.0 2002: Óleo Para Motor com 400k (Ainda Roda!)",
+      "slug": "oleo-corsa-1-0-2002"
+    },
+    {
+      "id": 9,
+      "title": "Gol G5 1.0 2012: Óleo VW EA111 - 10W40 Suficiente? (Teste)",
+      "slug": "oleo-gol-g5-1-0-2012"
+    },
+    {
+      "id": 10,
+      "title": "Palio 1.4 Fire 2008: Óleo Fiat 5W30 Ou Pode 10W40? (Dúvida)",
+      "slug": "oleo-palio-1-4-fire-2008"
+    },
+    {
+      "id": 11,
+      "title": "Celta Spirit 1.0 2010: Óleo GM Mineral - R$ 50 a Troca (Barato)",
+      "slug": "oleo-celta-spirit-1-0-2010"
+    },
+    {
+      "id": 12,
+      "title": "Uno Vivace 1.0 2012: Óleo Fire EVO - Pode Mineral? (Economia)",
+      "slug": "oleo-uno-vivace-1-0-2012"
+    },
+    {
+      "id": 13,
+      "title": "Ka Sedan 1.5 2015: Óleo Ford Dragon - 5W30 Ou 5W40? (Confusão)",
+      "slug": "oleo-ka-sedan-1-5-2015"
+    },
+    {
+      "id": 14,
+      "title": "Fox Prime 1.6 2010: Óleo VW Total Flex - 200k Rodados (OK)",
+      "slug": "oleo-fox-prime-1-6-2010"
+    },
+    {
+      "id": 15,
+      "title": "Sandero Expression 1.6 2014: Óleo Renault 5W40 Vale? (Comparação)",
+      "slug": "oleo-sandero-expression-1-6-2014"
+    },
+    {
+      "id": 16,
+      "title": "Corsa Sedan 1.0 2005: Óleo Para Motor Corsa Wind - Qual Usar?",
+      "slug": "oleo-corsa-sedan-1-0-2005"
+    },
+    {
+      "id": 17,
+      "title": "Gol G6 1.6 2015: Óleo VW MSI - Sintético Obrigatório? (Não)",
+      "slug": "oleo-gol-g6-1-6-2015"
+    },
+    {
+      "id": 18,
+      "title": "Palio Attractive 1.0 2014: Óleo Fiat Fire - Troca a Cada 5k (Crítico)",
+      "slug": "oleo-palio-attractive-1-0-2014"
+    },
+    {
+      "id": 19,
+      "title": "Celta Life 1.0 2008: Óleo Para Motor Batendo (Última Tentativa)",
+      "slug": "oleo-celta-life-1-0-2008"
+    },
+    {
+      "id": 20,
+      "title": "Uno Way 1.0 2010: Óleo Fire 1.0 8V - 15W40 Funciona (Teste)",
+      "slug": "oleo-uno-way-1-0-2010"
+    },
+    {
+      "id": 21,
+      "title": "Ford Ka 1.0 Rocam 2008: Óleo Zetec Rocam - 10W30 Ou 10W40?",
+      "slug": "oleo-ford-ka-1-0-rocam-2008"
+    },
+    {
+      "id": 22,
+      "title": "Fox Trend 1.0 2012: Óleo VW EA111 Flex - Semissintético OK",
+      "slug": "oleo-fox-trend-1-0-2012"
+    },
+    {
+      "id": 23,
+      "title": "Sandero Privilege 1.6 2010: Óleo Renault K7M - 5W40 Certo? (Sim)",
+      "slug": "oleo-sandero-privilege-1-6-2010"
+    },
+    {
+      "id": 24,
+      "title": "Corsa Classic 1.0 2010: Óleo GM Vhce - 5W30 Ou 10W40? (Debate)",
+      "slug": "oleo-corsa-classic-1-0-2010"
+    },
+    {
+      "id": 25,
+      "title": "Gol G3 1.0 16V 2005: Óleo VW Power - 10W40 Suficiente (Teste)",
+      "slug": "oleo-gol-g3-1-0-16v-2005"
+    },
+    {
+      "id": 26,
+      "title": "Palio Weekend 1.4 2010: Óleo Fiat Fire - Perua Vs Hatch (Igual?)",
+      "slug": "oleo-palio-weekend-1-4-2010"
+    },
+    {
+      "id": 27,
+      "title": "Celta 1.0 VHC 2004: Óleo GM Motor Antigo - Pode 20W50? (Sim)",
+      "slug": "oleo-celta-1-0-vhc-2004"
+    },
+    {
+      "id": 28,
+      "title": "Uno Mille Economy 1.0 2008: Óleo Fire Economy - Qual Melhor?",
+      "slug": "oleo-uno-mille-economy-1-0-2008"
+    },
+    {
+      "id": 29,
+      "title": "Ka 1.0 Zetec 2000: Óleo Para 24 Anos de Uso (Clássico)",
+      "slug": "oleo-ka-1-0-zetec-2000"
+    },
+    {
+      "id": 30,
+      "title": "Fox Rock in Rio 1.6 2011: Óleo VW Edição Especial (Marketing)",
+      "slug": "oleo-fox-rock-in-rio-1-6-2011"
+    },
+    {
+      "id": 31,
+      "title": "Sandero Stepway 1.6 2012: Óleo Renault K7M - Off-Road Leve (OK)",
+      "slug": "oleo-sandero-stepway-1-6-2012"
+    },
+    {
+      "id": 32,
+      "title": "Corsa Hatch 1.0 2003: Óleo GM Vhc - 350.000km Rodados (Incrível)",
+      "slug": "oleo-corsa-hatch-1-0-2003"
+    },
+    {
+      "id": 33,
+      "title": "Gol Power 1.6 2006: Óleo VW AP 1.6 - 15W40 Funciona (Clássico)",
+      "slug": "oleo-gol-power-1-6-2006"
+    },
+    {
+      "id": 34,
+      "title": "Palio EX 1.0 2005: Óleo Fiat Fire 1.0 - Motor Imortal (300k)",
+      "slug": "oleo-palio-ex-1-0-2005"
+    },
+    {
+      "id": 35,
+      "title": "Celta Energy 1.0 2006: Óleo GM Vhce-E - Pode Mineral? (Sim)",
+      "slug": "oleo-celta-energy-1-0-2006"
+    },
+    {
+      "id": 36,
+      "title": "Uno Mille Fire 1.0 2003: Óleo Fire 1.0 8V - 20W50 Para Desgaste",
+      "slug": "oleo-uno-mille-fire-1-0-2003"
+    },
+    {
+      "id": 37,
+      "title": "Ka GL 1.0 2002: Óleo Ford Endura - Motor Antigo 22 Anos",
+      "slug": "oleo-ka-gl-1-0-2002"
+    },
+    {
+      "id": 38,
+      "title": "Fox 1.0 Bluemotion 2014: Óleo VW EA211 - 5W30 Ou 5W40? (Novo)",
+      "slug": "oleo-fox-1-0-bluemotion-2014"
+    },
+    {
+      "id": 39,
+      "title": "Sandero GT Line 1.6 2018: Óleo Renault K7M - Visual Esportivo (Igual)",
+      "slug": "oleo-sandero-gt-line-1-6-2018"
+    },
+    {
+      "id": 40,
+      "title": "Corsa Premium 1.0 2008: Óleo GM Vhce - Topo Corsa (Vale?)",
+      "slug": "oleo-corsa-premium-1-0-2008"
+    },
+    {
+      "id": 41,
+      "title": "Gol Rallye 1.6 2010: Óleo VW Total Flex - Esportivo (Diferença?)",
+      "slug": "oleo-gol-rallye-1-6-2010"
+    },
+    {
+      "id": 42,
+      "title": "Palio Sporting 1.6 2012: Óleo Fiat E.TorQ - Esportivo 115cv",
+      "slug": "oleo-palio-sporting-1-6-2012"
+    },
+    {
+      "id": 43,
+      "title": "Celta Super 1.0 2002: Óleo GM Vhc - Motor com 500k (Sobrevive!)",
+      "slug": "oleo-celta-super-1-0-2002"
+    },
+    {
+      "id": 44,
+      "title": "Uno Sporting 1.4 2012: Óleo Fiat Fire Evo - 85cv Flex (Performance)",
+      "slug": "oleo-uno-sporting-1-4-2012"
+    },
+    {
+      "id": 45,
+      "title": "Ka Sport 1.6 2012: Óleo Ford Sigma - 105cv Esportivo (Específico)",
+      "slug": "oleo-ka-sport-1-6-2012"
+    },
+    {
+      "id": 46,
+      "title": "Fox Extreme 1.6 2008: Óleo VW Total Flex - Off-Road Leve (OK)",
+      "slug": "oleo-fox-extreme-1-6-2008"
+    },
+    {
+      "id": 47,
+      "title": "Sandero Authentique 1.0 2010: Óleo Renault D4D - Versão Básica (Barato)",
+      "slug": "oleo-sandero-authentique-1-0-2010"
+    },
+    {
+      "id": 48,
+      "title": "Corsa Joy 1.0 2006: Óleo GM Vhce - Versão Entrada (Economizar)",
+      "slug": "oleo-corsa-joy-1-0-2006"
+    },
+    {
+      "id": 49,
+      "title": "Gol Trend 1.0 2014: Óleo VW EA111 - G5 Reestilizado (Igual Motor)",
+      "slug": "oleo-gol-trend-1-0-2014"
+    },
+    {
+      "id": 50,
+      "title": "Palio Essence 1.6 2014: Óleo Fiat E.TorQ 1.6 - 110cv Flex (Performance)",
+      "slug": "oleo-palio-essence-1-6-2014"
+    },
+    {
+      "id": 51,
+      "title": "Celta 1.0 8V 2010: Óleo GM Vhce-E - Última Geração Celta",
+      "slug": "oleo-celta-1-0-8v-2010"
+    },
+    {
+      "id": 52,
+      "title": "Uno Economy 1.4 2010: Óleo Fiat Fire 1.4 - Economia Real? (Teste)",
+      "slug": "oleo-uno-economy-1-4-2010"
+    },
+    {
+      "id": 53,
+      "title": "Ka 1.0 SEL 2018: Óleo Ford Dragon - Última Geração Ka (Atual)",
+      "slug": "oleo-ka-1-0-sel-2018"
+    },
+    {
+      "id": 54,
+      "title": "Fox Comfortline 1.6 2015: Óleo VW MSI - Ar Digital (Muda Motor?)",
+      "slug": "oleo-fox-comfortline-1-6-2015"
+    },
+    {
+      "id": 55,
+      "title": "Sandero Rip Curl 1.6 2014: Óleo Renault K7M - Edição Surf (Marketing)",
+      "slug": "oleo-sandero-rip-curl-1-6-2014"
+    },
+    {
+      "id": 56,
+      "title": "Corsa Maxx 1.0 2008: Óleo GM Vhce - Versão Intermediária (OK)",
+      "slug": "oleo-corsa-maxx-1-0-2008"
+    },
+    {
+      "id": 57,
+      "title": "Gol G2 1.0 8V 2000: Óleo VW AP 1.0 - 24 Anos de Uso (Clássico)",
+      "slug": "oleo-gol-g2-1-0-8v-2000"
+    },
+    {
+      "id": 58,
+      "title": "Palio Young 1.0 2002: Óleo Fiat Fire - Versão Jovem (Básica)",
+      "slug": "oleo-palio-young-1-0-2002"
+    },
+    {
+      "id": 59,
+      "title": "Celta VHC 1.0 2002: Óleo GM Vhc - Primeira Geração Celta",
+      "slug": "oleo-celta-vhc-1-0-2002"
+    },
+    {
+      "id": 60,
+      "title": "Uno Mille SX 1.0 2000: Óleo Fiat Fire - 24 Anos Rodando (Imortal)",
+      "slug": "oleo-uno-mille-sx-1-0-2000"
+    },
+    {
+      "id": 61,
+      "title": "Ka CLX 1.0 2001: Óleo Ford Endura-E - Motor Endura 23 Anos",
+      "slug": "oleo-ka-clx-1-0-2001"
+    },
+    {
+      "id": 62,
+      "title": "Fox City 1.0 2006: Óleo VW EA111 - Versão Entrada (Economizar)",
+      "slug": "oleo-fox-city-1-0-2006"
+    },
+    {
+      "id": 63,
+      "title": "Sandero Visia 1.0 2014: Óleo Renault SCe - Versão Básica (Barato)",
+      "slug": "oleo-sandero-visia-1-0-2014"
+    },
+    {
+      "id": 64,
+      "title": "Corsa Wind 1.0 2000: Óleo GM Sohc - Motor Corsa Wind 24 Anos",
+      "slug": "oleo-corsa-wind-1-0-2000"
+    },
+    {
+      "id": 65,
+      "title": "Gol Mi 1.0 16V 2000: Óleo VW AT 1000 16V - Motor Antigo Turbo",
+      "slug": "oleo-gol-mi-1-0-16v-2000"
+    },
+    {
+      "id": 66,
+      "title": "Palio ELX 1.0 2004: Óleo Fiat Fire - Versão Completa (Topo)",
+      "slug": "oleo-palio-elx-1-0-2004"
+    },
+    {
+      "id": 67,
+      "title": "Celta 1.4 2006: Óleo GM Econoflex 1.4 - Raro Celta 1.4 (Diferente)",
+      "slug": "oleo-celta-1-4-2006"
+    },
+    {
+      "id": 68,
+      "title": "Uno Smart 1.0 2002: Óleo Fiat Fire - Versão Smart (Básica)",
+      "slug": "oleo-uno-smart-1-0-2002"
+    },
+    {
+      "id": 69,
+      "title": "Ka 1.6 Sport 2010: Óleo Ford Sigma 1.6 - 105cv Esportivo",
+      "slug": "oleo-ka-1-6-sport-2010"
+    },
+    {
+      "id": 70,
+      "title": "Fox Route 1.6 2008: Óleo VW Total Flex - Aventura (Off-Road Leve)",
+      "slug": "oleo-fox-route-1-6-2008"
+    },
+    {
+      "id": 71,
+      "title": "Sandero Tech Run 1.6 2016: Óleo Renault K7M - Edição Especial (Marketing)",
+      "slug": "oleo-sandero-tech-run-1-6-2016"
+    },
+    {
+      "id": 72,
+      "title": "Corsa Sedan Premium 1.0 2010: Óleo GM Vhce - Sedã Topo (Vale?)",
+      "slug": "oleo-corsa-sedan-premium-1-0-2010"
+    },
+    {
+      "id": 73,
+      "title": "Gol Special 1.0 2004: Óleo VW Power 1.0 - Edição Special (Básica)",
+      "slug": "oleo-gol-special-1-0-2004"
+    },
+    {
+      "id": 74,
+      "title": "Palio Fire Economy 1.0 2012: Óleo Fiat Fire - Economia Flex (Teste)",
+      "slug": "oleo-palio-fire-economy-1-0-2012"
+    },
+    {
+      "id": 75,
+      "title": "Celta Spirit VHC 1.0 2004: Óleo GM Vhc - Versão Spirit (Intermediária)",
+      "slug": "oleo-celta-spirit-vhc-1-0-2004"
+    },
+    {
+      "id": 76,
+      "title": "Uno Vivace Celebration 1.0 2014: Óleo Fiat Fire - Edição Limitada",
+      "slug": "oleo-uno-vivace-celebration-1-0-2014"
+    },
+    {
+      "id": 77,
+      "title": "Ka 1.5 SE Plus 2019: Óleo Ford Dragon - Versão Top Ka Sedã",
+      "slug": "oleo-ka-1-5-se-plus-2019"
+    },
+    {
+      "id": 78,
+      "title": "Fox Highline 1.6 2010: Óleo VW Total Flex - Versão Topo (Vale?)",
+      "slug": "oleo-fox-highline-1-6-2010"
+    },
+    {
+      "id": 79,
+      "title": "Sandero Dynamique 1.6 2012: Óleo Renault K7M - Versão Intermediária",
+      "slug": "oleo-sandero-dynamique-1-6-2012"
+    },
+    {
+      "id": 80,
+      "title": "Corsa 1.0 MPFI 2001: Óleo GM Mpfi - Motor Corsa Mpfi 23 Anos",
+      "slug": "oleo-corsa-1-0-mpfi-2001"
+    },
+    {
+      "id": 81,
+      "title": "Gol Copa 1.0 2006: Óleo VW Power - Edição Copa 2006 (Marketing)",
+      "slug": "oleo-gol-copa-1-0-2006"
+    },
+    {
+      "id": 82,
+      "title": "Palio Weekend Adventure 1.8 2010: Óleo Fiat E.TorQ - Off-Road Leve",
+      "slug": "oleo-palio-weekend-adventure-1-8-2010"
+    },
+    {
+      "id": 83,
+      "title": "Celta 1.0 VHCE Flex 2006: Óleo GM Vhce - Primeira Geração Flex",
+      "slug": "oleo-celta-1-0-vhce-flex-2006"
+    },
+    {
+      "id": 84,
+      "title": "Uno Mille EP 1.0 2001: Óleo Fiat Fire - Versão EP (Básica)",
+      "slug": "oleo-uno-mille-ep-1-0-2001"
+    },
+    {
+      "id": 85,
+      "title": "Ka 1.0 Image 2009: Óleo Ford Rocam - Versão Image (Intermediária)",
+      "slug": "oleo-ka-1-0-image-2009"
+    },
+    {
+      "id": 86,
+      "title": "Fox Plus 1.6 2007: Óleo VW Total Flex - Versão Plus (Completa)",
+      "slug": "oleo-fox-plus-1-6-2007"
+    },
+    {
+      "id": 87,
+      "title": "Sandero 1.0 16V Hi-Flex 2008: Óleo Renault D4D - Primeira Geração",
+      "slug": "oleo-sandero-1-0-16v-hi-flex-2008"
+    },
+    {
+      "id": 88,
+      "title": "Corsa Classic Life 1.0 2008: Óleo GM Vhce - Versão Life (Básica)",
+      "slug": "oleo-corsa-classic-life-1-0-2008"
+    },
+    {
+      "id": 89,
+      "title": "Gol Titan 1.0 2003: Óleo VW Power - Edição Titan (Especial)",
+      "slug": "oleo-gol-titan-1-0-2003"
+    },
+    {
+      "id": 90,
+      "title": "Palio 1.0 8V Fire 2002: Óleo Fiat Fire 8V - Motor Imortal 22 Anos",
+      "slug": "oleo-palio-1-0-8v-fire-2002"
+    },
+    {
+      "id": 91,
+      "title": "Celta 1.0 Super 2001: Óleo GM Vhc - Motor Super (Primeira Geração)",
+      "slug": "oleo-celta-1-0-super-2001"
+    },
+    {
+      "id": 92,
+      "title": "Uno Mille Fire Way 1.0 2008: Óleo Fiat Fire - Versão Way (Aventura)",
+      "slug": "oleo-uno-mille-fire-way-1-0-2008"
+    },
+    {
+      "id": 93,
+      "title": "Ka 1.0 Tecno 2007: Óleo Ford Rocam - Versão Tecno (Completa)",
+      "slug": "oleo-ka-1-0-tecno-2007"
+    },
+    {
+      "id": 94,
+      "title": "Fox 1.6 Plus Total Flex 2005: Óleo VW - Fox Primeira Geração",
+      "slug": "oleo-fox-1-6-plus-total-flex-2005"
+    },
+    {
+      "id": 95,
+      "title": "Sandero Expression 1.0 16V 2010: Óleo Renault D4D - Versão Básica",
+      "slug": "oleo-sandero-expression-1-0-16v-2010"
+    },
+    {
+      "id": 96,
+      "title": "Corsa Sedan GL 1.0 2002: Óleo GM Vhc - Versão GL (Intermediária)",
+      "slug": "oleo-corsa-sedan-gl-1-0-2002"
+    },
+    {
+      "id": 97,
+      "title": "Gol 1.0 16V Turbo 2000: Óleo VW AT 1000 16V - Motor Turbo Raro",
+      "slug": "oleo-gol-1-0-16v-turbo-2000"
+    },
+    {
+      "id": 98,
+      "title": "Palio Weekend ELX 1.4 2005: Óleo Fiat Fire 1.4 - Perua Completa",
+      "slug": "oleo-palio-weekend-elx-1-4-2005"
+    },
+    {
+      "id": 99,
+      "title": "Celta 1.0 VHC Básico 2003: Óleo GM Vhc - Versão Básica Absoluta",
+      "slug": "oleo-celta-1-0-vhc-basico-2003"
+    },
+    {
+      "id": 100,
+      "title": "Uno Mille Fire Flex 1.0 2004: Óleo Fiat Fire - Primeira Flex Brasil",
+      "slug": "oleo-uno-mille-fire-flex-1-0-2004"
+    }
+  ]
+}

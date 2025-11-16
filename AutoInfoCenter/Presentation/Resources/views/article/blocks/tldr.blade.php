@@ -27,7 +27,7 @@ Estrutura esperada:
 
 <div class="relative mb-10">
     {{-- Container principal com gradiente --}}
-    <div class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-2xl overflow-hidden">
+    <div class="relative -mt-8 md:mt-0 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-2xl overflow-hidden">
         {{-- Padrão decorativo de fundo --}}
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full transform translate-x-1/2 -translate-y-1/2"></div>

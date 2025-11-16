@@ -1,0 +1,179 @@
+{
+  "category_id": 45,
+  "category_slug": "oleo-cambio",
+  "theme": "oil_cambio",
+  "description": "Títulos sobre óleo de câmbio manual e automático com dúvidas urgentes e técnicas",
+  "total_titles": 100,
+  "subcategories": {
+    "duvidas-urgentes-troca-cambio": {
+      "subcategory_id": 7,
+      "priority": "high",
+      "estimated_articles": 10,
+      "titles": [
+        "Nunca Troquei Óleo do Câmbio em 150.000km: Posso Trocar Agora?",
+        "Trocar Óleo de Câmbio com 200k: Mecânico Disse que Vai Estragar",
+        "Óleo de Câmbio Preto: Troquei e o Câmbio Morreu em 2 Semanas",
+        "100.000km Sem Trocar: É Tarde Demais? (Experiência Real)",
+        "Cambio Manual: Trocar Óleo Faz Diferença ou É Mito?",
+        "Câmbio Automático: Nunca Trocar ou Trocar Sempre? (Verdade Revelada)",
+        "Óleo de Câmbio Lifetime: Acreditei e Deu Problema aos 120k",
+        "Troquei Óleo do Câmbio e Ficou Pior: O que Fazer Agora",
+        "Mecânico Recomendou NÃO Trocar: Segui e Me Arrependi",
+        "Primeira Troca de Óleo de Câmbio: Com Quantos KM Fazer"
+      ]
+    },
+    "tipos-viscosidades-oleo-cambio": {
+      "subcategory_id": 8,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "ATF vs MTF vs CVT: Diferenças que Você PRECISA Saber",
+        "Dexron III vs Dexron VI: Posso Usar o Mais Antigo?",
+        "75W90 vs 80W90: Qual Melhor para Câmbio Manual Brasil",
+        "Óleo de Câmbio Sintético vs Mineral: Vale 3x Mais Caro?",
+        "ATF Genérico vs Original: Economia que Saiu Cara",
+        "75W85 vs 75W90: Diferença Real na Troca de Marchas",
+        "CVT Fluid: Por Que Tão Caro e Não Pode Substituir",
+        "SAE 90 Puro: Câmbio Antigo Precisa Mesmo Disso?",
+        "Mercon V vs Dexron VI: Misturei e Funcionou (ou Não)",
+        "80W140: Quando Usar Esse Óleo Grosso no Câmbio"
+      ]
+    },
+    "sintomas-oleo-cambio-ruim": {
+      "subcategory_id": 9,
+      "priority": "high",
+      "estimated_articles": 10,
+      "titles": [
+        "Marcha Engasgando: Era o Óleo do Câmbio Vencido",
+        "Barulho no Câmbio: Troquei Óleo e Parou na Hora",
+        "Trepidação ao Engatar: Óleo de Câmbio Resolveu",
+        "Marcha Dura: 3 Sinais que Precisa Trocar Óleo Câmbio",
+        "Câmbio Patinando: Óleo Queimado Foi a Causa",
+        "Cheiro de Queimado: Óleo de Câmbio Estava Torrado",
+        "Vazamento de Óleo: Completei Errado e Piorou",
+        "Câmbio Esquentando Muito: Era Falta de Óleo",
+        "Trancos ao Trocar Marcha: Solução foi o Óleo",
+        "Dificuldade em Marcha Ré: Óleo Resolveu 100%"
+      ]
+    },
+    "cambios-automaticos-especificos": {
+      "subcategory_id": 10,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "Câmbio Powershift Ford: Óleo Específico Salvou o Meu",
+        "DSG Volkswagen: Trocar Óleo a Cada 60k ou 40k? (Experiência)",
+        "CVT Nissan: Por Que Esse Câmbio Come Óleo",
+        "Aisin 6 Marchas: Óleo Original vs Compatível",
+        "Câmbio Jatco: Óleo Certo para Não Dar Problema",
+        "Torque Converter: Flush Completo ou Só Drenar?",
+        "ZF 8 Marchas: Óleo Lifetime? Mecânico Discorda",
+        "I-Motion VW: Óleo que Salvou Meu Câmbio Problemático",
+        "Easytronic Chevrolet: Troca de Óleo que Ninguém Faz",
+        "Câmbio AMT: Óleo Específico ou Serve Qualquer ATF?"
+      ]
+    },
+    "cambios-manuais-especificos": {
+      "subcategory_id": 11,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "Câmbio Manual 5 Marchas: GL-4 ou GL-5?",
+        "Câmbio Getrag: Óleo Sensível que Poucos Sabem",
+        "Transmissão Honda: Por Que MTF Original É Diferente",
+        "VW MQ200: Óleo Específico ou 75W90 Resolve",
+        "Toyota C-Series: Óleo de Câmbio que Dura 300.000km",
+        "Câmbio Fiat: 75W80 vs 75W90 (Teste 50.000km)",
+        "GM F23: Óleo Barato Funcionou Igual ao Original",
+        "Nissan MQ Manual: Óleo Diferenciado que Precisa",
+        "Ford IB5: Troca de Óleo que Melhorou 100% as Marchas",
+        "Renault JH3: Óleo Caro Mas Valeu Cada Centavo"
+      ]
+    },
+    "procedimentos-metodos-troca": {
+      "subcategory_id": 12,
+      "priority": "low",
+      "estimated_articles": 10,
+      "titles": [
+        "Flush de Câmbio Automático: Fiz e Me Arrependi Amargamente",
+        "Troca Gravitacional vs Máquina: Qual Método Melhor",
+        "Trocar Óleo de Câmbio em Casa: Passo a Passo Completo",
+        "Quanto Custa Trocar Óleo de Câmbio: Preços Reais Brasil 2025",
+        "Filtro de Câmbio: Trocar Junto com Óleo ou Não?",
+        "Drenar e Encher vs Flush: Experiência com os 2 Métodos",
+        "Trocar 50% do Óleo: Técnica que Uso a Cada 30k",
+        "Junta do Carter de Câmbio: Trocar ou Usar Silicone?",
+        "Magneto de Câmbio Cheio de Limalha: É Normal?",
+        "Nível de Óleo de Câmbio: Como Verificar Corretamente"
+      ]
+    },
+    "quilometragem-intervalos-cambio": {
+      "subcategory_id": 13,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "A Cada Quantos KM Trocar Óleo de Câmbio Manual?",
+        "60.000km: Troquei Óleo Automático e Foi Revelador",
+        "100k com Óleo Original: Quando Finalmente Troquei",
+        "Câmbio CVT: Trocar a Cada 30k ou 60k? (Consenso Real)",
+        "40.000km: Primeira Troca Preventiva que Salvou Tudo",
+        "80k Sem Trocar: Comecei a Ter Problemas",
+        "Intervalo de 120.000km: Fabricante vs Mecânico",
+        "Trocar com 20k: Exagero ou Preservação?",
+        "A Cada 50.000km: Estratégia que Funcionou por 300k",
+        "Nunca Troquei em 250k: Câmbio Funcionando (Sorte?)"
+      ]
+    },
+    "problemas-solucoes-cambio": {
+      "subcategory_id": 14,
+      "priority": "high",
+      "estimated_articles": 10,
+      "titles": [
+        "Câmbio com Problema: Óleo Resolve ou Precisa Retificar?",
+        "Solenóide Queimada: Foi por Óleo Errado",
+        "Embreagem Patinando: Óleo de Motor no Câmbio (Erro Fatal)",
+        "Sincronizador Ruim: Óleo Específico Amenizou",
+        "Cabo de Câmbio vs Óleo: Diagnóstico que Errei",
+        "Vazamento pelo Retentor: Óleo Mais Fino Resolveu",
+        "Troca de Marcha Raspando: Solução foi Óleo GL-4",
+        "Temperatura Alta: Óleo ATF Cooler Faz Diferença",
+        "Diferencial com Barulho: Era Óleo de Câmbio Errado",
+        "Marcha Pulando: História Completa do Conserto"
+      ]
+    },
+    "modelos-populares-brasil-cambio": {
+      "subcategory_id": 15,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "Onix Automático: Óleo de Câmbio Manual do Proprietário",
+        "HB20 Automático: Trocar com 60k ou Esperar 100k?",
+        "Corolla CVT: Óleo Específico Toyota ou Equivalente",
+        "Civic Automático: 3 Trocas que Fiz em 200.000km",
+        "Argo AT: Óleo de Câmbio que Concessionária Não Diz",
+        "Kicks CVT: Experiência Real com Troca aos 45k",
+        "Compass: Óleo ZF 9 Marchas - Original ou Alternativa",
+        "Creta Automático: Troquei e Melhorou Consumo",
+        "T-Cross: Óleo Câmbio DSG 7 Velocidades",
+        "HR-V CVT: Manutenção que Preserva o Câmbio"
+      ]
+    },
+    "comparacoes-testes-oleo-cambio": {
+      "subcategory_id": 16,
+      "priority": "low",
+      "estimated_articles": 10,
+      "titles": [
+        "3 Marcas de Óleo ATF Testadas: Qual Venceu",
+        "Original vs Genérico: 100.000km de Comparação",
+        "Shell vs Mobil vs Castrol: ATF Lado a Lado",
+        "Sintético Premium: Vale 5x o Preço do Mineral?",
+        "Trocar Todo vs Trocar Metade: Teste 2 Anos",
+        "Óleo Vermelho vs Amarelo: Cor Importa?",
+        "ATF em Câmbio Manual: Teste Não Recomendado que Fiz",
+        "Óleo de Motor no Câmbio: Quanto Tempo Aguenta",
+        "2 Câmbios Iguais, 2 Óleos: Resultado após 150k",
+        "Lifetime Fluid Testado: Funcionou até Quando?"
+      ]
+    }
+  }
+}

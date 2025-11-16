@@ -1,0 +1,513 @@
+{
+    "category_id": 2,
+    "category_name": "Óleo Recomendado",
+    "category_slug": "oleo-recomendado",
+    "lote": 24,
+    "description": "Títulos otimizados para Motos Custom/Cruiser 2000-2025 - Foco em Shadow, Boulevard, Vulcan, V-Star, Harley-Davidson (médio volume)",
+    "year_range": "2000-2025",
+    "vehicle_focus": "Motos Custom/Cruiser (Shadow, Boulevard, Vulcan, V-Star, Softail, Iron, Fat Boy)",
+    "total_titles": 100,
+    "seo_strategy": "Long-tail + motos custom + cruiser + cilindradas médias/grandes + V-twin + estilo clássico",
+    "titles": [
+        {
+            "id": 1,
+            "title": "Óleo Recomendado para Honda Shadow 750 2025 : Cruiser Clássica",
+            "slug": "oleo-recomendado-honda-shadow-750-2025"
+        },
+        {
+            "id": 2,
+            "title": "Óleo Recomendado para Honda Shadow 750 2024 : Performance",
+            "slug": "oleo-recomendado-honda-shadow-750-2024"
+        },
+        {
+            "id": 3,
+            "title": "Óleo Recomendado para Honda Shadow 750 2023 : Motor V-Twin",
+            "slug": "oleo-recomendado-honda-shadow-750-2023"
+        },
+        {
+            "id": 4,
+            "title": "Óleo Recomendado para Honda Shadow 750 2022 : Durabilidade",
+            "slug": "oleo-recomendado-honda-shadow-750-2022"
+        },
+        {
+            "id": 5,
+            "title": "Óleo Recomendado para Honda Shadow 750 2021 : Motor 745cc",
+            "slug": "oleo-recomendado-honda-shadow-750-2021"
+        },
+        {
+            "id": 6,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2025 : Cruiser Média",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2025"
+        },
+        {
+            "id": 7,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2024 : Performance",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2024"
+        },
+        {
+            "id": 8,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2023 : Motor V-Twin",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2023"
+        },
+        {
+            "id": 9,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2022 : Durabilidade",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2022"
+        },
+        {
+            "id": 10,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2021 : Motor 805cc",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2021"
+        },
+        {
+            "id": 11,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2025 : Classic Cruiser",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2025"
+        },
+        {
+            "id": 12,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2024 : Performance",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2024"
+        },
+        {
+            "id": 13,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2023 : Motor V-Twin",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2023"
+        },
+        {
+            "id": 14,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2022 : Durabilidade",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2022"
+        },
+        {
+            "id": 15,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2021 : Motor 903cc",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2021"
+        },
+        {
+            "id": 16,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2025 : Touring Cruiser",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2025"
+        },
+        {
+            "id": 17,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2024 : Performance",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2024"
+        },
+        {
+            "id": 18,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2023 : Motor V-Twin",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2023"
+        },
+        {
+            "id": 19,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2022 : Durabilidade",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2022"
+        },
+        {
+            "id": 20,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2021 : Motor 942cc",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2021"
+        },
+        {
+            "id": 21,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2025 : Sportster",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2025"
+        },
+        {
+            "id": 22,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2024 : Performance",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2024"
+        },
+        {
+            "id": 23,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2023 : Motor Evolution",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2023"
+        },
+        {
+            "id": 24,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2022 : Durabilidade",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2022"
+        },
+        {
+            "id": 25,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2021 : Motor 883cc",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2021"
+        },
+        {
+            "id": 26,
+            "title": "Óleo Recomendado para Harley-Davidson Fat Boy 2025 : Softail Classic",
+            "slug": "oleo-recomendado-harley-davidson-fat-boy-2025"
+        },
+        {
+            "id": 27,
+            "title": "Óleo Recomendado para Harley-Davidson Fat Boy 2024 : Performance",
+            "slug": "oleo-recomendado-harley-davidson-fat-boy-2024"
+        },
+        {
+            "id": 28,
+            "title": "Óleo Recomendado para Harley-Davidson Fat Boy 2023 : Milwaukee-Eight",
+            "slug": "oleo-recomendado-harley-davidson-fat-boy-2023"
+        },
+        {
+            "id": 29,
+            "title": "Óleo Recomendado para Harley-Davidson Fat Boy 2022 : Durabilidade",
+            "slug": "oleo-recomendado-harley-davidson-fat-boy-2022"
+        },
+        {
+            "id": 30,
+            "title": "Óleo Recomendado para Harley-Davidson Fat Boy 2021 : Motor 114",
+            "slug": "oleo-recomendado-harley-davidson-fat-boy-2021"
+        },
+        {
+            "id": 31,
+            "title": "Óleo Recomendado para Honda Shadow 750 2020 : Cruiser Clássica",
+            "slug": "oleo-recomendado-honda-shadow-750-2020"
+        },
+        {
+            "id": 32,
+            "title": "Óleo Recomendado para Honda Shadow 750 2019 : Performance",
+            "slug": "oleo-recomendado-honda-shadow-750-2019"
+        },
+        {
+            "id": 33,
+            "title": "Óleo Recomendado para Honda Shadow 750 2018 : Motor V-Twin",
+            "slug": "oleo-recomendado-honda-shadow-750-2018"
+        },
+        {
+            "id": 34,
+            "title": "Óleo Recomendado para Honda Shadow 750 2017 : Durabilidade",
+            "slug": "oleo-recomendado-honda-shadow-750-2017"
+        },
+        {
+            "id": 35,
+            "title": "Óleo Recomendado para Honda Shadow 750 2016 : Motor 745cc",
+            "slug": "oleo-recomendado-honda-shadow-750-2016"
+        },
+        {
+            "id": 36,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2020 : Cruiser Média",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2020"
+        },
+        {
+            "id": 37,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2019 : Performance",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2019"
+        },
+        {
+            "id": 38,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2018 : Motor V-Twin",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2018"
+        },
+        {
+            "id": 39,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2017 : Durabilidade",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2017"
+        },
+        {
+            "id": 40,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2016 : Motor 805cc",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2016"
+        },
+        {
+            "id": 41,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2020 : Classic Cruiser",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2020"
+        },
+        {
+            "id": 42,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2019 : Performance",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2019"
+        },
+        {
+            "id": 43,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2018 : Motor V-Twin",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2018"
+        },
+        {
+            "id": 44,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2017 : Durabilidade",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2017"
+        },
+        {
+            "id": 45,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2016 : Motor 903cc",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2016"
+        },
+        {
+            "id": 46,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2020 : Touring Cruiser",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2020"
+        },
+        {
+            "id": 47,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2019 : Performance",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2019"
+        },
+        {
+            "id": 48,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2018 : Motor V-Twin",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2018"
+        },
+        {
+            "id": 49,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2017 : Durabilidade",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2017"
+        },
+        {
+            "id": 50,
+            "title": "Óleo Recomendado para Yamaha V-Star 950 2016 : Motor 942cc",
+            "slug": "oleo-recomendado-yamaha-v-star-950-2016"
+        },
+        {
+            "id": 51,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2020 : Sportster",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2020"
+        },
+        {
+            "id": 52,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2019 : Performance",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2019"
+        },
+        {
+            "id": 53,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2018 : Motor Evolution",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2018"
+        },
+        {
+            "id": 54,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2017 : Durabilidade",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2017"
+        },
+        {
+            "id": 55,
+            "title": "Óleo Recomendado para Harley-Davidson Iron 883 2016 : Motor 883cc",
+            "slug": "oleo-recomendado-harley-davidson-iron-883-2016"
+        },
+        {
+            "id": 56,
+            "title": "Óleo Recomendado para Harley-Davidson Softail 2020 : Classic Cruiser",
+            "slug": "oleo-recomendado-harley-davidson-softail-2020"
+        },
+        {
+            "id": 57,
+            "title": "Óleo Recomendado para Harley-Davidson Softail 2019 : Performance",
+            "slug": "oleo-recomendado-harley-davidson-softail-2019"
+        },
+        {
+            "id": 58,
+            "title": "Óleo Recomendado para Harley-Davidson Softail 2018 : Milwaukee-Eight",
+            "slug": "oleo-recomendado-harley-davidson-softail-2018"
+        },
+        {
+            "id": 59,
+            "title": "Óleo Recomendado para Harley-Davidson Softail 2017 : Twin Cam",
+            "slug": "oleo-recomendado-harley-davidson-softail-2017"
+        },
+        {
+            "id": 60,
+            "title": "Óleo Recomendado para Harley-Davidson Softail 2016 : Motor 103",
+            "slug": "oleo-recomendado-harley-davidson-softail-2016"
+        },
+        {
+            "id": 61,
+            "title": "Óleo Recomendado para Honda Shadow 750 2015 : Cruiser Clássica",
+            "slug": "oleo-recomendado-honda-shadow-750-2015"
+        },
+        {
+            "id": 62,
+            "title": "Óleo Recomendado para Honda Shadow 750 2014 : Performance",
+            "slug": "oleo-recomendado-honda-shadow-750-2014"
+        },
+        {
+            "id": 63,
+            "title": "Óleo Recomendado para Honda Shadow 750 2013 : Motor V-Twin",
+            "slug": "oleo-recomendado-honda-shadow-750-2013"
+        },
+        {
+            "id": 64,
+            "title": "Óleo Recomendado para Honda Shadow 750 2012 : Durabilidade",
+            "slug": "oleo-recomendado-honda-shadow-750-2012"
+        },
+        {
+            "id": 65,
+            "title": "Óleo Recomendado para Honda Shadow 750 2011 : Motor 745cc",
+            "slug": "oleo-recomendado-honda-shadow-750-2011"
+        },
+        {
+            "id": 66,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2015 : Cruiser Média",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2015"
+        },
+        {
+            "id": 67,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2014 : Performance",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2014"
+        },
+        {
+            "id": 68,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2013 : Motor V-Twin",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2013"
+        },
+        {
+            "id": 69,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2012 : Durabilidade",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2012"
+        },
+        {
+            "id": 70,
+            "title": "Óleo Recomendado para Suzuki Boulevard M800 2011 : Motor 805cc",
+            "slug": "oleo-recomendado-suzuki-boulevard-m800-2011"
+        },
+        {
+            "id": 71,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2015 : Classic Cruiser",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2015"
+        },
+        {
+            "id": 72,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2014 : Performance",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2014"
+        },
+        {
+            "id": 73,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2013 : Motor V-Twin",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2013"
+        },
+        {
+            "id": 74,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2012 : Durabilidade",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2012"
+        },
+        {
+            "id": 75,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 900 2011 : Motor 903cc",
+            "slug": "oleo-recomendado-kawasaki-vulcan-900-2011"
+        },
+        {
+            "id": 76,
+            "title": "Óleo Recomendado para Yamaha V-Star 650 2015 : Cruiser Compacta",
+            "slug": "oleo-recomendado-yamaha-v-star-650-2015"
+        },
+        {
+            "id": 77,
+            "title": "Óleo Recomendado para Yamaha V-Star 650 2014 : Performance",
+            "slug": "oleo-recomendado-yamaha-v-star-650-2014"
+        },
+        {
+            "id": 78,
+            "title": "Óleo Recomendado para Yamaha V-Star 650 2013 : Motor V-Twin",
+            "slug": "oleo-recomendado-yamaha-v-star-650-2013"
+        },
+        {
+            "id": 79,
+            "title": "Óleo Recomendado para Yamaha V-Star 650 2012 : Durabilidade",
+            "slug": "oleo-recomendado-yamaha-v-star-650-2012"
+        },
+        {
+            "id": 80,
+            "title": "Óleo Recomendado para Yamaha V-Star 650 2011 : Motor 649cc",
+            "slug": "oleo-recomendado-yamaha-v-star-650-2011"
+        },
+        {
+            "id": 81,
+            "title": "Óleo Recomendado para Harley-Davidson Sportster 1200 2015 : Custom",
+            "slug": "oleo-recomendado-harley-davidson-sportster-1200-2015"
+        },
+        {
+            "id": 82,
+            "title": "Óleo Recomendado para Harley-Davidson Sportster 1200 2014 : Performance",
+            "slug": "oleo-recomendado-harley-davidson-sportster-1200-2014"
+        },
+        {
+            "id": 83,
+            "title": "Óleo Recomendado para Harley-Davidson Sportster 1200 2013 : Evolution",
+            "slug": "oleo-recomendado-harley-davidson-sportster-1200-2013"
+        },
+        {
+            "id": 84,
+            "title": "Óleo Recomendado para Harley-Davidson Sportster 1200 2012 : Durabilidade",
+            "slug": "oleo-recomendado-harley-davidson-sportster-1200-2012"
+        },
+        {
+            "id": 85,
+            "title": "Óleo Recomendado para Harley-Davidson Sportster 1200 2011 : Motor 1200cc",
+            "slug": "oleo-recomendado-harley-davidson-sportster-1200-2011"
+        },
+        {
+            "id": 86,
+            "title": "Óleo Recomendado para Honda Shadow 600 2010 : Cruiser Média",
+            "slug": "oleo-recomendado-honda-shadow-600-2010"
+        },
+        {
+            "id": 87,
+            "title": "Óleo Recomendado para Honda Shadow 600 2009 : Performance",
+            "slug": "oleo-recomendado-honda-shadow-600-2009"
+        },
+        {
+            "id": 88,
+            "title": "Óleo Recomendado para Honda Shadow 600 2008 : Motor V-Twin",
+            "slug": "oleo-recomendado-honda-shadow-600-2008"
+        },
+        {
+            "id": 89,
+            "title": "Óleo Recomendado para Honda Shadow 600 2007 : Durabilidade",
+            "slug": "oleo-recomendado-honda-shadow-600-2007"
+        },
+        {
+            "id": 90,
+            "title": "Óleo Recomendado para Honda Shadow 600 2006 : Motor 583cc",
+            "slug": "oleo-recomendado-honda-shadow-600-2006"
+        },
+        {
+            "id": 91,
+            "title": "Óleo Recomendado para Suzuki Intruder 125 2020 : Cruiser Compacta",
+            "slug": "oleo-recomendado-suzuki-intruder-125-2020"
+        },
+        {
+            "id": 92,
+            "title": "Óleo Recomendado para Suzuki Intruder 125 2019 : Performance",
+            "slug": "oleo-recomendado-suzuki-intruder-125-2019"
+        },
+        {
+            "id": 93,
+            "title": "Óleo Recomendado para Suzuki Intruder 125 2018 : Estilo Custom",
+            "slug": "oleo-recomendado-suzuki-intruder-125-2018"
+        },
+        {
+            "id": 94,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 650 S 2015 : Sport Cruiser",
+            "slug": "oleo-recomendado-kawasaki-vulcan-650-s-2015"
+        },
+        {
+            "id": 95,
+            "title": "Óleo Recomendado para Kawasaki Vulcan 650 S 2014 : Performance",
+            "slug": "oleo-recomendado-kawasaki-vulcan-650-s-2014"
+        },
+        {
+            "id": 96,
+            "title": "Óleo Recomendado para Yamaha Drag Star 650 2010 : Classic Cruiser",
+            "slug": "oleo-recomendado-yamaha-drag-star-650-2010"
+        },
+        {
+            "id": 97,
+            "title": "Óleo Recomendado para Yamaha Drag Star 650 2009 : Performance",
+            "slug": "oleo-recomendado-yamaha-drag-star-650-2009"
+        },
+        {
+            "id": 98,
+            "title": "Óleo Recomendado para Harley-Davidson Street 750 2020 : Entrada HD",
+            "slug": "oleo-recomendado-harley-davidson-street-750-2020"
+        },
+        {
+            "id": 99,
+            "title": "Óleo Recomendado para Harley-Davidson Street 750 2019 : Performance",
+            "slug": "oleo-recomendado-harley-davidson-street-750-2019"
+        },
+        {
+            "id": 100,
+            "title": "Óleo Recomendado para Harley-Davidson Street 750 2018 : Motor Revolution X",
+            "slug": "oleo-recomendado-harley-davidson-street-750-2018"
+        }
+    ]
+}

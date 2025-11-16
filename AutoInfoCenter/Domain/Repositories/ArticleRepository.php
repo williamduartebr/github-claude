@@ -109,7 +109,21 @@ class ArticleRepository implements ArticleRepositoryInterface
                 ->orderBy('updated_at', 'desc')
                 ->skip($offset)
                 ->limit($limit)
-                ->select(['_id', 'title', 'slug', 'vehicle_info', 'seo_data', 'created_at', 'updated_at', 'metadata', 'content.introducao'])
+                ->select([
+                    '_id',
+                    'title',
+                    'slug',
+                    'category_slug',
+                    'category_name',
+                    'subcategory_slug',
+                    'subcategory_name',
+                    'vehicle_info',
+                    'seo_data',
+                    'created_at',
+                    'updated_at',
+                    'metadata',
+                    'content.introducao'
+                ])
                 ->get();
         });
     }
@@ -298,6 +312,54 @@ class ArticleRepository implements ArticleRepositoryInterface
                 ->orderBy('created_at', 'desc')
                 ->limit($limit)
                 ->get();
+        });
+    }
+
+    /**
+     * Obtém artigos mais recentes com paginação
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return Collection
+     */
+    public function getRecentPaginated(int $limit = 12, int $offset = 0): Collection
+    {
+        $cacheKey = "recent_articles_paginated:{$limit}:{$offset}";
+
+        return Cache::remember($cacheKey, self::CACHE_MINUTES, function () use ($limit, $offset) {
+            return Article::where('status', 'published')
+                ->orderBy('created_at', 'desc')
+                ->skip($offset)
+                ->limit($limit)
+                ->select([
+                    '_id',
+                    'title',
+                    'slug',
+                    'category_slug',
+                    'category_name',
+                    'subcategory_slug',
+                    'subcategory_name',
+                    'seo_data',
+                    'created_at',
+                    'updated_at',
+                    'metadata',
+                    'content.introducao'
+                ])
+                ->get();
+        });
+    }
+
+    /**
+     * Conta total de artigos recentes publicados
+     *
+     * @return int
+     */
+    public function countRecent(): int
+    {
+        $cacheKey = "count_recent_articles";
+
+        return Cache::remember($cacheKey, self::CACHE_MINUTES, function () {
+            return Article::where('status', 'published')->count();
         });
     }
 }

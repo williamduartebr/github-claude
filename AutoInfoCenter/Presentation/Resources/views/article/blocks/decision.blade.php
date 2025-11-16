@@ -80,23 +80,81 @@ ESTRUTURA ALTERNATIVA (não usada nos JSONs, mas suportada):
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @foreach($scenarios as $scenario)
                     @php
-                        // Detectar se é "vale a pena" (positivo) ou "não compensa" (negativo)
-                        $isPositive = str_contains(strtolower($scenario['title'] ?? ''), 'vale') || 
-                                     str_contains(strtolower($scenario['title'] ?? ''), 'recomendado') ||
-                                     str_contains(strtolower($scenario['title'] ?? ''), 'ideal');
-                        
-                        $config = $isPositive ? [
-                            'bg' => 'bg-green-50',
-                            'border' => 'border-green-500',
-                            'icon_color' => 'text-green-600',
-                            'icon' => '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />'
-                        ] : [
-                            'bg' => 'bg-red-50',
-                            'border' => 'border-red-500',
-                            'icon_color' => 'text-red-600',
-                            'icon' => '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />'
-                        ];
-                    @endphp
+                    // Detectar se é "vale a pena" (positivo) ou "não compensa" (negativo)
+                    $title_lower = \Str::lower($scenario['title'] ?? '');
+                    
+                    // PALAVRAS POSITIVAS (verde com checkmark)
+                    $positive_keywords = [
+                        'escolha',
+                        'recomendado',
+                        'ideal',
+                        'vale a pena',
+                        'melhor para',
+                        'adequado',
+                        'indicado',
+                        'perfeito',
+                        'ótimo',
+                        'excelente',
+                        'compensa',
+                        'beneficia',
+                        'vantajoso'
+                    ];
+                    
+                    // PALAVRAS NEGATIVAS (vermelho com X)
+                    $negative_keywords = [
+                        'não compensa',
+                        'menos prioritário',
+                        'evite',
+                        'não recomendado',
+                        'inadequado',
+                        'desaconselhado',
+                        'cuidado',
+                        'atenção',
+                        'não vale',
+                        'não escolha',
+                        'não use',
+                        'contraindicado',
+                        'nunca use'
+                    ];
+                    
+                    // Verificar primeiro as negativas (prioridade)
+                    $isNegative = false;
+                    foreach ($negative_keywords as $keyword) {
+                        if (str_contains($title_lower, $keyword)) {
+                            $isNegative = true;
+                            break;
+                        }
+                    }
+                    
+                    // Se não for negativo, verificar se é positivo
+                    $isPositive = false;
+                    if (!$isNegative) {
+                        foreach ($positive_keywords as $keyword) {
+                            if (str_contains($title_lower, $keyword)) {
+                                $isPositive = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Se não encontrou nenhuma palavra-chave, assumir POSITIVO por padrão
+                    // (já que a maioria dos cenários são recomendações)
+                    if (!$isNegative && !$isPositive) {
+                        $isPositive = true;
+                    }
+                    
+                    $config = $isPositive ? [
+                        'bg' => 'bg-green-50',
+                        'border' => 'border-green-500',
+                        'icon_color' => 'text-green-600',
+                        'icon' => '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />'
+                    ] : [
+                        'bg' => 'bg-red-50',
+                        'border' => 'border-red-500',
+                        'icon_color' => 'text-red-600',
+                        'icon' => '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />'
+                    ];
+                @endphp
 
                     <div class="{{ $config['bg'] }} border-l-4 {{ $config['border'] }} rounded-r-xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
                         {{-- Título com ícone --}}

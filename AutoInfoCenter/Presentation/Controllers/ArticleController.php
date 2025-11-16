@@ -81,4 +81,10 @@ class ArticleController extends Controller
 
         abort(404);
     }
+
+    public function clear(string $slug)
+    {
+        $this->articleViewModel->invalidateArticleCache($slug);
+        return "Cache limpo slug: {$slug}";     
+    }
 }

@@ -24,7 +24,7 @@ Estrutura esperada (baseada nos JSONs reais):
 @version 2.0 - Design moderno e limpo
 --}}
 
-<div class="mb-10">
+<div class="mb-6">
     {{-- Container principal com gradiente sutil --}}
     <div class="relative bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 rounded-2xl shadow-xl p-8 md:p-10 border border-blue-200 overflow-hidden">
         

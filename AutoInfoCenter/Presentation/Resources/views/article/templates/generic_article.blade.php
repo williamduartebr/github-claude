@@ -193,11 +193,15 @@ Compatível com:
         </article>
     </div>
 
-        <!-- Créditos Equipe Editorial -->
-    @include('auto-info-center::article.partials.editorial_team')
+    @include('auto-info-center::article.partials.share-your-story')
+    
+    <!-- Créditos Equipe Editorial -->
+    {{-- Uso com margem customizada --}}
+    @include('auto-info-center::article.partials.editorial_team', ['marginBottom' => 'mb-16'])
 
     <!-- Newsletter Simplificada -->
-    @include('auto-info-center::article.partials.newsletter')
+    {{-- @include('auto-info-center::article.partials.newsletter') --}}
+
 </main>
 
 @endsection

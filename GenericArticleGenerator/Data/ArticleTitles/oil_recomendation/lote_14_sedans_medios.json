@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 14,
+  "description": "Títulos otimizados para Sedans Médios 2000-2025 - Foco em modelos premium e complementares",
+  "year_range": "2000-2025",
+  "vehicle_focus": "Sedans Médios (Accord, Fusion, Passat, Sentra, Fluence, Cobalt)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + modelos premium + importados + gerações clássicas + motores V6",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo Recomendado para Honda Accord 2024 1.5 Turbo : Motor Turbo",
+      "slug": "oleo-recomendado-honda-accord-2024-1-5-turbo"
+    },
+    {
+      "id": 2,
+      "title": "Óleo Recomendado para Honda Accord 2023 1.5 Turbo : Performance",
+      "slug": "oleo-recomendado-honda-accord-2023-1-5-turbo"
+    },
+    {
+      "id": 3,
+      "title": "Óleo Recomendado para Honda Accord 2022 1.5 Turbo : Econômico",
+      "slug": "oleo-recomendado-honda-accord-2022-1-5-turbo"
+    },
+    {
+      "id": 4,
+      "title": "Óleo Recomendado para Honda Accord 2021 1.5 Turbo : Durabilidade",
+      "slug": "oleo-recomendado-honda-accord-2021-1-5-turbo"
+    },
+    {
+      "id": 5,
+      "title": "Óleo Recomendado para Honda Accord 2020 1.5 Turbo : Motor VTEC",
+      "slug": "oleo-recomendado-honda-accord-2020-1-5-turbo"
+    },
+    {
+      "id": 6,
+      "title": "Óleo Recomendado para Ford Fusion 2019 2.0 Ecoboost : Motor Turbo",
+      "slug": "oleo-recomendado-ford-fusion-2019-2-0-ecoboost"
+    },
+    {
+      "id": 7,
+      "title": "Óleo Recomendado para Ford Fusion 2018 2.0 Ecoboost : Performance",
+      "slug": "oleo-recomendado-ford-fusion-2018-2-0-ecoboost"
+    },
+    {
+      "id": 8,
+      "title": "Óleo Recomendado para Ford Fusion 2017 2.0 Ecoboost : Econômico",
+      "slug": "oleo-recomendado-ford-fusion-2017-2-0-ecoboost"
+    },
+    {
+      "id": 9,
+      "title": "Óleo Recomendado para Ford Fusion 2016 2.0 Ecoboost : Durabilidade",
+      "slug": "oleo-recomendado-ford-fusion-2016-2-0-ecoboost"
+    },
+    {
+      "id": 10,
+      "title": "Óleo Recomendado para Ford Fusion 2015 2.0 Ecoboost : Motor Turbo",
+      "slug": "oleo-recomendado-ford-fusion-2015-2-0-ecoboost"
+    },
+    {
+      "id": 11,
+      "title": "Óleo Recomendado para Volkswagen Passat 2024 2.0 TSI : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-passat-2024-2-0-tsi"
+    },
+    {
+      "id": 12,
+      "title": "Óleo Recomendado para Volkswagen Passat 2023 2.0 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-passat-2023-2-0-tsi"
+    },
+    {
+      "id": 13,
+      "title": "Óleo Recomendado para Volkswagen Passat 2022 2.0 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-passat-2022-2-0-tsi"
+    },
+    {
+      "id": 14,
+      "title": "Óleo Recomendado para Volkswagen Passat 2021 2.0 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-passat-2021-2-0-tsi"
+    },
+    {
+      "id": 15,
+      "title": "Óleo Recomendado para Volkswagen Passat 2020 2.0 TSI : Motor EA888",
+      "slug": "oleo-recomendado-volkswagen-passat-2020-2-0-tsi"
+    },
+    {
+      "id": 16,
+      "title": "Óleo Recomendado para Nissan Sentra 2024 2.0 : Motor MR20DD",
+      "slug": "oleo-recomendado-nissan-sentra-2024-2-0"
+    },
+    {
+      "id": 17,
+      "title": "Óleo Recomendado para Nissan Sentra 2023 2.0 : Performance",
+      "slug": "oleo-recomendado-nissan-sentra-2023-2-0"
+    },
+    {
+      "id": 18,
+      "title": "Óleo Recomendado para Nissan Sentra 2022 2.0 : Econômico",
+      "slug": "oleo-recomendado-nissan-sentra-2022-2-0"
+    },
+    {
+      "id": 19,
+      "title": "Óleo Recomendado para Nissan Sentra 2021 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-nissan-sentra-2021-2-0"
+    },
+    {
+      "id": 20,
+      "title": "Óleo Recomendado para Nissan Sentra 2020 2.0 : Nova Geração",
+      "slug": "oleo-recomendado-nissan-sentra-2020-2-0"
+    },
+    {
+      "id": 21,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2024 1.0 Turbo : Motor Turbo",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2024-1-0-turbo"
+    },
+    {
+      "id": 22,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2023 1.0 Turbo : Performance",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2023-1-0-turbo"
+    },
+    {
+      "id": 23,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2022 1.0 Turbo : Econômico",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2022-1-0-turbo"
+    },
+    {
+      "id": 24,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2021 1.0 Turbo : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2021-1-0-turbo"
+    },
+    {
+      "id": 25,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2020 1.0 Turbo : Motor 3 Cilindros",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2020-1-0-turbo"
+    },
+    {
+      "id": 26,
+      "title": "Óleo Recomendado para Renault Fluence 2017 2.0 : Motor M4R",
+      "slug": "oleo-recomendado-renault-fluence-2017-2-0"
+    },
+    {
+      "id": 27,
+      "title": "Óleo Recomendado para Renault Fluence 2016 2.0 : Performance",
+      "slug": "oleo-recomendado-renault-fluence-2016-2-0"
+    },
+    {
+      "id": 28,
+      "title": "Óleo Recomendado para Renault Fluence 2015 2.0 : Econômico",
+      "slug": "oleo-recomendado-renault-fluence-2015-2-0"
+    },
+    {
+      "id": 29,
+      "title": "Óleo Recomendado para Renault Fluence 2014 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-renault-fluence-2014-2-0"
+    },
+    {
+      "id": 30,
+      "title": "Óleo Recomendado para Renault Fluence 2013 2.0 : Motor Flex",
+      "slug": "oleo-recomendado-renault-fluence-2013-2-0"
+    },
+    {
+      "id": 31,
+      "title": "Óleo Recomendado para Honda Accord 2019 1.5 Turbo : Motor VTEC Turbo",
+      "slug": "oleo-recomendado-honda-accord-2019-1-5-turbo"
+    },
+    {
+      "id": 32,
+      "title": "Óleo Recomendado para Honda Accord 2018 1.5 Turbo : Performance",
+      "slug": "oleo-recomendado-honda-accord-2018-1-5-turbo"
+    },
+    {
+      "id": 33,
+      "title": "Óleo Recomendado para Honda Accord 2017 2.4 : Motor K24W",
+      "slug": "oleo-recomendado-honda-accord-2017-2-4"
+    },
+    {
+      "id": 34,
+      "title": "Óleo Recomendado para Honda Accord 2016 2.4 : Performance",
+      "slug": "oleo-recomendado-honda-accord-2016-2-4"
+    },
+    {
+      "id": 35,
+      "title": "Óleo Recomendado para Honda Accord 2015 2.4 : Econômico",
+      "slug": "oleo-recomendado-honda-accord-2015-2-4"
+    },
+    {
+      "id": 36,
+      "title": "Óleo Recomendado para Ford Fusion 2014 2.5 : Motor Duratec",
+      "slug": "oleo-recomendado-ford-fusion-2014-2-5"
+    },
+    {
+      "id": 37,
+      "title": "Óleo Recomendado para Ford Fusion 2013 2.5 : Performance",
+      "slug": "oleo-recomendado-ford-fusion-2013-2-5"
+    },
+    {
+      "id": 38,
+      "title": "Óleo Recomendado para Ford Fusion 2012 2.5 : Econômico",
+      "slug": "oleo-recomendado-ford-fusion-2012-2-5"
+    },
+    {
+      "id": 39,
+      "title": "Óleo Recomendado para Ford Fusion 2011 2.5 : Durabilidade",
+      "slug": "oleo-recomendado-ford-fusion-2011-2-5"
+    },
+    {
+      "id": 40,
+      "title": "Óleo Recomendado para Ford Fusion 2010 2.5 : Motor Flex",
+      "slug": "oleo-recomendado-ford-fusion-2010-2-5"
+    },
+    {
+      "id": 41,
+      "title": "Óleo Recomendado para Volkswagen Passat 2019 2.0 TSI : Motor EA888",
+      "slug": "oleo-recomendado-volkswagen-passat-2019-2-0-tsi"
+    },
+    {
+      "id": 42,
+      "title": "Óleo Recomendado para Volkswagen Passat 2018 2.0 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-passat-2018-2-0-tsi"
+    },
+    {
+      "id": 43,
+      "title": "Óleo Recomendado para Volkswagen Passat 2017 2.0 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-passat-2017-2-0-tsi"
+    },
+    {
+      "id": 44,
+      "title": "Óleo Recomendado para Volkswagen Passat 2016 2.0 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-passat-2016-2-0-tsi"
+    },
+    {
+      "id": 45,
+      "title": "Óleo Recomendado para Volkswagen Passat 2015 2.0 TSI : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-passat-2015-2-0-tsi"
+    },
+    {
+      "id": 46,
+      "title": "Óleo Recomendado para Nissan Sentra 2019 2.0 : Motor MR20DE",
+      "slug": "oleo-recomendado-nissan-sentra-2019-2-0"
+    },
+    {
+      "id": 47,
+      "title": "Óleo Recomendado para Nissan Sentra 2018 2.0 : Performance",
+      "slug": "oleo-recomendado-nissan-sentra-2018-2-0"
+    },
+    {
+      "id": 48,
+      "title": "Óleo Recomendado para Nissan Sentra 2017 2.0 : Econômico",
+      "slug": "oleo-recomendado-nissan-sentra-2017-2-0"
+    },
+    {
+      "id": 49,
+      "title": "Óleo Recomendado para Nissan Sentra 2016 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-nissan-sentra-2016-2-0"
+    },
+    {
+      "id": 50,
+      "title": "Óleo Recomendado para Nissan Sentra 2015 2.0 : Motor Flex",
+      "slug": "oleo-recomendado-nissan-sentra-2015-2-0"
+    },
+    {
+      "id": 51,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2019 1.8 : Motor Econo.Flex",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2019-1-8"
+    },
+    {
+      "id": 52,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2018 1.8 : Performance",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2018-1-8"
+    },
+    {
+      "id": 53,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2017 1.8 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2017-1-8"
+    },
+    {
+      "id": 54,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2016 1.8 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2016-1-8"
+    },
+    {
+      "id": 55,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2015 1.8 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2015-1-8"
+    },
+    {
+      "id": 56,
+      "title": "Óleo Recomendado para Renault Fluence 2012 2.0 : Motor M4R",
+      "slug": "oleo-recomendado-renault-fluence-2012-2-0"
+    },
+    {
+      "id": 57,
+      "title": "Óleo Recomendado para Renault Fluence 2011 2.0 : Lançamento Brasil",
+      "slug": "oleo-recomendado-renault-fluence-2011-2-0"
+    },
+    {
+      "id": 58,
+      "title": "Óleo Recomendado para Honda Accord 2014 3.5 V6 : Motor J35Y",
+      "slug": "oleo-recomendado-honda-accord-2014-3-5-v6"
+    },
+    {
+      "id": 59,
+      "title": "Óleo Recomendado para Honda Accord 2013 3.5 V6 : Performance",
+      "slug": "oleo-recomendado-honda-accord-2013-3-5-v6"
+    },
+    {
+      "id": 60,
+      "title": "Óleo Recomendado para Honda Accord 2012 3.5 V6 : Motor V6",
+      "slug": "oleo-recomendado-honda-accord-2012-3-5-v6"
+    },
+    {
+      "id": 61,
+      "title": "Óleo Recomendado para Honda Accord 2011 3.5 V6 : Econômico",
+      "slug": "oleo-recomendado-honda-accord-2011-3-5-v6"
+    },
+    {
+      "id": 62,
+      "title": "Óleo Recomendado para Honda Accord 2010 3.5 V6 : Durabilidade",
+      "slug": "oleo-recomendado-honda-accord-2010-3-5-v6"
+    },
+    {
+      "id": 63,
+      "title": "Óleo Recomendado para Ford Fusion 2009 2.3 : Motor Duratec",
+      "slug": "oleo-recomendado-ford-fusion-2009-2-3"
+    },
+    {
+      "id": 64,
+      "title": "Óleo Recomendado para Ford Fusion 2008 2.3 : Performance",
+      "slug": "oleo-recomendado-ford-fusion-2008-2-3"
+    },
+    {
+      "id": 65,
+      "title": "Óleo Recomendado para Ford Fusion 2007 2.3 : Lançamento Brasil",
+      "slug": "oleo-recomendado-ford-fusion-2007-2-3"
+    },
+    {
+      "id": 66,
+      "title": "Óleo Recomendado para Volkswagen Passat 2014 2.0 TSI : Motor EA888",
+      "slug": "oleo-recomendado-volkswagen-passat-2014-2-0-tsi"
+    },
+    {
+      "id": 67,
+      "title": "Óleo Recomendado para Volkswagen Passat 2013 2.0 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-passat-2013-2-0-tsi"
+    },
+    {
+      "id": 68,
+      "title": "Óleo Recomendado para Volkswagen Passat 2012 2.0 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-passat-2012-2-0-tsi"
+    },
+    {
+      "id": 69,
+      "title": "Óleo Recomendado para Volkswagen Passat 2011 2.0 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-passat-2011-2-0-tsi"
+    },
+    {
+      "id": 70,
+      "title": "Óleo Recomendado para Volkswagen Passat 2010 2.0 FSI : Motor FSI",
+      "slug": "oleo-recomendado-volkswagen-passat-2010-2-0-fsi"
+    },
+    {
+      "id": 71,
+      "title": "Óleo Recomendado para Nissan Sentra 2014 2.0 : Motor MR20DE",
+      "slug": "oleo-recomendado-nissan-sentra-2014-2-0"
+    },
+    {
+      "id": 72,
+      "title": "Óleo Recomendado para Nissan Sentra 2013 2.0 : Lançamento Nova Geração",
+      "slug": "oleo-recomendado-nissan-sentra-2013-2-0"
+    },
+    {
+      "id": 73,
+      "title": "Óleo Recomendado para Nissan Sentra 2012 2.0 : Motor QR20DE",
+      "slug": "oleo-recomendado-nissan-sentra-2012-2-0"
+    },
+    {
+      "id": 74,
+      "title": "Óleo Recomendado para Nissan Sentra 2011 2.0 : Performance",
+      "slug": "oleo-recomendado-nissan-sentra-2011-2-0"
+    },
+    {
+      "id": 75,
+      "title": "Óleo Recomendado para Nissan Sentra 2010 2.0 : Econômico",
+      "slug": "oleo-recomendado-nissan-sentra-2010-2-0"
+    },
+    {
+      "id": 76,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2014 1.8 : Motor Econo.Flex",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2014-1-8"
+    },
+    {
+      "id": 77,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2013 1.8 : Performance",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2013-1-8"
+    },
+    {
+      "id": 78,
+      "title": "Óleo Recomendado para Chevrolet Cobalt 2012 1.8 : Lançamento",
+      "slug": "oleo-recomendado-chevrolet-cobalt-2012-1-8"
+    },
+    {
+      "id": 79,
+      "title": "Óleo Recomendado para Honda Accord 2009 2.4 : Motor K24Z",
+      "slug": "oleo-recomendado-honda-accord-2009-2-4"
+    },
+    {
+      "id": 80,
+      "title": "Óleo Recomendado para Honda Accord 2008 2.4 : Performance",
+      "slug": "oleo-recomendado-honda-accord-2008-2-4"
+    },
+    {
+      "id": 81,
+      "title": "Óleo Recomendado para Honda Accord 2007 2.4 : Econômico",
+      "slug": "oleo-recomendado-honda-accord-2007-2-4"
+    },
+    {
+      "id": 82,
+      "title": "Óleo Recomendado para Honda Accord 2006 2.4 : Durabilidade",
+      "slug": "oleo-recomendado-honda-accord-2006-2-4"
+    },
+    {
+      "id": 83,
+      "title": "Óleo Recomendado para Honda Accord 2005 2.4 : Motor K24A",
+      "slug": "oleo-recomendado-honda-accord-2005-2-4"
+    },
+    {
+      "id": 84,
+      "title": "Óleo Recomendado para Volkswagen Passat 2009 2.0 FSI : Motor FSI",
+      "slug": "oleo-recomendado-volkswagen-passat-2009-2-0-fsi"
+    },
+    {
+      "id": 85,
+      "title": "Óleo Recomendado para Volkswagen Passat 2008 2.0 FSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-passat-2008-2-0-fsi"
+    },
+    {
+      "id": 86,
+      "title": "Óleo Recomendado para Volkswagen Passat 2007 2.0 FSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-passat-2007-2-0-fsi"
+    },
+    {
+      "id": 87,
+      "title": "Óleo Recomendado para Volkswagen Passat 2006 2.0 : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-passat-2006-2-0"
+    },
+    {
+      "id": 88,
+      "title": "Óleo Recomendado para Nissan Sentra 2009 2.0 : Motor QR20DE",
+      "slug": "oleo-recomendado-nissan-sentra-2009-2-0"
+    },
+    {
+      "id": 89,
+      "title": "Óleo Recomendado para Nissan Sentra 2008 2.0 : Performance",
+      "slug": "oleo-recomendado-nissan-sentra-2008-2-0"
+    },
+    {
+      "id": 90,
+      "title": "Óleo Recomendado para Nissan Sentra 2007 2.0 : Lançamento Brasil",
+      "slug": "oleo-recomendado-nissan-sentra-2007-2-0"
+    },
+    {
+      "id": 91,
+      "title": "Óleo Recomendado para Honda Accord 2004 2.4 : Motor K24A",
+      "slug": "oleo-recomendado-honda-accord-2004-2-4"
+    },
+    {
+      "id": 92,
+      "title": "Óleo Recomendado para Honda Accord 2003 2.4 : Performance",
+      "slug": "oleo-recomendado-honda-accord-2003-2-4"
+    },
+    {
+      "id": 93,
+      "title": "Óleo Recomendado para Honda Accord 2002 3.0 V6 : Motor J30A",
+      "slug": "oleo-recomendado-honda-accord-2002-3-0-v6"
+    },
+    {
+      "id": 94,
+      "title": "Óleo Recomendado para Honda Accord 2001 3.0 V6 : Performance",
+      "slug": "oleo-recomendado-honda-accord-2001-3-0-v6"
+    },
+    {
+      "id": 95,
+      "title": "Óleo Recomendado para Honda Accord 2000 3.0 V6 : Motor V6",
+      "slug": "oleo-recomendado-honda-accord-2000-3-0-v6"
+    },
+    {
+      "id": 96,
+      "title": "Óleo Recomendado para Volkswagen Passat 2005 1.8 Turbo : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-passat-2005-1-8-turbo"
+    },
+    {
+      "id": 97,
+      "title": "Óleo Recomendado para Volkswagen Passat 2004 1.8 Turbo : Performance",
+      "slug": "oleo-recomendado-volkswagen-passat-2004-1-8-turbo"
+    },
+    {
+      "id": 98,
+      "title": "Óleo Recomendado para Volkswagen Passat 2003 1.8 Turbo : Econômico",
+      "slug": "oleo-recomendado-volkswagen-passat-2003-1-8-turbo"
+    },
+    {
+      "id": 99,
+      "title": "Óleo Recomendado para Volkswagen Passat 2002 1.8 Turbo : Motor 20V",
+      "slug": "oleo-recomendado-volkswagen-passat-2002-1-8-turbo"
+    },
+    {
+      "id": 100,
+      "title": "Óleo Recomendado para Volkswagen Passat 2001 1.8 Turbo : Geração B5",
+      "slug": "oleo-recomendado-volkswagen-passat-2001-1-8-turbo"
+    }
+  ]
+}

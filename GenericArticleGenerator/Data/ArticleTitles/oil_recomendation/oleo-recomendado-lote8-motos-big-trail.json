@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 8,
+  "description": "Títulos otimizados para Big Trail/Adventure 2015-2025 - Foco em durabilidade, off-road extremo e viagens longas",
+  "year_range": "2015-2025",
+  "vehicle_focus": "Big Trail/Adventure (Lander 250, Ténéré 250/660, Tiger, GS, Africa Twin, V-Strom)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + off-road extremo + viagem longa + sintético premium + durabilidade",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Yamaha Lander 250 2024: Óleo Yamalube 10W40 Para Trail (Off-Road)",
+      "slug": "oleo-yamaha-lander-250-2024"
+    },
+    {
+      "id": 2,
+      "title": "Yamaha Ténéré 250 2023: Óleo Sintético Vale Para Trail? (Teste 50.000km)",
+      "slug": "oleo-yamaha-tenere-250-2023"
+    },
+    {
+      "id": 3,
+      "title": "Honda Africa Twin 1100 2024: Óleo Honda 10W40 Para Bicilíndrica (Performance)",
+      "slug": "oleo-honda-africa-twin-1100-2024"
+    },
+    {
+      "id": 4,
+      "title": "BMW R1250GS 2023: Óleo BMW 5W40 Para Boxer - Vale R$ 300? (Honesto)",
+      "slug": "oleo-bmw-r1250gs-2023"
+    },
+    {
+      "id": 5,
+      "title": "Triumph Tiger 900 2022: Óleo Triumph Para Tripla - 10W40 Certo (Específico)",
+      "slug": "oleo-triumph-tiger-900-2022"
+    },
+    {
+      "id": 6,
+      "title": "Suzuki V-Strom 650 2024: Óleo Suzuki Para Bicilíndrica V-Twin (Performance)",
+      "slug": "oleo-suzuki-v-strom-650-2024"
+    },
+    {
+      "id": 7,
+      "title": "KTM 790 Adventure 2023: Óleo KTM 10W60 Para Twin LC8c (Track Day)",
+      "slug": "oleo-ktm-790-adventure-2023"
+    },
+    {
+      "id": 8,
+      "title": "Yamaha Super Ténéré 1200 2021: Óleo Yamalube Para 1199cc (Touring)",
+      "slug": "oleo-yamaha-super-tenere-1200-2021"
+    },
+    {
+      "id": 9,
+      "title": "Honda NC 750X 2024: Óleo Honda Para Motor Horizontal (Específico)",
+      "slug": "oleo-honda-nc-750x-2024"
+    },
+    {
+      "id": 10,
+      "title": "BMW F850GS 2023: Óleo BMW Para Paralela 853cc (Adventure Média)",
+      "slug": "oleo-bmw-f850gs-2023"
+    },
+    {
+      "id": 11,
+      "title": "Triumph Tiger 1200 2024: Óleo Triumph Para Tripla 1160cc (Premium)",
+      "slug": "oleo-triumph-tiger-1200-2024"
+    },
+    {
+      "id": 12,
+      "title": "Suzuki V-Strom 1050 2023: Óleo Suzuki Para V-Twin 1037cc (Touring)",
+      "slug": "oleo-suzuki-v-strom-1050-2023"
+    },
+    {
+      "id": 13,
+      "title": "KTM 890 Adventure 2024: Óleo KTM Para LC8c 889cc (Performance)",
+      "slug": "oleo-ktm-890-adventure-2024"
+    },
+    {
+      "id": 14,
+      "title": "Yamaha Lander 250 ABS 2023: Óleo Yamaha Com Freio ABS (Muda Motor?)",
+      "slug": "oleo-yamaha-lander-250-abs-2023"
+    },
+    {
+      "id": 15,
+      "title": "Yamaha Ténéré 250 Blueflex 2020: Óleo Para Motor Flex Trail (Específico)",
+      "slug": "oleo-yamaha-tenere-250-blueflex-2020"
+    },
+    {
+      "id": 16,
+      "title": "Honda Africa Twin CRF1100L 2023: Óleo Honda DCT - Câmbio Dupla Embreagem",
+      "slug": "oleo-honda-africa-twin-crf1100l-2023"
+    },
+    {
+      "id": 17,
+      "title": "BMW R1250GS Adventure 2024: Óleo BMW Para Versão Adventure (Tanque Grande)",
+      "slug": "oleo-bmw-r1250gs-adventure-2024"
+    },
+    {
+      "id": 18,
+      "title": "Triumph Tiger 900 Rally Pro 2023: Óleo Triumph Para Off-Road Extremo",
+      "slug": "oleo-triumph-tiger-900-rally-pro-2023"
+    },
+    {
+      "id": 19,
+      "title": "Suzuki V-Strom 650XT 2024: Óleo Suzuki Trail - 10W40 Ou 10W50? (Dúvida)",
+      "slug": "oleo-suzuki-v-strom-650xt-2024"
+    },
+    {
+      "id": 20,
+      "title": "KTM 790 Adventure R 2022: Óleo KTM Rally - Off-Road Radical (Específico)",
+      "slug": "oleo-ktm-790-adventure-r-2022"
+    },
+    {
+      "id": 21,
+      "title": "Yamaha Ténéré 660 2015: Óleo Yamaha Clássica - 10 Anos Rodando (Imortal)",
+      "slug": "oleo-yamaha-tenere-660-2015"
+    },
+    {
+      "id": 22,
+      "title": "Honda XRE 300 2024: Óleo Honda Para Trail Nacional (Econômica)",
+      "slug": "oleo-honda-xre-300-2024"
+    },
+    {
+      "id": 23,
+      "title": "BMW F750GS 2023: Óleo BMW Para 853cc Paralela (Menor Que F850?)",
+      "slug": "oleo-bmw-f750gs-2023"
+    },
+    {
+      "id": 24,
+      "title": "Triumph Tiger 850 Sport 2024: Óleo Triumph Para Esportiva Trail (Performance)",
+      "slug": "oleo-triumph-tiger-850-sport-2024"
+    },
+    {
+      "id": 25,
+      "title": "Suzuki V-Strom 1050XT 2024: Óleo Suzuki Adventure - 10W40 Padrão (OK)",
+      "slug": "oleo-suzuki-v-strom-1050xt-2024"
+    },
+    {
+      "id": 26,
+      "title": "KTM 1290 Super Adventure 2023: Óleo KTM Para V-Twin 1301cc (Extremo)",
+      "slug": "oleo-ktm-1290-super-adventure-2023"
+    },
+    {
+      "id": 27,
+      "title": "Yamaha Lander 250 2020: Óleo 5 Anos - 80.000km Perfeito (Teste)",
+      "slug": "oleo-yamaha-lander-250-2020"
+    },
+    {
+      "id": 28,
+      "title": "Yamaha Ténéré 250 2018: Óleo Yamaha Trail - Off-Road Leve (OK)",
+      "slug": "oleo-yamaha-tenere-250-2018"
+    },
+    {
+      "id": 29,
+      "title": "Honda Africa Twin 1100 Adventure Sports 2024: Óleo Honda Para Rally (Específico)",
+      "slug": "oleo-honda-africa-twin-1100-adventure-sports-2024"
+    },
+    {
+      "id": 30,
+      "title": "BMW R1250GS 2022: Óleo BMW Boxer - 5W40 Ou 10W60? (Confusão)",
+      "slug": "oleo-bmw-r1250gs-2022"
+    },
+    {
+      "id": 31,
+      "title": "Triumph Tiger 900 GT 2023: Óleo Triumph Para Versão Touring (Viagem)",
+      "slug": "oleo-triumph-tiger-900-gt-2023"
+    },
+    {
+      "id": 32,
+      "title": "Suzuki V-Strom 650 2020: Óleo Suzuki - 100.000km Rodados (Experiência)",
+      "slug": "oleo-suzuki-v-strom-650-2020"
+    },
+    {
+      "id": 33,
+      "title": "KTM 890 Adventure R 2024: Óleo KTM Rally - Para Dakar? (Performance Extrema)",
+      "slug": "oleo-ktm-890-adventure-r-2024"
+    },
+    {
+      "id": 34,
+      "title": "Yamaha Super Ténéré 1200 2020: Óleo Yamalube Para Twin 1199cc (Touring)",
+      "slug": "oleo-yamaha-super-tenere-1200-2020"
+    },
+    {
+      "id": 35,
+      "title": "Honda NC 750X 2023: Óleo Honda Motor Horizontal - 10W30 Ou 10W40? (Dúvida)",
+      "slug": "oleo-honda-nc-750x-2023"
+    },
+    {
+      "id": 36,
+      "title": "BMW F850GS Adventure 2024: Óleo BMW Para Tanque Grande (Viagem Longa)",
+      "slug": "oleo-bmw-f850gs-adventure-2024"
+    },
+    {
+      "id": 37,
+      "title": "Triumph Tiger 1200 Rally Explorer 2024: Óleo Triumph Para Off-Road Extremo",
+      "slug": "oleo-triumph-tiger-1200-rally-explorer-2024"
+    },
+    {
+      "id": 38,
+      "title": "Suzuki V-Strom 1050DE 2023: Óleo Suzuki Adventure - Versão Premium (Vale?)",
+      "slug": "oleo-suzuki-v-strom-1050de-2023"
+    },
+    {
+      "id": 39,
+      "title": "KTM 1290 Super Adventure S 2024: Óleo KTM Para V-Twin Sport (Performance)",
+      "slug": "oleo-ktm-1290-super-adventure-s-2024"
+    },
+    {
+      "id": 40,
+      "title": "Yamaha Lander 250 2022: Óleo Yamaha Para Delivery Trail (Uso Intenso)",
+      "slug": "oleo-yamaha-lander-250-2022"
+    },
+    {
+      "id": 41,
+      "title": "Yamaha Ténéré 250 2021: Óleo Yamalube Trail - 60.000km Perfeito (Teste)",
+      "slug": "oleo-yamaha-tenere-250-2021"
+    },
+    {
+      "id": 42,
+      "title": "Honda Africa Twin 1100 DCT 2024: Óleo Honda Câmbio Automático (Específico)",
+      "slug": "oleo-honda-africa-twin-1100-dct-2024"
+    },
+    {
+      "id": 43,
+      "title": "BMW R1250GS Rallye 2023: Óleo BMW Para Versão Off-Road (Específico)",
+      "slug": "oleo-bmw-r1250gs-rallye-2023"
+    },
+    {
+      "id": 44,
+      "title": "Triumph Tiger 900 Rally 2024: Óleo Triumph Para Trail Radical (Off-Road)",
+      "slug": "oleo-triumph-tiger-900-rally-2024"
+    },
+    {
+      "id": 45,
+      "title": "Suzuki V-Strom 250 2024: Óleo Suzuki Trail Pequena (Econômica)",
+      "slug": "oleo-suzuki-v-strom-250-2024"
+    },
+    {
+      "id": 46,
+      "title": "KTM 890 Adventure R Rally 2023: Óleo KTM Para Dakar Replica (Extremo)",
+      "slug": "oleo-ktm-890-adventure-r-rally-2023"
+    },
+    {
+      "id": 47,
+      "title": "Yamaha Ténéré 700 2024: Óleo Yamalube Para CP2 689cc (Nova Trail)",
+      "slug": "oleo-yamaha-tenere-700-2024"
+    },
+    {
+      "id": 48,
+      "title": "Honda XRE 190 2023: Óleo Honda Trail Pequena - 10W40 OK (Básica)",
+      "slug": "oleo-honda-xre-190-2023"
+    },
+    {
+      "id": 49,
+      "title": "BMW F900GS 2024: Óleo BMW Para 895cc Paralela (Nova Geração)",
+      "slug": "oleo-bmw-f900gs-2024"
+    },
+    {
+      "id": 50,
+      "title": "Triumph Tiger 660 Sport 2024: Óleo Triumph Para Trail Média (Performance)",
+      "slug": "oleo-triumph-tiger-660-sport-2024"
+    },
+    {
+      "id": 51,
+      "title": "Suzuki V-Strom 800DE 2024: Óleo Suzuki Nova Trail 776cc (Novidade)",
+      "slug": "oleo-suzuki-v-strom-800de-2024"
+    },
+    {
+      "id": 52,
+      "title": "KTM 1290 Super Adventure R 2023: Óleo KTM Rally - Off-Road Extremo (Específico)",
+      "slug": "oleo-ktm-1290-super-adventure-r-2023"
+    },
+    {
+      "id": 53,
+      "title": "Yamaha Lander 250 2024: Óleo Yamalube Trail - Nova Geração (Mudou?)",
+      "slug": "oleo-yamaha-lander-250-2024-nova"
+    },
+    {
+      "id": 54,
+      "title": "Yamaha Ténéré 250 2019: Óleo Yamaha - 6 Anos 90.000km (Experiência)",
+      "slug": "oleo-yamaha-tenere-250-2019"
+    },
+    {
+      "id": 55,
+      "title": "Honda Africa Twin 1100 2023: Óleo Honda Para Viagem - 10W40 Aguenta (Teste)",
+      "slug": "oleo-honda-africa-twin-1100-2023-viagem"
+    },
+    {
+      "id": 56,
+      "title": "BMW R1250GS Triple Black 2024: Óleo BMW Edição Especial (Marketing)",
+      "slug": "oleo-bmw-r1250gs-triple-black-2024"
+    },
+    {
+      "id": 57,
+      "title": "Triumph Tiger 900 Bond Edition 2023: Óleo Triumph 007 (Edição Limitada)",
+      "slug": "oleo-triumph-tiger-900-bond-edition-2023"
+    },
+    {
+      "id": 58,
+      "title": "Suzuki V-Strom 650 Adventure 2024: Óleo Suzuki Para Touring (Viagem Longa)",
+      "slug": "oleo-suzuki-v-strom-650-adventure-2024"
+    },
+    {
+      "id": 59,
+      "title": "KTM 390 Adventure 2024: Óleo KTM Trail Pequena - 10W50 Certo (Específico)",
+      "slug": "oleo-ktm-390-adventure-2024"
+    },
+    {
+      "id": 60,
+      "title": "Yamaha Ténéré 700 Rally Edition 2023: Óleo Yamalube Para Rally (Off-Road Extremo)",
+      "slug": "oleo-yamaha-tenere-700-rally-edition-2023"
+    },
+    {
+      "id": 61,
+      "title": "Honda XRE 300 Rally 2024: Óleo Honda Trail Nacional - Rally (Específico)",
+      "slug": "oleo-honda-xre-300-rally-2024"
+    },
+    {
+      "id": 62,
+      "title": "BMW F900GS Adventure 2024: Óleo BMW Para Tanque Grande (Touring)",
+      "slug": "oleo-bmw-f900gs-adventure-2024"
+    },
+    {
+      "id": 63,
+      "title": "Triumph Scrambler 900 2024: Óleo Triumph Trail - Scrambler Vs Tiger (Diferente?)",
+      "slug": "oleo-triumph-scrambler-900-2024"
+    },
+    {
+      "id": 64,
+      "title": "Suzuki V-Strom 1000 2018: Óleo Suzuki 7 Anos - 150.000km (Motor Imortal)",
+      "slug": "oleo-suzuki-v-strom-1000-2018"
+    },
+    {
+      "id": 65,
+      "title": "KTM 1390 Super Adventure 2024: Óleo KTM Para V-Twin 1350cc (Nova Geração)",
+      "slug": "oleo-ktm-1390-super-adventure-2024"
+    },
+    {
+      "id": 66,
+      "title": "Yamaha Lander 250 ABS 2024: Óleo Yamaha Com ABS - Nova (Mudou Especificação?)",
+      "slug": "oleo-yamaha-lander-250-abs-2024"
+    },
+    {
+      "id": 67,
+      "title": "Yamaha Ténéré 250 2020: Óleo Yamaha 5 Anos - Motor Perfeito (Teste)",
+      "slug": "oleo-yamaha-tenere-250-2020"
+    },
+    {
+      "id": 68,
+      "title": "Honda Africa Twin 1100 Manual 2024: Óleo Honda Câmbio Manual (Performance)",
+      "slug": "oleo-honda-africa-twin-1100-manual-2024"
+    },
+    {
+      "id": 69,
+      "title": "BMW R1250GS HP 2024: Óleo BMW High Performance (Vale R$ 400?)",
+      "slug": "oleo-bmw-r1250gs-hp-2024"
+    },
+    {
+      "id": 70,
+      "title": "Triumph Tiger 900 GT Pro 2024: Óleo Triumph Para Touring Premium (Viagem)",
+      "slug": "oleo-triumph-tiger-900-gt-pro-2024"
+    },
+    {
+      "id": 71,
+      "title": "Suzuki V-Strom 650 2024: Óleo Suzuki Trail - 10W40 JASO MA2 (Padrão)",
+      "slug": "oleo-suzuki-v-strom-650-2024-jaso"
+    },
+    {
+      "id": 72,
+      "title": "KTM 790 Adventure S 2023: Óleo KTM Trail Sport (Performance Vs Adventure)",
+      "slug": "oleo-ktm-790-adventure-s-2023"
+    },
+    {
+      "id": 73,
+      "title": "Yamaha Super Ténéré 1200 DX 2021: Óleo Yamalube Para Versão Top (Premium)",
+      "slug": "oleo-yamaha-super-tenere-1200-dx-2021"
+    },
+    {
+      "id": 74,
+      "title": "Honda NC 750X Travel Edition 2024: Óleo Honda Para Touring (Viagem Longa)",
+      "slug": "oleo-honda-nc-750x-travel-edition-2024"
+    },
+    {
+      "id": 75,
+      "title": "BMW F850GS Trophy 2023: Óleo BMW Edição Especial (Marketing)",
+      "slug": "oleo-bmw-f850gs-trophy-2023"
+    },
+    {
+      "id": 76,
+      "title": "Triumph Tiger 1200 GT Explorer 2024: Óleo Triumph Para Touring Premium (Top)",
+      "slug": "oleo-triumph-tiger-1200-gt-explorer-2024"
+    },
+    {
+      "id": 77,
+      "title": "Suzuki V-Strom 1050 Adventure 2024: Óleo Suzuki Para Versão Adventure (Completa)",
+      "slug": "oleo-suzuki-v-strom-1050-adventure-2024"
+    },
+    {
+      "id": 78,
+      "title": "KTM 1290 Super Adventure T 2023: Óleo KTM Para Touring (Viagem Longa)",
+      "slug": "oleo-ktm-1290-super-adventure-t-2023"
+    },
+    {
+      "id": 79,
+      "title": "Yamaha Lander 250 2023: Óleo Yamalube Para Trail - 40.000km OK (Teste)",
+      "slug": "oleo-yamaha-lander-250-2023"
+    },
+    {
+      "id": 80,
+      "title": "Yamaha Ténéré 250 Blueflex 2022: Óleo Yamaha Flex - Etanol OK (Motor)",
+      "slug": "oleo-yamaha-tenere-250-blueflex-2022"
+    },
+    {
+      "id": 81,
+      "title": "Honda Africa Twin 1100L 2024: Óleo Honda Para Versão Low (Diferente?)",
+      "slug": "oleo-honda-africa-twin-1100l-2024"
+    },
+    {
+      "id": 82,
+      "title": "BMW R1250GS Adventure Premium 2024: Óleo BMW Para Versão Top (Vale?)",
+      "slug": "oleo-bmw-r1250gs-adventure-premium-2024"
+    },
+    {
+      "id": 83,
+      "title": "Triumph Tiger 900 Rally Pro Expert 2024: Óleo Triumph Rally Extremo (Off-Road)",
+      "slug": "oleo-triumph-tiger-900-rally-pro-expert-2024"
+    },
+    {
+      "id": 84,
+      "title": "Suzuki V-Strom 650XT Adventure 2024: Óleo Suzuki Para Versão XT (Completa)",
+      "slug": "oleo-suzuki-v-strom-650xt-adventure-2024"
+    },
+    {
+      "id": 85,
+      "title": "KTM 490 Adventure 2024: Óleo KTM Nova Trail Média (Novidade Brasil)",
+      "slug": "oleo-ktm-490-adventure-2024"
+    },
+    {
+      "id": 86,
+      "title": "Yamaha Ténéré 700 World Raid 2024: Óleo Yamalube Para Rally (Dakar Replica)",
+      "slug": "oleo-yamaha-tenere-700-world-raid-2024"
+    },
+    {
+      "id": 87,
+      "title": "Honda XRE 300 Adventure 2024: Óleo Honda Trail - Versão Adventure (Completa)",
+      "slug": "oleo-honda-xre-300-adventure-2024"
+    },
+    {
+      "id": 88,
+      "title": "BMW F900GS Trophy Edition 2024: Óleo BMW Edição Limitada (Marketing)",
+      "slug": "oleo-bmw-f900gs-trophy-edition-2024"
+    },
+    {
+      "id": 89,
+      "title": "Triumph Tiger 800 2018: Óleo Triumph Geração Anterior - 7 Anos (Clássico)",
+      "slug": "oleo-triumph-tiger-800-2018"
+    },
+    {
+      "id": 90,
+      "title": "Suzuki DL650 V-Strom 2020: Óleo Suzuki - 5 Anos 100.000km (Experiência)",
+      "slug": "oleo-suzuki-dl650-v-strom-2020"
+    },
+    {
+      "id": 91,
+      "title": "KTM 1290 Super Duke GT 2023: Óleo KTM Para Sport Touring (Performance)",
+      "slug": "oleo-ktm-1290-super-duke-gt-2023"
+    },
+    {
+      "id": 92,
+      "title": "Yamaha Lander 250 2021: Óleo Yamaha Trail - 4 Anos 70.000km (OK)",
+      "slug": "oleo-yamaha-lander-250-2021"
+    },
+    {
+      "id": 93,
+      "title": "Yamaha Ténéré 250 2024: Óleo Yamalube Nova Geração Trail (Mudou Algo?)",
+      "slug": "oleo-yamaha-tenere-250-2024"
+    },
+    {
+      "id": 94,
+      "title": "Honda Africa Twin 1100 ES 2024: Óleo Honda Suspensão Eletrônica (Muda Motor?)",
+      "slug": "oleo-honda-africa-twin-1100-es-2024"
+    },
+    {
+      "id": 95,
+      "title": "BMW R1300GS 2024: Óleo BMW Para Nova GS 1300cc (Mudou Tudo)",
+      "slug": "oleo-bmw-r1300gs-2024"
+    },
+    {
+      "id": 96,
+      "title": "Triumph Tiger 900 GT Low 2024: Óleo Triumph Para Baixa Altura (Diferente?)",
+      "slug": "oleo-triumph-tiger-900-gt-low-2024"
+    },
+    {
+      "id": 97,
+      "title": "Suzuki V-Strom 800 2024: Óleo Suzuki Nova Trail 776cc (Nova Geração)",
+      "slug": "oleo-suzuki-v-strom-800-2024"
+    },
+    {
+      "id": 98,
+      "title": "KTM 890 Adventure GP 2024: Óleo KTM Edição Limitada (Marketing)",
+      "slug": "oleo-ktm-890-adventure-gp-2024"
+    },
+    {
+      "id": 99,
+      "title": "Yamaha Ténéré 660 Rally 2016: Óleo Yamaha Clássica Rally - 9 Anos (Imortal)",
+      "slug": "oleo-yamaha-tenere-660-rally-2016"
+    },
+    {
+      "id": 100,
+      "title": "Honda Transalp 750 2024: Óleo Honda Nova Trail - Motor CP2 755cc (Novidade)",
+      "slug": "oleo-honda-transalp-750-2024"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ use Src\AutoInfoCenter\ViewModels\ArticleViewModel;
 use Src\AutoInfoCenter\Domain\Services\ArticleService;
 use Src\AutoInfoCenter\Factories\TemplateViewModelFactory;
 // use Src\AutoInfoCenter\ViewModels\Templates\TirePressureViewModel;
+use Src\AutoInfoCenter\Domain\Services\ArticleCacheService;
 use Src\AutoInfoCenter\Domain\Repositories\ArticleRepository;
 use Src\AutoInfoCenter\ViewModels\Templates\TemplateViewModel;
 use Src\AutoInfoCenter\Domain\Services\TemplateDetectorService;
@@ -47,6 +48,7 @@ class AutoInfoCenterServiceProvider extends ServiceProvider
         $this->app->bind(ArticleViewModel::class, function ($app) {
             return new ArticleViewModel(
                 $app->make(ArticleService::class),
+                $app->make(ArticleCacheService::class),
                 $app->make(TemplateDetectorService::class),
                 $app->make(TemplateViewModelFactory::class)
             );

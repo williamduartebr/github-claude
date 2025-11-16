@@ -113,7 +113,7 @@
         </div>
 
         <!-- Lista de Artigos -->
-        @include('auto-info-center::partials.articles-related-category')
+        @include('auto-info-center::partials.articles-list')
 
         @include('auto-info-center::partials.info-section')
 

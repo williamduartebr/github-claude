@@ -14,7 +14,7 @@ interface ArticleRepositoryInterface
     * @return Article|null
     */
    public function findBySlug(string $slug): ?Article;
-   
+
    /**
     * Encontra artigos relacionados a um artigo específico
     *
@@ -23,7 +23,7 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function findRelated(Article $article, int $limit = 4): Collection;
-   
+
    /**
     * Incrementa a contagem de visualizações de um artigo
     *
@@ -31,7 +31,7 @@ interface ArticleRepositoryInterface
     * @return bool
     */
    public function incrementViewCount(Article $article): bool;
-   
+
    /**
     * Busca artigos por categoria
     *
@@ -41,7 +41,7 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function findByCategory(string $categorySlug, int $limit = 10, int $offset = 0): Collection;
-   
+
    /**
     * Conta total de artigos por categoria
     *
@@ -49,7 +49,7 @@ interface ArticleRepositoryInterface
     * @return int
     */
    public function countByCategory(string $categorySlug): int;
-   
+
    /**
     * Busca artigos por categoria e veículo
     *
@@ -62,7 +62,7 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function findByCategoryAndVehicle(string $categorySlug, string $make, ?string $model = null, ?string $year = null, int $limit = 10, int $offset = 0): Collection;
-   
+
    /**
     * Conta artigos por categoria e veículo
     *
@@ -73,7 +73,7 @@ interface ArticleRepositoryInterface
     * @return int
     */
    public function countByCategoryAndVehicle(string $categorySlug, string $make, ?string $model = null, ?string $year = null): int;
-   
+
    /**
     * Busca artigos para um veículo específico
     *
@@ -84,7 +84,7 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function findByVehicle(string $make, ?string $model = null, ?string $year = null, int $limit = 10): Collection;
-   
+
    /**
     * Busca artigos por termos de pesquisa
     *
@@ -93,7 +93,7 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function search(string $searchTerm, int $limit = 10): Collection;
-   
+
    /**
     * Obtém artigos populares baseados em visualizações
     *
@@ -101,7 +101,7 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function getPopular(int $limit = 5): Collection;
-   
+
    /**
     * Obtém artigos mais recentes
     *
@@ -109,4 +109,20 @@ interface ArticleRepositoryInterface
     * @return Collection
     */
    public function getRecent(int $limit = 6): Collection;
+
+   /**
+    * Obtém artigos mais recentes com paginação
+    *
+    * @param int $limit
+    * @param int $offset
+    * @return Collection
+    */
+   public function getRecentPaginated(int $limit = 12, int $offset = 0): Collection;
+
+   /**
+    * Conta total de artigos recentes publicados
+    *
+    * @return int
+    */
+   public function countRecent(): int;
 }

@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 3,
+  "description": "Títulos otimizados para Sedãs e Hatches Premium 2015-2024 - Foco em durabilidade, manutenção preventiva e comparativos",
+  "year_range": "2015-2024",
+  "vehicle_focus": "Sedãs e Hatches Premium (Civic, Corolla, Cruze, City, Virtus, Jetta, Elantra, etc)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + histórico de manutenção + comparativos geracionais + alta quilometragem",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Civic 2.0 2024: Óleo Honda 0W20 Ou 5W30? (11ª Geração Teste)",
+      "slug": "oleo-civic-2-0-2024"
+    },
+    {
+      "id": 2,
+      "title": "Corolla 2.0 2023: Óleo Toyota Original Vale R$ 250? (Honestidade)",
+      "slug": "oleo-corolla-2-0-2023"
+    },
+    {
+      "id": 3,
+      "title": "Cruze 1.4 Turbo 2019: Óleo GM Dexos Ou Posso Economizar? (Teste)",
+      "slug": "oleo-cruze-1-4-turbo-2019"
+    },
+    {
+      "id": 4,
+      "title": "Honda City 1.5 2022: Óleo CVT + Motor (Atenção Dobrada)",
+      "slug": "oleo-honda-city-1-5-2022"
+    },
+    {
+      "id": 5,
+      "title": "VW Virtus 1.0 TSI 2023: Óleo VW 508.00 Obrigatório? (Dúvida)",
+      "slug": "oleo-vw-virtus-1-0-tsi-2023"
+    },
+    {
+      "id": 6,
+      "title": "Jetta 1.4 TSI 2018: Óleo Após 100.000km - Manter Fino? (Experiência)",
+      "slug": "oleo-jetta-1-4-tsi-2018"
+    },
+    {
+      "id": 7,
+      "title": "Elantra 2.0 2021: Óleo Hyundai 5W30 Ou Posso Usar 5W40? (Real)",
+      "slug": "oleo-elantra-2-0-2021"
+    },
+    {
+      "id": 8,
+      "title": "Civic 1.5 Turbo 2017: Óleo Honda Para 173cv (10ª Geração)",
+      "slug": "oleo-civic-1-5-turbo-2017"
+    },
+    {
+      "id": 9,
+      "title": "Corolla 1.8 2015: Óleo Após 150.000km - Trocar Viscosidade? (Dica)",
+      "slug": "oleo-corolla-1-8-2015"
+    },
+    {
+      "id": 10,
+      "title": "Cruze LT 1.4 Turbo 2017: Óleo GM Vs Shell Vs Mobil (Comparação 50k)",
+      "slug": "oleo-cruze-lt-1-4-turbo-2017"
+    },
+    {
+      "id": 11,
+      "title": "City EX 1.5 2023: Óleo Honda Original Vs Castrol (Economizei R$ 120)",
+      "slug": "oleo-city-ex-1-5-2023"
+    },
+    {
+      "id": 12,
+      "title": "Virtus Highline 1.0 TSI 2024: Óleo VW Topo de Linha (Vale?)",
+      "slug": "oleo-virtus-highline-1-0-tsi-2024"
+    },
+    {
+      "id": 13,
+      "title": "Jetta GLI 2.0 TSI 2019: Óleo Para 230cv (Performance VW)",
+      "slug": "oleo-jetta-gli-2-0-tsi-2019"
+    },
+    {
+      "id": 14,
+      "title": "Elantra Sport 1.6 Turbo 2018: Óleo Hyundai Performance (Necessário?)",
+      "slug": "oleo-elantra-sport-1-6-turbo-2018"
+    },
+    {
+      "id": 15,
+      "title": "Civic Touring 2.0 2023: Óleo Honda Premium - Vale R$ 300? (Teste)",
+      "slug": "oleo-civic-touring-2-0-2023"
+    },
+    {
+      "id": 16,
+      "title": "Corolla XEi 2.0 2020: Óleo Toyota Vs Mobil 1 (50.000km Comparação)",
+      "slug": "oleo-corolla-xei-2-0-2020"
+    },
+    {
+      "id": 17,
+      "title": "Cruze Premier 1.4 Turbo 2018: Óleo GM Dexos 1 Gen 2 (Atualizado)",
+      "slug": "oleo-cruze-premier-1-4-turbo-2018"
+    },
+    {
+      "id": 18,
+      "title": "City LX 1.5 2021: Óleo Honda Para Versão Básica (Economizar)",
+      "slug": "oleo-city-lx-1-5-2021"
+    },
+    {
+      "id": 19,
+      "title": "Virtus MSI 1.6 2024: Óleo VW Para Motor Aspirado (Mais Barato)",
+      "slug": "oleo-virtus-msi-1-6-2024"
+    },
+    {
+      "id": 20,
+      "title": "Jetta Comfortline 1.4 TSI 2017: Óleo VW Intermediário (Custo-Benefício)",
+      "slug": "oleo-jetta-comfortline-1-4-tsi-2017"
+    },
+    {
+      "id": 21,
+      "title": "Elantra GLS 2.0 2022: Óleo Hyundai Básico (Funciona 100.000km)",
+      "slug": "oleo-elantra-gls-2-0-2022"
+    },
+    {
+      "id": 22,
+      "title": "Civic EX 2.0 2024: Óleo Honda 0W20 Em Clima Quente (Protege?)",
+      "slug": "oleo-civic-ex-2-0-2024"
+    },
+    {
+      "id": 23,
+      "title": "Corolla Altis 2.0 2019: Óleo Toyota 0W16 Ultrafino (Serve Brasil?)",
+      "slug": "oleo-corolla-altis-2-0-2019"
+    },
+    {
+      "id": 24,
+      "title": "Cruze Sedan 1.4 Turbo 2016: Óleo Após Garantia - Pode Trocar? (Sim)",
+      "slug": "oleo-cruze-sedan-1-4-turbo-2016"
+    },
+    {
+      "id": 25,
+      "title": "City Touring 1.5 2023: Óleo Honda CVT - Troca a Cada 40k? (Crítico)",
+      "slug": "oleo-city-touring-1-5-2023"
+    },
+    {
+      "id": 26,
+      "title": "Virtus GTS 1.4 TSI 2024: Óleo VW Esportivo Para 150cv (Performance)",
+      "slug": "oleo-virtus-gts-1-4-tsi-2024"
+    },
+    {
+      "id": 27,
+      "title": "Jetta R-Line 1.4 TSI 2018: Óleo VW Visual Esportivo (Muda Algo?)",
+      "slug": "oleo-jetta-r-line-1-4-tsi-2018"
+    },
+    {
+      "id": 28,
+      "title": "Elantra HEV Hybrid 2024: Óleo Hyundai Para Híbrido (Novidade)",
+      "slug": "oleo-elantra-hev-hybrid-2024"
+    },
+    {
+      "id": 29,
+      "title": "Civic Sport 2.0 2022: Óleo Honda Para Visual Diferenciado (Igual Motor)",
+      "slug": "oleo-civic-sport-2-0-2022"
+    },
+    {
+      "id": 30,
+      "title": "Corolla GLi 1.8 2016: Óleo Toyota Após 200k - Engrossar? (Dúvida)",
+      "slug": "oleo-corolla-gli-1-8-2016"
+    },
+    {
+      "id": 31,
+      "title": "Cruze LTZ 1.4 Turbo 2019: Óleo GM Top de Linha (Economizei R$ 100)",
+      "slug": "oleo-cruze-ltz-1-4-turbo-2019"
+    },
+    {
+      "id": 32,
+      "title": "City EXL 1.5 2020: Óleo Honda Para Versão Topo (Vale Pagar?)",
+      "slug": "oleo-city-exl-1-5-2020"
+    },
+    {
+      "id": 33,
+      "title": "Virtus Comfortline 1.0 TSI 2023: Óleo VW Intermediário (OK)",
+      "slug": "oleo-virtus-comfortline-1-0-tsi-2023"
+    },
+    {
+      "id": 34,
+      "title": "Jetta Highline 1.4 TSI 2017: Óleo VW Premium (Vale R$ 280?)",
+      "slug": "oleo-jetta-highline-1-4-tsi-2017"
+    },
+    {
+      "id": 35,
+      "title": "Elantra Limited 2.0 2021: Óleo Hyundai Topo de Linha (Necessário?)",
+      "slug": "oleo-elantra-limited-2-0-2021"
+    },
+    {
+      "id": 36,
+      "title": "Civic Si 1.5 Turbo 2020: Óleo Honda Performance Para 208cv (Específico)",
+      "slug": "oleo-civic-si-1-5-turbo-2020"
+    },
+    {
+      "id": 37,
+      "title": "Corolla Hybrid 1.8 2023: Óleo Toyota 0W20 Para Híbrido (Obrigatório)",
+      "slug": "oleo-corolla-hybrid-1-8-2023"
+    },
+    {
+      "id": 38,
+      "title": "Cruze Hatch 1.4 Turbo 2018: Óleo GM - Hatch Vs Sedan (Diferença?)",
+      "slug": "oleo-cruze-hatch-1-4-turbo-2018"
+    },
+    {
+      "id": 39,
+      "title": "City DX 1.5 2022: Óleo Honda Versão Entrada (Mais Barato Possível)",
+      "slug": "oleo-city-dx-1-5-2022"
+    },
+    {
+      "id": 40,
+      "title": "Virtus 200 TSI 1.0 2024: Óleo VW Para 128cv Turbo (Performance)",
+      "slug": "oleo-virtus-200-tsi-1-0-2024"
+    },
+    {
+      "id": 41,
+      "title": "Jetta Sport 1.4 TSI 2019: Óleo VW Esportivo (Marketing Ou Real?)",
+      "slug": "oleo-jetta-sport-1-4-tsi-2019"
+    },
+    {
+      "id": 42,
+      "title": "Elantra Hybrid 1.6 2024: Óleo Hyundai Para Motor Híbrido (Específico)",
+      "slug": "oleo-elantra-hybrid-1-6-2024"
+    },
+    {
+      "id": 43,
+      "title": "Civic LX 2.0 2023: Óleo Honda Básico - Funciona 80.000km (Teste)",
+      "slug": "oleo-civic-lx-2-0-2023"
+    },
+    {
+      "id": 44,
+      "title": "Corolla XRS 1.8 2015: Óleo Toyota Para Motor Esportivo (Diferente?)",
+      "slug": "oleo-corolla-xrs-1-8-2015"
+    },
+    {
+      "id": 45,
+      "title": "Cruze Sport6 1.4 Turbo 2017: Óleo GM Para Hatch Esportivo (Performance)",
+      "slug": "oleo-cruze-sport6-1-4-turbo-2017"
+    },
+    {
+      "id": 46,
+      "title": "City Hatchback 1.5 2023: Óleo Honda - Hatch Vs Sedã (Igual)",
+      "slug": "oleo-city-hatchback-1-5-2023"
+    },
+    {
+      "id": 47,
+      "title": "Virtus Sense 1.6 MSI 2024: Óleo VW Versão Entrada (Economizar)",
+      "slug": "oleo-virtus-sense-1-6-msi-2024"
+    },
+    {
+      "id": 48,
+      "title": "Jetta TDI 2.0 Diesel 2015: Óleo VW Diesel - Ainda Serve? (Análise)",
+      "slug": "oleo-jetta-tdi-2-0-diesel-2015"
+    },
+    {
+      "id": 49,
+      "title": "Elantra N 2.0 Turbo 2024: Óleo Hyundai Performance 280cv (Extremo)",
+      "slug": "oleo-elantra-n-2-0-turbo-2024"
+    },
+    {
+      "id": 50,
+      "title": "Civic Type R 2.0 Turbo 2018: Óleo Honda Racing Para 320cv (Track Day)",
+      "slug": "oleo-civic-type-r-2-0-turbo-2018"
+    },
+    {
+      "id": 51,
+      "title": "Corolla XLi 1.8 2017: Óleo Toyota Básico - 120.000km Rodados (OK)",
+      "slug": "oleo-corolla-xli-1-8-2017"
+    },
+    {
+      "id": 52,
+      "title": "Cruze Midnight 1.4 Turbo 2019: Óleo GM Edição Especial (Marketing)",
+      "slug": "oleo-cruze-midnight-1-4-turbo-2019"
+    },
+    {
+      "id": 53,
+      "title": "City Sport 1.5 2021: Óleo Honda Visual Esportivo (Muda Motor?)",
+      "slug": "oleo-city-sport-1-5-2021"
+    },
+    {
+      "id": 54,
+      "title": "Virtus Black Style 1.0 TSI 2023: Óleo VW Edição Visual (Igual)",
+      "slug": "oleo-virtus-black-style-1-0-tsi-2023"
+    },
+    {
+      "id": 55,
+      "title": "Jetta 2.0 FSI 2015: Óleo VW Motor Antigo - Pode Engrossar? (Dúvida)",
+      "slug": "oleo-jetta-2-0-fsi-2015"
+    },
+    {
+      "id": 56,
+      "title": "Elantra Signature 2.0 2022: Óleo Hyundai Premium (Vale R$ 280?)",
+      "slug": "oleo-elantra-signature-2-0-2022"
+    },
+    {
+      "id": 57,
+      "title": "Civic EXL 2.0 2024: Óleo Honda Topo de Linha (Economizei R$ 150)",
+      "slug": "oleo-civic-exl-2-0-2024"
+    },
+    {
+      "id": 58,
+      "title": "Corolla Dynamic Force 2.0 2020: Óleo Toyota Nova Geração (Específico)",
+      "slug": "oleo-corolla-dynamic-force-2-0-2020"
+    },
+    {
+      "id": 59,
+      "title": "Cruze RS 1.4 Turbo 2018: Óleo GM Esportivo - Faz Diferença? (Teste)",
+      "slug": "oleo-cruze-rs-1-4-turbo-2018"
+    },
+    {
+      "id": 60,
+      "title": "City Style 1.5 2023: Óleo Honda Edição Estilo (Marketing Puro)",
+      "slug": "oleo-city-style-1-5-2023"
+    },
+    {
+      "id": 61,
+      "title": "Virtus Hero 1.0 TSI 2024: Óleo VW Edição Limitada (Diferente?)",
+      "slug": "oleo-virtus-hero-1-0-tsi-2024"
+    },
+    {
+      "id": 62,
+      "title": "Jetta 1.8 TSI 2016: Óleo VW Para 180cv - 100k Rodados (Manter?)",
+      "slug": "oleo-jetta-1-8-tsi-2016"
+    },
+    {
+      "id": 63,
+      "title": "Elantra Smart 2.0 2021: Óleo Hyundai Conectado (Muda Algo? Não)",
+      "slug": "oleo-elantra-smart-2-0-2021"
+    },
+    {
+      "id": 64,
+      "title": "Civic G10 2.0 2017: Óleo Honda 10ª Geração - Troca Para 11ª (Dica)",
+      "slug": "oleo-civic-g10-2-0-2017"
+    },
+    {
+      "id": 65,
+      "title": "Corolla 50 Anos 1.8 2016: Óleo Toyota Edição Especial (Marketing)",
+      "slug": "oleo-corolla-50-anos-1-8-2016"
+    },
+    {
+      "id": 66,
+      "title": "Cruze Ecotec 1.4 Turbo 2019: Óleo GM Economia - Funciona? (Teste)",
+      "slug": "oleo-cruze-ecotec-1-4-turbo-2019"
+    },
+    {
+      "id": 67,
+      "title": "City Flex 1.5 2020: Óleo Honda - Etanol Vs Gasolina (Muda Algo?)",
+      "slug": "oleo-city-flex-1-5-2020"
+    },
+    {
+      "id": 68,
+      "title": "Virtus 250 TSI 1.4 2024: Óleo VW Para 150cv - Performance Alta",
+      "slug": "oleo-virtus-250-tsi-1-4-2024"
+    },
+    {
+      "id": 69,
+      "title": "Jetta TSI 1.4 2015: Óleo VW Após 10 Anos - Engrossar? (Experiência)",
+      "slug": "oleo-jetta-tsi-1-4-2015"
+    },
+    {
+      "id": 70,
+      "title": "Elantra Flex 2.0 2018: Óleo Hyundai Para Flex (Diferente Importado?)",
+      "slug": "oleo-elantra-flex-2-0-2018"
+    },
+    {
+      "id": 71,
+      "title": "Civic 11ª Geração 2.0 2022: Óleo Honda Nova Geração (Mudou Algo?)",
+      "slug": "oleo-civic-11-geracao-2-0-2022"
+    },
+    {
+      "id": 72,
+      "title": "Corolla GR-S 2.0 2023: Óleo Toyota Gazoo Racing (Vale R$ 320?)",
+      "slug": "oleo-corolla-gr-s-2-0-2023"
+    },
+    {
+      "id": 73,
+      "title": "Cruze 1.8 Flex 2015: Óleo GM Motor Aspirado - 150k Rodados (OK)",
+      "slug": "oleo-cruze-1-8-flex-2015"
+    },
+    {
+      "id": 74,
+      "title": "City RS 1.5 2024: Óleo Honda Performance Line (Necessário Mesmo?)",
+      "slug": "oleo-city-rs-1-5-2024"
+    },
+    {
+      "id": 75,
+      "title": "Virtus R-Line 1.4 TSI 2023: Óleo VW Visual Esportivo (Igual Motor)",
+      "slug": "oleo-virtus-r-line-1-4-tsi-2023"
+    },
+    {
+      "id": 76,
+      "title": "Jetta 2.5 Gasolina 2015: Óleo VW Motor 5 Cilindros (Raro Brasil)",
+      "slug": "oleo-jetta-2-5-gasolina-2015"
+    },
+    {
+      "id": 77,
+      "title": "Elantra Sport Premium 1.6 2019: Óleo Hyundai Top (Economizei R$ 130)",
+      "slug": "oleo-elantra-sport-premium-1-6-2019"
+    },
+    {
+      "id": 78,
+      "title": "Civic EX-L Navi 2.0 2018: Óleo Honda Com Navegação (Muda? Não)",
+      "slug": "oleo-civic-ex-l-navi-2-0-2018"
+    },
+    {
+      "id": 79,
+      "title": "Corolla Altis Premium 2.0 2021: Óleo Toyota Topo Absoluto (Vale?)",
+      "slug": "oleo-corolla-altis-premium-2-0-2021"
+    },
+    {
+      "id": 80,
+      "title": "Cruze Turbo AT6 1.4 2017: Óleo GM Para Câmbio Automático (Dobrado)",
+      "slug": "oleo-cruze-turbo-at6-1-4-2017"
+    },
+    {
+      "id": 81,
+      "title": "City CVT 1.5 2022: Óleo Honda Para Câmbio Variador (Crítico)",
+      "slug": "oleo-city-cvt-1-5-2022"
+    },
+    {
+      "id": 82,
+      "title": "Virtus Automático 1.0 TSI 2024: Óleo VW + Câmbio (Atenção Dupla)",
+      "slug": "oleo-virtus-automatico-1-0-tsi-2024"
+    },
+    {
+      "id": 83,
+      "title": "Jetta AT 1.4 TSI 2018: Óleo VW Motor + Câmbio Tiptronic (Cuidado)",
+      "slug": "oleo-jetta-at-1-4-tsi-2018"
+    },
+    {
+      "id": 84,
+      "title": "Elantra AT 2.0 2021: Óleo Hyundai Motor + Câmbio (Dobrado)",
+      "slug": "oleo-elantra-at-2-0-2021"
+    },
+    {
+      "id": 85,
+      "title": "Civic CVT 2.0 2023: Óleo Honda Motor + Variador (Atenção Máxima)",
+      "slug": "oleo-civic-cvt-2-0-2023"
+    },
+    {
+      "id": 86,
+      "title": "Corolla CVT 2.0 2020: Óleo Toyota Para Câmbio CVT (40.000km Troca)",
+      "slug": "oleo-corolla-cvt-2-0-2020"
+    },
+    {
+      "id": 87,
+      "title": "Cruze AT Turbo 1.4 2019: Óleo GM Câmbio AT6 - Quando Trocar? (Dica)",
+      "slug": "oleo-cruze-at-turbo-1-4-2019"
+    },
+    {
+      "id": 88,
+      "title": "City Manual 1.5 2023: Óleo Honda Sem Câmbio Automático (Simples)",
+      "slug": "oleo-city-manual-1-5-2023"
+    },
+    {
+      "id": 89,
+      "title": "Virtus Manual 1.6 MSI 2024: Óleo VW Motor Aspirado Manual (Básico)",
+      "slug": "oleo-virtus-manual-1-6-msi-2024"
+    },
+    {
+      "id": 90,
+      "title": "Jetta Manual 1.4 TSI 2017: Óleo VW Turbo Câmbio Manual (Performance)",
+      "slug": "oleo-jetta-manual-1-4-tsi-2017"
+    },
+    {
+      "id": 91,
+      "title": "Elantra Manual 2.0 2020: Óleo Hyundai Câmbio Manual (Econômico)",
+      "slug": "oleo-elantra-manual-2-0-2020"
+    },
+    {
+      "id": 92,
+      "title": "Civic Manual 2.0 2022: Óleo Honda Câmbio Manual 6 Marchas (Esportivo)",
+      "slug": "oleo-civic-manual-2-0-2022"
+    },
+    {
+      "id": 93,
+      "title": "Corolla Manual 1.8 2016: Óleo Toyota Câmbio Manual - 200k Rodados",
+      "slug": "oleo-corolla-manual-1-8-2016"
+    },
+    {
+      "id": 94,
+      "title": "Cruze Manual 1.4 Turbo 2018: Óleo GM Turbo Manual (Custo-Benefício)",
+      "slug": "oleo-cruze-manual-1-4-turbo-2018"
+    },
+    {
+      "id": 95,
+      "title": "City 5ª Geração 1.5 2024: Óleo Honda Nova Geração (Mudou Algo?)",
+      "slug": "oleo-city-5-geracao-1-5-2024"
+    },
+    {
+      "id": 96,
+      "title": "Virtus 2024 Facelift 1.0 TSI: Óleo VW Reestilizado (Igual Motor)",
+      "slug": "oleo-virtus-2024-facelift-1-0-tsi"
+    },
+    {
+      "id": 97,
+      "title": "Jetta 7ª Geração 1.4 TSI 2019: Óleo VW Nova Geração Brasil",
+      "slug": "oleo-jetta-7-geracao-1-4-tsi-2019"
+    },
+    {
+      "id": 98,
+      "title": "Elantra 7ª Geração 2.0 2022: Óleo Hyundai Nova Plataforma (Mudou?)",
+      "slug": "oleo-elantra-7-geracao-2-0-2022"
+    },
+    {
+      "id": 99,
+      "title": "Civic FE1 2.0 2024: Óleo Honda Código Interno (Técnico)",
+      "slug": "oleo-civic-fe1-2-0-2024"
+    },
+    {
+      "id": 100,
+      "title": "Corolla E210 2.0 2023: Óleo Toyota Código Geracional (Específico)",
+      "slug": "oleo-corolla-e210-2-0-2023"
+    }
+  ]
+}

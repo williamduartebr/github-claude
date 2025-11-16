@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 22,
+  "description": "Títulos otimizados para Motos Esportivas 2000-2025 - Foco em CB, MT, Ninja, GSX-R, R3, Duke (alto volume)",
+  "year_range": "2000-2025",
+  "vehicle_focus": "Motos Esportivas (CB 300/500/650, MT-03/07/09, Ninja, GSX-R, R3, Duke)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + motos esportivas + cilindradas 250-1000cc+ + performance + versões R/RR",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo Recomendado para Honda CB 500F 2025 : Motor Bicilíndrico",
+      "slug": "oleo-recomendado-honda-cb-500f-2025"
+    },
+    {
+      "id": 2,
+      "title": "Óleo Recomendado para Honda CB 500F 2024 : Performance",
+      "slug": "oleo-recomendado-honda-cb-500f-2024"
+    },
+    {
+      "id": 3,
+      "title": "Óleo Recomendado para Honda CB 500F 2023 : Alta Performance",
+      "slug": "oleo-recomendado-honda-cb-500f-2023"
+    },
+    {
+      "id": 4,
+      "title": "Óleo Recomendado para Honda CB 500F 2022 : Durabilidade",
+      "slug": "oleo-recomendado-honda-cb-500f-2022"
+    },
+    {
+      "id": 5,
+      "title": "Óleo Recomendado para Honda CB 500F 2021 : Motor 500cc",
+      "slug": "oleo-recomendado-honda-cb-500f-2021"
+    },
+    {
+      "id": 6,
+      "title": "Óleo Recomendado para Yamaha MT-03 2025 : Naked Sport",
+      "slug": "oleo-recomendado-yamaha-mt-03-2025"
+    },
+    {
+      "id": 7,
+      "title": "Óleo Recomendado para Yamaha MT-03 2024 : Performance",
+      "slug": "oleo-recomendado-yamaha-mt-03-2024"
+    },
+    {
+      "id": 8,
+      "title": "Óleo Recomendado para Yamaha MT-03 2023 : Alta Performance",
+      "slug": "oleo-recomendado-yamaha-mt-03-2023"
+    },
+    {
+      "id": 9,
+      "title": "Óleo Recomendado para Yamaha MT-03 2022 : Durabilidade",
+      "slug": "oleo-recomendado-yamaha-mt-03-2022"
+    },
+    {
+      "id": 10,
+      "title": "Óleo Recomendado para Yamaha MT-03 2021 : Motor 321cc",
+      "slug": "oleo-recomendado-yamaha-mt-03-2021"
+    },
+    {
+      "id": 11,
+      "title": "Óleo Recomendado para Kawasaki Ninja 400 2025 : Supersport",
+      "slug": "oleo-recomendado-kawasaki-ninja-400-2025"
+    },
+    {
+      "id": 12,
+      "title": "Óleo Recomendado para Kawasaki Ninja 400 2024 : Performance",
+      "slug": "oleo-recomendado-kawasaki-ninja-400-2024"
+    },
+    {
+      "id": 13,
+      "title": "Óleo Recomendado para Kawasaki Ninja 400 2023 : Alta Performance",
+      "slug": "oleo-recomendado-kawasaki-ninja-400-2023"
+    },
+    {
+      "id": 14,
+      "title": "Óleo Recomendado para Kawasaki Ninja 400 2022 : Durabilidade",
+      "slug": "oleo-recomendado-kawasaki-ninja-400-2022"
+    },
+    {
+      "id": 15,
+      "title": "Óleo Recomendado para Kawasaki Ninja 400 2021 : Motor 399cc",
+      "slug": "oleo-recomendado-kawasaki-ninja-400-2021"
+    },
+    {
+      "id": 16,
+      "title": "Óleo Recomendado para Yamaha R3 2025 : Supersport",
+      "slug": "oleo-recomendado-yamaha-r3-2025"
+    },
+    {
+      "id": 17,
+      "title": "Óleo Recomendado para Yamaha R3 2024 : Performance",
+      "slug": "oleo-recomendado-yamaha-r3-2024"
+    },
+    {
+      "id": 18,
+      "title": "Óleo Recomendado para Yamaha R3 2023 : Alta Performance",
+      "slug": "oleo-recomendado-yamaha-r3-2023"
+    },
+    {
+      "id": 19,
+      "title": "Óleo Recomendado para Yamaha R3 2022 : Durabilidade",
+      "slug": "oleo-recomendado-yamaha-r3-2022"
+    },
+    {
+      "id": 20,
+      "title": "Óleo Recomendado para Yamaha R3 2021 : Motor 321cc",
+      "slug": "oleo-recomendado-yamaha-r3-2021"
+    },
+    {
+      "id": 21,
+      "title": "Óleo Recomendado para KTM Duke 390 2025 : Naked Performance",
+      "slug": "oleo-recomendado-ktm-duke-390-2025"
+    },
+    {
+      "id": 22,
+      "title": "Óleo Recomendado para KTM Duke 390 2024 : Performance",
+      "slug": "oleo-recomendado-ktm-duke-390-2024"
+    },
+    {
+      "id": 23,
+      "title": "Óleo Recomendado para KTM Duke 390 2023 : Alta Performance",
+      "slug": "oleo-recomendado-ktm-duke-390-2023"
+    },
+    {
+      "id": 24,
+      "title": "Óleo Recomendado para KTM Duke 390 2022 : Durabilidade",
+      "slug": "oleo-recomendado-ktm-duke-390-2022"
+    },
+    {
+      "id": 25,
+      "title": "Óleo Recomendado para KTM Duke 390 2021 : Motor 373cc",
+      "slug": "oleo-recomendado-ktm-duke-390-2021"
+    },
+    {
+      "id": 26,
+      "title": "Óleo Recomendado para Honda CB 650R 2025 : Naked Sport",
+      "slug": "oleo-recomendado-honda-cb-650r-2025"
+    },
+    {
+      "id": 27,
+      "title": "Óleo Recomendado para Honda CB 650R 2024 : Performance",
+      "slug": "oleo-recomendado-honda-cb-650r-2024"
+    },
+    {
+      "id": 28,
+      "title": "Óleo Recomendado para Honda CB 650R 2023 : Alta Performance",
+      "slug": "oleo-recomendado-honda-cb-650r-2023"
+    },
+    {
+      "id": 29,
+      "title": "Óleo Recomendado para Honda CB 650R 2022 : Durabilidade",
+      "slug": "oleo-recomendado-honda-cb-650r-2022"
+    },
+    {
+      "id": 30,
+      "title": "Óleo Recomendado para Honda CB 650R 2021 : Motor 4 Cilindros",
+      "slug": "oleo-recomendado-honda-cb-650r-2021"
+    },
+    {
+      "id": 31,
+      "title": "Óleo Recomendado para Yamaha MT-07 2025 : Naked Twin",
+      "slug": "oleo-recomendado-yamaha-mt-07-2025"
+    },
+    {
+      "id": 32,
+      "title": "Óleo Recomendado para Yamaha MT-07 2024 : Performance",
+      "slug": "oleo-recomendado-yamaha-mt-07-2024"
+    },
+    {
+      "id": 33,
+      "title": "Óleo Recomendado para Yamaha MT-07 2023 : Alta Performance",
+      "slug": "oleo-recomendado-yamaha-mt-07-2023"
+    },
+    {
+      "id": 34,
+      "title": "Óleo Recomendado para Yamaha MT-07 2022 : Durabilidade",
+      "slug": "oleo-recomendado-yamaha-mt-07-2022"
+    },
+    {
+      "id": 35,
+      "title": "Óleo Recomendado para Yamaha MT-07 2021 : Motor 689cc",
+      "slug": "oleo-recomendado-yamaha-mt-07-2021"
+    },
+    {
+      "id": 36,
+      "title": "Óleo Recomendado para Kawasaki Z400 2025 : Naked Sport",
+      "slug": "oleo-recomendado-kawasaki-z400-2025"
+    },
+    {
+      "id": 37,
+      "title": "Óleo Recomendado para Kawasaki Z400 2024 : Performance",
+      "slug": "oleo-recomendado-kawasaki-z400-2024"
+    },
+    {
+      "id": 38,
+      "title": "Óleo Recomendado para Kawasaki Z400 2023 : Alta Performance",
+      "slug": "oleo-recomendado-kawasaki-z400-2023"
+    },
+    {
+      "id": 39,
+      "title": "Óleo Recomendado para Kawasaki Z400 2022 : Durabilidade",
+      "slug": "oleo-recomendado-kawasaki-z400-2022"
+    },
+    {
+      "id": 40,
+      "title": "Óleo Recomendado para Kawasaki Z400 2021 : Motor 399cc",
+      "slug": "oleo-recomendado-kawasaki-z400-2021"
+    },
+    {
+      "id": 41,
+      "title": "Óleo Recomendado para Suzuki GSX-S750 2025 : Sport Naked",
+      "slug": "oleo-recomendado-suzuki-gsx-s750-2025"
+    },
+    {
+      "id": 42,
+      "title": "Óleo Recomendado para Suzuki GSX-S750 2024 : Performance",
+      "slug": "oleo-recomendado-suzuki-gsx-s750-2024"
+    },
+    {
+      "id": 43,
+      "title": "Óleo Recomendado para Suzuki GSX-S750 2023 : Alta Performance",
+      "slug": "oleo-recomendado-suzuki-gsx-s750-2023"
+    },
+    {
+      "id": 44,
+      "title": "Óleo Recomendado para Suzuki GSX-S750 2022 : Durabilidade",
+      "slug": "oleo-recomendado-suzuki-gsx-s750-2022"
+    },
+    {
+      "id": 45,
+      "title": "Óleo Recomendado para Suzuki GSX-S750 2021 : Motor 4 Cilindros",
+      "slug": "oleo-recomendado-suzuki-gsx-s750-2021"
+    },
+    {
+      "id": 46,
+      "title": "Óleo Recomendado para Honda CB 300R 2020 : Neo Sports Café",
+      "slug": "oleo-recomendado-honda-cb-300r-2020"
+    },
+    {
+      "id": 47,
+      "title": "Óleo Recomendado para Honda CB 300R 2019 : Performance",
+      "slug": "oleo-recomendado-honda-cb-300r-2019"
+    },
+    {
+      "id": 48,
+      "title": "Óleo Recomendado para Honda CB 300R 2018 : Motor Monocilíndrico",
+      "slug": "oleo-recomendado-honda-cb-300r-2018"
+    },
+    {
+      "id": 49,
+      "title": "Óleo Recomendado para Honda CB 500F 2020 : Motor Bicilíndrico",
+      "slug": "oleo-recomendado-honda-cb-500f-2020"
+    },
+    {
+      "id": 50,
+      "title": "Óleo Recomendado para Honda CB 500F 2019 : Performance",
+      "slug": "oleo-recomendado-honda-cb-500f-2019"
+    },
+    {
+      "id": 51,
+      "title": "Óleo Recomendado para Honda CB 500F 2018 : Alta Performance",
+      "slug": "oleo-recomendado-honda-cb-500f-2018"
+    },
+    {
+      "id": 52,
+      "title": "Óleo Recomendado para Honda CB 500F 2017 : Durabilidade",
+      "slug": "oleo-recomendado-honda-cb-500f-2017"
+    },
+    {
+      "id": 53,
+      "title": "Óleo Recomendado para Honda CB 500F 2016 : Motor 500cc",
+      "slug": "oleo-recomendado-honda-cb-500f-2016"
+    },
+    {
+      "id": 54,
+      "title": "Óleo Recomendado para Yamaha MT-03 2020 : Naked Sport",
+      "slug": "oleo-recomendado-yamaha-mt-03-2020"
+    },
+    {
+      "id": 55,
+      "title": "Óleo Recomendado para Yamaha MT-03 2019 : Performance",
+      "slug": "oleo-recomendado-yamaha-mt-03-2019"
+    },
+    {
+      "id": 56,
+      "title": "Óleo Recomendado para Yamaha MT-03 2018 : Alta Performance",
+      "slug": "oleo-recomendado-yamaha-mt-03-2018"
+    },
+    {
+      "id": 57,
+      "title": "Óleo Recomendado para Yamaha MT-03 2017 : Durabilidade",
+      "slug": "oleo-recomendado-yamaha-mt-03-2017"
+    },
+    {
+      "id": 58,
+      "title": "Óleo Recomendado para Yamaha MT-03 2016 : Motor 321cc",
+      "slug": "oleo-recomendado-yamaha-mt-03-2016"
+    },
+    {
+      "id": 59,
+      "title": "Óleo Recomendado para Kawasaki Ninja 300 2020 : Supersport",
+      "slug": "oleo-recomendado-kawasaki-ninja-300-2020"
+    },
+    {
+      "id": 60,
+      "title": "Óleo Recomendado para Kawasaki Ninja 300 2019 : Performance",
+      "slug": "oleo-recomendado-kawasaki-ninja-300-2019"
+    },
+    {
+      "id": 61,
+      "title": "Óleo Recomendado para Kawasaki Ninja 300 2018 : Alta Performance",
+      "slug": "oleo-recomendado-kawasaki-ninja-300-2018"
+    },
+    {
+      "id": 62,
+      "title": "Óleo Recomendado para Kawasaki Ninja 300 2017 : Durabilidade",
+      "slug": "oleo-recomendado-kawasaki-ninja-300-2017"
+    },
+    {
+      "id": 63,
+      "title": "Óleo Recomendado para Kawasaki Ninja 300 2016 : Motor 296cc",
+      "slug": "oleo-recomendado-kawasaki-ninja-300-2016"
+    },
+    {
+      "id": 64,
+      "title": "Óleo Recomendado para Yamaha R3 2020 : Supersport",
+      "slug": "oleo-recomendado-yamaha-r3-2020"
+    },
+    {
+      "id": 65,
+      "title": "Óleo Recomendado para Yamaha R3 2019 : Performance",
+      "slug": "oleo-recomendado-yamaha-r3-2019"
+    },
+    {
+      "id": 66,
+      "title": "Óleo Recomendado para Yamaha R3 2018 : Alta Performance",
+      "slug": "oleo-recomendado-yamaha-r3-2018"
+    },
+    {
+      "id": 67,
+      "title": "Óleo Recomendado para Yamaha R3 2017 : Durabilidade",
+      "slug": "oleo-recomendado-yamaha-r3-2017"
+    },
+    {
+      "id": 68,
+      "title": "Óleo Recomendado para Yamaha R3 2016 : Motor 321cc",
+      "slug": "oleo-recomendado-yamaha-r3-2016"
+    },
+    {
+      "id": 69,
+      "title": "Óleo Recomendado para KTM Duke 390 2020 : Naked Performance",
+      "slug": "oleo-recomendado-ktm-duke-390-2020"
+    },
+    {
+      "id": 70,
+      "title": "Óleo Recomendado para KTM Duke 390 2019 : Performance",
+      "slug": "oleo-recomendado-ktm-duke-390-2019"
+    },
+    {
+      "id": 71,
+      "title": "Óleo Recomendado para KTM Duke 390 2018 : Alta Performance",
+      "slug": "oleo-recomendado-ktm-duke-390-2018"
+    },
+    {
+      "id": 72,
+      "title": "Óleo Recomendado para KTM Duke 390 2017 : Motor 373cc",
+      "slug": "oleo-recomendado-ktm-duke-390-2017"
+    },
+    {
+      "id": 73,
+      "title": "Óleo Recomendado para KTM Duke 200 2020 : Naked Entry",
+      "slug": "oleo-recomendado-ktm-duke-200-2020"
+    },
+    {
+      "id": 74,
+      "title": "Óleo Recomendado para KTM Duke 200 2019 : Performance",
+      "slug": "oleo-recomendado-ktm-duke-200-2019"
+    },
+    {
+      "id": 75,
+      "title": "Óleo Recomendado para KTM Duke 200 2018 : Motor 199cc",
+      "slug": "oleo-recomendado-ktm-duke-200-2018"
+    },
+    {
+      "id": 76,
+      "title": "Óleo Recomendado para Yamaha MT-09 2025 : Naked Triple",
+      "slug": "oleo-recomendado-yamaha-mt-09-2025"
+    },
+    {
+      "id": 77,
+      "title": "Óleo Recomendado para Yamaha MT-09 2024 : Performance",
+      "slug": "oleo-recomendado-yamaha-mt-09-2024"
+    },
+    {
+      "id": 78,
+      "title": "Óleo Recomendado para Yamaha MT-09 2023 : Alta Performance",
+      "slug": "oleo-recomendado-yamaha-mt-09-2023"
+    },
+    {
+      "id": 79,
+      "title": "Óleo Recomendado para Yamaha MT-09 2022 : Durabilidade",
+      "slug": "oleo-recomendado-yamaha-mt-09-2022"
+    },
+    {
+      "id": 80,
+      "title": "Óleo Recomendado para Yamaha MT-09 2021 : Motor 3 Cilindros",
+      "slug": "oleo-recomendado-yamaha-mt-09-2021"
+    },
+    {
+      "id": 81,
+      "title": "Óleo Recomendado para Kawasaki Ninja 650 2020 : Sport Touring",
+      "slug": "oleo-recomendado-kawasaki-ninja-650-2020"
+    },
+    {
+      "id": 82,
+      "title": "Óleo Recomendado para Kawasaki Ninja 650 2019 : Performance",
+      "slug": "oleo-recomendado-kawasaki-ninja-650-2019"
+    },
+    {
+      "id": 83,
+      "title": "Óleo Recomendado para Kawasaki Ninja 650 2018 : Alta Performance",
+      "slug": "oleo-recomendado-kawasaki-ninja-650-2018"
+    },
+    {
+      "id": 84,
+      "title": "Óleo Recomendado para Kawasaki Ninja 650 2017 : Motor Paralelo Twin",
+      "slug": "oleo-recomendado-kawasaki-ninja-650-2017"
+    },
+    {
+      "id": 85,
+      "title": "Óleo Recomendado para Suzuki GSX-R1000 2020 : Superbike",
+      "slug": "oleo-recomendado-suzuki-gsx-r1000-2020"
+    },
+    {
+      "id": 86,
+      "title": "Óleo Recomendado para Suzuki GSX-R1000 2019 : Performance Extrema",
+      "slug": "oleo-recomendado-suzuki-gsx-r1000-2019"
+    },
+    {
+      "id": 87,
+      "title": "Óleo Recomendado para Suzuki GSX-R1000 2018 : Motor 4 Cilindros",
+      "slug": "oleo-recomendado-suzuki-gsx-r1000-2018"
+    },
+    {
+      "id": 88,
+      "title": "Óleo Recomendado para Honda CBR 600RR 2015 : Supersport",
+      "slug": "oleo-recomendado-honda-cbr-600rr-2015"
+    },
+    {
+      "id": 89,
+      "title": "Óleo Recomendado para Honda CBR 600RR 2014 : Performance Extrema",
+      "slug": "oleo-recomendado-honda-cbr-600rr-2014"
+    },
+    {
+      "id": 90,
+      "title": "Óleo Recomendado para Honda CBR 600RR 2013 : Motor 4 Cilindros",
+      "slug": "oleo-recomendado-honda-cbr-600rr-2013"
+    },
+    {
+      "id": 91,
+      "title": "Óleo Recomendado para Yamaha R6 2015 : Supersport",
+      "slug": "oleo-recomendado-yamaha-r6-2015"
+    },
+    {
+      "id": 92,
+      "title": "Óleo Recomendado para Yamaha R6 2014 : Performance Extrema",
+      "slug": "oleo-recomendado-yamaha-r6-2014"
+    },
+    {
+      "id": 93,
+      "title": "Óleo Recomendado para Yamaha R6 2013 : Motor 599cc",
+      "slug": "oleo-recomendado-yamaha-r6-2013"
+    },
+    {
+      "id": 94,
+      "title": "Óleo Recomendado para Kawasaki Ninja ZX-6R 2015 : Supersport",
+      "slug": "oleo-recomendado-kawasaki-ninja-zx-6r-2015"
+    },
+    {
+      "id": 95,
+      "title": "Óleo Recomendado para Kawasaki Ninja ZX-6R 2014 : Performance Extrema",
+      "slug": "oleo-recomendado-kawasaki-ninja-zx-6r-2014"
+    },
+    {
+      "id": 96,
+      "title": "Óleo Recomendado para Suzuki GSX-R750 2015 : Superbike Média",
+      "slug": "oleo-recomendado-suzuki-gsx-r750-2015"
+    },
+    {
+      "id": 97,
+      "title": "Óleo Recomendado para Suzuki GSX-R750 2014 : Performance Extrema",
+      "slug": "oleo-recomendado-suzuki-gsx-r750-2014"
+    },
+    {
+      "id": 98,
+      "title": "Óleo Recomendado para Honda CB 1000R 2020 : Naked Liter",
+      "slug": "oleo-recomendado-honda-cb-1000r-2020"
+    },
+    {
+      "id": 99,
+      "title": "Óleo Recomendado para Honda CB 1000R 2019 : Performance Extrema",
+      "slug": "oleo-recomendado-honda-cb-1000r-2019"
+    },
+    {
+      "id": 100,
+      "title": "Óleo Recomendado para Kawasaki Z900 2020 : Naked 900",
+      "slug": "oleo-recomendado-kawasaki-z900-2020"
+    }
+  ]
+}

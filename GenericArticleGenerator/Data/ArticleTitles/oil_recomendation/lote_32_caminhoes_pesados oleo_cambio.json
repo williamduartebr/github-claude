@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 32,
+  "description": "Títulos otimizados para Óleo de Câmbio em Caminhões Pesados 2000-2025 - Foco em Iveco Stralis/Hi-Way e DAF XF/CF",
+  "year_range": "2000-2025",
+  "vehicle_focus": "Caminhões Pesados (Iveco Stralis, Iveco Hi-Way, DAF XF, DAF CF)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + óleo de câmbio + transmissão automatizada + caminhões Iveco/DAF + longas distâncias",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 480 2025 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-480-2025"
+    },
+    {
+      "id": 2,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 480 2024 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-480-2024"
+    },
+    {
+      "id": 3,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 480 2023 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-480-2023"
+    },
+    {
+      "id": 4,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 480 2022 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-480-2022"
+    },
+    {
+      "id": 5,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 480 2021 : Cavalo Rodoviário",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-480-2021"
+    },
+    {
+      "id": 6,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 600S 2025 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-600s-2025"
+    },
+    {
+      "id": 7,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 600S 2024 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-600s-2024"
+    },
+    {
+      "id": 8,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 600S 2023 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-600s-2023"
+    },
+    {
+      "id": 9,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 600S 2022 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-600s-2022"
+    },
+    {
+      "id": 10,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 600S 2021 : Premium",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-600s-2021"
+    },
+    {
+      "id": 11,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 530 2025 : Transmissão TraXon",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-530-2025"
+    },
+    {
+      "id": 12,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 530 2024 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-530-2024"
+    },
+    {
+      "id": 13,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 530 2023 : Caixa ZF TraXon 12TX",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-530-2023"
+    },
+    {
+      "id": 14,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 530 2022 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-530-2022"
+    },
+    {
+      "id": 15,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 530 2021 : Super Space Cab",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-530-2021"
+    },
+    {
+      "id": 16,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 570 2025 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-570-2025"
+    },
+    {
+      "id": 17,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 570 2024 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-570-2024"
+    },
+    {
+      "id": 18,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 570 2023 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-570-2023"
+    },
+    {
+      "id": 19,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 570 2022 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-570-2022"
+    },
+    {
+      "id": 20,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 570 2021 : Potente",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-570-2021"
+    },
+    {
+      "id": 21,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 440 2025 : Transmissão TraXon",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-440-2025"
+    },
+    {
+      "id": 22,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 440 2024 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-440-2024"
+    },
+    {
+      "id": 23,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 440 2023 : Caixa ZF 12AS",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-440-2023"
+    },
+    {
+      "id": 24,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 440 2022 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-440-2022"
+    },
+    {
+      "id": 25,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 440 2021 : Truck Médio",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-440-2021"
+    },
+    {
+      "id": 26,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 440 2020 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-440-2020"
+    },
+    {
+      "id": 27,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 440 2019 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-440-2019"
+    },
+    {
+      "id": 28,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 440 2018 : Caixa ZF 12AS",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-440-2018"
+    },
+    {
+      "id": 29,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 440 2017 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-440-2017"
+    },
+    {
+      "id": 30,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 440 2016 : Cavalo 6x2",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-440-2016"
+    },
+    {
+      "id": 31,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 480S 2020 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-480s-2020"
+    },
+    {
+      "id": 32,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 480S 2019 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-480s-2019"
+    },
+    {
+      "id": 33,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 480S 2018 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-480s-2018"
+    },
+    {
+      "id": 34,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 480S 2017 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-480s-2017"
+    },
+    {
+      "id": 35,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 480S 2016 : Longo Curso",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-480s-2016"
+    },
+    {
+      "id": 36,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 510 2020 : Transmissão TraXon",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-510-2020"
+    },
+    {
+      "id": 37,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 510 2019 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-510-2019"
+    },
+    {
+      "id": 38,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 510 2018 : Caixa ZF 12TX",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-510-2018"
+    },
+    {
+      "id": 39,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 510 2017 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-510-2017"
+    },
+    {
+      "id": 40,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 510 2016 : Cavalo Super",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-510-2016"
+    },
+    {
+      "id": 41,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 380 2020 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-380-2020"
+    },
+    {
+      "id": 42,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 380 2019 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-380-2019"
+    },
+    {
+      "id": 43,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 380 2018 : Caixa ZF 9S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-380-2018"
+    },
+    {
+      "id": 44,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 380 2017 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-380-2017"
+    },
+    {
+      "id": 45,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 380 2016 : Truck 6x4",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-380-2016"
+    },
+    {
+      "id": 46,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 380 2020 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-380-2020"
+    },
+    {
+      "id": 47,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 380 2019 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-380-2019"
+    },
+    {
+      "id": 48,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 380 2018 : Caixa ZF 12AS",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-380-2018"
+    },
+    {
+      "id": 49,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 380 2017 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-380-2017"
+    },
+    {
+      "id": 50,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 380 2016 : Distribuição",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-380-2016"
+    },
+    {
+      "id": 51,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 490 2015 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-490-2015"
+    },
+    {
+      "id": 52,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 490 2014 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-490-2014"
+    },
+    {
+      "id": 53,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 490 2013 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-490-2013"
+    },
+    {
+      "id": 54,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 490 2012 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-490-2012"
+    },
+    {
+      "id": 55,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 490 2011 : Pesado",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-490-2011"
+    },
+    {
+      "id": 56,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.460 2015 : Transmissão AS-Tronic",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-460-2015"
+    },
+    {
+      "id": 57,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.460 2014 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-460-2014"
+    },
+    {
+      "id": 58,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.460 2013 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-460-2013"
+    },
+    {
+      "id": 59,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.460 2012 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-460-2012"
+    },
+    {
+      "id": 60,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.460 2011 : Euro 5",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-460-2011"
+    },
+    {
+      "id": 61,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 420 2015 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-420-2015"
+    },
+    {
+      "id": 62,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 420 2014 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-420-2014"
+    },
+    {
+      "id": 63,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 420 2013 : Caixa ZF 12S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-420-2013"
+    },
+    {
+      "id": 64,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 420 2012 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-420-2012"
+    },
+    {
+      "id": 65,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 420 2011 : Médio",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-420-2011"
+    },
+    {
+      "id": 66,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.460 2015 : Transmissão AS-Tronic",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-460-2015"
+    },
+    {
+      "id": 67,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.460 2014 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-460-2014"
+    },
+    {
+      "id": 68,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.460 2013 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-460-2013"
+    },
+    {
+      "id": 69,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.460 2012 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-460-2012"
+    },
+    {
+      "id": 70,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.460 2011 : Truck 8x2",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-460-2011"
+    },
+    {
+      "id": 71,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 460 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-460-2010"
+    },
+    {
+      "id": 72,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 460 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-460-2009"
+    },
+    {
+      "id": 73,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 460 2008 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-460-2008"
+    },
+    {
+      "id": 74,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 460 2007 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-460-2007"
+    },
+    {
+      "id": 75,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 460 2006 : Cavalo 6x2",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-460-2006"
+    },
+    {
+      "id": 76,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.510 2010 : Transmissão AS-Tronic",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-510-2010"
+    },
+    {
+      "id": 77,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.510 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-510-2009"
+    },
+    {
+      "id": 78,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.510 2008 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-510-2008"
+    },
+    {
+      "id": 79,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.510 2007 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-510-2007"
+    },
+    {
+      "id": 80,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 105.510 2006 : Potente",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-105-510-2006"
+    },
+    {
+      "id": 81,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 410 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-410-2010"
+    },
+    {
+      "id": 82,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 410 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-410-2009"
+    },
+    {
+      "id": 83,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 410 2008 : Caixa ZF 12S",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-410-2008"
+    },
+    {
+      "id": 84,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 410 2007 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-410-2007"
+    },
+    {
+      "id": 85,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 410 2006 : Clássico",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-410-2006"
+    },
+    {
+      "id": 86,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.410 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-410-2010"
+    },
+    {
+      "id": 87,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.410 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-410-2009"
+    },
+    {
+      "id": 88,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.410 2008 : Caixa ZF 12AS",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-410-2008"
+    },
+    {
+      "id": 89,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.410 2007 : Durabilidade",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-410-2007"
+    },
+    {
+      "id": 90,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 85.410 2006 : Médio",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-85-410-2006"
+    },
+    {
+      "id": 91,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 500 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-500-2010"
+    },
+    {
+      "id": 92,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 500 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-500-2009"
+    },
+    {
+      "id": 93,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 95.480 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-95-480-2010"
+    },
+    {
+      "id": 94,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 95.480 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-95-480-2009"
+    },
+    {
+      "id": 95,
+      "title": "Óleo de Câmbio Recomendado para DAF XF 95.480 2008 : Caixa ZF 16S",
+      "slug": "oleo-de-cambio-recomendado-daf-xf-95-480-2008"
+    },
+    {
+      "id": 96,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 360 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-360-2010"
+    },
+    {
+      "id": 97,
+      "title": "Óleo de Câmbio Recomendado para Iveco Stralis 360 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-iveco-stralis-360-2009"
+    },
+    {
+      "id": 98,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 75.310 2010 : Transmissão Manual",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-75-310-2010"
+    },
+    {
+      "id": 99,
+      "title": "Óleo de Câmbio Recomendado para DAF CF 75.310 2009 : Performance",
+      "slug": "oleo-de-cambio-recomendado-daf-cf-75-310-2009"
+    },
+    {
+      "id": 100,
+      "title": "Óleo de Câmbio Recomendado para Iveco Hi-Way 440S 2015 : Transmissão Hi-Tronix",
+      "slug": "oleo-de-cambio-recomendado-iveco-hi-way-440s-2015"
+    }
+  ]
+}

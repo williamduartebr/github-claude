@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 20,
+  "description": "Títulos otimizados para SUVs/Crossover 2000-2025 - Completando com Renegade, ASX, Grand Vitara, SW4, Amarok",
+  "year_range": "2000-2025",
+  "vehicle_focus": "SUVs/Crossover (Renegade, ASX, Grand Vitara, SW4, Pajero, X-Trail, Equinox)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + SUVs compactos/grandes + off-road + diesel + versões completas",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo Recomendado para Jeep Renegade 2024 1.3 Turbo : Motor Firefly",
+      "slug": "oleo-recomendado-jeep-renegade-2024-1-3-turbo"
+    },
+    {
+      "id": 2,
+      "title": "Óleo Recomendado para Jeep Renegade 2023 1.3 Turbo : Performance",
+      "slug": "oleo-recomendado-jeep-renegade-2023-1-3-turbo"
+    },
+    {
+      "id": 3,
+      "title": "Óleo Recomendado para Jeep Renegade 2022 1.3 Turbo : Econômico",
+      "slug": "oleo-recomendado-jeep-renegade-2022-1-3-turbo"
+    },
+    {
+      "id": 4,
+      "title": "Óleo Recomendado para Jeep Renegade 2021 1.3 Turbo : Durabilidade",
+      "slug": "oleo-recomendado-jeep-renegade-2021-1-3-turbo"
+    },
+    {
+      "id": 5,
+      "title": "Óleo Recomendado para Jeep Renegade 2020 1.8 Flex : Motor Tigershark",
+      "slug": "oleo-recomendado-jeep-renegade-2020-1-8-flex"
+    },
+    {
+      "id": 6,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2024 2.0 : Motor 4B11",
+      "slug": "oleo-recomendado-mitsubishi-asx-2024-2-0"
+    },
+    {
+      "id": 7,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2023 2.0 : Performance",
+      "slug": "oleo-recomendado-mitsubishi-asx-2023-2-0"
+    },
+    {
+      "id": 8,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2022 2.0 : Econômico",
+      "slug": "oleo-recomendado-mitsubishi-asx-2022-2-0"
+    },
+    {
+      "id": 9,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2021 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-mitsubishi-asx-2021-2-0"
+    },
+    {
+      "id": 10,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2020 2.0 : Motor MIVEC",
+      "slug": "oleo-recomendado-mitsubishi-asx-2020-2-0"
+    },
+    {
+      "id": 11,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2016 2.0 : Motor J20A",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2016-2-0"
+    },
+    {
+      "id": 12,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2015 2.0 : Performance",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2015-2-0"
+    },
+    {
+      "id": 13,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2014 2.0 : Econômico",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2014-2-0"
+    },
+    {
+      "id": 14,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2013 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2013-2-0"
+    },
+    {
+      "id": 15,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2012 2.0 : Motor 4x4",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2012-2-0"
+    },
+    {
+      "id": 16,
+      "title": "Óleo Recomendado para Toyota SW4 2024 2.8 Diesel : Motor 1GD-FTV",
+      "slug": "oleo-recomendado-toyota-sw4-2024-2-8-diesel"
+    },
+    {
+      "id": 17,
+      "title": "Óleo Recomendado para Toyota SW4 2023 2.8 Diesel : Performance",
+      "slug": "oleo-recomendado-toyota-sw4-2023-2-8-diesel"
+    },
+    {
+      "id": 18,
+      "title": "Óleo Recomendado para Toyota SW4 2022 2.8 Diesel : Econômico",
+      "slug": "oleo-recomendado-toyota-sw4-2022-2-8-diesel"
+    },
+    {
+      "id": 19,
+      "title": "Óleo Recomendado para Toyota SW4 2021 2.8 Diesel : Durabilidade",
+      "slug": "oleo-recomendado-toyota-sw4-2021-2-8-diesel"
+    },
+    {
+      "id": 20,
+      "title": "Óleo Recomendado para Toyota SW4 2020 2.8 Diesel : Motor Turbo Diesel",
+      "slug": "oleo-recomendado-toyota-sw4-2020-2-8-diesel"
+    },
+    {
+      "id": 21,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2024 3.2 Diesel : Motor 4M41",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2024-3-2-diesel"
+    },
+    {
+      "id": 22,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2023 3.2 Diesel : Performance",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2023-3-2-diesel"
+    },
+    {
+      "id": 23,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2022 3.2 Diesel : Econômico",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2022-3-2-diesel"
+    },
+    {
+      "id": 24,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2021 3.2 Diesel : Durabilidade",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2021-3-2-diesel"
+    },
+    {
+      "id": 25,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2020 3.2 Diesel : Motor Diesel 4x4",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2020-3-2-diesel"
+    },
+    {
+      "id": 26,
+      "title": "Óleo Recomendado para Nissan X-Trail 2024 2.5 : Motor QR25DE",
+      "slug": "oleo-recomendado-nissan-x-trail-2024-2-5"
+    },
+    {
+      "id": 27,
+      "title": "Óleo Recomendado para Nissan X-Trail 2023 2.5 : Performance",
+      "slug": "oleo-recomendado-nissan-x-trail-2023-2-5"
+    },
+    {
+      "id": 28,
+      "title": "Óleo Recomendado para Nissan X-Trail 2022 2.5 : Econômico",
+      "slug": "oleo-recomendado-nissan-x-trail-2022-2-5"
+    },
+    {
+      "id": 29,
+      "title": "Óleo Recomendado para Nissan X-Trail 2021 2.5 : Durabilidade",
+      "slug": "oleo-recomendado-nissan-x-trail-2021-2-5"
+    },
+    {
+      "id": 30,
+      "title": "Óleo Recomendado para Nissan X-Trail 2020 2.5 : Motor 4 Cilindros",
+      "slug": "oleo-recomendado-nissan-x-trail-2020-2-5"
+    },
+    {
+      "id": 31,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2024 1.5 Turbo : Motor Turbo",
+      "slug": "oleo-recomendado-chevrolet-equinox-2024-1-5-turbo"
+    },
+    {
+      "id": 32,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2023 1.5 Turbo : Performance",
+      "slug": "oleo-recomendado-chevrolet-equinox-2023-1-5-turbo"
+    },
+    {
+      "id": 33,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2022 1.5 Turbo : Econômico",
+      "slug": "oleo-recomendado-chevrolet-equinox-2022-1-5-turbo"
+    },
+    {
+      "id": 34,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2021 1.5 Turbo : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-equinox-2021-1-5-turbo"
+    },
+    {
+      "id": 35,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2020 2.0 Turbo : Motor Ecotec",
+      "slug": "oleo-recomendado-chevrolet-equinox-2020-2-0-turbo"
+    },
+    {
+      "id": 36,
+      "title": "Óleo Recomendado para Jeep Renegade 2019 1.8 Flex : Motor Tigershark",
+      "slug": "oleo-recomendado-jeep-renegade-2019-1-8-flex"
+    },
+    {
+      "id": 37,
+      "title": "Óleo Recomendado para Jeep Renegade 2018 1.8 Flex : Performance",
+      "slug": "oleo-recomendado-jeep-renegade-2018-1-8-flex"
+    },
+    {
+      "id": 38,
+      "title": "Óleo Recomendado para Jeep Renegade 2017 1.8 Flex : Econômico",
+      "slug": "oleo-recomendado-jeep-renegade-2017-1-8-flex"
+    },
+    {
+      "id": 39,
+      "title": "Óleo Recomendado para Jeep Renegade 2016 1.8 Flex : Durabilidade",
+      "slug": "oleo-recomendado-jeep-renegade-2016-1-8-flex"
+    },
+    {
+      "id": 40,
+      "title": "Óleo Recomendado para Jeep Renegade 2015 1.8 Flex : Lançamento Brasil",
+      "slug": "oleo-recomendado-jeep-renegade-2015-1-8-flex"
+    },
+    {
+      "id": 41,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2019 2.0 : Motor 4B11",
+      "slug": "oleo-recomendado-mitsubishi-asx-2019-2-0"
+    },
+    {
+      "id": 42,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2018 2.0 : Performance",
+      "slug": "oleo-recomendado-mitsubishi-asx-2018-2-0"
+    },
+    {
+      "id": 43,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2017 2.0 : Econômico",
+      "slug": "oleo-recomendado-mitsubishi-asx-2017-2-0"
+    },
+    {
+      "id": 44,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2016 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-mitsubishi-asx-2016-2-0"
+    },
+    {
+      "id": 45,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2015 2.0 : Motor MIVEC",
+      "slug": "oleo-recomendado-mitsubishi-asx-2015-2-0"
+    },
+    {
+      "id": 46,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2011 2.0 : Motor J20A",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2011-2-0"
+    },
+    {
+      "id": 47,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2010 2.0 : Performance",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2010-2-0"
+    },
+    {
+      "id": 48,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2009 2.0 : Econômico",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2009-2-0"
+    },
+    {
+      "id": 49,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2008 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2008-2-0"
+    },
+    {
+      "id": 50,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2007 2.0 : Lançamento Brasil",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2007-2-0"
+    },
+    {
+      "id": 51,
+      "title": "Óleo Recomendado para Toyota SW4 2019 2.8 Diesel : Motor 1GD-FTV",
+      "slug": "oleo-recomendado-toyota-sw4-2019-2-8-diesel"
+    },
+    {
+      "id": 52,
+      "title": "Óleo Recomendado para Toyota SW4 2018 2.8 Diesel : Performance",
+      "slug": "oleo-recomendado-toyota-sw4-2018-2-8-diesel"
+    },
+    {
+      "id": 53,
+      "title": "Óleo Recomendado para Toyota SW4 2017 2.8 Diesel : Econômico",
+      "slug": "oleo-recomendado-toyota-sw4-2017-2-8-diesel"
+    },
+    {
+      "id": 54,
+      "title": "Óleo Recomendado para Toyota SW4 2016 2.8 Diesel : Durabilidade",
+      "slug": "oleo-recomendado-toyota-sw4-2016-2-8-diesel"
+    },
+    {
+      "id": 55,
+      "title": "Óleo Recomendado para Toyota SW4 2015 3.0 Diesel : Motor 1KD-FTV",
+      "slug": "oleo-recomendado-toyota-sw4-2015-3-0-diesel"
+    },
+    {
+      "id": 56,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2019 3.2 Diesel : Motor 4M41",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2019-3-2-diesel"
+    },
+    {
+      "id": 57,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2018 3.2 Diesel : Performance",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2018-3-2-diesel"
+    },
+    {
+      "id": 58,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2017 3.2 Diesel : Econômico",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2017-3-2-diesel"
+    },
+    {
+      "id": 59,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2016 3.2 Diesel : Durabilidade",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2016-3-2-diesel"
+    },
+    {
+      "id": 60,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2015 3.2 Diesel : Motor Diesel",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2015-3-2-diesel"
+    },
+    {
+      "id": 61,
+      "title": "Óleo Recomendado para Jeep Renegade 2024 2.0 Diesel : Motor Multijet",
+      "slug": "oleo-recomendado-jeep-renegade-2024-2-0-diesel"
+    },
+    {
+      "id": 62,
+      "title": "Óleo Recomendado para Jeep Renegade 2023 2.0 Diesel : Performance",
+      "slug": "oleo-recomendado-jeep-renegade-2023-2-0-diesel"
+    },
+    {
+      "id": 63,
+      "title": "Óleo Recomendado para Jeep Renegade 2024 Trailhawk : Off-Road Extremo",
+      "slug": "oleo-recomendado-jeep-renegade-2024-trailhawk"
+    },
+    {
+      "id": 64,
+      "title": "Óleo Recomendado para Jeep Renegade 2023 Trailhawk : Versão Trail",
+      "slug": "oleo-recomendado-jeep-renegade-2023-trailhawk"
+    },
+    {
+      "id": 65,
+      "title": "Óleo Recomendado para Jeep Renegade 2024 Longitude : Versão Intermediária",
+      "slug": "oleo-recomendado-jeep-renegade-2024-longitude"
+    },
+    {
+      "id": 66,
+      "title": "Óleo Recomendado para Jeep Renegade 2023 Longitude : Performance",
+      "slug": "oleo-recomendado-jeep-renegade-2023-longitude"
+    },
+    {
+      "id": 67,
+      "title": "Óleo Recomendado para Toyota SW4 2024 Diamond : Versão Top",
+      "slug": "oleo-recomendado-toyota-sw4-2024-diamond"
+    },
+    {
+      "id": 68,
+      "title": "Óleo Recomendado para Toyota SW4 2023 Diamond : Performance",
+      "slug": "oleo-recomendado-toyota-sw4-2023-diamond"
+    },
+    {
+      "id": 69,
+      "title": "Óleo Recomendado para Toyota SW4 2024 SRX : Versão Intermediária",
+      "slug": "oleo-recomendado-toyota-sw4-2024-srx"
+    },
+    {
+      "id": 70,
+      "title": "Óleo Recomendado para Toyota SW4 2023 SRX : Performance",
+      "slug": "oleo-recomendado-toyota-sw4-2023-srx"
+    },
+    {
+      "id": 71,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2024 HPE : Versão Top",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2024-hpe"
+    },
+    {
+      "id": 72,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2023 HPE : Performance",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2023-hpe"
+    },
+    {
+      "id": 73,
+      "title": "Óleo Recomendado para Nissan X-Trail 2019 2.5 : Motor QR25DE",
+      "slug": "oleo-recomendado-nissan-x-trail-2019-2-5"
+    },
+    {
+      "id": 74,
+      "title": "Óleo Recomendado para Nissan X-Trail 2018 2.5 : Performance",
+      "slug": "oleo-recomendado-nissan-x-trail-2018-2-5"
+    },
+    {
+      "id": 75,
+      "title": "Óleo Recomendado para Nissan X-Trail 2017 2.5 : Econômico",
+      "slug": "oleo-recomendado-nissan-x-trail-2017-2-5"
+    },
+    {
+      "id": 76,
+      "title": "Óleo Recomendado para Nissan X-Trail 2016 2.5 : Durabilidade",
+      "slug": "oleo-recomendado-nissan-x-trail-2016-2-5"
+    },
+    {
+      "id": 77,
+      "title": "Óleo Recomendado para Nissan X-Trail 2015 2.5 : Motor 4 Cilindros",
+      "slug": "oleo-recomendado-nissan-x-trail-2015-2-5"
+    },
+    {
+      "id": 78,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2019 2.0 Turbo : Motor Ecotec",
+      "slug": "oleo-recomendado-chevrolet-equinox-2019-2-0-turbo"
+    },
+    {
+      "id": 79,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2018 2.0 Turbo : Performance",
+      "slug": "oleo-recomendado-chevrolet-equinox-2018-2-0-turbo"
+    },
+    {
+      "id": 80,
+      "title": "Óleo Recomendado para Chevrolet Equinox 2017 2.0 Turbo : Lançamento Brasil",
+      "slug": "oleo-recomendado-chevrolet-equinox-2017-2-0-turbo"
+    },
+    {
+      "id": 81,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2014 2.0 : Motor 4B11",
+      "slug": "oleo-recomendado-mitsubishi-asx-2014-2-0"
+    },
+    {
+      "id": 82,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2013 2.0 : Performance",
+      "slug": "oleo-recomendado-mitsubishi-asx-2013-2-0"
+    },
+    {
+      "id": 83,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2012 2.0 : Econômico",
+      "slug": "oleo-recomendado-mitsubishi-asx-2012-2-0"
+    },
+    {
+      "id": 84,
+      "title": "Óleo Recomendado para Mitsubishi ASX 2011 2.0 : Lançamento Brasil",
+      "slug": "oleo-recomendado-mitsubishi-asx-2011-2-0"
+    },
+    {
+      "id": 85,
+      "title": "Óleo Recomendado para Toyota SW4 2014 3.0 Diesel : Motor 1KD-FTV",
+      "slug": "oleo-recomendado-toyota-sw4-2014-3-0-diesel"
+    },
+    {
+      "id": 86,
+      "title": "Óleo Recomendado para Toyota SW4 2013 3.0 Diesel : Performance",
+      "slug": "oleo-recomendado-toyota-sw4-2013-3-0-diesel"
+    },
+    {
+      "id": 87,
+      "title": "Óleo Recomendado para Toyota SW4 2012 3.0 Diesel : Econômico",
+      "slug": "oleo-recomendado-toyota-sw4-2012-3-0-diesel"
+    },
+    {
+      "id": 88,
+      "title": "Óleo Recomendado para Toyota SW4 2011 3.0 Diesel : Durabilidade",
+      "slug": "oleo-recomendado-toyota-sw4-2011-3-0-diesel"
+    },
+    {
+      "id": 89,
+      "title": "Óleo Recomendado para Toyota SW4 2010 3.0 Diesel : Motor Turbo Diesel",
+      "slug": "oleo-recomendado-toyota-sw4-2010-3-0-diesel"
+    },
+    {
+      "id": 90,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2014 3.2 Diesel : Motor 4M41",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2014-3-2-diesel"
+    },
+    {
+      "id": 91,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2013 3.2 Diesel : Performance",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2013-3-2-diesel"
+    },
+    {
+      "id": 92,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2012 3.2 Diesel : Econômico",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2012-3-2-diesel"
+    },
+    {
+      "id": 93,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2011 3.2 Diesel : Durabilidade",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2011-3-2-diesel"
+    },
+    {
+      "id": 94,
+      "title": "Óleo Recomendado para Mitsubishi Pajero Full 2010 3.2 Diesel : Motor Off-Road",
+      "slug": "oleo-recomendado-mitsubishi-pajero-full-2010-3-2-diesel"
+    },
+    {
+      "id": 95,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2006 2.0 : Motor J20A",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2006-2-0"
+    },
+    {
+      "id": 96,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2005 2.0 : Performance",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2005-2-0"
+    },
+    {
+      "id": 97,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2004 2.0 : Econômico",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2004-2-0"
+    },
+    {
+      "id": 98,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2003 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2003-2-0"
+    },
+    {
+      "id": 99,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2002 2.0 : Motor 4x4",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2002-2-0"
+    },
+    {
+      "id": 100,
+      "title": "Óleo Recomendado para Suzuki Grand Vitara 2001 2.0 : Off-Road Clássico",
+      "slug": "oleo-recomendado-suzuki-grand-vitara-2001-2-0"
+    }
+  ]
+}

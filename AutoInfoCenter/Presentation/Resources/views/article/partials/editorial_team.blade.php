@@ -1,4 +1,8 @@
-<section class="max-w-4xl mx-auto mb-8 pt-4">
+@props([
+    'marginBottom' => 'mb-8'
+])
+
+<section class="max-w-4xl mx-auto {{ $marginBottom }} pt-4">
     <div class="bg-[#0E368A]/5 rounded-lg p-6 border border-gray-200 shadow-sm">
         <div class="flex items-center mb-4">
             <div class="w-10 h-10 bg-[#0E368A] rounded-full flex items-center justify-center mr-3 shadow-sm">

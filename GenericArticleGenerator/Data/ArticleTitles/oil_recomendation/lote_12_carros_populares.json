@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 12,
+  "description": "Títulos otimizados para Carros Populares 2000-2025 - Completando cobertura com Polo, Classic, Agile e variações",
+  "year_range": "2000-2025",
+  "vehicle_focus": "Carros Populares (Polo, Corsa Classic, Agile, Punto, Stilo, Meriva, Scenic)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + modelos faltantes + anos clássicos 2000s + variações sedan/hatch",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo Recomendado para Volkswagen Polo 2024 1.0 TSI : Motor Turbo",
+      "slug": "oleo-recomendado-volkswagen-polo-2024-1-0-tsi"
+    },
+    {
+      "id": 2,
+      "title": "Óleo Recomendado para Volkswagen Polo 2023 1.0 TSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-polo-2023-1-0-tsi"
+    },
+    {
+      "id": 3,
+      "title": "Óleo Recomendado para Volkswagen Polo 2022 1.0 TSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-polo-2022-1-0-tsi"
+    },
+    {
+      "id": 4,
+      "title": "Óleo Recomendado para Volkswagen Polo 2021 1.0 TSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-polo-2021-1-0-tsi"
+    },
+    {
+      "id": 5,
+      "title": "Óleo Recomendado para Volkswagen Polo 2020 1.0 TSI : Motor 3 Cilindros",
+      "slug": "oleo-recomendado-volkswagen-polo-2020-1-0-tsi"
+    },
+    {
+      "id": 6,
+      "title": "Óleo Recomendado para Chevrolet Agile 2014 1.4 : Motor Econo.Flex",
+      "slug": "oleo-recomendado-chevrolet-agile-2014-1-4"
+    },
+    {
+      "id": 7,
+      "title": "Óleo Recomendado para Chevrolet Agile 2013 1.4 : Performance",
+      "slug": "oleo-recomendado-chevrolet-agile-2013-1-4"
+    },
+    {
+      "id": 8,
+      "title": "Óleo Recomendado para Chevrolet Agile 2012 1.4 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-agile-2012-1-4"
+    },
+    {
+      "id": 9,
+      "title": "Óleo Recomendado para Chevrolet Agile 2011 1.4 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-agile-2011-1-4"
+    },
+    {
+      "id": 10,
+      "title": "Óleo Recomendado para Chevrolet Agile 2010 1.4 : Lançamento",
+      "slug": "oleo-recomendado-chevrolet-agile-2010-1-4"
+    },
+    {
+      "id": 11,
+      "title": "Óleo Recomendado para Fiat Punto 2017 1.4 : Motor Fire Evo",
+      "slug": "oleo-recomendado-fiat-punto-2017-1-4"
+    },
+    {
+      "id": 12,
+      "title": "Óleo Recomendado para Fiat Punto 2016 1.4 : Performance",
+      "slug": "oleo-recomendado-fiat-punto-2016-1-4"
+    },
+    {
+      "id": 13,
+      "title": "Óleo Recomendado para Fiat Punto 2015 1.4 : Econômico",
+      "slug": "oleo-recomendado-fiat-punto-2015-1-4"
+    },
+    {
+      "id": 14,
+      "title": "Óleo Recomendado para Fiat Punto 2014 1.4 : Durabilidade",
+      "slug": "oleo-recomendado-fiat-punto-2014-1-4"
+    },
+    {
+      "id": 15,
+      "title": "Óleo Recomendado para Fiat Punto 2013 1.4 : Motor Fire",
+      "slug": "oleo-recomendado-fiat-punto-2013-1-4"
+    },
+    {
+      "id": 16,
+      "title": "Óleo Recomendado para Chevrolet Classic 2016 1.0 : Motor VHC",
+      "slug": "oleo-recomendado-chevrolet-classic-2016-1-0"
+    },
+    {
+      "id": 17,
+      "title": "Óleo Recomendado para Chevrolet Classic 2015 1.0 : Performance",
+      "slug": "oleo-recomendado-chevrolet-classic-2015-1-0"
+    },
+    {
+      "id": 18,
+      "title": "Óleo Recomendado para Chevrolet Classic 2014 1.0 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-classic-2014-1-0"
+    },
+    {
+      "id": 19,
+      "title": "Óleo Recomendado para Chevrolet Classic 2013 1.0 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-classic-2013-1-0"
+    },
+    {
+      "id": 20,
+      "title": "Óleo Recomendado para Chevrolet Classic 2012 1.0 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-classic-2012-1-0"
+    },
+    {
+      "id": 21,
+      "title": "Óleo Recomendado para Renault Scenic 2011 2.0 : Motor M4R",
+      "slug": "oleo-recomendado-renault-scenic-2011-2-0"
+    },
+    {
+      "id": 22,
+      "title": "Óleo Recomendado para Renault Scenic 2010 2.0 : Performance",
+      "slug": "oleo-recomendado-renault-scenic-2010-2-0"
+    },
+    {
+      "id": 23,
+      "title": "Óleo Recomendado para Renault Scenic 2009 2.0 : Econômico",
+      "slug": "oleo-recomendado-renault-scenic-2009-2-0"
+    },
+    {
+      "id": 24,
+      "title": "Óleo Recomendado para Renault Scenic 2008 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-renault-scenic-2008-2-0"
+    },
+    {
+      "id": 25,
+      "title": "Óleo Recomendado para Renault Scenic 2007 2.0 : Motor M4R Flex",
+      "slug": "oleo-recomendado-renault-scenic-2007-2-0"
+    },
+    {
+      "id": 26,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2012 1.4 : Motor Econo.Flex",
+      "slug": "oleo-recomendado-chevrolet-meriva-2012-1-4"
+    },
+    {
+      "id": 27,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2011 1.4 : Performance",
+      "slug": "oleo-recomendado-chevrolet-meriva-2011-1-4"
+    },
+    {
+      "id": 28,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2010 1.4 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-meriva-2010-1-4"
+    },
+    {
+      "id": 29,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2009 1.4 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-meriva-2009-1-4"
+    },
+    {
+      "id": 30,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2008 1.4 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-meriva-2008-1-4"
+    },
+    {
+      "id": 31,
+      "title": "Óleo Recomendado para Fiat Stilo 2011 1.8 : Motor Fire",
+      "slug": "oleo-recomendado-fiat-stilo-2011-1-8"
+    },
+    {
+      "id": 32,
+      "title": "Óleo Recomendado para Fiat Stilo 2010 1.8 : Performance",
+      "slug": "oleo-recomendado-fiat-stilo-2010-1-8"
+    },
+    {
+      "id": 33,
+      "title": "Óleo Recomendado para Fiat Stilo 2009 1.8 : Econômico",
+      "slug": "oleo-recomendado-fiat-stilo-2009-1-8"
+    },
+    {
+      "id": 34,
+      "title": "Óleo Recomendado para Fiat Stilo 2008 1.8 : Durabilidade",
+      "slug": "oleo-recomendado-fiat-stilo-2008-1-8"
+    },
+    {
+      "id": 35,
+      "title": "Óleo Recomendado para Fiat Stilo 2007 1.8 : Motor Fire Flex",
+      "slug": "oleo-recomendado-fiat-stilo-2007-1-8"
+    },
+    {
+      "id": 36,
+      "title": "Óleo Recomendado para Volkswagen Polo 2019 1.6 MSI : Motor MSI",
+      "slug": "oleo-recomendado-volkswagen-polo-2019-1-6-msi"
+    },
+    {
+      "id": 37,
+      "title": "Óleo Recomendado para Volkswagen Polo 2018 1.6 MSI : Performance",
+      "slug": "oleo-recomendado-volkswagen-polo-2018-1-6-msi"
+    },
+    {
+      "id": 38,
+      "title": "Óleo Recomendado para Volkswagen Polo 2017 1.6 MSI : Econômico",
+      "slug": "oleo-recomendado-volkswagen-polo-2017-1-6-msi"
+    },
+    {
+      "id": 39,
+      "title": "Óleo Recomendado para Volkswagen Polo 2016 1.6 MSI : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-polo-2016-1-6-msi"
+    },
+    {
+      "id": 40,
+      "title": "Óleo Recomendado para Volkswagen Polo 2015 1.6 MSI : Motor Flex",
+      "slug": "oleo-recomendado-volkswagen-polo-2015-1-6-msi"
+    },
+    {
+      "id": 41,
+      "title": "Óleo Recomendado para Chevrolet Agile 2009 1.4 : Motor Econo.Flex",
+      "slug": "oleo-recomendado-chevrolet-agile-2009-1-4"
+    },
+    {
+      "id": 42,
+      "title": "Óleo Recomendado para Fiat Punto 2012 1.6 : Motor E.TorQ",
+      "slug": "oleo-recomendado-fiat-punto-2012-1-6"
+    },
+    {
+      "id": 43,
+      "title": "Óleo Recomendado para Fiat Punto 2011 1.6 : Performance",
+      "slug": "oleo-recomendado-fiat-punto-2011-1-6"
+    },
+    {
+      "id": 44,
+      "title": "Óleo Recomendado para Fiat Punto 2010 1.6 : Econômico",
+      "slug": "oleo-recomendado-fiat-punto-2010-1-6"
+    },
+    {
+      "id": 45,
+      "title": "Óleo Recomendado para Fiat Punto 2009 1.6 : Lançamento Brasil",
+      "slug": "oleo-recomendado-fiat-punto-2009-1-6"
+    },
+    {
+      "id": 46,
+      "title": "Óleo Recomendado para Chevrolet Classic 2011 1.0 : Motor VHC",
+      "slug": "oleo-recomendado-chevrolet-classic-2011-1-0"
+    },
+    {
+      "id": 47,
+      "title": "Óleo Recomendado para Chevrolet Classic 2010 1.0 : Performance",
+      "slug": "oleo-recomendado-chevrolet-classic-2010-1-0"
+    },
+    {
+      "id": 48,
+      "title": "Óleo Recomendado para Chevrolet Classic 2009 1.0 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-classic-2009-1-0"
+    },
+    {
+      "id": 49,
+      "title": "Óleo Recomendado para Chevrolet Classic 2008 1.0 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-classic-2008-1-0"
+    },
+    {
+      "id": 50,
+      "title": "Óleo Recomendado para Chevrolet Classic 2007 1.0 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-classic-2007-1-0"
+    },
+    {
+      "id": 51,
+      "title": "Óleo Recomendado para Renault Scenic 2006 2.0 : Motor M4R",
+      "slug": "oleo-recomendado-renault-scenic-2006-2-0"
+    },
+    {
+      "id": 52,
+      "title": "Óleo Recomendado para Renault Scenic 2005 2.0 : Performance",
+      "slug": "oleo-recomendado-renault-scenic-2005-2-0"
+    },
+    {
+      "id": 53,
+      "title": "Óleo Recomendado para Renault Scenic 2004 2.0 : Econômico",
+      "slug": "oleo-recomendado-renault-scenic-2004-2-0"
+    },
+    {
+      "id": 54,
+      "title": "Óleo Recomendado para Renault Scenic 2003 2.0 : Durabilidade",
+      "slug": "oleo-recomendado-renault-scenic-2003-2-0"
+    },
+    {
+      "id": 55,
+      "title": "Óleo Recomendado para Renault Scenic 2002 2.0 : Motor F4R",
+      "slug": "oleo-recomendado-renault-scenic-2002-2-0"
+    },
+    {
+      "id": 56,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2007 1.8 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-meriva-2007-1-8"
+    },
+    {
+      "id": 57,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2006 1.8 : Performance",
+      "slug": "oleo-recomendado-chevrolet-meriva-2006-1-8"
+    },
+    {
+      "id": 58,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2005 1.8 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-meriva-2005-1-8"
+    },
+    {
+      "id": 59,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2004 1.8 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-meriva-2004-1-8"
+    },
+    {
+      "id": 60,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2003 1.8 : Lançamento",
+      "slug": "oleo-recomendado-chevrolet-meriva-2003-1-8"
+    },
+    {
+      "id": 61,
+      "title": "Óleo Recomendado para Fiat Stilo 2006 1.8 : Motor Fire",
+      "slug": "oleo-recomendado-fiat-stilo-2006-1-8"
+    },
+    {
+      "id": 62,
+      "title": "Óleo Recomendado para Fiat Stilo 2005 1.8 : Performance",
+      "slug": "oleo-recomendado-fiat-stilo-2005-1-8"
+    },
+    {
+      "id": 63,
+      "title": "Óleo Recomendado para Fiat Stilo 2004 1.8 : Econômico",
+      "slug": "oleo-recomendado-fiat-stilo-2004-1-8"
+    },
+    {
+      "id": 64,
+      "title": "Óleo Recomendado para Fiat Stilo 2003 1.8 : Lançamento Brasil",
+      "slug": "oleo-recomendado-fiat-stilo-2003-1-8"
+    },
+    {
+      "id": 65,
+      "title": "Óleo Recomendado para Volkswagen Polo 2014 1.6 : Motor EA111",
+      "slug": "oleo-recomendado-volkswagen-polo-2014-1-6"
+    },
+    {
+      "id": 66,
+      "title": "Óleo Recomendado para Volkswagen Polo 2013 1.6 : Performance",
+      "slug": "oleo-recomendado-volkswagen-polo-2013-1-6"
+    },
+    {
+      "id": 67,
+      "title": "Óleo Recomendado para Volkswagen Polo 2012 1.6 : Econômico",
+      "slug": "oleo-recomendado-volkswagen-polo-2012-1-6"
+    },
+    {
+      "id": 68,
+      "title": "Óleo Recomendado para Volkswagen Polo 2011 1.6 : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-polo-2011-1-6"
+    },
+    {
+      "id": 69,
+      "title": "Óleo Recomendado para Volkswagen Polo 2010 1.6 : Motor Total Flex",
+      "slug": "oleo-recomendado-volkswagen-polo-2010-1-6"
+    },
+    {
+      "id": 70,
+      "title": "Óleo Recomendado para Volkswagen Polo 2009 1.6 : Motor EA111",
+      "slug": "oleo-recomendado-volkswagen-polo-2009-1-6"
+    },
+    {
+      "id": 71,
+      "title": "Óleo Recomendado para Volkswagen Polo 2008 1.6 : Performance",
+      "slug": "oleo-recomendado-volkswagen-polo-2008-1-6"
+    },
+    {
+      "id": 72,
+      "title": "Óleo Recomendado para Volkswagen Polo 2007 1.6 : Econômico",
+      "slug": "oleo-recomendado-volkswagen-polo-2007-1-6"
+    },
+    {
+      "id": 73,
+      "title": "Óleo Recomendado para Volkswagen Polo 2006 1.6 : Durabilidade",
+      "slug": "oleo-recomendado-volkswagen-polo-2006-1-6"
+    },
+    {
+      "id": 74,
+      "title": "Óleo Recomendado para Volkswagen Polo 2005 1.6 : Motor Flex",
+      "slug": "oleo-recomendado-volkswagen-polo-2005-1-6"
+    },
+    {
+      "id": 75,
+      "title": "Óleo Recomendado para Volkswagen Polo 2004 1.6 : Motor Power",
+      "slug": "oleo-recomendado-volkswagen-polo-2004-1-6"
+    },
+    {
+      "id": 76,
+      "title": "Óleo Recomendado para Volkswagen Polo 2003 1.6 : Geração Antiga",
+      "slug": "oleo-recomendado-volkswagen-polo-2003-1-6"
+    },
+    {
+      "id": 77,
+      "title": "Óleo Recomendado para Volkswagen Polo 2002 1.6 : Clássico",
+      "slug": "oleo-recomendado-volkswagen-polo-2002-1-6"
+    },
+    {
+      "id": 78,
+      "title": "Óleo Recomendado para Chevrolet Classic 2006 1.0 : Motor VHC",
+      "slug": "oleo-recomendado-chevrolet-classic-2006-1-0"
+    },
+    {
+      "id": 79,
+      "title": "Óleo Recomendado para Chevrolet Classic 2005 1.0 : Performance",
+      "slug": "oleo-recomendado-chevrolet-classic-2005-1-0"
+    },
+    {
+      "id": 80,
+      "title": "Óleo Recomendado para Chevrolet Classic 2004 1.0 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-classic-2004-1-0"
+    },
+    {
+      "id": 81,
+      "title": "Óleo Recomendado para Chevrolet Classic 2003 1.0 : Lançamento",
+      "slug": "oleo-recomendado-chevrolet-classic-2003-1-0"
+    },
+    {
+      "id": 82,
+      "title": "Óleo Recomendado para Renault Scenic 2001 2.0 : Motor F4R",
+      "slug": "oleo-recomendado-renault-scenic-2001-2-0"
+    },
+    {
+      "id": 83,
+      "title": "Óleo Recomendado para Renault Scenic 2000 2.0 : Primeira Geração",
+      "slug": "oleo-recomendado-renault-scenic-2000-2-0"
+    },
+    {
+      "id": 84,
+      "title": "Óleo Recomendado para Chevrolet Meriva 2002 1.8 : Motor MPFI",
+      "slug": "oleo-recomendado-chevrolet-meriva-2002-1-8"
+    },
+    {
+      "id": 85,
+      "title": "Óleo Recomendado para Fiat Stilo 2002 1.8 : Pré-Lançamento",
+      "slug": "oleo-recomendado-fiat-stilo-2002-1-8"
+    },
+    {
+      "id": 86,
+      "title": "Óleo Recomendado para Volkswagen Polo 2001 1.6 : Geração Antiga",
+      "slug": "oleo-recomendado-volkswagen-polo-2001-1-6"
+    },
+    {
+      "id": 87,
+      "title": "Óleo Recomendado para Volkswagen Polo 2000 1.6 : Clássico Anos 2000",
+      "slug": "oleo-recomendado-volkswagen-polo-2000-1-6"
+    },
+    {
+      "id": 88,
+      "title": "Óleo Recomendado para Fiat Punto 2008 1.4 : Motor Fire",
+      "slug": "oleo-recomendado-fiat-punto-2008-1-4"
+    },
+    {
+      "id": 89,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2016 1.0 : Última Geração",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2016-1-0"
+    },
+    {
+      "id": 90,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2015 1.0 : Motor VHC",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2015-1-0"
+    },
+    {
+      "id": 91,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2014 1.0 : Performance",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2014-1-0"
+    },
+    {
+      "id": 92,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2013 1.0 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2013-1-0"
+    },
+    {
+      "id": 93,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2012 1.0 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2012-1-0"
+    },
+    {
+      "id": 94,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2011 1.0 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2011-1-0"
+    },
+    {
+      "id": 95,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2010 1.0 : Motor VHC",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2010-1-0"
+    },
+    {
+      "id": 96,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2009 1.0 : Performance",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2009-1-0"
+    },
+    {
+      "id": 97,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2008 1.0 : Econômico",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2008-1-0"
+    },
+    {
+      "id": 98,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2007 1.0 : Durabilidade",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2007-1-0"
+    },
+    {
+      "id": 99,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2006 1.0 : Motor Flex",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2006-1-0"
+    },
+    {
+      "id": 100,
+      "title": "Óleo Recomendado para Chevrolet Corsa Classic 2005 1.0 : Geração Classic",
+      "slug": "oleo-recomendado-chevrolet-corsa-classic-2005-1-0"
+    }
+  ]
+}

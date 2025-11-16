@@ -1,0 +1,513 @@
+{
+  "category_id": 2,
+  "category_name": "Óleo Recomendado",
+  "category_slug": "oleo-recomendado",
+  "lote": 25,
+  "description": "Títulos otimizados para Utilitários/Vans 2000-2025 - Foco em Ducato, Sprinter, Master, Daily, H350 (alto volume comercial)",
+  "year_range": "2000-2025",
+  "vehicle_focus": "Utilitários/Vans (Ducato, Sprinter, Master, Daily, H350, Boxer, Transit)",
+  "total_titles": 100,
+  "seo_strategy": "Long-tail + vans comerciais + óleo motor diesel + capacidade carga + uso profissional",
+  "titles": [
+    {
+      "id": 1,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2025 2.3 Turbo Diesel : Van Comercial",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2025-2-3-turbo-diesel"
+    },
+    {
+      "id": 2,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2024 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2024-2-3-turbo-diesel"
+    },
+    {
+      "id": 3,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2023 2.3 Turbo Diesel : Motor Multijet",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2023-2-3-turbo-diesel"
+    },
+    {
+      "id": 4,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2022 2.3 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2022-2-3-turbo-diesel"
+    },
+    {
+      "id": 5,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2021 2.3 Turbo Diesel : Alto Torque",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2021-2-3-turbo-diesel"
+    },
+    {
+      "id": 6,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2025 2.2 Turbo Diesel : Van Premium",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2025-2-2-turbo-diesel"
+    },
+    {
+      "id": 7,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2024 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2024-2-2-turbo-diesel"
+    },
+    {
+      "id": 8,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2023 2.2 Turbo Diesel : Motor CDI",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2023-2-2-turbo-diesel"
+    },
+    {
+      "id": 9,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2022 2.2 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2022-2-2-turbo-diesel"
+    },
+    {
+      "id": 10,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2021 2.2 Turbo Diesel : Alta Quilometragem",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2021-2-2-turbo-diesel"
+    },
+    {
+      "id": 11,
+      "title": "Óleo de Motor Recomendado para Renault Master 2025 2.3 Turbo Diesel : Van Robusta",
+      "slug": "oleo-de-motor-recomendado-renault-master-2025-2-3-turbo-diesel"
+    },
+    {
+      "id": 12,
+      "title": "Óleo de Motor Recomendado para Renault Master 2024 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-renault-master-2024-2-3-turbo-diesel"
+    },
+    {
+      "id": 13,
+      "title": "Óleo de Motor Recomendado para Renault Master 2023 2.3 Turbo Diesel : Motor dCi",
+      "slug": "oleo-de-motor-recomendado-renault-master-2023-2-3-turbo-diesel"
+    },
+    {
+      "id": 14,
+      "title": "Óleo de Motor Recomendado para Renault Master 2022 2.3 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-renault-master-2022-2-3-turbo-diesel"
+    },
+    {
+      "id": 15,
+      "title": "Óleo de Motor Recomendado para Renault Master 2021 2.3 Turbo Diesel : Uso Pesado",
+      "slug": "oleo-de-motor-recomendado-renault-master-2021-2-3-turbo-diesel"
+    },
+    {
+      "id": 16,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2025 3.0 Turbo Diesel : Van Pesada",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2025-3-0-turbo-diesel"
+    },
+    {
+      "id": 17,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2024 3.0 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2024-3-0-turbo-diesel"
+    },
+    {
+      "id": 18,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2023 3.0 Turbo Diesel : Motor F1C",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2023-3-0-turbo-diesel"
+    },
+    {
+      "id": 19,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2022 3.0 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2022-3-0-turbo-diesel"
+    },
+    {
+      "id": 20,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2021 3.0 Turbo Diesel : Alta Capacidade",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2021-3-0-turbo-diesel"
+    },
+    {
+      "id": 21,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2025 2.5 Turbo Diesel : Van Versátil",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2025-2-5-turbo-diesel"
+    },
+    {
+      "id": 22,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2024 2.5 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2024-2-5-turbo-diesel"
+    },
+    {
+      "id": 23,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2023 2.5 Turbo Diesel : Motor D4CB",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2023-2-5-turbo-diesel"
+    },
+    {
+      "id": 24,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2022 2.5 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2022-2-5-turbo-diesel"
+    },
+    {
+      "id": 25,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2021 2.5 Turbo Diesel : Uso Comercial",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2021-2-5-turbo-diesel"
+    },
+    {
+      "id": 26,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2025 2.2 Turbo Diesel : Van Europeia",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2025-2-2-turbo-diesel"
+    },
+    {
+      "id": 27,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2024 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2024-2-2-turbo-diesel"
+    },
+    {
+      "id": 28,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2023 2.2 Turbo Diesel : Motor BlueHDi",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2023-2-2-turbo-diesel"
+    },
+    {
+      "id": 29,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2022 2.2 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2022-2-2-turbo-diesel"
+    },
+    {
+      "id": 30,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2021 2.2 Turbo Diesel : Uso Profissional",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2021-2-2-turbo-diesel"
+    },
+    {
+      "id": 31,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2025 2.0 Turbo Diesel : Van Global",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2025-2-0-turbo-diesel"
+    },
+    {
+      "id": 32,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2024 2.0 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2024-2-0-turbo-diesel"
+    },
+    {
+      "id": 33,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2023 2.0 Turbo Diesel : Motor EcoBlue",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2023-2-0-turbo-diesel"
+    },
+    {
+      "id": 34,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2022 2.0 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2022-2-0-turbo-diesel"
+    },
+    {
+      "id": 35,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2021 2.0 Turbo Diesel : Uso Intenso",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2021-2-0-turbo-diesel"
+    },
+    {
+      "id": 36,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2020 2.3 Turbo Diesel : Van Comercial",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2020-2-3-turbo-diesel"
+    },
+    {
+      "id": 37,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2019 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2019-2-3-turbo-diesel"
+    },
+    {
+      "id": 38,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2018 2.3 Turbo Diesel : Motor Multijet",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2018-2-3-turbo-diesel"
+    },
+    {
+      "id": 39,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2017 2.3 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2017-2-3-turbo-diesel"
+    },
+    {
+      "id": 40,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2016 2.3 Turbo Diesel : Alto Torque",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2016-2-3-turbo-diesel"
+    },
+    {
+      "id": 41,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2020 2.2 Turbo Diesel : Van Premium",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2020-2-2-turbo-diesel"
+    },
+    {
+      "id": 42,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2019 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2019-2-2-turbo-diesel"
+    },
+    {
+      "id": 43,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2018 2.2 Turbo Diesel : Motor CDI",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2018-2-2-turbo-diesel"
+    },
+    {
+      "id": 44,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2017 2.2 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2017-2-2-turbo-diesel"
+    },
+    {
+      "id": 45,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2016 2.2 Turbo Diesel : Alta Quilometragem",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2016-2-2-turbo-diesel"
+    },
+    {
+      "id": 46,
+      "title": "Óleo de Motor Recomendado para Renault Master 2020 2.3 Turbo Diesel : Van Robusta",
+      "slug": "oleo-de-motor-recomendado-renault-master-2020-2-3-turbo-diesel"
+    },
+    {
+      "id": 47,
+      "title": "Óleo de Motor Recomendado para Renault Master 2019 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-renault-master-2019-2-3-turbo-diesel"
+    },
+    {
+      "id": 48,
+      "title": "Óleo de Motor Recomendado para Renault Master 2018 2.3 Turbo Diesel : Motor dCi",
+      "slug": "oleo-de-motor-recomendado-renault-master-2018-2-3-turbo-diesel"
+    },
+    {
+      "id": 49,
+      "title": "Óleo de Motor Recomendado para Renault Master 2017 2.3 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-renault-master-2017-2-3-turbo-diesel"
+    },
+    {
+      "id": 50,
+      "title": "Óleo de Motor Recomendado para Renault Master 2016 2.3 Turbo Diesel : Uso Pesado",
+      "slug": "oleo-de-motor-recomendado-renault-master-2016-2-3-turbo-diesel"
+    },
+    {
+      "id": 51,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2020 3.0 Turbo Diesel : Van Pesada",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2020-3-0-turbo-diesel"
+    },
+    {
+      "id": 52,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2019 3.0 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2019-3-0-turbo-diesel"
+    },
+    {
+      "id": 53,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2018 3.0 Turbo Diesel : Motor F1C",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2018-3-0-turbo-diesel"
+    },
+    {
+      "id": 54,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2017 3.0 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2017-3-0-turbo-diesel"
+    },
+    {
+      "id": 55,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2016 3.0 Turbo Diesel : Alta Capacidade",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2016-3-0-turbo-diesel"
+    },
+    {
+      "id": 56,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2020 2.5 Turbo Diesel : Van Versátil",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2020-2-5-turbo-diesel"
+    },
+    {
+      "id": 57,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2019 2.5 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2019-2-5-turbo-diesel"
+    },
+    {
+      "id": 58,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2018 2.5 Turbo Diesel : Motor D4CB",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2018-2-5-turbo-diesel"
+    },
+    {
+      "id": 59,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2017 2.5 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2017-2-5-turbo-diesel"
+    },
+    {
+      "id": 60,
+      "title": "Óleo de Motor Recomendado para Hyundai H350 2016 2.5 Turbo Diesel : Uso Comercial",
+      "slug": "oleo-de-motor-recomendado-hyundai-h350-2016-2-5-turbo-diesel"
+    },
+    {
+      "id": 61,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2015 2.3 Turbo Diesel : Van Comercial",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2015-2-3-turbo-diesel"
+    },
+    {
+      "id": 62,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2014 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2014-2-3-turbo-diesel"
+    },
+    {
+      "id": 63,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2013 2.3 Turbo Diesel : Motor Multijet",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2013-2-3-turbo-diesel"
+    },
+    {
+      "id": 64,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2012 2.3 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2012-2-3-turbo-diesel"
+    },
+    {
+      "id": 65,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2011 2.3 Turbo Diesel : Alto Torque",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2011-2-3-turbo-diesel"
+    },
+    {
+      "id": 66,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2015 2.2 Turbo Diesel : Van Premium",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2015-2-2-turbo-diesel"
+    },
+    {
+      "id": 67,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2014 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2014-2-2-turbo-diesel"
+    },
+    {
+      "id": 68,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2013 2.2 Turbo Diesel : Motor CDI",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2013-2-2-turbo-diesel"
+    },
+    {
+      "id": 69,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2012 2.2 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2012-2-2-turbo-diesel"
+    },
+    {
+      "id": 70,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2011 2.2 Turbo Diesel : Alta Quilometragem",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2011-2-2-turbo-diesel"
+    },
+    {
+      "id": 71,
+      "title": "Óleo de Motor Recomendado para Renault Master 2015 2.3 Turbo Diesel : Van Robusta",
+      "slug": "oleo-de-motor-recomendado-renault-master-2015-2-3-turbo-diesel"
+    },
+    {
+      "id": 72,
+      "title": "Óleo de Motor Recomendado para Renault Master 2014 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-renault-master-2014-2-3-turbo-diesel"
+    },
+    {
+      "id": 73,
+      "title": "Óleo de Motor Recomendado para Renault Master 2013 2.3 Turbo Diesel : Motor dCi",
+      "slug": "oleo-de-motor-recomendado-renault-master-2013-2-3-turbo-diesel"
+    },
+    {
+      "id": 74,
+      "title": "Óleo de Motor Recomendado para Renault Master 2012 2.3 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-renault-master-2012-2-3-turbo-diesel"
+    },
+    {
+      "id": 75,
+      "title": "Óleo de Motor Recomendado para Renault Master 2011 2.3 Turbo Diesel : Uso Pesado",
+      "slug": "oleo-de-motor-recomendado-renault-master-2011-2-3-turbo-diesel"
+    },
+    {
+      "id": 76,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2015 3.0 Turbo Diesel : Van Pesada",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2015-3-0-turbo-diesel"
+    },
+    {
+      "id": 77,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2014 3.0 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2014-3-0-turbo-diesel"
+    },
+    {
+      "id": 78,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2013 3.0 Turbo Diesel : Motor F1C",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2013-3-0-turbo-diesel"
+    },
+    {
+      "id": 79,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2012 3.0 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2012-3-0-turbo-diesel"
+    },
+    {
+      "id": 80,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2011 3.0 Turbo Diesel : Alta Capacidade",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2011-3-0-turbo-diesel"
+    },
+    {
+      "id": 81,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2010 2.3 Turbo Diesel : Van Comercial",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2010-2-3-turbo-diesel"
+    },
+    {
+      "id": 82,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2009 2.3 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2009-2-3-turbo-diesel"
+    },
+    {
+      "id": 83,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2008 2.8 Turbo Diesel : Motor JTD",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2008-2-8-turbo-diesel"
+    },
+    {
+      "id": 84,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2007 2.8 Turbo Diesel : Durabilidade",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2007-2-8-turbo-diesel"
+    },
+    {
+      "id": 85,
+      "title": "Óleo de Motor Recomendado para Fiat Ducato 2006 2.8 Turbo Diesel : Alto Torque",
+      "slug": "oleo-de-motor-recomendado-fiat-ducato-2006-2-8-turbo-diesel"
+    },
+    {
+      "id": 86,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2010 2.2 Turbo Diesel : Van Premium",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2010-2-2-turbo-diesel"
+    },
+    {
+      "id": 87,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2009 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2009-2-2-turbo-diesel"
+    },
+    {
+      "id": 88,
+      "title": "Óleo de Motor Recomendado para Mercedes-Benz Sprinter 2008 2.2 Turbo Diesel : Motor CDI",
+      "slug": "oleo-de-motor-recomendado-mercedes-benz-sprinter-2008-2-2-turbo-diesel"
+    },
+    {
+      "id": 89,
+      "title": "Óleo de Motor Recomendado para Renault Master 2010 2.5 Turbo Diesel : Van Robusta",
+      "slug": "oleo-de-motor-recomendado-renault-master-2010-2-5-turbo-diesel"
+    },
+    {
+      "id": 90,
+      "title": "Óleo de Motor Recomendado para Renault Master 2009 2.5 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-renault-master-2009-2-5-turbo-diesel"
+    },
+    {
+      "id": 91,
+      "title": "Óleo de Motor Recomendado para Renault Master 2008 2.5 Turbo Diesel : Motor G9U",
+      "slug": "oleo-de-motor-recomendado-renault-master-2008-2-5-turbo-diesel"
+    },
+    {
+      "id": 92,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2010 3.0 Turbo Diesel : Van Pesada",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2010-3-0-turbo-diesel"
+    },
+    {
+      "id": 93,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2009 3.0 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2009-3-0-turbo-diesel"
+    },
+    {
+      "id": 94,
+      "title": "Óleo de Motor Recomendado para Iveco Daily 2008 3.0 Turbo Diesel : Motor F1C",
+      "slug": "oleo-de-motor-recomendado-iveco-daily-2008-3-0-turbo-diesel"
+    },
+    {
+      "id": 95,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2020 2.2 Turbo Diesel : Van Europeia",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2020-2-2-turbo-diesel"
+    },
+    {
+      "id": 96,
+      "title": "Óleo de Motor Recomendado para Peugeot Boxer 2019 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-peugeot-boxer-2019-2-2-turbo-diesel"
+    },
+    {
+      "id": 97,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2020 2.0 Turbo Diesel : Van Global",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2020-2-0-turbo-diesel"
+    },
+    {
+      "id": 98,
+      "title": "Óleo de Motor Recomendado para Ford Transit 2019 2.0 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-ford-transit-2019-2-0-turbo-diesel"
+    },
+    {
+      "id": 99,
+      "title": "Óleo de Motor Recomendado para Citroën Jumper 2020 2.2 Turbo Diesel : Van Comercial",
+      "slug": "oleo-de-motor-recomendado-citroen-jumper-2020-2-2-turbo-diesel"
+    },
+    {
+      "id": 100,
+      "title": "Óleo de Motor Recomendado para Citroën Jumper 2019 2.2 Turbo Diesel : Performance",
+      "slug": "oleo-de-motor-recomendado-citroen-jumper-2019-2-2-turbo-diesel"
+    }
+  ]
+}

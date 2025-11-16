@@ -1,0 +1,513 @@
+{
+    "category_id": 2,
+    "category_name": "Óleo Recomendado",
+    "category_slug": "oleo-recomendado",
+    "lote": 27,
+    "description": "Títulos otimizados para Caminhões Pesados 2000-2025 - Foco em Scania, Volvo, Mercedes-Benz (alto volume rodoviário)",
+    "year_range": "2000-2025",
+    "vehicle_focus": "Caminhões Pesados Rodoviários (Scania R/G/P, Volvo FH/FM, Mercedes Actros/Axor)",
+    "total_titles": 100,
+    "seo_strategy": "Long-tail + caminhões pesados + óleo motor diesel + longas distâncias + alta quilometragem",
+    "titles": [
+        {
+            "id": 1,
+            "title": "Óleo de Motor Recomendado para Scania R 450 2025 : Cavalo Mecânico Premium",
+            "slug": "oleo-de-motor-recomendado-scania-r-450-2025"
+        },
+        {
+            "id": 2,
+            "title": "Óleo de Motor Recomendado para Scania R 450 2024 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-r-450-2024"
+        },
+        {
+            "id": 3,
+            "title": "Óleo de Motor Recomendado para Scania R 450 2023 : Motor DC13",
+            "slug": "oleo-de-motor-recomendado-scania-r-450-2023"
+        },
+        {
+            "id": 4,
+            "title": "Óleo de Motor Recomendado para Scania R 450 2022 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-r-450-2022"
+        },
+        {
+            "id": 5,
+            "title": "Óleo de Motor Recomendado para Scania R 450 2021 : Alta Quilometragem",
+            "slug": "oleo-de-motor-recomendado-scania-r-450-2021"
+        },
+        {
+            "id": 6,
+            "title": "Óleo de Motor Recomendado para Volvo FH 460 2025 : Cavalo Rodoviário",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-460-2025"
+        },
+        {
+            "id": 7,
+            "title": "Óleo de Motor Recomendado para Volvo FH 460 2024 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-460-2024"
+        },
+        {
+            "id": 8,
+            "title": "Óleo de Motor Recomendado para Volvo FH 460 2023 : Motor D13K",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-460-2023"
+        },
+        {
+            "id": 9,
+            "title": "Óleo de Motor Recomendado para Volvo FH 460 2022 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-460-2022"
+        },
+        {
+            "id": 10,
+            "title": "Óleo de Motor Recomendado para Volvo FH 460 2021 : Longa Distância",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-460-2021"
+        },
+        {
+            "id": 11,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2651 2025 : Bitrem Premium",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2651-2025"
+        },
+        {
+            "id": 12,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2651 2024 : Performance",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2651-2024"
+        },
+        {
+            "id": 13,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2651 2023 : Motor OM 473",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2651-2023"
+        },
+        {
+            "id": 14,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2651 2022 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2651-2022"
+        },
+        {
+            "id": 15,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2651 2021 : Alta Capacidade",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2651-2021"
+        },
+        {
+            "id": 16,
+            "title": "Óleo de Motor Recomendado para Scania R 500 2025 : Cavalo Extra Potente",
+            "slug": "oleo-de-motor-recomendado-scania-r-500-2025"
+        },
+        {
+            "id": 17,
+            "title": "Óleo de Motor Recomendado para Scania R 500 2024 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-r-500-2024"
+        },
+        {
+            "id": 18,
+            "title": "Óleo de Motor Recomendado para Scania R 500 2023 : Motor DC13",
+            "slug": "oleo-de-motor-recomendado-scania-r-500-2023"
+        },
+        {
+            "id": 19,
+            "title": "Óleo de Motor Recomendado para Scania R 500 2022 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-r-500-2022"
+        },
+        {
+            "id": 20,
+            "title": "Óleo de Motor Recomendado para Scania R 500 2021 : Alto Torque",
+            "slug": "oleo-de-motor-recomendado-scania-r-500-2021"
+        },
+        {
+            "id": 21,
+            "title": "Óleo de Motor Recomendado para Volvo FH 540 2025 : Cavalo Pesado",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-540-2025"
+        },
+        {
+            "id": 22,
+            "title": "Óleo de Motor Recomendado para Volvo FH 540 2024 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-540-2024"
+        },
+        {
+            "id": 23,
+            "title": "Óleo de Motor Recomendado para Volvo FH 540 2023 : Motor D13K",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-540-2023"
+        },
+        {
+            "id": 24,
+            "title": "Óleo de Motor Recomendado para Volvo FH 540 2022 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-540-2022"
+        },
+        {
+            "id": 25,
+            "title": "Óleo de Motor Recomendado para Volvo FH 540 2021 : Rodoviário Pesado",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-540-2021"
+        },
+        {
+            "id": 26,
+            "title": "Óleo de Motor Recomendado para Scania P 320 2025 : Truck 6x4",
+            "slug": "oleo-de-motor-recomendado-scania-p-320-2025"
+        },
+        {
+            "id": 27,
+            "title": "Óleo de Motor Recomendado para Scania P 320 2024 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-p-320-2024"
+        },
+        {
+            "id": 28,
+            "title": "Óleo de Motor Recomendado para Scania P 320 2023 : Motor DC09",
+            "slug": "oleo-de-motor-recomendado-scania-p-320-2023"
+        },
+        {
+            "id": 29,
+            "title": "Óleo de Motor Recomendado para Scania P 320 2022 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-p-320-2022"
+        },
+        {
+            "id": 30,
+            "title": "Óleo de Motor Recomendado para Scania P 320 2021 : Distribuição Pesada",
+            "slug": "oleo-de-motor-recomendado-scania-p-320-2021"
+        },
+        {
+            "id": 31,
+            "title": "Óleo de Motor Recomendado para Volvo FM 370 2020 : Truck Médio",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-370-2020"
+        },
+        {
+            "id": 32,
+            "title": "Óleo de Motor Recomendado para Volvo FM 370 2019 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-370-2019"
+        },
+        {
+            "id": 33,
+            "title": "Óleo de Motor Recomendado para Volvo FM 370 2018 : Motor D11K",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-370-2018"
+        },
+        {
+            "id": 34,
+            "title": "Óleo de Motor Recomendado para Volvo FM 370 2017 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-370-2017"
+        },
+        {
+            "id": 35,
+            "title": "Óleo de Motor Recomendado para Volvo FM 370 2016 : Regional",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-370-2016"
+        },
+        {
+            "id": 36,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2544 2020 : Cavalo 6x2",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2544-2020"
+        },
+        {
+            "id": 37,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2544 2019 : Performance",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2544-2019"
+        },
+        {
+            "id": 38,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2544 2018 : Motor OM 457",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2544-2018"
+        },
+        {
+            "id": 39,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2544 2017 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2544-2017"
+        },
+        {
+            "id": 40,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2544 2016 : Rodoviário",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2544-2016"
+        },
+        {
+            "id": 41,
+            "title": "Óleo de Motor Recomendado para Scania R 440 2020 : Cavalo Rodoviário",
+            "slug": "oleo-de-motor-recomendado-scania-r-440-2020"
+        },
+        {
+            "id": 42,
+            "title": "Óleo de Motor Recomendado para Scania R 440 2019 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-r-440-2019"
+        },
+        {
+            "id": 43,
+            "title": "Óleo de Motor Recomendado para Scania R 440 2018 : Motor DC13",
+            "slug": "oleo-de-motor-recomendado-scania-r-440-2018"
+        },
+        {
+            "id": 44,
+            "title": "Óleo de Motor Recomendado para Scania R 440 2017 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-r-440-2017"
+        },
+        {
+            "id": 45,
+            "title": "Óleo de Motor Recomendado para Scania R 440 2016 : Alta Quilometragem",
+            "slug": "oleo-de-motor-recomendado-scania-r-440-2016"
+        },
+        {
+            "id": 46,
+            "title": "Óleo de Motor Recomendado para Volvo FH 520 2020 : Cavalo Premium",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-520-2020"
+        },
+        {
+            "id": 47,
+            "title": "Óleo de Motor Recomendado para Volvo FH 520 2019 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-520-2019"
+        },
+        {
+            "id": 48,
+            "title": "Óleo de Motor Recomendado para Volvo FH 520 2018 : Motor D13K",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-520-2018"
+        },
+        {
+            "id": 49,
+            "title": "Óleo de Motor Recomendado para Volvo FH 520 2017 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-520-2017"
+        },
+        {
+            "id": 50,
+            "title": "Óleo de Motor Recomendado para Volvo FH 520 2016 : Longa Distância",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-520-2016"
+        },
+        {
+            "id": 51,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2546 2020 : Cavalo 6x4",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2546-2020"
+        },
+        {
+            "id": 52,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2546 2019 : Performance",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2546-2019"
+        },
+        {
+            "id": 53,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2546 2018 : Motor OM 473",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2546-2018"
+        },
+        {
+            "id": 54,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2546 2017 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2546-2017"
+        },
+        {
+            "id": 55,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2546 2016 : Pesado",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2546-2016"
+        },
+        {
+            "id": 56,
+            "title": "Óleo de Motor Recomendado para Scania G 420 2015 : Cavalo Clássico",
+            "slug": "oleo-de-motor-recomendado-scania-g-420-2015"
+        },
+        {
+            "id": 57,
+            "title": "Óleo de Motor Recomendado para Scania G 420 2014 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-g-420-2014"
+        },
+        {
+            "id": 58,
+            "title": "Óleo de Motor Recomendado para Scania G 420 2013 : Motor DC12",
+            "slug": "oleo-de-motor-recomendado-scania-g-420-2013"
+        },
+        {
+            "id": 59,
+            "title": "Óleo de Motor Recomendado para Scania G 420 2012 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-g-420-2012"
+        },
+        {
+            "id": 60,
+            "title": "Óleo de Motor Recomendado para Scania G 420 2011 : Rodoviário",
+            "slug": "oleo-de-motor-recomendado-scania-g-420-2011"
+        },
+        {
+            "id": 61,
+            "title": "Óleo de Motor Recomendado para Volvo FH 440 2015 : Cavalo Médio",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-440-2015"
+        },
+        {
+            "id": 62,
+            "title": "Óleo de Motor Recomendado para Volvo FH 440 2014 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-440-2014"
+        },
+        {
+            "id": 63,
+            "title": "Óleo de Motor Recomendado para Volvo FH 440 2013 : Motor D13A",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-440-2013"
+        },
+        {
+            "id": 64,
+            "title": "Óleo de Motor Recomendado para Volvo FH 440 2012 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-440-2012"
+        },
+        {
+            "id": 65,
+            "title": "Óleo de Motor Recomendado para Volvo FH 440 2011 : Alta Quilometragem",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-440-2011"
+        },
+        {
+            "id": 66,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2540 2015 : Cavalo 6x2",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2540-2015"
+        },
+        {
+            "id": 67,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2540 2014 : Performance",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2540-2014"
+        },
+        {
+            "id": 68,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2540 2013 : Motor OM 457",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2540-2013"
+        },
+        {
+            "id": 69,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2540 2012 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2540-2012"
+        },
+        {
+            "id": 70,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2540 2011 : Rodoviário",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2540-2011"
+        },
+        {
+            "id": 71,
+            "title": "Óleo de Motor Recomendado para Scania R 480 2015 : Cavalo Potente",
+            "slug": "oleo-de-motor-recomendado-scania-r-480-2015"
+        },
+        {
+            "id": 72,
+            "title": "Óleo de Motor Recomendado para Scania R 480 2014 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-r-480-2014"
+        },
+        {
+            "id": 73,
+            "title": "Óleo de Motor Recomendado para Scania R 480 2013 : Motor DC13",
+            "slug": "oleo-de-motor-recomendado-scania-r-480-2013"
+        },
+        {
+            "id": 74,
+            "title": "Óleo de Motor Recomendado para Scania R 480 2012 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-r-480-2012"
+        },
+        {
+            "id": 75,
+            "title": "Óleo de Motor Recomendado para Scania R 480 2011 : Alto Torque",
+            "slug": "oleo-de-motor-recomendado-scania-r-480-2011"
+        },
+        {
+            "id": 76,
+            "title": "Óleo de Motor Recomendado para Volvo FH 400 2010 : Cavalo Clássico",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-400-2010"
+        },
+        {
+            "id": 77,
+            "title": "Óleo de Motor Recomendado para Volvo FH 400 2009 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-400-2009"
+        },
+        {
+            "id": 78,
+            "title": "Óleo de Motor Recomendado para Volvo FH 400 2008 : Motor D12D",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-400-2008"
+        },
+        {
+            "id": 79,
+            "title": "Óleo de Motor Recomendado para Volvo FH 400 2007 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-400-2007"
+        },
+        {
+            "id": 80,
+            "title": "Óleo de Motor Recomendado para Volvo FH 400 2006 : Rodoviário",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-400-2006"
+        },
+        {
+            "id": 81,
+            "title": "Óleo de Motor Recomendado para Scania P 340 2010 : Truck 8x2",
+            "slug": "oleo-de-motor-recomendado-scania-p-340-2010"
+        },
+        {
+            "id": 82,
+            "title": "Óleo de Motor Recomendado para Scania P 340 2009 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-p-340-2009"
+        },
+        {
+            "id": 83,
+            "title": "Óleo de Motor Recomendado para Scania P 340 2008 : Motor DC09",
+            "slug": "oleo-de-motor-recomendado-scania-p-340-2008"
+        },
+        {
+            "id": 84,
+            "title": "Óleo de Motor Recomendado para Scania P 340 2007 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-scania-p-340-2007"
+        },
+        {
+            "id": 85,
+            "title": "Óleo de Motor Recomendado para Scania P 340 2006 : Distribuição",
+            "slug": "oleo-de-motor-recomendado-scania-p-340-2006"
+        },
+        {
+            "id": 86,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2035 2010 : Cavalo 4x2",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2035-2010"
+        },
+        {
+            "id": 87,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2035 2009 : Performance",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2035-2009"
+        },
+        {
+            "id": 88,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2035 2008 : Motor OM 457",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2035-2008"
+        },
+        {
+            "id": 89,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2035 2007 : Durabilidade",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2035-2007"
+        },
+        {
+            "id": 90,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Axor 2035 2006 : Rodoviário",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-axor-2035-2006"
+        },
+        {
+            "id": 91,
+            "title": "Óleo de Motor Recomendado para Volvo FM 460 2015 : Truck Pesado",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-460-2015"
+        },
+        {
+            "id": 92,
+            "title": "Óleo de Motor Recomendado para Volvo FM 460 2014 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fm-460-2014"
+        },
+        {
+            "id": 93,
+            "title": "Óleo de Motor Recomendado para Scania G 380 2010 : Cavalo Médio",
+            "slug": "oleo-de-motor-recomendado-scania-g-380-2010"
+        },
+        {
+            "id": 94,
+            "title": "Óleo de Motor Recomendado para Scania G 380 2009 : Performance",
+            "slug": "oleo-de-motor-recomendado-scania-g-380-2009"
+        },
+        {
+            "id": 95,
+            "title": "Óleo de Motor Recomendado para Scania G 380 2008 : Motor DC11",
+            "slug": "oleo-de-motor-recomendado-scania-g-380-2008"
+        },
+        {
+            "id": 96,
+            "title": "Óleo de Motor Recomendado para Volvo FH 380 2010 : Cavalo Rodoviário",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-380-2010"
+        },
+        {
+            "id": 97,
+            "title": "Óleo de Motor Recomendado para Volvo FH 380 2009 : Performance",
+            "slug": "oleo-de-motor-recomendado-volvo-fh-380-2009"
+        },
+        {
+            "id": 98,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2041 2015 : Cavalo 4x2",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2041-2015"
+        },
+        {
+            "id": 99,
+            "title": "Óleo de Motor Recomendado para Mercedes-Benz Actros 2041 2014 : Performance",
+            "slug": "oleo-de-motor-recomendado-mercedes-benz-actros-2041-2014"
+        },
+        {
+            "id": 100,
+            "title": "Óleo de Motor Recomendado para Scania R 560 2015 : Cavalo V8 Premium",
+            "slug": "oleo-de-motor-recomendado-scania-r-560-2015"
+        }
+    ]
+}

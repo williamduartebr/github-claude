@@ -1,0 +1,151 @@
+{
+  "category_id": 45,
+  "category_slug": "oleo-cambio",
+  "theme": "oil_cambio_avancado",
+  "description": "Títulos avançados sobre óleo de câmbio: diferencial, aditivos, erros fatais e casos extremos",
+  "total_titles": 100,
+  "subcategories": {
+    "problemas-solucoes-cambio": {
+      "subcategory_id": 14,
+      "priority": "high",
+      "estimated_articles": 30,
+      "titles": [
+        "Diferencial: Óleo Separado do Câmbio ou Junto?",
+        "80W90 no Diferencial: Troquei Sozinho e Foi Fácil",
+        "Diferencial com Barulho: Troquei Óleo e Silenciou",
+        "Tração 4x4: Diferencial Dianteiro e Traseiro - Óleos Diferentes?",
+        "Diferencial Autoblocante: Óleo Específico ou Comum Serve",
+        "75W140 vs 75W90 no Diferencial: Teste 60.000km",
+        "Additivo LSD: Obrigatório ou Marketing?",
+        "Hilux: Óleo Diferencial Original vs Ipiranga",
+        "S10 4x4: Diferencial Traseiro - Nunca Troquei em 180k",
+        "Ranger: Diferencial Eletrônico Precisa Óleo Especial",
+        "Completei com Óleo de Motor: Câmbio Morreu em 300km",
+        "Confundi ATF com Fluido de Freio: Prejuízo R$8.000",
+        "Óleo Errado Recomendado: Mecânico Pagou o Conserto",
+        "Excesso de Óleo no Câmbio: Sintomas que Tive",
+        "Trocar Quente ou Frio: Erro que Ferreu Tudo",
+        "Misturei Dexron com Mercon: Câmbio Aguentou?",
+        "Óleo de Moto no Câmbio: Experiência Não Recomendada",
+        "CVT com ATF Comum: Durou 2 Semanas",
+        "Esqueci de Colocar Óleo: Descobri com 50km Rodados",
+        "Litros Errados: Coloquei 4L ao Invés de 2,5L",
+        "Água no Óleo de Câmbio: Como Identificar e Resolver",
+        "Radiador Furado: ATF Misturou com Arrefecimento",
+        "Retífica: Contaminação por Metal - Trocar 3x",
+        "Óleo Diesel no Câmbio: Limpeza que Fiz",
+        "Coolant no ATF: Sintoma Espuma Rosa",
+        "Mistura de Especificações: Dexron III + VI Funcionou?",
+        "Óleo Velho + Novo: Proporção Segura",
+        "Flush Incompleto: Óleo Velho Voltou",
+        "Cross-Contamination: CVT com ATF Comum",
+        "Detergente no Câmbio: Limpeza Extrema que Tentei"
+      ]
+    },
+    "tipos-viscosidades-oleo-cambio": {
+      "subcategory_id": 8,
+      "priority": "medium",
+      "estimated_articles": 20,
+      "titles": [
+        "Aditivo para Câmbio Manual: Funciona ou É Placebo?",
+        "Lucas Oil Transmission Fix: Testei 20.000km (Resultado)",
+        "Restore de Câmbio: Resolveu Vazamento Temporariamente",
+        "Wynns Transmission Stop Slip: Vale R$80? (Honestidade)",
+        "Modificador de Atrito: CVT Parou de Patinar",
+        "Aditivo Vedante: Tampou Vazamento por 1 Ano",
+        "Molibdênio no Óleo: Câmbio Ficou Mais Suave",
+        "Seafoam Transmission: Limpeza que Funcionou",
+        "Aditivo Anti-Espuma: Câmbio Aerando Resolveu",
+        "PTFE no ATF: Mito ou Proteção Extra Real?",
+        "Câmbio Superaquecendo: Óleo Sintético Ajudou",
+        "Radiador de Câmbio: Melhorar Resfriamento Valeu",
+        "Temperatura Ideal ATF: Medidor que Instalei",
+        "150°C no Câmbio: Óleo Degradou em 20.000km",
+        "Cooler Externo: Instalei e Óleo Durou Dobro",
+        "Reboque Pesado: Óleo Sintético É Obrigatório",
+        "Subida de Serra: Temperatura Subiu 40°C",
+        "Câmbio Frio: Trancos Matinais e a Solução",
+        "Sensor de Temperatura: Como Monitorar",
+        "Fluido High Temp: Vale para Uso Severo?"
+      ]
+    },
+    "cambios-automaticos-especificos": {
+      "subcategory_id": 10,
+      "priority": "high",
+      "estimated_articles": 20,
+      "titles": [
+        "Powershift Ford: Estratégia de Óleo para Não Quebrar",
+        "DSG 7 Seco: Óleo Existe e Precisa Trocar (Surpresa)",
+        "Dualogic Fiat: Óleo que Ameniza os Trancos",
+        "I-Motion 1ª Geração: Trocas Frequentes Salvam",
+        "Jatco CVT: Por Que Quebra Tanto (Óleo é Parte)",
+        "Câmbio Automatizado GM: Óleo Certo Ajuda Muito",
+        "CVT Mitsubishi: Óleo Premium Evita Problema",
+        "Sentra CVT: Trocar a Cada 30k Não É Exagero",
+        "Kicks CVT: Óleo Nissan NS-3 Ou Morre Cedo",
+        "Jeep 9 Marchas: Óleo Resolve Só Parte do Problema",
+        "BMW: Óleo Lifetime ou Trocar a Cada 80k? (Mecânico Especialista)",
+        "Mercedes 7G-Tronic: ATF 236.14 vs Alternativa",
+        "Audi S-Tronic: Manutenção que Concessionária Omite",
+        "Porsche PDK: Óleo que Custa R$1.200 (Vale?)",
+        "Volvo Geartronic: Trocar a Cada 60k Salvou Meu Câmbio",
+        "Land Rover: Câmbio ZF - Óleo Original Único que Presta",
+        "Lexus Hybrid: Câmbio CVT Diferenciado",
+        "Mini Cooper: Câmbio Getrag 6 Velocidades - Óleo Caro",
+        "Tesla: Tem Óleo de Câmbio? (Redutor Único)",
+        "Jaguar: ZF 8HP - Manutenção Real vs Manual"
+      ]
+    },
+    "sintomas-oleo-cambio-ruim": {
+      "subcategory_id": 9,
+      "priority": "high",
+      "estimated_articles": 10,
+      "titles": [
+        "Óleo de Câmbio Preto: Troquei a Tempo?",
+        "Cheiro de Queimado no ATF: Sinal de Alerta Grave",
+        "Limalha no Magneto: Normal ou Câmbio Acabando?",
+        "Cor do Óleo de Câmbio: O que Cada Tom Significa",
+        "Textura Diferente: Óleo Ficou Espesso Demais",
+        "Teste Caseiro: Como Avaliar Estado do Óleo",
+        "Análise Laboratorial: Vale R$150? (Fiz e Descobri)",
+        "Óleo Espumando: Sinal de Contaminação Grave",
+        "Partículas em Suspensão: O que Vi no Óleo Velho",
+        "Degradação do ATF: Timeline 0-150.000km"
+      ]
+    },
+    "custos-brasil-cambio": {
+      "subcategory_id": 15,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "Trocar Óleo Câmbio: R$250 a R$2.500 - Por Que?",
+        "Concessionária vs Oficina: Preço 3x Diferente",
+        "Óleo Original: R$800 - Equivalente: R$180 (Teste)",
+        "Mão de Obra: Por Que Tão Caro Trocar Câmbio?",
+        "Kit Completo vs Só Óleo: Economia Arriscada",
+        "DIY: Gastei R$150 vs Oficina R$600",
+        "Promoção Black Friday: Óleo ATF pela Metade",
+        "Atacado: Comprei 20L e Economizei 40%",
+        "Importado vs Nacional: Vale 2x Mais?",
+        "Câmbio Manual: R$80 vs Automático: R$600"
+      ]
+    },
+    "comparacoes-testes-oleo-cambio": {
+      "subcategory_id": 16,
+      "priority": "medium",
+      "estimated_articles": 10,
+      "titles": [
+        "500.000km Sem Trocar: Abri o Câmbio e Vi Isso",
+        "Troca a Cada 15.000km: Exagero que Deu Certo",
+        "3 Trocas em 1 Ano: Limpeza de Retífica",
+        "Óleo Trocado 40x: História de Táxi 800.000km",
+        "Nunca Trocado: Câmbio Morreu com 89.000km",
+        "Flush Extremo: 3x Seguidas - Resultado Incrível",
+        "Cabo a Rabo: Cambio Automático Desmontado + Óleo",
+        "Experimento: 1 Ano com Óleo Vencido",
+        "Câmbio Recondicionado: Óleo Especial Amaciamento",
+        "Marathon: 10 Câmbios, 10 Estratégias de Óleo"
+      ]
+    }
+  }
+}

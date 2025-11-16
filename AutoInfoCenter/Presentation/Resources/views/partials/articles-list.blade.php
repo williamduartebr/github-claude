@@ -1,5 +1,12 @@
+@props([
+    'articles' => [],
+    'pagination' => [],
+    'showCategory' => true,
+    'emptyMessage' => 'Ainda não temos artigos disponíveis.'
+])
+
 <section aria-labelledby="artigos-titulo">
-    <h2 id="artigos-titulo" class="sr-only">Artigos sobre {{ $category->name }}</h2>
+    <h2 id="artigos-titulo" class="sr-only">Lista de Artigos</h2>
 
     @if($articles->isEmpty())
     <div class="text-center py-12">
@@ -10,11 +17,7 @@
             </svg>
             <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhum artigo encontrado</h3>
             <p class="mt-1 text-sm text-gray-500">
-                @if(!empty($filters))
-                Não encontramos artigos com os filtros selecionados. Tente remover alguns filtros.
-                @else
-                Ainda não temos artigos para esta categoria.
-                @endif
+                {{ $emptyMessage }}
             </p>
         </div>
     </div>
@@ -27,9 +30,33 @@
             
             <div class="p-6 flex flex-col flex-grow">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
-                        {{ $category->name }}
-                    </span>
+
+                    @if(!empty($article->vehicle_info['make']) && !empty($article->vehicle_info['model']))
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full font-montserrat truncate max-w-[150px]">
+                                {{ $article->vehicle_info['make'] }} {{ $article->vehicle_info['model'] }}
+                                @if(!empty($article->vehicle_info['year']) && $article->vehicle_info['year'] !== 'Todos')
+                                {{ $article->vehicle_info['year'] }}
+                                @endif
+                            </span>
+                        </div>
+                    @elseif(!empty($article->category_slug))
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
+                                {{ $article->category_name }}
+                            </span>
+                            
+                            @if(!empty($article->subcategory_name))
+                            <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
+                                {{ $article->subcategory_name }}
+                            </span>
+                            @endif
+                        </div>
+                    @else
+                        <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full font-montserrat">
+                            Artigo
+                        </span>
+                    @endif
                     
                     @if($index < 2)
                     <span class="inline-block bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full font-montserrat">
@@ -56,7 +83,7 @@
                 </h3>
 
                 <p class="text-gray-600 text-xs font-roboto mb-3 line-clamp-3 flex-grow" itemprop="abstract">                     
-                    @if($article->seo_data['meta_description'])
+                    @if(!empty($article->seo_data['meta_description']))
                     {{ Str::limit(strip_tags($article->seo_data['meta_description']), 150) }}
                     @endif
                 </p>
@@ -84,7 +111,7 @@
     </div>
     @endif
 
-    @if($pagination['total_pages'] > 1)
+    @if(!empty($pagination) && $pagination['total_pages'] > 1)
     <div class="flex justify-center mt-8" role="navigation" aria-label="Paginação">
         <nav class="inline-flex rounded-md shadow-sm overflow-hidden text-sm font-roboto">
             @if($pagination['has_prev'])
