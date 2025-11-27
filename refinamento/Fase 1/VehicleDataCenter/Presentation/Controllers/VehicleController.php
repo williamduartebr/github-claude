@@ -13,6 +13,7 @@ use Src\VehicleDataCenter\Presentation\ViewModels\VehicleListViewModel;
 use Src\VehicleDataCenter\Presentation\ViewModels\VehicleMakeViewModel;
 use Src\VehicleDataCenter\Presentation\ViewModels\VehicleModelViewModel;
 use Src\VehicleDataCenter\Presentation\ViewModels\VehicleVersionViewModel;
+use Src\VehicleDataCenter\Presentation\ViewModels\VehicleYearViewModel;
 
 class VehicleController
 {
@@ -107,15 +108,25 @@ class VehicleController
     }
 
     /**
-     * Rota intermediária de ano (redireciona)
+     * Página de um ano específico do modelo (NOVO - SOLUÇÃO PARA MÚLTIPLAS VERSÕES)
      * 
      * Rota: GET /veiculos/{make}/{model}/{year}
-     * Exemplo: /veiculos/toyota/corolla/2003
+     * View: vehicle-data-center::vehicles.year
+     * Exemplo: /veiculos/toyota/corolla/2023
      * 
-     * ESTRATÉGIA:
-     * - Se houver 1 versão apenas → redireciona para a versão
-     * - Se houver múltiplas versões → redireciona para página do modelo com âncora #y{year}
+     * ESTRATÉGIA IMPLEMENTADA:
+     * - Se houver 1 versão apenas → redireciona para a versão (301)
+     * - Se houver múltiplas versões → mostra view dedicada do ano
      * - Se não houver versões → 404
+     * 
+     * BENEFÍCIOS:
+     * ✅ URL semântica preservada: /veiculos/toyota/corolla/2023
+     * ✅ Conteúdo indexável no ano específico (SEO)
+     * ✅ Meta tags personalizadas para o ano
+     * ✅ Breadcrumbs completos
+     * ✅ Schema.org específico do ano
+     * ✅ UX: Usuário não perde contexto
+     * ✅ Performance: Cache independente por ano
      */
     public function showYear(string $makeSlug, string $modelSlug, int $year)
     {
@@ -126,9 +137,10 @@ class VehicleController
             abort(404, 'Modelo não encontrado');
         }
 
-        // Busca versões do ano específico
+        // Busca versões do ano específico (apenas ativas)
         $versions = $this->versionRepository->getByModel($model->id)
-            ->where('year', $year);
+            ->where('year', $year)
+            ->where('is_active', true);
 
         // Se não há versões, retorna 404
         if ($versions->isEmpty()) {
@@ -136,6 +148,7 @@ class VehicleController
         }
 
         // Se há apenas 1 versão, redireciona direto para ela
+        // Usar 301 (Permanent Redirect) para SEO
         if ($versions->count() === 1) {
             $version = $versions->first();
             return redirect()->route('vehicles.version', [
@@ -143,14 +156,27 @@ class VehicleController
                 'model' => $modelSlug,
                 'year' => $year,
                 'version' => $version->slug,
-            ]);
+            ], 301);
         }
 
-        // Se há múltiplas versões, redireciona para página do modelo com âncora
-        return redirect()->route('vehicles.model', [
-            'make' => $makeSlug,
-            'model' => $modelSlug,
-        ]) . "#y{$year}";
+        // Se há múltiplas versões, mostra página dedicada do ano
+        $viewModel = new VehicleYearViewModel($model->make, $model, $year, $versions);
+
+        return view('vehicle-data-center::vehicles.year', [
+            'make' => $viewModel->getMake(),
+            'model' => $viewModel->getModel(),
+            'year' => $viewModel->getYear(),
+            'fullTitle' => $viewModel->getFullTitle(),
+            'description' => $viewModel->getDescription(),
+            'versions' => $viewModel->getVersions(),
+            'versionsByFuel' => $viewModel->getVersionsByFuel(),
+            'stats' => $viewModel->getStats(),
+            'nearbyYears' => $viewModel->getNearbyYears(),
+            'quickGuides' => $viewModel->getQuickGuides(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
+            'schemaOrg' => $viewModel->getSchemaOrg(),
+        ]);
     }
 
     /**
