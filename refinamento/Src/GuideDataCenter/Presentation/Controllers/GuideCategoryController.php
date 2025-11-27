@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Src\GuideDataCenter\Presentation\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
-
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryViewModel;
-use Src\GuideDataCenter\Presentation\ViewModels\GuideListViewModel;
+use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryPageViewModel;
 
 class GuideCategoryController extends Controller
 {
@@ -23,74 +21,79 @@ class GuideCategoryController extends Controller
     ) {}
 
     /**
-     * Lista guias por categoria
+     * Lista todas as categorias disponíveis
+     * 
+     * Rota: GET /guias/categorias
      */
-    public function index(Request $request, string $category): View|JsonResponse
+    public function all(Request $request): View|JsonResponse
     {
-        $categoryModel = $this->categoryRepository->findBySlug($category);
-
-        if (!$categoryModel) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Categoria não encontrada'
-                ], 404);
-            }
-
-            abort(404, 'Categoria não encontrada');
-        }
-
-        $perPage = (int) $request->get('per_page', 15);
-        $page = (int) $request->get('page', 1);
-
-        $guides = $this->guideRepository->findByCategory($categoryModel->_id, $perPage, $page);
-
-        $categoryViewModel = new GuideCategoryViewModel($categoryModel);
-        $guideViewModels = $guides->map(fn($guide) => new GuideListViewModel($guide));
+        $categories = $this->categoryRepository->getActive();
 
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'category' => $categoryViewModel->toArray(),
-                    'guides' => $guideViewModels->toArray()
-                ],
-                'meta' => [
-                    'total' => $guides->total(),
-                    'per_page' => $guides->perPage(),
-                    'current_page' => $guides->currentPage(),
-                    'last_page' => $guides->lastPage(),
-                ]
+                'data' => $categories->map(fn($cat) => [
+                    'id' => $cat->_id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                    'icon' => $cat->icon,
+                    'description' => $cat->description,
+                ])
             ]);
         }
 
-        return view('guide::category.index', [
-            'category' => $categoryViewModel,
-            'guides' => $guideViewModels,
-            'pagination' => $guides
+        return view('guide-data-center::category.all', [
+            'categories' => $categories
         ]);
     }
 
     /**
-     * Lista todas as categorias ativas
+     * Exibe página de uma categoria específica
+     * 
+     * Rota: GET /guias/{category}
+     * View: guide-data-center::category.index
+     * Exemplos: /guias/oleo, /guias/calibragem
      */
-    public function all(Request $request): View|JsonResponse
+    public function index(Request $request, string $categorySlug): View|JsonResponse
     {
-        $categories = $this->categoryRepository->findAllActive();
+        // Busca a categoria pelo slug
+        $category = $this->categoryRepository->findBySlug($categorySlug);
 
-        $viewModels = $categories->map(fn($cat) => new GuideCategoryViewModel($cat));
+        if (!$category) {
+            abort(404, 'Categoria não encontrada');
+        }
 
+        // Busca guias desta categoria
+        // TODO: Implementar busca real quando houver dados
+        $guides = collect([]); // Placeholder
+        $makes = collect([]); // Placeholder
+
+        // Instancia o ViewModel
+        $viewModel = new GuideCategoryPageViewModel($category, $guides, $makes);
+
+        // Se requisição JSON
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'data' => $viewModels->toArray()
+                'data' => [
+                    'category' => $viewModel->getCategory(),
+                    'popular_guides' => $viewModel->getPopularGuides(),
+                    'makes' => $viewModel->getMakes(),
+                ]
             ]);
         }
 
-        return view('guide::category.index', [
-            'categories' => $viewModels,
-            'guides' => collect([]),
-            'pagination' => null
+        // Retorna view com dados preparados
+        return view('guide-data-center::category.index', [
+            'category' => $viewModel->getCategory(),
+            'relatedCategories' => $viewModel->getRelatedCategories(),
+            'heroImage' => $viewModel->getHeroImage(),
+            'popularGuides' => $viewModel->getPopularGuides(),
+            'makes' => $viewModel->getMakes(),
+            'evergreenContent' => $viewModel->getEvergreenContent(),
+            'faqs' => $viewModel->getFaqs(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
         ]);
     }
 }

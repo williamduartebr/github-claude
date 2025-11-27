@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\GuideDataCenter\Presentation\Controllers;
 
 use Illuminate\View\View;
+use Src\GuideDataCenter\Presentation\ViewModels\GuideYearViewModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
@@ -41,9 +42,9 @@ class GuideController extends Controller
     {
         $categories = collect([]);
         $makes = collect([]);
-        
+
         $viewModel = new GuideIndexViewModel($categories, $makes);
-        
+
         return view('guide-data-center::guide.index', [
             'categories' => $viewModel->getCategories(),
             'makes' => $viewModel->getMakes(),
@@ -100,175 +101,124 @@ class GuideController extends Controller
             'stats' => $viewModel->getStats(),
         ]);
     }
+    
 
     /**
-     * Exibe guia específico por categoria, marca, modelo e ano
+     * Lista versões disponíveis do ano
      * 
-     * Rota: GET /guias/{category}/{make}/{model-year}
-     * View: guide-data-center::guide.specific
-     * Exemplos:
-     * - /guias/oleo/toyota/corolla-2003
-     * - /guias/calibragem/honda/civic-2010
+     * Rota: GET /guias/{category}/{make}/{model}/{year}
+     * Exemplo: /guias/oleo/toyota/corolla/2025
      */
-    public function specific(
+    public function showYear(
         Request $request,
         string $categorySlug,
         string $makeSlug,
-        string $modelYear
+        string $modelSlug,
+        string $year
     ): View|JsonResponse {
-        // Parse model-year (ex: corolla-2003)
-        $parts = explode('-', $modelYear);
-        $year = (int) array_pop($parts);
-        $modelSlug = implode('-', $parts);
+        $category = $this->categoryRepository->findBySlug($categorySlug);
+        $make = $this->makeRepository->findBySlug($makeSlug);
+        $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
+        
+        $viewModel = new GuideYearViewModel($category, $make, $model, $year);
+        
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'category' => $viewModel->getCategory(),
+                    'make' => $viewModel->getMake(),
+                    'model' => $viewModel->getModel(),
+                    'year' => $viewModel->getYear(),
+                    'versions' => $viewModel->getVersions(),
+                ]
+            ]);
+        }
+        
+        return view('guide-data-center::guide.year', [
+            'category' => $viewModel->getCategory(),
+            'make' => $viewModel->getMake(),
+            'model' => $viewModel->getModel(),
+            'year' => $viewModel->getYear(),
+            'availableVersions' => $viewModel->getVersions(),
+            'stats' => $viewModel->getStats(),
+            'complementaryCategories' => $viewModel->getComplementaryCategories(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
+        ]);
+    }
 
-        // Busca categoria
+   /**
+     * Exibe guia completo de uma versão específica
+     * 
+     * Rota: GET /guias/{category}/{make}/{model}/{year}/{version}
+     * View: guide-data-center::guide.specific
+     * Exemplo: /guias/oleo/toyota/corolla/2025/gli
+     */
+    public function showVersion(
+        Request $request,
+        string $categorySlug,
+        string $makeSlug,
+        string $modelSlug,
+        string $year,
+        string $versionSlug
+    ): View|JsonResponse {
         $category = $this->categoryRepository->findBySlug($categorySlug);
         if (!$category) {
             abort(404, 'Categoria não encontrada');
         }
 
-        // Busca marca
         $make = $this->makeRepository->findBySlug($makeSlug);
         if (!$make) {
             abort(404, 'Marca não encontrada');
         }
 
-        // Busca modelo
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
         if (!$model) {
             abort(404, 'Modelo não encontrado');
         }
-
-        // Busca guia específico
-        // TODO: Implementar busca real quando houver dados
-        $guide = null; // Placeholder
-
-        // Instancia o ViewModel
-        $viewModel = new GuideSpecificViewModel($guide, $category, $make, $model, $year);
-
-        // Se requisição JSON
+        
+        // TODO: Buscar guia real do banco
+        $guide = null;
+        
+        // ⭐ IMPORTANTE: Passar $versionSlug para o ViewModel
+        $viewModel = new GuideSpecificViewModel(
+            $guide, 
+            $category, 
+            $make, 
+            $model, 
+            (int)$year, 
+            $versionSlug  // ← Passa a versão
+        );
+        
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'guide' => $viewModel->getGuide(),
-                    'category' => $viewModel->getCategory(),
-                    'make' => $viewModel->getMake(),
-                    'model' => $viewModel->getModel(),
-                    'year' => $viewModel->getYear(),
-                    'specs' => $viewModel->getOfficialSpecs(),
-                ]
+                'data' => $viewModel->getGuide(),
             ]);
         }
-
-        // Retorna view com dados preparados
+        
         return view('guide-data-center::guide.specific', [
             'guide' => $viewModel->getGuide(),
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
             'model' => $viewModel->getModel(),
             'year' => $viewModel->getYear(),
+            'version' => $viewModel->getVersion(),  // ← Adicionar versão na view
             'badges' => $viewModel->getBadges(),
+            'disclaimer' => $viewModel->getDisclaimer(),
             'officialSpecs' => $viewModel->getOfficialSpecs(),
             'compatibleOils' => $viewModel->getCompatibleOils(),
             'changeIntervals' => $viewModel->getChangeIntervals(),
             'severeUseNote' => $viewModel->getSevereUseNote(),
             'relatedGuides' => $viewModel->getRelatedGuides(),
             'essentialCluster' => $viewModel->getEssentialCluster(),
-            'disclaimer' => $viewModel->getDisclaimer(),
             'editorialInfo' => $viewModel->getEditorialInfo(),
             'seo' => $viewModel->getSeoData(),
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
         ]);
     }
-
-    /**
-     * Exibe um guia específico pelo slug
-     * 
-     * Rota: GET /guias/{slug}
-     */
-    public function show(Request $request, string $slug): View|JsonResponse
-    {
-        $guide = $this->guideRepository->findBySlug($slug);
-
-        if (!$guide) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Guia não encontrado'
-                ], 404);
-            }
-
-            abort(404, 'Guia não encontrado');
-        }
-
-        $seo = $this->seoService->getSeoByGuideId($guide->_id);
-        $clusters = $this->clusterService->getClustersByGuideId($guide->_id);
-
-        $viewModel = new GuideViewModel($guide, $seo, $clusters);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'data' => $viewModel->toArray()
-            ]);
-        }
-
-        return view('guide-data-center::guide.show', [
-            'guide' => $viewModel
-        ]);
-    }
-
-    /**
-     * Lista guias por marca e modelo do veículo
-     * 
-     * Rota: GET /guias/{make}/{model}/{year?}
-     */
-    public function byModel(
-        Request $request,
-        string $make,
-        string $model,
-        ?int $year = null
-    ): View|JsonResponse {
-        $filters = [
-            'make_slug' => $make,
-            'model_slug' => $model,
-        ];
-
-        if ($year) {
-            $filters['year'] = $year;
-        }
-
-        $perPage = (int) $request->get('per_page', 15);
-        $page = (int) $request->get('page', 1);
-
-        $guides = $this->guideRepository->findByFilters($filters, $perPage, $page);
-
-        $viewModels = $guides->map(fn($guide) => new GuideListViewModel($guide));
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'data' => $viewModels->toArray(),
-                'meta' => [
-                    'make' => $make,
-                    'model' => $model,
-                    'year' => $year,
-                    'total' => $guides->total(),
-                    'per_page' => $guides->perPage(),
-                    'current_page' => $guides->currentPage(),
-                    'last_page' => $guides->lastPage(),
-                ]
-            ]);
-        }
-
-        return view('guide-data-center::guide.by-model', [
-            'make' => $make,
-            'model' => $model,
-            'year' => $year,
-            'guides' => $viewModels
-        ]);
-    }
+  
 
     /**
      * Exibe guias por categoria, marca e modelo (lista de anos)
@@ -288,11 +238,11 @@ class GuideController extends Controller
         $category = $this->categoryRepository->findBySlug($categorySlug);
         $make = $this->makeRepository->findBySlug($makeSlug);
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
-        
+
         $years = collect([]); // Placeholder
-        
+
         $viewModel = new GuideCategoryMakeModelViewModel($category, $make, $model, $years);
-        
+
         return view('guide-data-center::guide.category-make-model', [
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),

@@ -59,17 +59,16 @@
 <section class="bg-white border-b border-gray-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <h1 class="text-3xl font-bold text-gray-900 mb-3 font-montserrat">
-            {{ $category['name'] }} – {{ $make['name'] }} {{ $model['name'] }}
+            {{ $category['name'] }} – {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
         </h1>
         <p class="text-sm text-gray-600 font-roboto">
-            Escolha o ano do seu {{ $make['name'] }} {{ $model['name'] }} para ver o guia completo de {{ strtolower($category['name']) }} 
+            Escolha a versão do seu {{ $make['name'] }} {{ $model['name'] }} {{ $year }} para ver o guia completo de {{ strtolower($category['name']) }} 
             com especificações, recomendações e informações técnicas.
         </p>
         
-        @if($stats['total_years'] > 0)
+        @if($stats['total_versions'] > 0)
             <div class="mt-4 text-sm text-gray-500 font-roboto">
-                📅 {{ $stats['total_years'] }} anos disponíveis 
-                ({{ $stats['oldest_year'] }}–{{ $stats['newest_year'] }})
+                🚗 {{ $stats['total_versions'] }} {{ $stats['total_versions'] === 1 ? 'versão disponível' : 'versões disponíveis' }}
             </div>
         @endif
     </div>
@@ -84,37 +83,35 @@
 
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
     
-    {{-- LISTA DE ANOS DISPONÍVEIS --}}
-    @if(count($availableYears) > 0)
+    {{-- LISTA DE VERSÕES DISPONÍVEIS --}}
+    @if(count($availableVersions) > 0)
         <section class="mb-16">
             <h2 class="text-xl font-semibold mb-4 font-montserrat">
-                Anos disponíveis – {{ $make['name'] }} {{ $model['name'] }}
+                Versões disponíveis – {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
             </h2>
 
             <p class="text-sm text-gray-600 mb-4 font-roboto">
-                Escolha o ano do seu veículo para ver o guia completo.
+                Escolha a versão do seu veículo para ver o guia completo.
             </p>
 
             <div class="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
                 <table class="min-w-full text-sm font-roboto">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-2 text-left font-montserrat border-b border-gray-200">Ano</th>
+                            <th class="px-4 py-2 text-left font-montserrat border-b border-gray-200">Versão</th>
                             <th class="px-4 py-2 text-left font-montserrat border-b border-gray-200">Motor</th>
-                            <th class="px-4 py-2 text-left font-montserrat border-b border-gray-200">Versões</th>
                             <th class="px-4 py-2 text-left font-montserrat border-b border-gray-200">Guia</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($availableYears as $index => $yearData)
+                        @foreach($availableVersions as $index => $versionData)
                             <tr class="border-t border-gray-200 {{ $index % 2 === 1 ? 'bg-gray-50' : '' }}">
                                 <td class="px-4 py-3">
-                                    <strong>{{ $yearData['year'] }}</strong>
+                                    <strong>{{ $versionData['version'] }}</strong>
                                 </td>
-                                <td class="px-4 py-3">{{ $yearData['engine'] }}</td>
-                                <td class="px-4 py-3">{{ $yearData['versions'] }}</td>
+                                <td class="px-4 py-3">{{ $versionData['engine'] }}</td>
                                 <td class="px-4 py-3">
-                                    <a href="{{ $yearData['url'] }}" 
+                                    <a href="{{ $versionData['url'] }}" 
                                        class="text-blue-600 hover:underline font-medium">
                                         Ver guia →
                                     </a>
@@ -126,7 +123,7 @@
             </div>
         </section>
     @else
-        {{-- NENHUM ANO DISPONÍVEL --}}
+        {{-- NENHUMA VERSÃO DISPONÍVEL --}}
         <section class="mb-16">
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
                 <div class="flex items-center">
@@ -135,11 +132,10 @@
                     </svg>
                     <div>
                         <h3 class="text-lg font-semibold text-yellow-900 font-montserrat">
-                            Nenhum ano disponível no momento
+                            Nenhuma versão disponível no momento
                         </h3>
                         <p class="text-sm text-yellow-800 mt-1 font-roboto">
-                            Ainda não temos guias de {{ strtolower($category['name']) }} para o {{ $make['name'] }} {{ $model['name'] }}. 
-                            Estamos trabalhando para adicionar este conteúdo em breve.
+                            Ainda não temos guias para este ano. Estamos trabalhando para adicionar este conteúdo em breve.
                         </p>
                     </div>
                 </div>
@@ -157,12 +153,12 @@
     {{-- LINKS PARA OUTRAS CATEGORIAS --}}
     <section class="bg-white border border-gray-200 rounded-lg p-6 mb-16">
         <h2 class="text-xl font-semibold mb-4 font-montserrat">
-            Outras categorias – {{ $make['name'] }} {{ $model['name'] }}
+            Outras categorias – {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 text-sm font-roboto">
             @foreach($complementaryCategories as $cat)
-                <a href="/guias/{{ $cat['slug'] }}/{{ $make['slug'] }}/{{ $model['slug'] }}" 
+                <a href="/guias/{{ $cat['slug'] }}/{{ $make['slug'] }}/{{ $model['slug'] }}/{{ $year }}" 
                    class="block bg-gray-50 border border-gray-200 rounded p-3 hover:shadow hover:border-blue-500 transition-all text-center">
                     {{ $cat['name'] }}
                 </a>

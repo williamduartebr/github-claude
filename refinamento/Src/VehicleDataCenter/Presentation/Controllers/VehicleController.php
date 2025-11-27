@@ -10,6 +10,9 @@ use Src\VehicleDataCenter\Domain\Repositories\VehicleModelRepositoryInterface;
 use Src\VehicleDataCenter\Domain\Repositories\VehicleVersionRepositoryInterface;
 use Src\VehicleDataCenter\Presentation\ViewModels\VehicleViewModel;
 use Src\VehicleDataCenter\Presentation\ViewModels\VehicleListViewModel;
+use Src\VehicleDataCenter\Presentation\ViewModels\VehicleMakeViewModel;
+use Src\VehicleDataCenter\Presentation\ViewModels\VehicleModelViewModel;
+use Src\VehicleDataCenter\Presentation\ViewModels\VehicleVersionViewModel;
 
 class VehicleController
 {
@@ -20,19 +23,35 @@ class VehicleController
         private VehicleSearchService $searchService
     ) {}
 
+    /**
+     * Página inicial: listagem de todas as marcas
+     * 
+     * Rota: GET /veiculos
+     * View: vehicle-data-center::vehicles.index
+     */
     public function index()
     {
         $makes = $this->makeRepository->getActive();
-
         $viewModel = new VehicleListViewModel($makes);
 
-        dd($viewModel );
-        
         return view('vehicle-data-center::vehicles.index', [
-            'makes' => $viewModel->getMakes()
+            'makes' => $viewModel->getMakes(),
+            'featuredMakes' => $viewModel->getFeaturedMakes(),
+            'popularModels' => $viewModel->getPopularModels(),
+            'allMakes' => $viewModel->getAllMakesForTable(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
+            'stats' => $viewModel->getStats(),
         ]);
     }
 
+    /**
+     * Página de uma marca: lista modelos
+     * 
+     * Rota: GET /veiculos/{make}
+     * View: vehicle-data-center::vehicles.make
+     * Exemplo: /veiculos/toyota
+     */
     public function showMake(string $makeSlug)
     {
         $make = $this->makeRepository->findBySlug($makeSlug);
@@ -42,14 +61,27 @@ class VehicleController
         }
 
         $models = $this->modelRepository->getByMake($make->id);
-
+        $viewModel = new VehicleMakeViewModel($make, $models);
 
         return view('vehicle-data-center::vehicles.make', [
-            'make' => $make,
-            'models' => $models
+            'make' => $viewModel->getMake(),
+            'models' => $viewModel->getModels(),
+            'popularModels' => $viewModel->getPopularModels(),
+            'allModels' => $viewModel->getAllModelsForTable(),
+            'guideCategories' => $viewModel->getGuideCategories(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
+            'stats' => $viewModel->getStats(),
         ]);
     }
 
+    /**
+     * Página de um modelo: lista versões por ano
+     * 
+     * Rota: GET /veiculos/{make}/{model}
+     * View: vehicle-data-center::vehicles.model
+     * Exemplo: /veiculos/toyota/corolla
+     */
     public function showModel(string $makeSlug, string $modelSlug)
     {
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
@@ -59,83 +91,101 @@ class VehicleController
         }
 
         $versions = $this->versionRepository->getByModel($model->id);
+        $viewModel = new VehicleModelViewModel($model->make, $model, $versions);
 
         return view('vehicle-data-center::vehicles.model', [
-            'make' => $model->make,
-            'model' => $model,
-            'versions' => $versions
+            'make' => $viewModel->getMake(),
+            'model' => $viewModel->getModel(),
+            'quickGuides' => $viewModel->getQuickGuides(),
+            'allGuideCategories' => $viewModel->getAllGuideCategories(),
+            'versionsByYear' => $viewModel->getVersionsByYear(),
+            'yearsList' => $viewModel->getYearsList(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
+            'stats' => $viewModel->getStats(),
         ]);
     }
 
+    /**
+     * Rota intermediária de ano (redireciona)
+     * 
+     * Rota: GET /veiculos/{make}/{model}/{year}
+     * Exemplo: /veiculos/toyota/corolla/2003
+     * 
+     * ESTRATÉGIA:
+     * - Se houver 1 versão apenas → redireciona para a versão
+     * - Se houver múltiplas versões → redireciona para página do modelo com âncora #y{year}
+     * - Se não houver versões → 404
+     */
     public function showYear(string $makeSlug, string $modelSlug, int $year)
     {
+        // Busca o modelo
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
 
         if (!$model) {
             abort(404, 'Modelo não encontrado');
         }
 
+        // Busca versões do ano específico
         $versions = $this->versionRepository->getByModel($model->id)
             ->where('year', $year);
 
-        return view('vehicle-data-center::vehicles.year', [
-            'make' => $model->make,
-            'model' => $model,
-            'year' => $year,
-            'versions' => $versions
-        ]);
+        // Se não há versões, retorna 404
+        if ($versions->isEmpty()) {
+            abort(404, 'Nenhuma versão encontrada para este ano');
+        }
+
+        // Se há apenas 1 versão, redireciona direto para ela
+        if ($versions->count() === 1) {
+            $version = $versions->first();
+            return redirect()->route('vehicles.version', [
+                'make' => $makeSlug,
+                'model' => $modelSlug,
+                'year' => $year,
+                'version' => $version->slug,
+            ]);
+        }
+
+        // Se há múltiplas versões, redireciona para página do modelo com âncora
+        return redirect()->route('vehicles.model', [
+            'make' => $makeSlug,
+            'model' => $modelSlug,
+        ]) . "#y{$year}";
     }
 
+    /**
+     * Página de uma versão específica (ficha técnica completa)
+     * 
+     * Rota: GET /veiculos/{make}/{model}/{year}/{version}
+     * View: vehicle-data-center::vehicles.version
+     * Exemplo: /veiculos/toyota/corolla/2003/gli-1-8
+     */
     public function showVersion(string $makeSlug, string $modelSlug, int $year, string $versionSlug)
     {
+        // Busca versão pelo slug
         $version = $this->versionRepository->findBySlug($makeSlug, $modelSlug, $year, $versionSlug);
 
         if (!$version) {
             abort(404, 'Versão não encontrada');
         }
 
-        $viewModel = new VehicleViewModel($version);
+        // Instancia o ViewModel que prepara os dados
+        $viewModel = new VehicleVersionViewModel($version);
 
+        // Retorna a view com dados preparados pelo ViewModel
         return view('vehicle-data-center::vehicles.version', [
-            'vehicle' => $viewModel->toArray()
+            'version' => $viewModel->getVersion(),
+            'make' => $viewModel->getMake(),
+            'model' => $viewModel->getModel(),
+            'badges' => $viewModel->getBadges(),
+            'quickFacts' => $viewModel->getQuickFacts(),
+            'mainSpecs' => $viewModel->getMainSpecs(),
+            'sideCards' => $viewModel->getSideCards(),
+            'fluids' => $viewModel->getFluids(),
+            'maintenanceSummary' => $viewModel->getMaintenanceSummary(),
+            'guides' => $viewModel->getGuides(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
         ]);
-    }
-
-    public function search(Request $request): JsonResponse
-    {
-        $filters = $request->only(['make', 'model', 'year', 'keyword']);
-
-        $results = $this->searchService->search($filters);
-
-        return response()->json($results);
-    }
-
-    public function quickSearch(Request $request): JsonResponse
-    {
-        $query = $request->input('q', '');
-
-        if (strlen($query) < 2) {
-            return response()->json([
-                'error' => 'Query too short'
-            ], 400);
-        }
-
-        $results = $this->searchService->quickSearch($query);
-
-        return response()->json($results);
-    }
-
-    public function byCategory(string $category): JsonResponse
-    {
-        $results = $this->searchService->getByCategory($category);
-
-        return response()->json($results);
-    }
-
-    public function popular(): JsonResponse
-    {
-        $results = $this->searchService->getPopular();
-
-        return response()->json($results);
     }
 }

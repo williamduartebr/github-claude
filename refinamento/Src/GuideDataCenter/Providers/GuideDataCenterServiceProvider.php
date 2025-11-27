@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\GuideDataCenter\Infrastructure\Providers;
+namespace Src\GuideDataCenter\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +10,7 @@ use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideClusterRepositoryInterface;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideSeoRepositoryInterface;
+
 
 // Repositories Implementations
 use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideRepository;
@@ -45,7 +46,7 @@ class GuideDataCenterServiceProvider extends ServiceProvider
 
         // Merge configurations
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/guide-datacenter.php',
+            __DIR__ . '/../config/guide-datacenter.php',
             'guide-datacenter'
         );
     }
@@ -142,19 +143,19 @@ class GuideDataCenterServiceProvider extends ServiceProvider
     protected function publishResources(): void
     {
         // // Carrega migrations
-        // $this->loadMigrationsFrom(__DIR__ . '/../../Migrations/mongo');
+        // $this->loadMigrationsFrom(__DIR__ . '/../Migrations/mongo');
 
                 // Load views
-        $this->loadViewsFrom(__DIR__ . '/../Presentation/Resources/views', 'vehicle-data-center');
+        $this->loadViewsFrom(__DIR__ . '/../Presentation/Resources/views', 'guide-data-center');
 
         // Publica configurações
         $this->publishes([
-            __DIR__ . '/../../config/guide-datacenter.php' => config_path('guide-datacenter.php'),
+            __DIR__ . '/../config/guide-datacenter.php' => config_path('guide-datacenter.php'),
         ], 'guide-datacenter-config');
 
         // // Publica migrations
         // $this->publishes([
-        //     __DIR__ . '/../../Migrations/mongo' => database_path('migrations/mongo'),
+        //     __DIR__ . '/../Migrations/mongo' => database_path('migrations/mongo'),
         // ], 'guide-datacenter-migrations');
 
         // // Registra seeders
@@ -193,7 +194,7 @@ class GuideDataCenterServiceProvider extends ServiceProvider
      */
     protected function loadRoutes(): void
     {
-        $this->loadRoutesFrom(__DIR__ . '/../../Presentation/Routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../Presentation/Routes/web.php');
     }
 
     /**
@@ -202,7 +203,7 @@ class GuideDataCenterServiceProvider extends ServiceProvider
     protected function loadViews(): void
     {
         $this->loadViewsFrom(
-            __DIR__ . '/../../Presentation/Resources/views',
+            __DIR__ . '/../Presentation/Resources/views',
             'guide'
         );
     }

@@ -8,105 +8,48 @@ use Src\GuideDataCenter\Presentation\Controllers\GuideCategoryController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideClusterController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideSearchController;
 
-/*
-|--------------------------------------------------------------------------
-| GuideDataCenter Routes
-|--------------------------------------------------------------------------
-|
-| Rotas do módulo de guias automotivos.
-| Prefixo: /guias
-|
-*/
-
 Route::prefix('guias')
     ->middleware(['web'])
     ->group(function () {
         
-        /*
-        |--------------------------------------------------------------------------
-        | Busca
-        |--------------------------------------------------------------------------
-        */
+        // Busca
+        Route::get('busca/search', [GuideSearchController::class, 'search'])->name('guide.search');
+        Route::get('busca/autocomplete', [GuideSearchController::class, 'autocomplete'])->name('guide.autocomplete');
+        Route::get('busca/advanced', [GuideSearchController::class, 'advanced'])->name('guide.search.advanced');
         
-        // Busca de guias
-        Route::get('busca/search', [GuideSearchController::class, 'search'])
-            ->name('guide.search');
+        // Categorias
+        Route::get('categorias', [GuideCategoryController::class, 'all'])->name('guide.categories');
+        Route::get('categoria/{category}', [GuideCategoryController::class, 'index'])->name('guide.category');        
         
-        // Autocomplete para busca
-        Route::get('busca/autocomplete', [GuideSearchController::class, 'autocomplete'])
-            ->name('guide.autocomplete');
+        // Index
+        Route::get('/', [GuideController::class, 'index'])->name('guide.index');
         
-        // Busca avançada
-        Route::get('busca/advanced', [GuideSearchController::class, 'advanced'])
-            ->name('guide.search.advanced');
+        // Categoria + Marca
+        Route::get('{category}/{make}', [GuideController::class, 'categoryMake'])
+            ->name('guides.make')
+            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+']);
+
+        // Categoria + Marca + Modelo (lista anos)
+        Route::get('{category}/{make}/{model}', [GuideController::class, 'categoryMakeModel'])
+            ->name('guide.category-make-model')
+            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+']);
+
+        // ⭐ NOVO - Categoria + Marca + Modelo + Ano (lista versões)
+        Route::get('{category}/{make}/{model}/{year}', [GuideController::class, 'showYear'])
+            ->name('guide.year')
+            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]{4}']);
+
+        // ⭐ NOVO - Categoria + Marca + Modelo + Ano + Versão (guia completo)
+        Route::get('{category}/{make}/{model}/{year}/{version}', [GuideController::class, 'showVersion'])
+            ->name('guide.version')
+            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]{4}', 'version' => '[a-z0-9\-]+']);        
         
-        /*
-        |--------------------------------------------------------------------------
-        | Categorias
-        |--------------------------------------------------------------------------
-        */
-        
-        // Lista todas as categorias
-        Route::get('categorias', [GuideCategoryController::class, 'all'])
-            ->name('guide.categories');
-        
-        // Guias por categoria
-        Route::get('categoria/{category}', [GuideCategoryController::class, 'index'])
-            ->name('guide.category')
-            ->where('category', '[a-z0-9\-]+');
-        
-        /*
-        |--------------------------------------------------------------------------
-        | Clusters
-        |--------------------------------------------------------------------------
-        */
-        
-        // Cluster por tipo
-        Route::get('cluster/tipo/{type}', [GuideClusterController::class, 'byType'])
-            ->name('guide.cluster.type')
-            ->where('type', '[a-z\-]+');
-        
-        // Cluster por veículo
-        Route::get('cluster/{make}/{model}/{year?}', [GuideClusterController::class, 'show'])
-            ->name('guide.cluster')
-            ->where([
-                'make' => '[a-z0-9\-]+',
-                'model' => '[a-z0-9\-]+',
-                'year' => '[0-9\-]+'
-            ]);
-        
-        /*
-        |--------------------------------------------------------------------------
-        | Listagem
-        |--------------------------------------------------------------------------
-        */
-        
-        // Lista todos os guias
-        Route::get('/', [GuideController::class, 'index'])
-            ->name('guide.index');
-        
-        /*
-        |--------------------------------------------------------------------------
-        | Guias por Veículo
-        |--------------------------------------------------------------------------
-        */
-        
-        // Guias por marca/modelo/ano
+        // Por modelo
         Route::get('{make}/{model}/{year?}', [GuideController::class, 'byModel'])
             ->name('guide.byModel')
-            ->where([
-                'make' => '[a-z0-9\-]+',
-                'model' => '[a-z0-9\-]+',
-                'year' => '[0-9]+'
-            ]);
+            ->where(['make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]+']);
         
-        /*
-        |--------------------------------------------------------------------------
-        | Guia Individual
-        |--------------------------------------------------------------------------
-        */
-        
-        // Exibe guia por slug (deve ser a última rota para não conflitar)
+        // Slug genérico (última rota)
         Route::get('{slug}', [GuideController::class, 'show'])
             ->name('guide.show')
             ->where('slug', '[a-z0-9\-]+');
