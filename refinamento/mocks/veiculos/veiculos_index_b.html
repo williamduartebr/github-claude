@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veículos – Marcas, Modelos e Fichas Técnicas | Mercado Veículos</title>
+
+    <meta name="description"
+        content="Encontre modelos, marcas, fichas técnicas, anos e versões. Acesse dados completos de veículos vendidos no Brasil.">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://mercadoveiculos.com/veiculos/" />
+
+    <!-- Fonts & Tailwind -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+        .hero-bg { background-image: linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.02)); }
+        .skip-link {
+            position: absolute; top: -40px; left: 0;
+            background: #3b82f6; color: white; padding: 8px;
+            z-index: 100; transition: top .2s;
+        }
+        .skip-link:focus { top:0; }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Skip -->
+    <a href="#main-content" class="skip-link">Pular para conteúdo</a>
+
+    <!-- HEADER -->
+    <header class="bg-blue-900 text-white">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" aria-label="Mercado Veículos">
+                <img src="https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos-write.svg"
+                     class="h-10">
+            </a>
+
+            <div class="flex items-center">
+                <span class="hidden md:inline-block font-roboto">Marketing Automotivo</span>
+                <button class="ml-4 text-yellow-400" aria-label="Buscar">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <nav class="bg-blue-800">
+            <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+                <button class="text-white flex items-center p-2">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <span class="ml-2">Menu</span>
+                </button>
+
+                <div class="hidden sm:flex space-x-4 text-sm font-roboto">
+                    <a href="/veiculos/" class="text-white font-medium p-2 border-b-2 border-yellow-400">Veículos</a>
+                    <a href="/guias/" class="text-white hover:text-yellow-300 p-2">Guias</a>
+                    <a href="/noticias/" class="text-white hover:text-yellow-300 p-2">Notícias</a>
+                    <a href="/comercial/" class="text-white hover:text-yellow-300 p-2">Empresas</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- BREADCRUMB -->
+    <div class="bg-gray-100 border-b">
+        <div class="container mx-auto px-4 py-2 text-sm">
+            <nav>
+                <ol class="flex items-center gap-2">
+                    <li><a href="/" class="text-blue-600 hover:underline">Início</a></li>
+                    <li class="text-gray-400">/</li>
+                    <li class="text-gray-700">Veículos</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- HERO (simples) -->
+    <section class="hero-bg border-b">
+        <div class="container mx-auto px-4 py-12">
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">Catálogo de Veículos</h1>
+            <p class="text-sm text-gray-600 max-w-2xl">
+                Selecione a marca para explorar modelos, anos, versões e fichas técnicas completas.
+            </p>
+        </div>
+    </section>
+
+    <!-- MAIN -->
+    <main id="main-content">
+
+        <!-- MARCAS -->
+        <section class="container mx-auto px-4 py-10">
+            <h2 class="text-xl font-semibold mb-4">Marcas disponíveis</h2>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                <a href="/veiculos/toyota" class="p-4 bg-white border rounded text-center hover:shadow">Toyota</a>
+                <a href="/veiculos/honda" class="p-4 bg-white border rounded text-center hover:shadow">Honda</a>
+                <a href="/veiculos/chevrolet" class="p-4 bg-white border rounded text-center hover:shadow">Chevrolet</a>
+                <a href="/veiculos/fiat" class="p-4 bg-white border rounded text-center hover:shadow">Fiat</a>
+                <a href="/veiculos/volkswagen" class="p-4 bg-white border rounded text-center hover:shadow">Volkswagen</a>
+                <a href="/veiculos/hyundai" class="p-4 bg-white border rounded text-center hover:shadow">Hyundai</a>
+
+                <a href="/veiculos/jeep" class="p-4 bg-white border rounded text-center hover:shadow">Jeep</a>
+                <a href="/veiculos/nissan" class="p-4 bg-white border rounded text-center hover:shadow">Nissan</a>
+                <a href="/veiculos/renault" class="p-4 bg-white border rounded text-center hover:shadow">Renault</a>
+                <a href="/veiculos/peugeot" class="p-4 bg-white border rounded text-center hover:shadow">Peugeot</a>
+                <a href="/veiculos/citroen" class="p-4 bg-white border rounded text-center hover:shadow">Citroën</a>
+                <a href="/veiculos/ford" class="p-4 bg-white border rounded text-center hover:shadow">Ford</a>
+            </div>
+        </section>
+
+        <!-- MODELOS POPULARES (compacto) -->
+        <section class="container mx-auto px-4 pb-10">
+            <h2 class="text-xl font-semibold mb-4">Modelos populares</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <a href="/veiculos/toyota/corolla" class="block bg-white border rounded-lg overflow-hidden hover:shadow">
+                    <img src="/images/placeholder/corolla-hero.jpg" class="h-40 w-full object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg">Toyota Corolla</h3>
+                        <p class="text-xs text-gray-500">2000–2025</p>
+                    </div>
+                </a>
+
+                <a href="/veiculos/chevrolet/onix" class="block bg-white border rounded-lg overflow-hidden hover:shadow">
+                    <img src="/images/placeholder/onix-hero.jpg" class="h-40 w-full object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg">Chevrolet Onix</h3>
+                        <p class="text-xs text-gray-500">2013–2025</p>
+                    </div>
+                </a>
+
+                <a href="/veiculos/hyundai/hb20" class="block bg-white border rounded-lg overflow-hidden hover:shadow">
+                    <img src="/images/placeholder/hb20-hero.jpg" class="h-40 w-full object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg">Hyundai HB20</h3>
+                        <p class="text-xs text-gray-500">2012–2025</p>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- TABELA (compacta) -->
+        <section class="container mx-auto px-4 pb-16">
+            <h2 class="text-xl font-semibold mb-4">Lista completa de marcas</h2>
+
+            <div class="overflow-x-auto bg-white border rounded-lg">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Marca</th>
+                            <th class="px-4 py-2 text-left">Origem</th>
+                            <th class="px-4 py-2 text-left">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t">
+                            <td class="px-4 py-3">Toyota</td>
+                            <td class="px-4 py-3">Japão</td>
+                            <td class="px-4 py-3"><a href="/veiculos/toyota" class="text-blue-600">Abrir</a></td>
+                        </tr>
+                        <tr class="border-t bg-gray-50">
+                            <td class="px-4 py-3">Chevrolet</td>
+                            <td class="px-4 py-3">EUA</td>
+                            <td class="px-4 py-3"><a href="/veiculos/chevrolet" class="text-blue-600">Abrir</a></td>
+                        </tr>
+                        <tr class="border-t">
+                            <td class="px-4 py-3">Volkswagen</td>
+                            <td class="px-4 py-3">Alemanha</td>
+                            <td class="px-4 py-3"><a href="/veiculos/volkswagen" class="text-blue-600">Abrir</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER (mesmo da versão A) -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Sobre Nós</h3>
+                <p class="text-sm text-gray-400">
+                    Dados automotivos completos, fichas técnicas e manutenção precisa para todo tipo de veículo.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Categorias</h3>
+                <ul class="text-sm text-gray-400 space-y-2">
+                    <li><a href="/guias/oleo" class="hover:text-white">Óleo</a></li>
+                    <li><a href="/guias/pneus" class="hover:text-white">Pneus</a></li>
+                    <li><a href="/guias/revisao" class="hover:text-white">Revisões</a></li>
+                    <li><a href="/guias/calibragem" class="hover:text-white">Calibragem</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Marcas</h3>
+                <ul class="text-sm text-gray-400 space-y-2">
+                    <li><a href="/veiculos/toyota" class="hover:text-white">Toyota</a></li>
+                    <li><a href="/veiculos/fiat" class="hover:text-white">Fiat</a></li>
+                    <li><a href="/veiculos/honda" class="hover:text-white">Honda</a></li>
+                    <li><a href="/veiculos/hyundai" class="hover:text-white">Hyundai</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Contato</h3>
+                <p class="text-sm text-gray-400">contato@mercadoveiculos.com</p>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+            <p class="text-sm">© 2025 Mercado Veículos — Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
