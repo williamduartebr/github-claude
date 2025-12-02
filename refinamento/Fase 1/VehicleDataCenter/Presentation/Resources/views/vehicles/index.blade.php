@@ -1,4 +1,4 @@
-@extends('auto-info-center::layouts.app')
+@extends('vehicle-data-center::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -25,7 +25,7 @@
 {{-- BREADCRUMBS (será renderizado pelo layout se tiver @include) --}}
 @if(isset($breadcrumbs))
     @section('breadcrumbs')
-        <div class="bg-gray-100 border-b">
+        <div class="bg-gray-100 border-b border-gray-200">
             <div class="container mx-auto px-4 py-2 whitespace-nowrap overflow-x-auto">
                 <nav class="text-xs md:text-sm font-roboto">
                     <ol class="inline-flex" itemscope itemtype="https://schema.org/BreadcrumbList">
@@ -37,8 +37,8 @@
                                     </a>
                                     <meta itemprop="position" content="{{ $index + 1 }}" />
                                     @if(!$loop->last)
-                                        <svg class="h-3 w-3 mx-2 text-gray-400" fill="none" stroke="currentColor">
-                                            <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     @endif
                                 @else
@@ -101,9 +101,9 @@
                    class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition-all duration-300 flex flex-col items-center justify-center group">
                     
                     {{-- Logo da marca --}}
-                    <div class="w-16 h-16 mb-3 flex items-center justify-center">
+                    <div class="w-28 md:w-32 h-28 md:h-32 mb-3 flex items-center justify-center">
                         @if($make['logo'])
-                            <img src="{{ $make['logo'] }}" 
+                            <img src="{{ asset("/images/statics/logos/". $make['logo']) }}" 
                                  alt="Logo {{ $make['name'] }}" 
                                  class="max-w-full max-h-full object-contain">
                         @else

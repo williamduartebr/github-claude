@@ -14,6 +14,7 @@ class VehicleVersion extends Model
     protected $table = 'vehicle_versions';
 
     protected $fillable = [
+        'id',
         'model_id',
         'name',
         'slug',

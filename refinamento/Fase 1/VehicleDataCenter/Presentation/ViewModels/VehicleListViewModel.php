@@ -133,6 +133,9 @@ class VehicleListViewModel
             'CN' => 'China',
             'IN' => 'Índia',
             'GB' => 'Reino Unido',
+            'SE' => 'Suécia',
+            'NL' => 'Holanda',
+            
         ];
 
         return $countries[$code] ?? $code ?? 'N/A';

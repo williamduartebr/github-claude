@@ -1,4 +1,4 @@
-@extends('auto-info-center::layouts.app')
+@extends('vehicle-data-center::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -44,7 +44,7 @@
                                     </a>
                                     <meta itemprop="position" content="{{ $index + 1 }}" />
                                     @if(!$loop->last)
-                                        <svg class="h-3 w-3 mx-1 text-gray-400" fill="none" stroke="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     @endif
@@ -100,9 +100,14 @@
             </div>
 
             <div class="md:w-72 mt-6 md:mt-0">
-                <img src="{{ $version['image'] }}" 
+
+                <img src="/images/placeholder/corolla-full-hero.jpeg" 
                      alt="{{ $version['full_name'] }}" 
                      class="w-full rounded shadow">
+{{-- 
+                <img src="{{ $version['image'] }}" 
+                     alt="{{ $version['full_name'] }}" 
+                     class="w-full rounded shadow"> --}}
                 <p class="text-xs text-gray-500 mt-2 font-roboto">Imagem ilustrativa</p>
             </div>
         </div>

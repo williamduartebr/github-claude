@@ -13,6 +13,7 @@ class VehicleMake extends Model
     protected $table = 'vehicle_makes';
 
     protected $fillable = [
+        'id',
         'name',
         'slug',
         'logo_url',

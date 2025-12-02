@@ -14,6 +14,7 @@ class VehicleModel extends Model
     protected $table = 'vehicle_models';
 
     protected $fillable = [
+        'id',
         'make_id',
         'name',
         'slug',
