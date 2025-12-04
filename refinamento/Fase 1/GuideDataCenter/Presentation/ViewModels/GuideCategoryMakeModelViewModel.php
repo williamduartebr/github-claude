@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
  * ViewModel para página de categoria + marca + modelo
  * 
  * Rota: /guias/{category}/{make}/{model}
- * View: guide.category-make-model
+ * View: guide.category.make.model
  * Exemplo: /guias/oleo/toyota/corolla
  * 
  * Lista todos os anos disponíveis para este modelo específico
@@ -69,10 +69,10 @@ class GuideCategoryMakeModelViewModel
     public function getAvailableYears(): array
     {
         // TODO: Usar $this->years quando houver dados
-        
+
         // Mock de anos disponíveis
         $modelSlug = $this->model->slug ?? 'corolla';
-        
+
         $mocks = [
             'corolla' => [
                 ['year' => 2025, 'engine' => '2.0 Dynamic Force', 'versions' => 'GLi, XEi, Altis', 'url' => '/guias/oleo/toyota/corolla/2025'],
@@ -108,7 +108,7 @@ class GuideCategoryMakeModelViewModel
                 ['year' => 2023, 'engine' => '2.8 Turbo Diesel', 'versions' => 'SR, SRV, SRX', 'url' => '/guias/oleo/toyota/hilux/2023'],
             ],
         ];
-        
+
         return $mocks[$modelSlug] ?? [];
     }
 
@@ -118,7 +118,7 @@ class GuideCategoryMakeModelViewModel
     public function getStats(): array
     {
         $years = $this->getAvailableYears();
-        
+
         return [
             'total_years' => count($years),
             'oldest_year' => !empty($years) ? end($years)['year'] : null,
@@ -145,7 +145,7 @@ class GuideCategoryMakeModelViewModel
             ['name' => 'Motores', 'slug' => 'motores'],
             ['name' => 'Manutenção', 'slug' => 'manutencao'],
         ];
-        
+
         $currentSlug = $this->category->slug ?? 'oleo';
         return array_filter($all, fn($cat) => $cat['slug'] !== $currentSlug);
     }
@@ -158,7 +158,7 @@ class GuideCategoryMakeModelViewModel
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
-        
+
         return [
             'title' => "{$category['name']} {$make['name']} {$model['name']} – Todos os anos | Mercado Veículos",
             'description' => "Guias completos de {$category['name']} para {$make['name']} {$model['name']}: todos os anos disponíveis. Escolha o ano do seu veículo e veja as especificações completas.",
@@ -175,7 +175,7 @@ class GuideCategoryMakeModelViewModel
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
-        
+
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => route('guide.index')],

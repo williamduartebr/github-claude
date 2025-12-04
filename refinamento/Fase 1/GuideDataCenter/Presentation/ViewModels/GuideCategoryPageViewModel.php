@@ -27,8 +27,8 @@ class GuideCategoryPageViewModel
     private GuideRepositoryInterface $guideRepo;
 
     public function __construct(
-        $category, 
-        Collection $guides, 
+        $category,
+        Collection $guides,
         Collection $makes,
         ?GuideCategoryRepositoryInterface $categoryRepo = null,
         ?GuideRepositoryInterface $guideRepo = null
@@ -62,13 +62,13 @@ class GuideCategoryPageViewModel
     public function getRelatedCategories(): array
     {
         $currentSlug = $this->category->slug ?? $this->extractSlug();
-        
+
         // Buscar guias da categoria atual
         $currentGuides = $this->guideRepo->findByFilters([
             'category_slug' => $currentSlug,
             'limit' => 50
         ]);
-        
+
         // Se não houver guias, retornar categorias ativas (fallback)
         if ($currentGuides->isEmpty()) {
             return $this->categoryRepo->getAllActive()
@@ -81,49 +81,49 @@ class GuideCategoryPageViewModel
                 ->values()
                 ->toArray();
         }
-        
+
         // Extrair make_slug + model_slug únicos dos guias atuais
-        $vehicleKeys = $currentGuides->map(function($guide) {
+        $vehicleKeys = $currentGuides->map(function ($guide) {
             return $guide->make_slug . '|' . $guide->model_slug;
         })->unique();
-        
+
         // Buscar outras categorias que possuem guias para esses veículos
         $relatedCategorySlugs = collect();
-        
+
         foreach ($vehicleKeys as $key) {
             [$makeSlug, $modelSlug] = explode('|', $key);
-            
+
             $otherGuides = $this->guideRepo->findByFilters([
                 'make_slug' => $makeSlug,
                 'model_slug' => $modelSlug,
                 'limit' => 10
             ]);
-            
+
             foreach ($otherGuides as $guide) {
                 if ($guide->category_slug !== $currentSlug) {
                     $relatedCategorySlugs->push($guide->category_slug);
                 }
             }
         }
-        
+
         // Contar ocorrências e pegar top 3
         $topSlugs = $relatedCategorySlugs
             ->countBy()
             ->sortDesc()
             ->take(3)
             ->keys();
-        
+
         // Buscar categorias por slug
-        return $topSlugs->map(function($slug) {
+        return $topSlugs->map(function ($slug) {
             $category = $this->categoryRepo->findBySlug($slug);
             return $category ? [
                 'name' => $category->name,
                 'slug' => $category->slug,
             ] : null;
         })
-        ->filter()
-        ->values()
-        ->toArray();
+            ->filter()
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -137,7 +137,7 @@ class GuideCategoryPageViewModel
         if (!empty($this->category->image)) {
             return $this->category->image;
         }
-        
+
         // 2. Fallback: placeholder genérico
         $slug = $this->category->slug ?? $this->extractSlug();
         return "/images/categories/{$slug}-hero.jpg";
@@ -151,7 +151,8 @@ class GuideCategoryPageViewModel
     public function getPopularGuides(): array
     {
         $categorySlug = $this->category->slug ?? $this->extractSlug();
-        
+
+
         // Buscar guias da categoria ordenados por popularidade
         $popularGuides = $this->guideRepo->findByFilters([
             'category_slug' => $categorySlug,
@@ -159,15 +160,23 @@ class GuideCategoryPageViewModel
             'order_by' => 'created_at', // ou 'views' se existir
             'order_direction' => 'desc'
         ]);
-        
-        return $popularGuides->map(function($guide) {
+
+        return $popularGuides->map(function ($guide) {
             // Extrair specs do payload ou criar descrição
             $specs = $this->extractSpecsFromGuide($guide);
-            
+
             return [
                 'title' => $guide->payload['title'] ?? $guide->full_title ?? "{$guide->make} {$guide->model}",
                 'slug' => $guide->slug,
-                'url' => route('guide.show', ['slug' => $guide->slug]),
+                'url' => route(
+                    'guide.year',
+                    [
+                        'category' => $this->extractSlug(),
+                        'make' => $guide->make_slug,
+                        'model' => $guide->model_slug,
+                        'year' => $guide->year_end
+                    ]
+                ),
                 'make' => $guide->make,
                 'model' => $guide->model,
                 'year_range' => $this->formatYearRange($guide->year_start, $guide->year_end),
@@ -181,7 +190,7 @@ class GuideCategoryPageViewModel
      */
     public function getMakes(): array
     {
-        return $this->makes->map(function($make) {
+        return $this->makes->map(function ($make) {
             return [
                 'slug' => $make->slug ?? $make['slug'],
                 'name' => $make->name ?? $make['name'],
@@ -202,12 +211,12 @@ class GuideCategoryPageViewModel
     public function getEvergreenContent(): array
     {
         $categoryData = $this->getCategory();
-        
+
         return [
             'title' => "Sobre {$categoryData['name']}",
-            'text' => $this->category->long_description ?? 
-                        $this->category->description ?? 
-                        "Encontre informações detalhadas sobre {$categoryData['name']} para diversos modelos de veículos.",
+            'text' => $this->category->long_description ??
+                $this->category->description ??
+                "Encontre informações detalhadas sobre {$categoryData['name']} para diversos modelos de veículos.",
         ];
     }
 
@@ -220,11 +229,11 @@ class GuideCategoryPageViewModel
         if (!empty($this->category->faqs) && is_array($this->category->faqs)) {
             return $this->category->faqs;
         }
-        
+
         // Fallback: FAQs genéricas baseadas na categoria
         $slug = $this->extractSlug();
         $name = $this->getCategoryNameBySlug();
-        
+
         return [
             [
                 'question' => "Como encontrar informações de {$name}?",
@@ -248,7 +257,7 @@ class GuideCategoryPageViewModel
     {
         $category = $this->getCategory();
         $slug = $category['slug'];
-        
+
         // Se categoria tem meta tags próprias, usar
         if (!empty($this->category->meta_title)) {
             return [
@@ -258,7 +267,7 @@ class GuideCategoryPageViewModel
                 'og_image' => $this->getHeroImage(),
             ];
         }
-        
+
         // Fallback: gerar meta tags baseadas no nome da categoria
         return [
             'title' => "{$category['name']} por Marca e Modelo | Mercado Veículos",
@@ -274,7 +283,7 @@ class GuideCategoryPageViewModel
     public function getBreadcrumbs(): array
     {
         $category = $this->getCategory();
-        
+
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => route('guide.index')],
@@ -319,7 +328,7 @@ class GuideCategoryPageViewModel
             'manutencao' => 'Manutenção',
             'versoes' => 'Versões',
         ];
-        
+
         $slug = $this->extractSlug();
         return $names[$slug] ?? ucfirst($slug);
     }
@@ -341,11 +350,11 @@ class GuideCategoryPageViewModel
         if (!$yearStart) {
             return 'Ano não especificado';
         }
-        
+
         if (!$yearEnd || $yearStart === $yearEnd) {
             return (string) $yearStart;
         }
-        
+
         return "{$yearStart} - {$yearEnd}";
     }
 
@@ -355,49 +364,49 @@ class GuideCategoryPageViewModel
     private function extractSpecsFromGuide($guide): string
     {
         $specs = [];
-        
+
         // Adicionar ano
         if ($guide->year_start) {
             $yearRange = $this->formatYearRange($guide->year_start, $guide->year_end);
             $specs[] = $yearRange;
         }
-        
+
         // Adicionar versão se existir
         if (!empty($guide->version)) {
             $specs[] = $guide->version;
         }
-        
+
         // Tentar extrair especificações do payload
         if (!empty($guide->payload)) {
             $payload = $guide->payload;
-            
+
             // Para guia de óleo
             if (isset($payload['especificacoes']['tipo_oleo'])) {
                 $specs[] = $payload['especificacoes']['tipo_oleo'];
             }
-            
+
             // Para guia de pneus
             if (isset($payload['especificacoes']['medida'])) {
                 $specs[] = $payload['especificacoes']['medida'];
             }
-            
+
             // Para guia de calibragem
             if (isset($payload['especificacoes']['pressao_dianteiro'])) {
                 $specs[] = "Diant: {$payload['especificacoes']['pressao_dianteiro']} PSI";
             }
-            
+
             // Para consumo
             if (isset($payload['especificacoes']['consumo_cidade'])) {
                 $specs[] = "Cidade: {$payload['especificacoes']['consumo_cidade']} km/l";
             }
         }
-        
+
         // Se não conseguiu extrair nada, usar descrição genérica
         if (empty($specs)) {
             $categoryName = $this->category->name ?? $this->getCategoryNameBySlug();
             return "Guia de {$categoryName}";
         }
-        
+
         return implode(' • ', $specs);
     }
 }

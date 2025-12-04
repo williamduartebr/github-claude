@@ -163,7 +163,7 @@ class GuideYearViewModel
             ['name' => 'Guias', 'url' => route('guide.index')],
             ['name' => $category['name'], 'url' => route('guide.category', $category['slug'])],
             ['name' => $make['name'], 'url' => route('guides.make', ['category' => $category['slug'], 'make' => $make['slug']])],
-            ['name' => $model['name'], 'url' => route('guide.category-make-model', ['category' => $category['slug'], 'make' => $make['slug'], 'model' => $model['slug']])],
+            ['name' => $model['name'], 'url' => route('guide.category.make.model', ['category' => $category['slug'], 'make' => $make['slug'], 'model' => $model['slug']])],
             ['name' => $this->year, 'url' => null],
         ];
     }

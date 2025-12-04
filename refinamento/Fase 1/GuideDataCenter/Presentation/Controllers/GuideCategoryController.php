@@ -84,7 +84,7 @@ class GuideCategoryController extends Controller
         }
 
         // Retorna view com dados preparados
-        return view('guide-data-center::category.index', [
+        return view('guide-data-center::guide.category.index', [
             'category' => $viewModel->getCategory(),
             'relatedCategories' => $viewModel->getRelatedCategories(),
             'heroImage' => $viewModel->getHeroImage(),

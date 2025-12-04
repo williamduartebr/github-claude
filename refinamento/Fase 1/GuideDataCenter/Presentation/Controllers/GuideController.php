@@ -66,6 +66,7 @@ class GuideController extends Controller
         string $makeSlug
     ): View|JsonResponse {
         $category = $this->categoryRepository->findBySlug($categorySlug);
+
         if (!$category) {
             abort(404, 'Categoria não encontrada');
         }

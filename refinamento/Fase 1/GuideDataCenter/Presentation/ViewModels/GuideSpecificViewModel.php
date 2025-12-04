@@ -165,7 +165,7 @@ class GuideSpecificViewModel
         $model = $this->getModel();
         $year = $this->getYear();
         $version = $this->getVersion();
-        
+
         return [
             ['name' => 'Calibragem', 'icon' => '🔧', 'url' => "/guias/calibragem/{$make['slug']}/{$model['slug']}/{$year}/{$version}"],
             ['name' => 'Pneus', 'icon' => '🚗', 'url' => "/guias/pneus/{$make['slug']}/{$model['slug']}/{$year}/{$version}"],
@@ -190,7 +190,7 @@ class GuideSpecificViewModel
         $model = $this->getModel();
         $year = $this->getYear();
         $version = $this->getVersion();
-        
+
         return [
             // BLOCO 1: Ficha Técnica (Cross-link para vertente VEÍCULOS)
             [
@@ -203,7 +203,7 @@ class GuideSpecificViewModel
                 'icon' => '📘',
                 'url' => "/veiculos/{$make['slug']}/{$model['slug']}/{$year}"
             ],
-            
+
             // BLOCO 2: Outras Categorias (mesma versão/ano)
             [
                 'title' => 'Consumo Real',
@@ -235,7 +235,7 @@ class GuideSpecificViewModel
                 'icon' => '⚠️',
                 'url' => "/guias/problemas/{$make['slug']}/{$model['slug']}/{$year}/{$version}"
             ],
-            
+
             // BLOCO 3: Anos Próximos (mesma categoria)
             [
                 'title' => "Óleo do {$model['name']} " . ($year - 1),
@@ -264,7 +264,7 @@ class GuideSpecificViewModel
     public function getEditorialInfo(): array
     {
         $make = $this->getMake();
-        
+
         return [
             'title' => 'Equipe Editorial Mercado Veículos',
             'description' => "Guia técnico desenvolvido com base em especificações oficiais da {$make['name']} e manuais de serviço.",
@@ -284,7 +284,7 @@ class GuideSpecificViewModel
         $model = $this->getModel();
         $year = $this->getYear();
         $version = strtoupper($this->getVersion());
-        
+
         return [
             'title' => "{$category['name']} {$make['name']} {$model['name']} {$year} {$version} – Qual usar, Quantidade e Especificações | Mercado Veículos",
             'description' => "Guia completo do {$category['name']} do {$make['name']} {$model['name']} {$year} {$version}: viscosidade recomendada, volume correto, especificações API/ACEA, melhores marcas, intervalos de troca e tabela de capacidades.",
@@ -304,13 +304,13 @@ class GuideSpecificViewModel
         $model = $this->getModel();
         $year = $this->getYear();
         $version = strtoupper($this->getVersion());
-        
+
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => route('guide.index')],
             ['name' => $category['name'], 'url' => route('guide.category', ['category' => $category['slug']])],
             ['name' => $make['name'], 'url' => route('guides.make', ['category' => $category['slug'], 'make' => $make['slug']])],
-            ['name' => "{$model['name']} {$year}", 'url' => route('guide.category-make-model', ['category' => $category['slug'], 'make' => $make['slug'], 'model' => $model['slug']])],
+            ['name' => "{$model['name']} {$year}", 'url' => route('guide.category.make.model', ['category' => $category['slug'], 'make' => $make['slug'], 'model' => $model['slug']])],
             ['name' => "{$model['name']} {$year} {$version}", 'url' => null],
         ];
     }
@@ -325,7 +325,7 @@ class GuideSpecificViewModel
         $model = $this->getModel();
         $year = $this->getYear();
         $version = strtoupper($this->getVersion());
-        
+
         return "{$category['name']} Recomendado – {$make['name']} {$model['name']} {$year} {$version}";
     }
 
@@ -339,7 +339,7 @@ class GuideSpecificViewModel
         $model = $this->getModel();
         $year = $this->getYear();
         $version = strtoupper($this->getVersion());
-        
+
         return "Guia técnico completo do {$category['name']} do {$make['name']} {$model['name']} {$year} {$version}. Aqui você encontra a viscosidade oficial, volume correto, especificação API, equivalentes compatíveis e condições severas. Este conteúdo faz parte do cluster completo do {$model['name']} {$year}.";
     }
 }
