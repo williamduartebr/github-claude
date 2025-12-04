@@ -3,6 +3,7 @@
 namespace Src\VehicleDataCenter\Presentation\ViewModels;
 
 use Illuminate\Support\Collection;
+use Src\VehicleDataCenter\Domain\Services\VehicleGuideIntegrationService;
 
 /**
  * ViewModel para página de uma marca específica
@@ -10,16 +11,27 @@ use Illuminate\Support\Collection;
  * Rota: /veiculos/{make}
  * View: vehicles.make
  * Exemplo: /veiculos/toyota
+ * 
+ * ✅ REFINADO: Usa VehicleGuideIntegrationService para buscar dados reais do MongoDB
+ * ✅ CORRIGIDO: Usa nome correto da rota (guides.make)
  */
 class VehicleMakeViewModel
 {
     private $make;
     private Collection $models;
+    private VehicleGuideIntegrationService $guideIntegration;
+    private ?Collection $guideCategories = null;
 
     public function __construct($make, Collection $models)
     {
         $this->make = $make;
         $this->models = $models;
+        
+        // Injetar service de integração
+        $this->guideIntegration = app(VehicleGuideIntegrationService::class);
+        
+        // Buscar categorias reais do MongoDB (lazy load)
+        $this->guideCategories = null;
     }
 
     /**
@@ -53,7 +65,7 @@ class VehicleMakeViewModel
                 'year_end' => $model->year_end ?? date('Y'),
                 'url' => route('vehicles.model', [
                     'make' => $this->make->slug,
-                    'model' => $model->slug
+                    'model' => $model->slug,
                 ]),
                 'image' => $this->getModelImage($model),
             ];
@@ -61,16 +73,15 @@ class VehicleMakeViewModel
     }
 
     /**
-     * Retorna 3 modelos populares
+     * Retorna modelos populares (primeiros 6)
      */
     public function getPopularModels(): array
     {
-        // Pega os 3 primeiros modelos (ou implementar lógica de popularidade)
-        return array_slice($this->getModels(), 0, 3);
+        return array_slice($this->getModels(), 0, 6);
     }
 
     /**
-     * Retorna todos os modelos para a tabela
+     * Retorna todos os modelos para tabela/grid
      */
     public function getAllModelsForTable(): array
     {
@@ -78,24 +89,44 @@ class VehicleMakeViewModel
     }
 
     /**
-     * Retorna categorias de guias para a marca
+     * ✅ REFINADO: Retorna categorias de guias REAIS do MongoDB
+     * ✅ CORRIGIDO: Usa rota correta (guides.make)
+     * Remove dados mockados e busca do banco
      */
     public function getGuideCategories(): array
     {
-        return [
-            ['name' => 'Óleo', 'slug' => 'oleo', 'url' => route('guides.make', ['category' => 'oleo', 'make' => $this->make->slug])],
-            ['name' => 'Calibragem', 'slug' => 'calibragem', 'url' => route('guides.make', ['category' => 'calibragem', 'make' => $this->make->slug])],
-            ['name' => 'Pneus', 'slug' => 'pneus', 'url' => route('guides.make', ['category' => 'pneus', 'make' => $this->make->slug])],
-            ['name' => 'Consumo', 'slug' => 'consumo', 'url' => route('guides.make', ['category' => 'consumo', 'make' => $this->make->slug])],
-            ['name' => 'Problemas', 'slug' => 'problemas', 'url' => route('guides.make', ['category' => 'problemas', 'make' => $this->make->slug])],
-            ['name' => 'Revisão', 'slug' => 'revisao', 'url' => route('guides.make', ['category' => 'revisao', 'make' => $this->make->slug])],
-            ['name' => 'Arrefecimento', 'slug' => 'arrefecimento', 'url' => route('guides.make', ['category' => 'arrefecimento', 'make' => $this->make->slug])],
-            ['name' => 'Torque', 'slug' => 'torque', 'url' => route('guides.make', ['category' => 'torque', 'make' => $this->make->slug])],
-            ['name' => 'Fluidos', 'slug' => 'fluidos', 'url' => route('guides.make', ['category' => 'fluidos', 'make' => $this->make->slug])],
-            ['name' => 'Elétrica', 'slug' => 'eletrica', 'url' => route('guides.make', ['category' => 'eletrica', 'make' => $this->make->slug])],
-            ['name' => 'Motores', 'slug' => 'motores', 'url' => route('guides.make', ['category' => 'motores', 'make' => $this->make->slug])],
-            ['name' => 'Manutenção', 'slug' => 'manutencao', 'url' => route('guides.make', ['category' => 'manutencao', 'make' => $this->make->slug])],
-        ];
+        // Lazy load - buscar apenas quando necessário
+        if ($this->guideCategories === null) {
+            $this->guideCategories = $this->guideIntegration->getGuideCategoriesByMake($this->make->slug);
+        }
+
+        // Se não houver guias para esta marca, retornar array vazio
+        if ($this->guideCategories->isEmpty()) {
+            return [];
+        }
+
+        // Mapear para formato esperado pela view
+        return $this->guideCategories->map(function($category) {
+            return [
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'icon' => $category->icon ?? '📄',
+                'description' => $category->description ?? '',
+                // ✅ CORRIGIDO: Rota correta é 'guides.make' (veja GuideDataCenter/Presentation/Routes/web.php)
+                'url' => route('guides.make', [
+                    'category' => $category->slug,
+                    'make' => $this->make->slug
+                ])
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Verifica se marca tem guias disponíveis
+     */
+    public function hasGuides(): bool
+    {
+        return $this->guideIntegration->hasGuides($this->make->slug);
     }
 
     /**
@@ -104,8 +135,8 @@ class VehicleMakeViewModel
     public function getSeoData(): array
     {
         return [
-            'title' => "{$this->make->name} – Modelos, Fichas Técnicas e Guias | Mercado Veículos",
-            'description' => "Modelos da {$this->make->name} no Brasil: fichas técnicas, anos, versões e links rápidos para guias de óleo, pneus, revisões, calibragem, consumo e manutenção.",
+            'title' => "{$this->make->name} — Catálogo Completo, Modelos e Fichas Técnicas | Mercado Veículos",
+            'description' => "Explore todos os modelos da {$this->make->name} no Brasil: fichas técnicas, anos, gerações, versões e guias práticos de manutenção, óleo, pneus, consumo, calibração e muito mais.",
             'canonical' => route('vehicles.make', ['make' => $this->make->slug]),
             'og_image' => $this->make->logo_url ?? "https://mercadoveiculos.com/images/brands/{$this->make->slug}/logo-{$this->make->slug}-hero.png",
         ];
@@ -130,6 +161,7 @@ class VehicleMakeViewModel
     {
         return [
             'total_models' => $this->models->count(),
+            'has_guides' => $this->hasGuides(),
         ];
     }
 

@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('guide-data-center::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])

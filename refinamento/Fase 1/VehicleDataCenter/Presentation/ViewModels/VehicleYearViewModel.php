@@ -98,7 +98,7 @@ class VehicleYearViewModel
     {
         $count = $this->versions->count();
         $versionsText = $count === 1 ? 'versão disponível' : 'versões disponíveis';
-        
+
         return "Conheça as {$count} {$versionsText} do {$this->make->name} {$this->model->name} {$this->year}: fichas técnicas completas, especificações, motores, consumo e guias de manutenção.";
     }
 
@@ -127,7 +127,7 @@ class VehicleYearViewModel
                     'year' => $this->year,
                     'version' => $version->slug,
                 ]),
-                
+
                 // Dados de specs se existirem
                 'power_hp' => $version->specs->power_hp ?? null,
                 'torque_nm' => $version->specs->torque_nm ?? null,
@@ -180,11 +180,22 @@ class VehicleYearViewModel
      */
     public function getStats(): array
     {
+        // Buscar tipos de combustível únicos E TRADUZIDOS
+        $fuelTypes = $this->versions
+            ->pluck('fuel_type')
+            ->unique()
+            ->map(function ($fuelType) {
+                return $this->translateFuelType($fuelType);
+            })
+            ->filter()
+            ->values()
+            ->toArray();
+
         return [
-            'total_versions' => $this->versions->count(),
-            'fuel_types' => $this->versions->pluck('fuel_type')->unique()->count(),
+            'versions_count' => $this->versions->count(), // ✅ Era 'total_versions'
+            'fuel_types' => $fuelTypes, // ✅ Array de strings, era count()
             'transmission_types' => $this->versions->pluck('transmission')->unique()->count(),
-            'price_range' => $this->getPriceRange(),
+            'price_range' => $this->getPriceRange(), // ✅ Este método já existe
         ];
     }
 
@@ -274,7 +285,7 @@ class VehicleYearViewModel
     {
         $fullTitle = $this->getFullTitle();
         $count = $this->versions->count();
-        
+
         return [
             'title' => "{$fullTitle} — {$count} " . ($count === 1 ? 'Versão' : 'Versões') . " e Fichas Técnicas | Mercado Veículos",
             'description' => $this->getDescription(),
@@ -312,7 +323,7 @@ class VehicleYearViewModel
     public function getSchemaOrg(): array
     {
         $fullTitle = $this->getFullTitle();
-        
+
         return [
             '@context' => 'https://schema.org',
             '@type' => 'ItemList',
@@ -358,20 +369,20 @@ class VehicleYearViewModel
     private function buildEngineInfo($version): string
     {
         $parts = [];
-        
+
         if ($version->engine_code) {
             $parts[] = $version->engine_code;
         }
-        
+
         if (isset($version->engineSpecs) && $version->engineSpecs && $version->engineSpecs->displacement_cc) {
             $displacement = number_format($version->engineSpecs->displacement_cc / 1000, 1);
             $parts[] = "{$displacement}L";
         }
-        
+
         if (empty($parts)) {
             return 'Motor ' . $this->translateFuelType($version->fuel_type);
         }
-        
+
         return implode(' • ', $parts);
     }
 
@@ -386,7 +397,7 @@ class VehicleYearViewModel
         // Query simples para verificar se existe versão no ano
         $modelClass = get_class($this->model);
         $versionClass = 'Src\VehicleDataCenter\Domain\Eloquent\VehicleVersion';
-        
+
         try {
             return $versionClass::where('model_id', $this->model->id)
                 ->where('year', $year)
@@ -405,11 +416,11 @@ class VehicleYearViewModel
     private function getPriceRange(): ?array
     {
         $prices = $this->versions->pluck('price_msrp')->filter();
-        
+
         if ($prices->isEmpty()) {
             return null;
         }
-        
+
         return [
             'min' => $this->formatPrice($prices->min()),
             'max' => $this->formatPrice($prices->max()),
@@ -462,7 +473,7 @@ class VehicleYearViewModel
             'wagon' => 'Perua',
             'sport' => 'Esportivo',
         ];
-        
+
         return $translations[$category] ?? ucfirst($category);
     }
 
@@ -484,7 +495,7 @@ class VehicleYearViewModel
             'plugin_hybrid' => 'Híbrido Plug-in',
             'cng' => 'GNV',
         ];
-        
+
         return $translations[$fuelType] ?? 'N/A';
     }
 
@@ -503,7 +514,7 @@ class VehicleYearViewModel
             'dct' => 'DCT',
             'amt' => 'AMT',
         ];
-        
+
         return $translations[$transmission] ?? 'N/A';
     }
 
@@ -518,7 +529,36 @@ class VehicleYearViewModel
         if (!$price) {
             return 'Consulte';
         }
-        
+
         return 'R$ ' . number_format($price, 2, ',', '.');
+    }
+    /**
+     * Retorna categorias de guias disponíveis para este veículo
+     * Usa o VehicleGuideIntegrationService
+     * 
+     * @return array
+     */
+    public function getGuideCategories(): array
+    {
+        try {
+            $guideIntegration = app(\Src\VehicleDataCenter\Domain\Services\VehicleGuideIntegrationService::class);
+
+            $categories = $guideIntegration->getGuideCategoriesByMake($this->make->slug);
+
+            return $categories->map(function ($category) {
+                return [
+                    'name' => $category->name,
+                    'slug' => $category->slug,
+                    'icon' => $category->icon ?? '📄',
+                    'url' => route('guides.make', [
+                        'category' => $category->slug,
+                        'make' => $this->make->slug
+                    ])
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            // Se falhar, retorna array vazio (graceful degradation)
+            return [];
+        }
     }
 }

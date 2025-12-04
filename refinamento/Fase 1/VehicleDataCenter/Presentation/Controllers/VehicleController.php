@@ -173,6 +173,7 @@ class VehicleController
             'stats' => $viewModel->getStats(),
             'nearbyYears' => $viewModel->getNearbyYears(),
             'quickGuides' => $viewModel->getQuickGuides(),
+            'guideCategories' => $viewModel->getGuideCategories(), 
             'seo' => $viewModel->getSeoData(),
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
             'schemaOrg' => $viewModel->getSchemaOrg(),

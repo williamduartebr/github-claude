@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('guide-data-center::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -19,13 +19,71 @@
 <meta name="twitter:title" content="{{ $seo['title'] }}">
 <meta name="twitter:description" content="{{ $seo['description'] }}">
 <meta name="twitter:image" content="{{ $seo['og_image'] }}">
+
+@php
+    // Construir lista de categorias para o Schema
+    $categoryItems = [];
+    $position = 1;
+    
+    foreach($categories as $category) {
+        $categoryItems[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $category['name'],
+            'url' => $category['url']
+        ];
+        $position++;
+    }
+
+    $webPageSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'WebPage',
+        'name' => 'Guias Automotivos - Especificações Técnicas | Mercado Veículos',
+        'description' => 'Guias técnicos completos para todos os veículos: óleo, pneus, calibragem, revisões, consumo, problemas comuns e muito mais.',
+        'url' => route('guide.index'),
+        'isPartOf' => [
+            '@type' => 'WebSite',
+            'name' => 'Mercado Veículos',
+            'url' => 'https://mercadoveiculos.com'
+        ],
+        'speakable' => [
+            '@type' => 'SpeakableSpecification',
+            'cssSelector' => ['h1', 'h2']
+        ],
+        'mainEntity' => [
+            '@type' => 'ItemList',
+            'itemListElement' => $categoryItems
+        ],
+        'breadcrumb' => [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Início',
+                    'item' => url('/')
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'Guias',
+                    'item' => route('guide.index')
+                ]
+            ]
+        ]
+    ];
+@endphp
+
+<!-- Structured Data - WebPage -->
+<script type="application/ld+json">
+{!! json_encode($webPageSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
 @endpush
 
 @section('content')
 
 {{-- BREADCRUMBS --}}
 @if(isset($breadcrumbs))
-@section('breadcrumbs')
 <div class="bg-gray-100 border-b border-gray-200">
     <div class="container mx-auto px-4 py-2 whitespace-nowrap overflow-x-auto">
         <nav class="text-xs md:text-sm font-roboto">
@@ -54,55 +112,81 @@
         </nav>
     </div>
 </div>
-@endsection
 @endif
 
 {{-- HERO --}}
-<section class="bg-white border-b border-gray-200">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h1 class="text-3xl font-bold text-gray-900 mb-3 font-montserrat">Guias Automotivos</h1>
-
-        <p class="text-sm text-gray-600 max-w-2xl font-roboto">
+<main id="main-content" class="container mx-auto px-4 py-8 mb-8" itemscope itemtype="https://schema.org/CollectionPage">
+    <header class="mb-8 text-center md:text-left">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3 font-montserrat" itemprop="headline">
+            Guias Automotivos
+        </h1>
+        <p class="text-base md:text-lg text-gray-600 max-w-4xl mx-auto md:mx-0 font-roboto" itemprop="description">
             Acesse guias técnicos completos para qualquer veículo: óleo, pneus, calibragem, consumo, revisão,
-            baterias,
-            manutenção, fluidos e muito mais.
-            Selecione uma categoria e filtre por marca e modelo.
+            baterias, manutenção, fluidos e muito mais. Selecione uma categoria e filtre por marca e modelo.
         </p>
-    </div>
-</section>
+    </header>
 
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
-    <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
-        <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
-    </div>
-</div>
+    {{-- BANNER RESPONSIVO (MOCK) --}}
+    <section class="container mx-auto mb-8">
+        <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
+            <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
+        </div>
+    </section>
 
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-
-    {{-- CATEGORIAS DE GUIAS --}}
+    {{-- CATEGORIAS POPULARES --}}
     <section id="categorias" class="mb-12">
-        <h2 class="text-xl font-semibold mb-4 font-montserrat">Categorias</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 font-montserrat">Categorias Populares</h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 text-sm font-roboto">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             @foreach($categories as $category)
-            <a href="{{ $category['url'] }}"
-                class="block bg-white border border-gray-200 rounded p-4 hover:shadow hover:border-blue-500 transition-all">
-                {{ $category['name'] }}
+            <a href="{{ $category['url'] }}" 
+               class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div class="flex flex-col items-center text-center">
+                    <div class="mb-3 p-3 rounded-full bg-blue-50">
+                        {{-- 
+                        ⚠️ TODO: Adicionar SVG do banco quando disponível
+                        Padrão: {!! $category['icon_svg'] !!}
+                        
+                        Por enquanto, usando ícone padrão placeholder
+                        --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="w-8 h-8 text-blue-600" 
+                             fill="none" 
+                             viewBox="0 0 24 24" 
+                             stroke="currentColor" 
+                             aria-hidden="true">
+                            {{-- Ícone placeholder padrão (documento) --}}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-800 font-roboto">{{ $category['name'] }}</h3>
+                </div>
             </a>
             @endforeach
         </div>
     </section>
 
-    {{-- MARCAS SUPORTADAS --}}
+    {{-- GUIAS POR MARCA --}}
     <section id="marcas" class="mb-12">
-        <h2 class="text-xl font-semibold mb-4 font-montserrat">Guias por marca</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 font-montserrat">Guias por Marca</h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 font-roboto">
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
             @foreach($makes as $make)
-            <a href="{{ $make['url'] }}"
-                class="block bg-white border border-gray-200 rounded p-4 hover:shadow hover:border-blue-500 transition-all text-center">
-                {{ $make['name'] }}
+            <a href="{{ $make['url'] }}" 
+               class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div class="flex flex-col items-center text-center">
+                    {{-- 
+                    ⚠️ TODO: Adicionar logo do banco quando disponível
+                    Padrão: <img src="{{ $make['logo_url'] }}" alt="{{ $make['name'] }}" class="w-12 h-12 mb-2 object-contain">
+                    
+                    Por enquanto, usando placeholder de logo
+                    --}}
+                    <div class="mb-2 w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+                        <span class="text-xs font-bold text-gray-400">{{ strtoupper(substr($make['name'], 0, 2)) }}</span>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-800 font-roboto">{{ $make['name'] }}</h3>
+                </div>
             </a>
             @endforeach
         </div>
@@ -110,15 +194,15 @@
 
     {{-- MODELOS POPULARES (ENTRADA RÁPIDA) --}}
     <section id="modelos-populares" class="mb-16">
-        <h2 class="text-xl font-semibold mb-4 font-montserrat">Guias para modelos populares</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 font-montserrat">Guias para Modelos Populares</h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($popularModels as $model)
-            <article
-                class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+            <article class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <a href="{{ $model['url'] }}" class="block group">
-                    <img src="{{ $model['image'] }}" alt="{{ $model['name'] }}"
-                        class="w-full h-40 object-cover group-hover:opacity-90 transition-opacity">
+                    <img src="{{ $model['image'] }}" 
+                         alt="{{ $model['name'] }}"
+                         class="w-full h-40 object-cover group-hover:opacity-90 transition-opacity">
                     <div class="p-4">
                         <h3 class="text-lg font-semibold font-montserrat">{{ $model['name'] }}</h3>
                         <p class="text-xs text-gray-500 font-roboto">{{ $model['description'] }}</p>
@@ -129,13 +213,13 @@
         </div>
     </section>
 
-</div>
+    {{-- BANNER RESPONSIVO (MOCK) --}}
+    <section class="container mx-auto mb-8">
+        <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
+            <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
+        </div>
+    </section>
 
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
-    <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
-        <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
-    </div>
-</div>
+</main>
 
 @endsection

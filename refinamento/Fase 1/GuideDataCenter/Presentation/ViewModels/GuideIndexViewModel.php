@@ -3,113 +3,181 @@
 namespace Src\GuideDataCenter\Presentation\ViewModels;
 
 use Illuminate\Support\Collection;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
 
 /**
- * ViewModel para página index de guias
+ * ViewModel para página inicial de guias
  * 
  * Rota: /guias
- * View: guide.index
+ * View: guides.index
+ * 
+ * ✅ REFINADO: Remove mocks e usa dados reais do MongoDB
  */
 class GuideIndexViewModel
 {
     private Collection $categories;
     private Collection $makes;
+    private Collection $recentGuides;
 
-    public function __construct(Collection $categories, Collection $makes)
+    public function __construct()
     {
-        $this->categories = $categories;
-        $this->makes = $makes;
+        $categoryRepo = app(GuideCategoryRepositoryInterface::class);
+        $guideRepo = app(GuideRepositoryInterface::class);
+        
+        // Buscar categorias ativas
+        $this->categories = $categoryRepo->getAllActive();
+        
+        // Buscar marcas únicas (distinct make_slug)
+        $this->makes = $this->getUniqueMakes($guideRepo);
+        
+        // Buscar guias recentes
+        $this->recentGuides = $guideRepo->findByFilters([
+            'limit' => 12,
+            'order_by' => 'created_at',
+            'order_direction' => 'desc'
+        ]);
     }
 
     /**
-     * Retorna categorias de guias
-     * 
-     * TODO: Buscar do banco quando tiver dados
+     * ✅ REFINADO: Retorna categorias REAIS do MongoDB
      */
     public function getCategories(): array
     {
-        // TODO: Usar $this->categories quando houver dados no banco
-        // Por enquanto, retorna dados estáticos
-        return [
-            ['name' => 'Óleo', 'slug' => 'oleo', 'url' => route('guide.category', ['category' => 'oleo'])],
-            ['name' => 'Calibragem', 'slug' => 'calibragem', 'url' => route('guide.category', ['category' => 'calibragem'])],
-            ['name' => 'Pneus', 'slug' => 'pneus', 'url' => route('guide.category', ['category' => 'pneus'])],
-            ['name' => 'Consumo', 'slug' => 'consumo', 'url' => route('guide.category', ['category' => 'consumo'])],
-            ['name' => 'Problemas', 'slug' => 'problemas', 'url' => route('guide.category', ['category' => 'problemas'])],
-            ['name' => 'Revisão', 'slug' => 'revisao', 'url' => route('guide.category', ['category' => 'revisao'])],
-            ['name' => 'Arrefecimento', 'slug' => 'arrefecimento', 'url' => route('guide.category', ['category' => 'arrefecimento'])],
-            ['name' => 'Câmbio', 'slug' => 'cambio', 'url' => route('guide.category', ['category' => 'cambio'])],
-            ['name' => 'Torque', 'slug' => 'torque', 'url' => route('guide.category', ['category' => 'torque'])],
-            ['name' => 'Fluidos', 'slug' => 'fluidos', 'url' => route('guide.category', ['category' => 'fluidos'])],
-            ['name' => 'Bateria', 'slug' => 'bateria', 'url' => route('guide.category', ['category' => 'bateria'])],
-            ['name' => 'Elétrica', 'slug' => 'eletrica', 'url' => route('guide.category', ['category' => 'eletrica'])],
-            ['name' => 'Motores', 'slug' => 'motores', 'url' => route('guide.category', ['category' => 'motores'])],
-            ['name' => 'Manutenção', 'slug' => 'manutencao', 'url' => route('guide.category', ['category' => 'manutencao'])],
-            ['name' => 'Versões', 'slug' => 'versoes', 'url' => route('guide.category', ['category' => 'versoes'])],
-        ];
+        return $this->categories->map(function($category) {
+            return [
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'icon' => $category->icon ?? '📄',
+                'description' => $category->description ?? '',
+                'url' => route('guide.category', ['category' => $category->slug]),
+            ];
+        })->toArray();
     }
 
     /**
-     * Retorna marcas suportadas
-     * 
-     * TODO: Buscar do banco quando tiver dados
+     * ✅ REFINADO: Retorna marcas únicas REAIS do MongoDB
      */
     public function getMakes(): array
     {
-        // TODO: Usar $this->makes quando houver dados no banco
-        // Por enquanto, retorna dados estáticos
-        return [
-            ['name' => 'Toyota', 'slug' => 'toyota', 'url' => '/guias/toyota'],
-            ['name' => 'Honda', 'slug' => 'honda', 'url' => '/guias/honda'],
-            ['name' => 'Volkswagen', 'slug' => 'volkswagen', 'url' => '/guias/volkswagen'],
-            ['name' => 'Chevrolet', 'slug' => 'chevrolet', 'url' => '/guias/chevrolet'],
-            ['name' => 'Hyundai', 'slug' => 'hyundai', 'url' => '/guias/hyundai'],
-            ['name' => 'Fiat', 'slug' => 'fiat', 'url' => '/guias/fiat'],
-            ['name' => 'Renault', 'slug' => 'renault', 'url' => '/guias/renault'],
-            ['name' => 'Nissan', 'slug' => 'nissan', 'url' => '/guias/nissan'],
-        ];
+        return $this->makes->map(function($make) {
+            return [
+                'slug' => $make->slug,
+                'name' => $make->name,
+                'url' => route('guide.index') . '?make=' . $make->slug, // URL de busca por marca
+            ];
+        })->toArray();
     }
 
     /**
-     * Retorna modelos populares (entrada rápida)
-     * 
-     * TODO: Buscar do banco quando tiver dados
+     * Retorna guias recentes formatados
+     */
+    public function getRecentGuides(): array
+    {
+        return $this->recentGuides->map(function($guide) {
+            return [
+                'title' => $guide->payload['title'] ?? $guide->full_title,
+                'slug' => $guide->slug,
+                'url' => $guide->url ?? route('guide.show', ['slug' => $guide->slug]),
+                'category' => $guide->category->name ?? '',
+                'make' => $guide->make,
+                'model' => $guide->model,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Retorna modelos populares
+     * Extrai os modelos mais comuns dos guias recentes
      */
     public function getPopularModels(): array
     {
-        // TODO: Implementar busca real com base em popularidade
+        // Usar a collection original de guias, não o método getRecentGuides()
+        // Agrupar guias por make+model e contar
+        $modelCounts = $this->recentGuides
+            ->groupBy(function($guide) {
+                return $guide->make_slug . '|' . $guide->model_slug;
+            })
+            ->map(function($guides) {
+                $first = $guides->first();
+                $makeName = $first->make;
+                $modelName = $first->model;
+                
+                return [
+                    'name' => "{$makeName} {$modelName}",
+                    'make' => $makeName,
+                    'make_slug' => $first->make_slug,
+                    'model' => $modelName,
+                    'model_slug' => $first->model_slug,
+                    'count' => $guides->count(),
+                    'image' => "/images/placeholder/{$first->model_slug}-hero.jpg",
+                    'description' => "Veja todos os guias técnicos do {$makeName} {$modelName}",
+                    'url' => route('guide.byModel', [
+                        'make' => $first->make_slug,
+                        'model' => $first->model_slug
+                    ])
+                ];
+            })
+            ->sortByDesc('count')
+            ->take(6)
+            ->values();
+
+        return $modelCounts->toArray();
+    }
+
+    /**
+     * Retorna estatísticas
+     */
+    public function getStats(): array
+    {
+        $guideRepo = app(GuideRepositoryInterface::class);
+        
         return [
-            [
-                'name' => 'Toyota Corolla',
-                'image' => '/images/placeholder/corolla-hero.jpg',
-                'description' => 'Guias: óleo, pneus, consumo, revisões',
-                'url' => '/guias/oleo/toyota/corolla-2023',
-            ],
-            [
-                'name' => 'Volkswagen Gol',
-                'image' => '/images/placeholder/gol-hero.jpg',
-                'description' => 'Guias: pneus, calibragem, problemas',
-                'url' => '/guias/calibragem/volkswagen/gol-2016',
-            ],
-            [
-                'name' => 'Chevrolet Onix',
-                'image' => '/images/placeholder/onix-hero.jpg',
-                'description' => 'Guias: óleo, revisões, consumo',
-                'url' => '/guias/oleo/chevrolet/onix-2020',
-            ],
+            'total_categories' => $this->categories->count(),
+            'total_makes' => $this->makes->count(),
+            'total_guides' => $guideRepo->count(),
         ];
     }
 
     /**
-     * Retorna dados para SEO
+     * Busca marcas únicas dos guias
+     * 
+     * @param GuideRepositoryInterface $guideRepo
+     * @return Collection
+     */
+    private function getUniqueMakes(GuideRepositoryInterface $guideRepo): Collection
+    {
+        // Buscar todos os guias (limitado para performance)
+        $guides = $guideRepo->findByFilters(['limit' => 1000]);
+        
+        // Extrair make_slug únicos
+        $uniqueMakes = $guides->pluck('make_slug')->unique()->sort()->values();
+        
+        // Criar collection de objetos com name e slug
+        return $uniqueMakes->map(function($makeSlug) {
+            // Buscar o primeiro guia desta marca para pegar o nome completo
+            $guide = app(GuideRepositoryInterface::class)->findByFilters([
+                'make_slug' => $makeSlug,
+                'limit' => 1
+            ])->first();
+            
+            return (object) [
+                'slug' => $makeSlug,
+                'name' => $guide ? $guide->make : ucfirst($makeSlug),
+            ];
+        });
+    }
+
+    /**
+     * Retorna SEO data
      */
     public function getSeoData(): array
     {
         return [
-            'title' => 'Guias Automotivos – Óleo, Pneus, Calibragem, Manutenção | Mercado Veículos',
-            'description' => 'Guias técnicos automotivos completos: óleo, calibragem, pneus, consumo, manutenção, bateria, câmbio, torque, fluidos e muito mais. Escolha uma categoria e filtre por marca e modelo.',
+            'title' => 'Guias Automotivos — Especificações Técnicas Completas | Mercado Veículos',
+            'description' => 'Guias técnicos completos para todos os veículos: óleo, pneus, calibragem, revisões, consumo, problemas comuns e muito mais. Base de conhecimento automotivo.',
             'canonical' => route('guide.index'),
-            'og_image' => 'https://mercadoveiculos.com/images/guias-automotivos.jpg',
+            'og_image' => asset('images/og-guias-default.jpg'),
         ];
     }
 
@@ -121,20 +189,6 @@ class GuideIndexViewModel
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => null],
-        ];
-    }
-
-    /**
-     * Retorna estatísticas
-     * 
-     * TODO: Calcular estatísticas reais do banco
-     */
-    public function getStats(): array
-    {
-        return [
-            'total_categories' => 15,
-            'total_makes' => 8,
-            'total_guides' => 0, // TODO: Contar guias no banco
         ];
     }
 }
