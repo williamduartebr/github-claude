@@ -3,6 +3,8 @@
 namespace Src\GuideDataCenter\Presentation\ViewModels;
 
 use Illuminate\Support\Collection;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
 
 /**
  * ViewModel para página de categoria de guias
@@ -10,18 +12,32 @@ use Illuminate\Support\Collection;
  * Rota: /guias/{category}
  * View: guide.category
  * Exemplo: /guias/oleo
+ * 
+ * ✅ REFINADO - Sprint 4
+ * - Removidos todos os mocks/arrays hardcoded
+ * - Usa queries reais do MongoDB
+ * - Integração com repositories
  */
 class GuideCategoryPageViewModel
 {
     private $category;
     private Collection $guides;
     private Collection $makes;
+    private GuideCategoryRepositoryInterface $categoryRepo;
+    private GuideRepositoryInterface $guideRepo;
 
-    public function __construct($category, Collection $guides, Collection $makes)
-    {
+    public function __construct(
+        $category, 
+        Collection $guides, 
+        Collection $makes,
+        ?GuideCategoryRepositoryInterface $categoryRepo = null,
+        ?GuideRepositoryInterface $guideRepo = null
+    ) {
         $this->category = $category;
         $this->guides = $guides;
         $this->makes = $makes;
+        $this->categoryRepo = $categoryRepo ?? app(GuideCategoryRepositoryInterface::class);
+        $this->guideRepo = $guideRepo ?? app(GuideRepositoryInterface::class);
     }
 
     /**
@@ -39,163 +55,214 @@ class GuideCategoryPageViewModel
     }
 
     /**
-     * Retorna chips de categorias relacionadas
+     * ✅ REFINADO: Retorna categorias relacionadas REAIS do banco
+     * 
+     * Busca categorias que aparecem juntas nos mesmos veículos
      */
     public function getRelatedCategories(): array
     {
-        $slug = $this->category->slug ?? $this->extractSlug();
+        $currentSlug = $this->category->slug ?? $this->extractSlug();
         
-        // TODO: Buscar categorias relacionadas do banco
-        $related = [
-            'oleo' => [
-                ['name' => 'Fluidos', 'slug' => 'fluidos'],
-                ['name' => 'Motores', 'slug' => 'motores'],
-            ],
-            'calibragem' => [
-                ['name' => 'Pneus', 'slug' => 'pneus'],
-                ['name' => 'Manutenção', 'slug' => 'manutencao'],
-            ],
-            'pneus' => [
-                ['name' => 'Calibragem', 'slug' => 'calibragem'],
-                ['name' => 'Manutenção', 'slug' => 'manutencao'],
-            ],
-        ];
+        // Buscar guias da categoria atual
+        $currentGuides = $this->guideRepo->findByFilters([
+            'category_slug' => $currentSlug,
+            'limit' => 50
+        ]);
         
-        return $related[$slug] ?? [];
+        // Se não houver guias, retornar categorias ativas (fallback)
+        if ($currentGuides->isEmpty()) {
+            return $this->categoryRepo->getAllActive()
+                ->where('slug', '!=', $currentSlug)
+                ->take(3)
+                ->map(fn($cat) => [
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                ])
+                ->values()
+                ->toArray();
+        }
+        
+        // Extrair make_slug + model_slug únicos dos guias atuais
+        $vehicleKeys = $currentGuides->map(function($guide) {
+            return $guide->make_slug . '|' . $guide->model_slug;
+        })->unique();
+        
+        // Buscar outras categorias que possuem guias para esses veículos
+        $relatedCategorySlugs = collect();
+        
+        foreach ($vehicleKeys as $key) {
+            [$makeSlug, $modelSlug] = explode('|', $key);
+            
+            $otherGuides = $this->guideRepo->findByFilters([
+                'make_slug' => $makeSlug,
+                'model_slug' => $modelSlug,
+                'limit' => 10
+            ]);
+            
+            foreach ($otherGuides as $guide) {
+                if ($guide->category_slug !== $currentSlug) {
+                    $relatedCategorySlugs->push($guide->category_slug);
+                }
+            }
+        }
+        
+        // Contar ocorrências e pegar top 3
+        $topSlugs = $relatedCategorySlugs
+            ->countBy()
+            ->sortDesc()
+            ->take(3)
+            ->keys();
+        
+        // Buscar categorias por slug
+        return $topSlugs->map(function($slug) {
+            $category = $this->categoryRepo->findBySlug($slug);
+            return $category ? [
+                'name' => $category->name,
+                'slug' => $category->slug,
+            ] : null;
+        })
+        ->filter()
+        ->values()
+        ->toArray();
     }
 
     /**
-     * Retorna imagem hero da categoria
+     * ✅ REFINADO: Retorna imagem hero REAL ou fallback
+     * 
+     * Tenta buscar da categoria, senão usa placeholder
      */
     public function getHeroImage(): string
     {
+        // 1. Se categoria tem imagem própria, usar
+        if (!empty($this->category->image)) {
+            return $this->category->image;
+        }
+        
+        // 2. Fallback: placeholder genérico
         $slug = $this->category->slug ?? $this->extractSlug();
-        
-        $images = [
-            'oleo' => '/images/placeholder/oil-hero.jpg',
-            'calibragem' => '/images/placeholder/tire-hero.jpg',
-            'pneus' => '/images/placeholder/tire-hero.jpg',
-            'consumo' => '/images/placeholder/fuel-hero.jpg',
-            'bateria' => '/images/placeholder/battery-hero.jpg',
-        ];
-        
-        return $images[$slug] ?? '/images/placeholder/guide-hero.jpg';
+        return "/images/categories/{$slug}-hero.jpg";
     }
 
     /**
-     * Retorna guias populares
+     * ✅ REFINADO: Retorna guias populares REAIS
      * 
-     * TODO: Implementar busca real com ordenação por popularidade
+     * Ordenados por views ou data de criação
      */
     public function getPopularGuides(): array
     {
-        // TODO: Usar $this->guides quando houver dados
-        $slug = $this->category->slug ?? $this->extractSlug();
+        $categorySlug = $this->category->slug ?? $this->extractSlug();
         
-        // Mock de guias populares
-        $mocks = [
-            'oleo' => [
-                ['title' => 'Toyota Corolla 2003', 'specs' => '5W-30 • 4,2 L', 'url' => '/guias/oleo/toyota/corolla-2003'],
-                ['title' => 'Honda Civic 2010', 'specs' => '10W-30 • 4,6 L', 'url' => '/guias/oleo/honda/civic-2010'],
-                ['title' => 'Chevrolet Onix 2020', 'specs' => '5W-30 • 3,5 L', 'url' => '/guias/oleo/chevrolet/onix-2020'],
-            ],
-            'calibragem' => [
-                ['title' => 'Toyota Corolla 2003', 'specs' => '32 PSI • Dianteira', 'url' => '/guias/calibragem/toyota/corolla-2003'],
-                ['title' => 'Volkswagen Gol 2016', 'specs' => '30 PSI • Traseira', 'url' => '/guias/calibragem/volkswagen/gol-2016'],
-                ['title' => 'Fiat Uno 2012', 'specs' => '28 PSI • Dianteira', 'url' => '/guias/calibragem/fiat/uno-2012'],
-            ],
-        ];
+        // Buscar guias da categoria ordenados por popularidade
+        $popularGuides = $this->guideRepo->findByFilters([
+            'category_slug' => $categorySlug,
+            'limit' => 6,
+            'order_by' => 'created_at', // ou 'views' se existir
+            'order_direction' => 'desc'
+        ]);
         
-        return $mocks[$slug] ?? [];
+        return $popularGuides->map(function($guide) {
+            // Extrair specs do payload ou criar descrição
+            $specs = $this->extractSpecsFromGuide($guide);
+            
+            return [
+                'title' => $guide->payload['title'] ?? $guide->full_title ?? "{$guide->make} {$guide->model}",
+                'slug' => $guide->slug,
+                'url' => route('guide.show', ['slug' => $guide->slug]),
+                'make' => $guide->make,
+                'model' => $guide->model,
+                'year_range' => $this->formatYearRange($guide->year_start, $guide->year_end),
+                'specs' => $specs, // ✅ ADICIONADO: specs para view
+            ];
+        })->toArray();
     }
 
     /**
-     * Retorna marcas para esta categoria
-     * 
-     * TODO: Buscar marcas que têm guias nesta categoria
+     * Retorna marcas organizadas com logos
      */
     public function getMakes(): array
     {
-        // TODO: Usar $this->makes quando houver dados
-        return [
-            ['name' => 'Toyota', 'slug' => 'toyota'],
-            ['name' => 'Honda', 'slug' => 'honda'],
-            ['name' => 'Volkswagen', 'slug' => 'volkswagen'],
-            ['name' => 'Chevrolet', 'slug' => 'chevrolet'],
-            ['name' => 'Fiat', 'slug' => 'fiat'],
-            ['name' => 'Hyundai', 'slug' => 'hyundai'],
-        ];
+        return $this->makes->map(function($make) {
+            return [
+                'slug' => $make->slug ?? $make['slug'],
+                'name' => $make->name ?? $make['name'],
+                'logo_url' => $make->logo_url ?? "/images/logos/{$make->slug}.svg",
+                'url' => route('guide.category.make', [
+                    'category' => $this->extractSlug(),
+                    'make' => $make->slug ?? $make['slug']
+                ]),
+            ];
+        })->toArray();
     }
 
     /**
-     * Retorna conteúdo evergreen (como escolher, dicas)
+     * ✅ REFINADO: Retorna conteúdo evergreen REAL
+     * 
+     * Busca informações da categoria ou usa texto padrão
      */
-    public function getEvergreenContent(): ?array
+    public function getEvergreenContent(): array
     {
-        $slug = $this->category->slug ?? $this->extractSlug();
+        $categoryData = $this->getCategory();
         
-        $content = [
-            'oleo' => [
-                'title' => 'Como escolher o óleo correto',
-                'text' => 'A escolha do óleo depende de três fatores principais: viscosidade (ex.: 5W-30), especificação (API/ACEA) e tipo (sintético, semissintético, mineral). Sempre priorize o que consta no manual do fabricante; quando em dúvida, escolha produtos que atendam ou superem a especificação API indicada.',
-                'note' => 'Observação: Em veículos com garantia vigente, siga as orientações da concessionária.',
-            ],
-            'calibragem' => [
-                'title' => 'Como calibrar corretamente',
-                'text' => 'A calibragem correta dos pneus é fundamental para segurança, economia e durabilidade. Verifique sempre com os pneus frios (veículo parado por pelo menos 2 horas). A pressão recomendada está no manual do proprietário ou no adesivo na coluna da porta do motorista.',
-                'note' => 'Observação: Ajuste a pressão conforme carga transportada.',
-            ],
+        return [
+            'title' => "Sobre {$categoryData['name']}",
+            'text' => $this->category->long_description ?? 
+                        $this->category->description ?? 
+                        "Encontre informações detalhadas sobre {$categoryData['name']} para diversos modelos de veículos.",
         ];
-        
-        return $content[$slug] ?? null;
     }
 
     /**
-     * Retorna FAQs da categoria
+     * ✅ REFINADO: Retorna FAQs da categoria ou FAQs genéricas
      */
     public function getFaqs(): array
     {
-        $slug = $this->category->slug ?? $this->extractSlug();
+        // Se categoria tem FAQs próprias, retornar
+        if (!empty($this->category->faqs) && is_array($this->category->faqs)) {
+            return $this->category->faqs;
+        }
         
-        $faqs = [
-            'oleo' => [
-                ['question' => 'Qual a diferença entre 5W-30 e 10W-40?', 'answer' => 'Viscosidade a frio (5W vs 10W) e viscosidade a quente (30 vs 40). Use a recomendação do fabricante; 5W-30 oferece melhor partida a frio e menor resistência a quente.'],
-                ['question' => 'Posso misturar óleo sintético com mineral?', 'answer' => 'Misturar não é recomendado, mas em uma emergência pequena é aceitável. Troque por um produto homogêneo na próxima oportunidade.'],
-                ['question' => 'Com que frequência trocar o óleo?', 'answer' => 'Intervalos típicos: 10.000 km (uso normal) ou conforme manual. Em uso severo, reduzir intervalos.'],
+        // Fallback: FAQs genéricas baseadas na categoria
+        $slug = $this->extractSlug();
+        $name = $this->getCategoryNameBySlug();
+        
+        return [
+            [
+                'question' => "Como encontrar informações de {$name}?",
+                'answer' => "Selecione a marca e modelo do seu veículo para ver as especificações detalhadas de {$name}."
             ],
-            'calibragem' => [
-                ['question' => 'Qual a pressão correta dos pneus?', 'answer' => 'Varia por veículo e está no manual ou adesivo da porta. Tipicamente entre 28-32 PSI para carros de passeio.'],
-                ['question' => 'Posso calibrar com pneu quente?', 'answer' => 'Não recomendado. A pressão aumenta com o aquecimento. Calibre sempre com pneus frios.'],
-                ['question' => 'Com que frequência verificar?', 'answer' => 'Mensalmente ou antes de viagens longas.'],
+            [
+                'question' => "Os dados são confiáveis?",
+                'answer' => "Sim, todas as informações são baseadas em manuais oficiais e especificações dos fabricantes."
+            ],
+            [
+                'question' => "Posso usar essas informações para outros anos?",
+                'answer' => "Recomendamos sempre verificar o ano específico do seu veículo, pois especificações podem variar."
             ],
         ];
-        
-        return $faqs[$slug] ?? [];
     }
 
     /**
-     * Retorna dados para SEO
+     * ✅ REFINADO: Dados SEO REAIS da categoria
      */
     public function getSeoData(): array
     {
         $category = $this->getCategory();
         $slug = $category['slug'];
         
-        $titles = [
-            'oleo' => 'Óleo Automotivo – Guia completo por marca e modelo | Mercado Veículos',
-            'calibragem' => 'Calibragem de Pneus – Pressão correta por veículo | Mercado Veículos',
-            'pneus' => 'Pneus Automotivos – Medidas e especificações | Mercado Veículos',
-        ];
+        // Se categoria tem meta tags próprias, usar
+        if (!empty($this->category->meta_title)) {
+            return [
+                'title' => $this->category->meta_title,
+                'description' => $this->category->meta_description ?? $category['description'],
+                'canonical' => route('guide.category', ['category' => $slug]),
+                'og_image' => $this->getHeroImage(),
+            ];
+        }
         
-        $descriptions = [
-            'oleo' => 'Guia de óleo automotivo: especificações, viscosidades, volumes e recomendações por marca e modelo. Encontre óleos recomendados, tabelas de capacidades e guias práticos.',
-            'calibragem' => 'Guia de calibragem: pressão correta dos pneus por marca e modelo. Encontre especificações, dicas de calibragem e tabelas de pressão recomendada.',
-            'pneus' => 'Guia de pneus: medidas originais, equivalentes e especificações por veículo. Encontre o pneu correto para seu carro.',
-        ];
-        
+        // Fallback: gerar meta tags baseadas no nome da categoria
         return [
-            'title' => $titles[$slug] ?? "{$category['name']} – Guia Automotivo | Mercado Veículos",
-            'description' => $descriptions[$slug] ?? "Guia completo de {$category['name']} por marca e modelo de veículo.",
+            'title' => "{$category['name']} por Marca e Modelo | Mercado Veículos",
+            'description' => $category['description'] ?? "Guia completo de {$category['name']} por marca e modelo de veículo.",
             'canonical' => route('guide.category', ['category' => $slug]),
             'og_image' => $this->getHeroImage(),
         ];
@@ -215,6 +282,10 @@ class GuideCategoryPageViewModel
         ];
     }
 
+    // ========================================
+    // MÉTODOS AUXILIARES PRIVADOS
+    // ========================================
+
     /**
      * Extrai slug da categoria
      */
@@ -223,11 +294,11 @@ class GuideCategoryPageViewModel
         if (is_object($this->category) && isset($this->category->slug)) {
             return $this->category->slug;
         }
-        return 'oleo'; // Fallback
+        return 'geral'; // Fallback seguro
     }
 
     /**
-     * Retorna nome da categoria pelo slug
+     * Retorna nome da categoria pelo slug (fallback)
      */
     private function getCategoryNameBySlug(): string
     {
@@ -260,5 +331,73 @@ class GuideCategoryPageViewModel
     {
         $name = $this->getCategoryNameBySlug();
         return "Encontre as especificações de {$name} por marca e modelo. Selecione a marca e o modelo para ver o guia detalhado.";
+    }
+
+    /**
+     * Formata range de anos
+     */
+    private function formatYearRange(?int $yearStart, ?int $yearEnd): string
+    {
+        if (!$yearStart) {
+            return 'Ano não especificado';
+        }
+        
+        if (!$yearEnd || $yearStart === $yearEnd) {
+            return (string) $yearStart;
+        }
+        
+        return "{$yearStart} - {$yearEnd}";
+    }
+
+    /**
+     * Extrai specs do guia para exibição resumida
+     */
+    private function extractSpecsFromGuide($guide): string
+    {
+        $specs = [];
+        
+        // Adicionar ano
+        if ($guide->year_start) {
+            $yearRange = $this->formatYearRange($guide->year_start, $guide->year_end);
+            $specs[] = $yearRange;
+        }
+        
+        // Adicionar versão se existir
+        if (!empty($guide->version)) {
+            $specs[] = $guide->version;
+        }
+        
+        // Tentar extrair especificações do payload
+        if (!empty($guide->payload)) {
+            $payload = $guide->payload;
+            
+            // Para guia de óleo
+            if (isset($payload['especificacoes']['tipo_oleo'])) {
+                $specs[] = $payload['especificacoes']['tipo_oleo'];
+            }
+            
+            // Para guia de pneus
+            if (isset($payload['especificacoes']['medida'])) {
+                $specs[] = $payload['especificacoes']['medida'];
+            }
+            
+            // Para guia de calibragem
+            if (isset($payload['especificacoes']['pressao_dianteiro'])) {
+                $specs[] = "Diant: {$payload['especificacoes']['pressao_dianteiro']} PSI";
+            }
+            
+            // Para consumo
+            if (isset($payload['especificacoes']['consumo_cidade'])) {
+                $specs[] = "Cidade: {$payload['especificacoes']['consumo_cidade']} km/l";
+            }
+        }
+        
+        // Se não conseguiu extrair nada, usar descrição genérica
+        if (empty($specs)) {
+            $categoryName = $this->category->name ?? $this->getCategoryNameBySlug();
+            return "Guia de {$categoryName}";
+        }
+        
+        return implode(' • ', $specs);
     }
 }

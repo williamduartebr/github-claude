@@ -64,7 +64,7 @@ class GuideIndexViewModel
             return [
                 'slug' => $make->slug,
                 'name' => $make->name,
-                'url' => route('guide.index') . '?make=' . $make->slug, // URL de busca por marca
+                'url' => route('guide.makes', $make->slug), // URL de busca por marca
             ];
         })->toArray();
     }
