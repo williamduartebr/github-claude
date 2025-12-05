@@ -14,11 +14,15 @@ use MongoDB\Laravel\Eloquent\Model;
  *
  * @property string $_id
  * @property string $guide_category_id
+ * @property int|null $vehicle_make_id ✅ ADICIONADO
+ * @property int|null $vehicle_model_id ✅ ADICIONADO
+ * @property int|null $vehicle_version_id ✅ ADICIONADO
  * @property string $make
  * @property string $make_slug
  * @property string $model
  * @property string $model_slug
  * @property string|null $version
+ * @property string|null $version_slug ✅ ADICIONADO
  * @property string|null $motor
  * @property string|null $fuel
  * @property int|null $year_start
@@ -49,6 +53,12 @@ class Guide extends Model
      * já lida nativamente com arrays BSON.
      */
     protected $casts = [
+        // ✅ ADICIONADO - FKs para MySQL
+        'vehicle_make_id' => 'integer',
+        'vehicle_model_id' => 'integer',
+        'vehicle_version_id' => 'integer',
+
+        // Existentes
         'year_start' => 'integer',
         'year_end' => 'integer',
         'created_at' => 'datetime',
@@ -163,6 +173,30 @@ class Guide extends Model
     {
         return $query->whereNotNull('slug')
             ->whereNotNull('url');
+    }
+
+    /**
+     * ✅ ADICIONADO - Scope para filtrar por vehicle_make_id
+     */
+    public function scopeByVehicleMakeId($query, int $makeId)
+    {
+        return $query->where('vehicle_make_id', $makeId);
+    }
+
+    /**
+     * ✅ ADICIONADO - Scope para filtrar por vehicle_model_id
+     */
+    public function scopeByVehicleModelId($query, int $modelId)
+    {
+        return $query->where('vehicle_model_id', $modelId);
+    }
+
+    /**
+     * ✅ ADICIONADO - Scope para filtrar por vehicle_version_id
+     */
+    public function scopeByVehicleVersionId($query, int $versionId)
+    {
+        return $query->where('vehicle_version_id', $versionId);
     }
 
     // ====================================================================

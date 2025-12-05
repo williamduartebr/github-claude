@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\GuideDataCenter\Presentation\Controllers;
 
 use Illuminate\View\View;
+use Src\GuideDataCenter\Domain\Mongo\Guide;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideYearViewModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -66,7 +67,6 @@ class GuideController extends Controller
         string $makeSlug
     ): View|JsonResponse {
         $category = $this->categoryRepository->findBySlug($categorySlug);
-
         if (!$category) {
             abort(404, 'Categoria não encontrada');
         }
@@ -76,8 +76,13 @@ class GuideController extends Controller
             abort(404, 'Marca não encontrada');
         }
 
-        $models = collect([]);
-        $viewModel = new GuideCategoryMakeViewModel($category, $make, $models);
+        // ✅ BUSCA GUIAS REAIS DO MONGODB
+        $guideModel = app(Guide::class);
+        $guides = $guideModel::where('category_slug', $categorySlug)
+            ->where('make_slug', $makeSlug)
+            ->get();
+
+        $viewModel = new GuideCategoryMakeViewModel($category, $make, $guides);
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -91,7 +96,7 @@ class GuideController extends Controller
             ]);
         }
 
-        return view('guide-data-center::guide.category-make', [
+        return view('guide-data-center::guide.category.category-make', [
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
             'popularModels' => $viewModel->getPopularModels(),
@@ -102,7 +107,7 @@ class GuideController extends Controller
             'stats' => $viewModel->getStats(),
         ]);
     }
-    
+
 
     /**
      * Lista versões disponíveis do ano
@@ -120,9 +125,9 @@ class GuideController extends Controller
         $category = $this->categoryRepository->findBySlug($categorySlug);
         $make = $this->makeRepository->findBySlug($makeSlug);
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
-        
+
         $viewModel = new GuideYearViewModel($category, $make, $model, $year);
-        
+
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
@@ -135,7 +140,7 @@ class GuideController extends Controller
                 ]
             ]);
         }
-        
+
         return view('guide-data-center::guide.year', [
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
@@ -149,7 +154,7 @@ class GuideController extends Controller
         ]);
     }
 
-   /**
+    /**
      * Exibe guia completo de uma versão específica
      * 
      * Rota: GET /guias/{category}/{make}/{model}/{year}/{version}
@@ -178,27 +183,27 @@ class GuideController extends Controller
         if (!$model) {
             abort(404, 'Modelo não encontrado');
         }
-        
+
         // TODO: Buscar guia real do banco
         $guide = null;
-        
+
         // ⭐ IMPORTANTE: Passar $versionSlug para o ViewModel
         $viewModel = new GuideSpecificViewModel(
-            $guide, 
-            $category, 
-            $make, 
-            $model, 
-            (int)$year, 
+            $guide,
+            $category,
+            $make,
+            $model,
+            (int)$year,
             $versionSlug  // ← Passa a versão
         );
-        
+
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'data' => $viewModel->getGuide(),
             ]);
         }
-        
+
         return view('guide-data-center::guide.specific', [
             'guide' => $viewModel->getGuide(),
             'category' => $viewModel->getCategory(),
@@ -219,7 +224,7 @@ class GuideController extends Controller
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
         ]);
     }
-  
+
 
     /**
      * Exibe guias por categoria, marca e modelo (lista de anos)
@@ -235,14 +240,43 @@ class GuideController extends Controller
         string $makeSlug,
         string $modelSlug
     ): View|JsonResponse {
-        // Busca categoria, marca, modelo
         $category = $this->categoryRepository->findBySlug($categorySlug);
+        if (!$category) {
+            abort(404, 'Categoria não encontrada');
+        }
+
         $make = $this->makeRepository->findBySlug($makeSlug);
+        if (!$make) {
+            abort(404, 'Marca não encontrada');
+        }
+
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
+        if (!$model) {
+            abort(404, 'Modelo não encontrado');
+        }
 
-        $years = collect([]); // Placeholder
+        // ✅ BUSCA GUIAS REAIS DO MONGODB
+        $guideModel = app(Guide::class);
+        $guides = $guideModel::where('category_slug', $categorySlug)
+            ->where('make_slug', $makeSlug)
+            ->where('model_slug', $modelSlug)
+            ->get();
 
-        $viewModel = new GuideCategoryMakeModelViewModel($category, $make, $model, $years);
+        $viewModel = new GuideCategoryMakeModelViewModel($category, $make, $model, $guides);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'category' => $viewModel->getCategory(),
+                    'make' => $viewModel->getMake(),
+                    'model' => $viewModel->getModel(),
+                    'available_years' => $viewModel->getAvailableYears(),
+                    'stats' => $viewModel->getStats(),
+                    'complementary_categories' => $viewModel->getComplementaryCategories(),
+                ]
+            ]);
+        }
 
         return view('guide-data-center::guide.category-make-model', [
             'category' => $viewModel->getCategory(),

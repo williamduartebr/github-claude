@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GuideCategorySeeder::class);
         $this->call(GuideSampleSeeder::class);
         $this->call(GuideClusterSeeder::class);
+        
 
         $this->command->newLine();
 

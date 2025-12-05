@@ -28,7 +28,7 @@ class VehicleModelViewModel
         $this->make = $make;
         $this->model = $model;
         $this->versions = $versions;
-        
+
         // Injetar service de integração
         $this->guideIntegration = app(VehicleGuideIntegrationService::class);
     }
@@ -83,7 +83,7 @@ class VehicleModelViewModel
         }
 
         // Mapear para formato esperado pela view
-        return $this->quickGuides->map(function($guide) {
+        return $this->quickGuides->map(function ($guide) {
             return [
                 'title' => $guide->payload['title'] ?? $guide->full_title,
                 'slug' => $guide->slug,
@@ -106,14 +106,14 @@ class VehicleModelViewModel
         }
 
         // Mapear para formato esperado pela view
-        return $this->allGuideCategories->map(function($category) {
+        return $this->allGuideCategories->map(function ($category) {
             return [
                 'name' => $category->name,
                 'slug' => $category->slug,
                 'icon' => $category->icon ?? '📄',
                 'description' => $category->description ?? '',
                 // ✅ CORRIGIDO: Rota correta é 'guide.category-make-model' (com hifens)
-                'url' => route('guide.category-make-model', [
+                'url' => route('guide.category.make.model', [
                     'category' => $category->slug,
                     'make' => $this->make->slug,
                     'model' => $this->model->slug
@@ -137,12 +137,12 @@ class VehicleModelViewModel
             ->sortByDesc('year')
             ->groupBy('year');
 
-        return $grouped->map(function($versions, $year) {
+        return $grouped->map(function ($versions, $year) {
             return [
                 'year' => $year,
                 'anchor' => "y{$year}",
                 'title' => "{$this->model->name} {$year} — Versões",
-                'versions' => $versions->map(function($version) use ($year) {
+                'versions' => $versions->map(function ($version) use ($year) {
                     return [
                         'id' => $version->id,
                         'name' => $version->name,
@@ -185,7 +185,7 @@ class VehicleModelViewModel
             ->take(2) // ✅ Apenas últimos 2 anos
             ->values();
 
-        return $years->map(function($year, $index) {
+        return $years->map(function ($year, $index) {
             return [
                 'year' => $year,
                 'label' => (string) $year,
@@ -235,7 +235,7 @@ class VehicleModelViewModel
     {
         $yearStart = $this->versions->min('year') ?? $this->model->year_start;
         $yearEnd = $this->versions->max('year') ?? ($this->model->year_end ?? date('Y'));
-        
+
         return [
             'total_versions' => $this->versions->count(),
             'year_start' => $yearStart,

@@ -39,26 +39,186 @@ class VehicleVersionsSeeder extends Seeder
             // ==================================================
             // model_id = 1 → Onix
             // ==================================================
+            // ==================================================
+            // model_id = 1 → Onix (EXPANDIDO 2020–2024)
+            // ==================================================
+
+            // -------------------------
+            // 2024
+            // -------------------------
             [
-                'id' => 1,
+                'id' => 200,
                 'model_id' => 1,
                 'name' => 'Onix LT 1.0',
-                'year' => 2023,
+                'year' => 2024,
                 'fuel_type' => 'flex',
                 'transmission' => 'manual',
                 'engine_code' => 'CSS Prime',
-                'price_msrp' => 82990,
+                'price_msrp' => 85990,
             ],
             [
-                'id' => 2,
+                'id' => 201,
+                'model_id' => 1,
+                'name' => 'Onix LT 1.0 Turbo',
+                'year' => 2024,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 104990,
+            ],
+            [
+                'id' => 202,
                 'model_id' => 1,
                 'name' => 'Onix Premier 1.0 Turbo',
+                'year' => 2024,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 119990,
+            ],
+
+
+            // -------------------------
+            // 2023
+            // -------------------------
+            // (mantive seus dois originais e adicionei o restante)
+
+            [
+                'id' => 203,
+                'model_id' => 1,
+                'name' => 'Onix LTZ 1.0 Turbo',
                 'year' => 2023,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 114990,
+            ],
+            [
+                'id' => 204,
+                'model_id' => 1,
+                'name' => 'Onix RS 1.0 Turbo',
+                'year' => 2023,
+                'fuel_type' => 'flex',
+                'transmission' => 'manual',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 104990,
+            ],
+
+
+            // -------------------------
+            // 2022
+            // -------------------------
+            [
+                'id' => 205,
+                'model_id' => 1,
+                'name' => 'Onix LT 1.0',
+                'year' => 2022,
+                'fuel_type' => 'flex',
+                'transmission' => 'manual',
+                'engine_code' => 'CSS Prime',
+                'price_msrp' => 80990,
+            ],
+            [
+                'id' => 206,
+                'model_id' => 1,
+                'name' => 'Onix LTZ 1.0 Turbo',
+                'year' => 2022,
                 'fuel_type' => 'flex',
                 'transmission' => 'automatic',
                 'engine_code' => 'CSS Turbo',
                 'price_msrp' => 109990,
             ],
+            [
+                'id' => 207,
+                'model_id' => 1,
+                'name' => 'Onix Premier 1.0 Turbo',
+                'year' => 2022,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 118990,
+            ],
+
+
+            // -------------------------
+            // 2021
+            // -------------------------
+            [
+                'id' => 208,
+                'model_id' => 1,
+                'name' => 'Onix LT 1.0',
+                'year' => 2021,
+                'fuel_type' => 'flex',
+                'transmission' => 'manual',
+                'engine_code' => 'CSS Prime',
+                'price_msrp' => 75990,
+            ],
+            [
+                'id' => 209,
+                'model_id' => 1,
+                'name' => 'Onix LT 1.0 Turbo',
+                'year' => 2021,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 95990,
+            ],
+            [
+                'id' => 210,
+                'model_id' => 1,
+                'name' => 'Onix Premier 1.0 Turbo',
+                'year' => 2021,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 113000,
+            ],
+
+
+            // -------------------------
+            // 2020 (início da geração nova)
+            // -------------------------
+            [
+                'id' => 211,
+                'model_id' => 1,
+                'name' => 'Onix LT 1.0',
+                'year' => 2020,
+                'fuel_type' => 'flex',
+                'transmission' => 'manual',
+                'engine_code' => 'CSS Prime',
+                'price_msrp' => 68990,
+            ],
+            [
+                'id' => 212,
+                'model_id' => 1,
+                'name' => 'Onix LT 1.0 Turbo',
+                'year' => 2020,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 89990,
+            ],
+            [
+                'id' => 213,
+                'model_id' => 1,
+                'name' => 'Onix Premier 1.0 Turbo',
+                'year' => 2020,
+                'fuel_type' => 'flex',
+                'transmission' => 'automatic',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 108990,
+            ],
+            [
+                'id' => 214,
+                'model_id' => 1,
+                'name' => 'Onix RS 1.0 Turbo',
+                'year' => 2020,
+                'fuel_type' => 'flex',
+                'transmission' => 'manual',
+                'engine_code' => 'CSS Turbo',
+                'price_msrp' => 97990,
+            ],
+
 
 
             // ==================================================

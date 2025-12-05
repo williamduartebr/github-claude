@@ -37,7 +37,7 @@ Route::prefix('guias')
         
         // Categoria + Marca
         Route::get('{category}/{make}', [GuideController::class, 'categoryMake'])
-            ->name('guides.make')
+            ->name('guide.category.make')
             ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+']);
 
         // Categoria + Marca + Modelo (lista anos)

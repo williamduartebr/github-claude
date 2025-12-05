@@ -550,7 +550,7 @@ class VehicleYearViewModel
                     'name' => $category->name,
                     'slug' => $category->slug,
                     'icon' => $category->icon ?? '📄',
-                    'url' => route('guides.make', [
+                    'url' => route('guide.category.make', [
                         'category' => $category->slug,
                         'make' => $this->make->slug
                     ])

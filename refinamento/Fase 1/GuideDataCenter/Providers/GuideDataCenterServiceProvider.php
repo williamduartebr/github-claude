@@ -153,11 +153,6 @@ class GuideDataCenterServiceProvider extends ServiceProvider
             __DIR__ . '/../config/guide-datacenter.php' => config_path('guide-datacenter.php'),
         ], 'guide-datacenter-config');
 
-        // // Publica migrations
-        // $this->publishes([
-        //     __DIR__ . '/../Migrations/mongo' => database_path('migrations/mongo'),
-        // ], 'guide-datacenter-migrations');
-
         // // Registra seeders
         // if ($this->app->runningInConsole()) {
         //     $this->commands([

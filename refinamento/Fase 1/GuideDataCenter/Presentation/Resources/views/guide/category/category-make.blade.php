@@ -128,7 +128,7 @@
                     class="w-full h-40 object-cover">
                 <div class="p-4 text-sm font-roboto">
                     <div class="font-semibold font-montserrat">{{ $model['name'] }}</div>
-                    <div class="text-xs text-gray-500">{{ $model['description'] }}</div>
+                    {{-- <div class="text-xs text-gray-500">{{ $model['description'] }}</div> --}}
                 </div>
             </a>
             @endforeach
@@ -167,8 +167,8 @@
                     @foreach($allModels as $index => $model)
                     <tr class="border-t border-gray-200 {{ $index % 2 === 1 ? 'bg-gray-50' : '' }}">
                         <td class="px-4 py-3">{{ $model['name'] }}</td>
-                        <td class="px-4 py-3">{{ $model['segment'] }}</td>
-                        <td class="px-4 py-3">{{ $model['years'] }}</td>
+                        {{-- <td class="px-4 py-3">{{ $model['segment'] }}</td> --}}
+                        {{-- <td class="px-4 py-3">{{ $model['years'] }}</td> --}}
                         <td class="px-4 py-3">
                             <a href="{{ $model['url'] }}" class="text-blue-600 hover:underline">Abrir</a>
                         </td>

@@ -13,7 +13,7 @@ use Src\VehicleDataCenter\Domain\Services\VehicleGuideIntegrationService;
  * Exemplo: /veiculos/toyota
  * 
  * ✅ REFINADO: Usa VehicleGuideIntegrationService para buscar dados reais do MongoDB
- * ✅ CORRIGIDO: Usa nome correto da rota (guides.make)
+ * ✅ CORRIGIDO: Usa nome correto da rota (guide.category.make)
  */
 class VehicleMakeViewModel
 {
@@ -26,10 +26,10 @@ class VehicleMakeViewModel
     {
         $this->make = $make;
         $this->models = $models;
-        
+
         // Injetar service de integração
         $this->guideIntegration = app(VehicleGuideIntegrationService::class);
-        
+
         // Buscar categorias reais do MongoDB (lazy load)
         $this->guideCategories = null;
     }
@@ -90,7 +90,7 @@ class VehicleMakeViewModel
 
     /**
      * ✅ REFINADO: Retorna categorias de guias REAIS do MongoDB
-     * ✅ CORRIGIDO: Usa rota correta (guides.make)
+     * ✅ CORRIGIDO: Usa rota correta (guide.category.make)
      * Remove dados mockados e busca do banco
      */
     public function getGuideCategories(): array
@@ -106,14 +106,14 @@ class VehicleMakeViewModel
         }
 
         // Mapear para formato esperado pela view
-        return $this->guideCategories->map(function($category) {
+        return $this->guideCategories->map(function ($category) {
             return [
                 'name' => $category->name,
                 'slug' => $category->slug,
                 'icon' => $category->icon ?? '📄',
                 'description' => $category->description ?? '',
-                // ✅ CORRIGIDO: Rota correta é 'guides.make' (veja GuideDataCenter/Presentation/Routes/web.php)
-                'url' => route('guides.make', [
+                // ✅ CORRIGIDO: Rota correta é 'guide.category.make' (veja GuideDataCenter/Presentation/Routes/web.php)
+                'url' => route('guide.category.make', [
                     'category' => $category->slug,
                     'make' => $this->make->slug
                 ])

@@ -62,7 +62,7 @@ class GuideYearViewModel
     {
         $modelSlug = $this->model->slug ?? 'corolla';
         $year = (int) $this->year;
-        
+
         // Mock de versões por modelo/ano
         $versions = [
             'corolla' => [
@@ -117,7 +117,7 @@ class GuideYearViewModel
     public function getStats(): array
     {
         $versions = $this->getVersions();
-        
+
         return [
             'total_versions' => count($versions),
         ];
@@ -133,7 +133,7 @@ class GuideYearViewModel
             ['name' => 'Fluidos', 'slug' => 'fluidos'],
             ['name' => 'Revisão', 'slug' => 'revisao'],
         ];
-        
+
         $currentSlug = $this->category->slug ?? 'oleo';
         return array_filter($all, fn($cat) => $cat['slug'] !== $currentSlug);
     }
@@ -143,7 +143,7 @@ class GuideYearViewModel
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
-        
+
         return [
             'title' => "{$category['name']} {$make['name']} {$model['name']} {$this->year} – Todas as versões",
             'description' => "Guias de {$category['name']} para {$make['name']} {$model['name']} {$this->year}. Escolha a versão do seu veículo.",
@@ -157,12 +157,12 @@ class GuideYearViewModel
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
-        
+
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => route('guide.index')],
             ['name' => $category['name'], 'url' => route('guide.category', $category['slug'])],
-            ['name' => $make['name'], 'url' => route('guides.make', ['category' => $category['slug'], 'make' => $make['slug']])],
+            ['name' => $make['name'], 'url' => route('guide.category.make', ['category' => $category['slug'], 'make' => $make['slug']])],
             ['name' => $model['name'], 'url' => route('guide.category.make.model', ['category' => $category['slug'], 'make' => $make['slug'], 'model' => $model['slug']])],
             ['name' => $this->year, 'url' => null],
         ];
@@ -173,7 +173,7 @@ class GuideYearViewModel
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
-        
+
         return "/guias/{$category['slug']}/{$make['slug']}/{$model['slug']}/{$this->year}/{$version}";
     }
 }

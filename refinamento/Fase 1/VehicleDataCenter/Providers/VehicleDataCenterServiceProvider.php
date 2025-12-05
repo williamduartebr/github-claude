@@ -86,10 +86,6 @@ class VehicleDataCenterServiceProvider extends ServiceProvider
             __DIR__ . '/../Presentation/Resources/views' => resource_path('views/vendor/vehicle-data-center'),
         ], 'vehicle-data-center-views');
 
-        // // Publish migrations
-        // $this->publishes([
-        //     __DIR__ . '/../Database/Migrations' => database_path('migrations'),
-        // ], 'vehicle-data-center-migrations');
     }
 
     /**
