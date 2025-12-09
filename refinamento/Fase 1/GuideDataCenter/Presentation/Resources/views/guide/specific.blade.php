@@ -4,7 +4,7 @@
 @section('meta_description', $seo['description'])
 
 {{-- SEO: Canonical e Open Graph --}}
-{{-- @push('head')
+@push('head')
 <link rel="canonical" href="{{ $seo['canonical'] }}" />
 <link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] }}" />
 
@@ -19,7 +19,7 @@
 <meta name="twitter:title" content="{{ $seo['title'] }}">
 <meta name="twitter:description" content="{{ $seo['description'] }}">
 <meta name="twitter:image" content="{{ $seo['og_image'] }}">
-@endpush --}}
+@endpush
 
 @section('content')
 

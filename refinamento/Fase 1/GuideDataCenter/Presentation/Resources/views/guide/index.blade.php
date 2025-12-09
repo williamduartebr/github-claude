@@ -142,22 +142,14 @@
             <a href="{{ $category['url'] }}" 
                class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="flex flex-col items-center text-center">
-                    <div class="mb-3 p-3 rounded-full bg-blue-50">
-                        {{-- 
-                        ⚠️ TODO: Adicionar SVG do banco quando disponível
-                        Padrão: {!! $category['icon_svg'] !!}
-                        
-                        Por enquanto, usando ícone padrão placeholder
-                        --}}
+                    <div class="mb-3 p-3 rounded-full {{ $category['icon_bg_color'] ?? 'bg-blue-50' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" 
-                             class="w-8 h-8 text-blue-600" 
+                             class="w-8 h-8 {{ $category['icon_text_color'] ?? 'text-blue-600' }}" 
                              fill="none" 
                              viewBox="0 0 24 24" 
                              stroke="currentColor" 
                              aria-hidden="true">
-                            {{-- Ícone placeholder padrão (documento) --}}
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            {!! $category['icon_svg'] ?? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />' !!}
                         </svg>
                     </div>
                     <h3 class="text-sm font-medium text-gray-800 font-roboto">{{ $category['name'] }}</h3>

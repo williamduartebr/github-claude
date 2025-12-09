@@ -6,18 +6,32 @@ use MongoDB\Laravel\Eloquent\Model;
 use Carbon\Carbon;
 
 /**
- * Model GuideCategory - Categorias de guias
+ * Model GuideCategory - Categorias de guias (VERSÃO ATUALIZADA)
  * 
  * Organiza os guias em categorias temáticas como:
  * Óleo, Pneus, Calibragem, Revisões, etc.
+ * 
+ * NOVOS CAMPOS:
+ * - icon_svg: Path SVG do ícone
+ * - icon_bg_color: Cor de fundo (Tailwind class)
+ * - icon_text_color: Cor do texto (Tailwind class)
+ * - seo_info: Informações de SEO (JSON)
+ * - info_sections: Seções informativas (JSON)
+ * - display_order: Ordem de exibição
  * 
  * @property string $_id
  * @property string $name
  * @property string $slug
  * @property string|null $description
  * @property string|null $icon
+ * @property string|null $icon_svg
+ * @property string|null $icon_bg_color
+ * @property string|null $icon_text_color
  * @property int $order
- * @property bool $active
+ * @property int $display_order
+ * @property bool $is_active
+ * @property array|null $seo_info
+ * @property array|null $info_sections
  * @property array $metadata
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -55,8 +69,14 @@ class GuideCategory extends Model
         'slug' => 'string',
         'description' => 'string',
         'icon' => 'string',
+        'icon_svg' => 'string',
+        'icon_bg_color' => 'string',
+        'icon_text_color' => 'string',
         'order' => 'integer',
-        'active' => 'boolean',
+        'display_order' => 'integer',
+        'is_active' => 'boolean',
+        'seo_info' => 'array',
+        'info_sections' => 'array',
         'metadata' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -66,8 +86,9 @@ class GuideCategory extends Model
      * Valores padrão
      */
     protected $attributes = [
-        'active' => true,
+        'is_active' => true,
         'order' => 0,
+        'display_order' => 0,
         'metadata' => [],
     ];
 
@@ -92,7 +113,7 @@ class GuideCategory extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('active', true);
+        return $query->where('is_active', true);
     }
 
     /**
@@ -100,7 +121,8 @@ class GuideCategory extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order', 'asc')
+        return $query->orderBy('display_order', 'asc')
+                     ->orderBy('order', 'asc')
                      ->orderBy('name', 'asc');
     }
 
@@ -141,6 +163,38 @@ class GuideCategory extends Model
     public function getIconAttribute($value): string
     {
         return $value ?? 'fa-book';
+    }
+
+    /**
+     * Retorna informações de SEO
+     */
+    public function getSeoInfo(): ?array
+    {
+        return $this->seo_info;
+    }
+
+    /**
+     * Retorna seções informativas
+     */
+    public function getInfoSections(): ?array
+    {
+        return $this->info_sections;
+    }
+
+    /**
+     * Retorna título SEO
+     */
+    public function getSeoTitle(): ?string
+    {
+        return $this->seo_info['title'] ?? null;
+    }
+
+    /**
+     * Retorna descrição SEO
+     */
+    public function getSeoDescription(): ?string
+    {
+        return $this->seo_info['description'] ?? null;
     }
 
     /**

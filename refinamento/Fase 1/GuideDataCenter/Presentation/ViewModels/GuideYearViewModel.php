@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Src\GuideDataCenter\Presentation\ViewModels;
 
+use Src\GuideDataCenter\Domain\Services\GuideVehicleIntegrationService;
+use Src\VehicleDataCenter\Domain\Repositories\VehicleVersionRepositoryInterface;
+
 /**
  * ViewModel para página de ano (lista versões)
  * 
  * Rota: /guias/{category}/{make}/{model}/{year}
  * View: guide-data-center::guide.year
  * Exemplo: /guias/oleo/toyota/corolla/2025
+ * 
+ * ✅ REFINADO V2: Remove TODOS os mocks, usa dados reais do MySQL
  */
 class GuideYearViewModel
 {
@@ -17,6 +22,8 @@ class GuideYearViewModel
     private $make;
     private $model;
     private string $year;
+    private GuideVehicleIntegrationService $vehicleIntegration;
+    private VehicleVersionRepositoryInterface $versionRepository;
 
     public function __construct($category, $make, $model, string $year)
     {
@@ -24,6 +31,10 @@ class GuideYearViewModel
         $this->make = $make;
         $this->model = $model;
         $this->year = $year;
+        
+        // Injetar serviços de integração
+        $this->vehicleIntegration = app(GuideVehicleIntegrationService::class);
+        $this->versionRepository = app(VehicleVersionRepositoryInterface::class);
     }
 
     public function getCategory(): array
@@ -56,61 +67,98 @@ class GuideYearViewModel
     }
 
     /**
-     * Retorna versões disponíveis para este ano
+     * ✅ REFINADO: Retorna versões disponíveis REAIS do MySQL para este ano
+     * Remove array mockado hardcoded
+     * 
+     * @return array
      */
     public function getVersions(): array
     {
         $modelSlug = $this->model->slug ?? 'corolla';
+        $makeSlug = $this->make->slug ?? 'toyota';
         $year = (int) $this->year;
 
-        // Mock de versões por modelo/ano
-        $versions = [
-            'corolla' => [
-                2020 => [
-                    ['version' => 'GLi', 'engine' => '2.0 Dynamic Force', 'url' => $this->buildUrl('gli')],
-                    ['version' => 'XEi', 'engine' => '2.0 Dynamic Force', 'url' => $this->buildUrl('xei')],
-                    ['version' => 'Altis', 'engine' => '2.0 Dynamic Force', 'url' => $this->buildUrl('altis')],
-                ],
-                2019 => [
-                    ['version' => 'GLi', 'engine' => '1.8 VVT-i', 'url' => $this->buildUrl('gli')],
-                    ['version' => 'XEi', 'engine' => '2.0 VVT-i', 'url' => $this->buildUrl('xei')],
-                    ['version' => 'Altis', 'engine' => '2.0 VVT-i', 'url' => $this->buildUrl('altis')],
-                    ['version' => 'XRS', 'engine' => '2.0 VVT-i', 'url' => $this->buildUrl('xrs')],
-                ],
-            ],
-            'hilux' => [
-                2020 => [
-                    ['version' => 'SR', 'engine' => '2.8 Turbo Diesel', 'url' => $this->buildUrl('sr')],
-                    ['version' => 'SRV', 'engine' => '2.8 Turbo Diesel', 'url' => $this->buildUrl('srv')],
-                    ['version' => 'SRX', 'engine' => '2.8 Turbo Diesel', 'url' => $this->buildUrl('srx')],
-                ],
-            ],
-        ];
+        // Buscar versões REAIS do MySQL
+        $versions = $this->versionRepository->getByYear($year);
+        
+        // Filtrar apenas versões deste modelo específico
+        $filteredVersions = $versions->filter(function($version) use ($makeSlug, $modelSlug) {
+            return $version->model->slug === $modelSlug 
+                && $version->model->make->slug === $makeSlug;
+        });
 
-        // Busca versões específicas
-        if (isset($versions[$modelSlug][$year])) {
-            return $versions[$modelSlug][$year];
+        // Se não houver versões, retornar array vazio
+        if ($filteredVersions->isEmpty()) {
+            return [];
         }
 
-        // Versões padrão >= 2020 (Corolla)
-        if ($modelSlug === 'corolla' && $year >= 2020) {
-            return $versions['corolla'][2020];
+        // Mapear para formato esperado pela view
+        return $filteredVersions->map(function($version) {
+            return [
+                'id' => $version->id,
+                'version' => $version->name,
+                'engine' => $version->engine_code ?? 'Motor não especificado',
+                'fuel' => $this->translateFuelType($version->fuel_type),
+                'transmission' => $this->translateTransmission($version->transmission),
+                'url' => $this->buildUrl($version->slug),
+            ];
+        })->values()->toArray();
+    }
+
+    /**
+     * ✅ NOVO: Retorna especificações técnicas do veículo para este ano
+     * Usa GuideVehicleIntegrationService::getVehicleSpecs()
+     * 
+     * @return array|null
+     */
+    public function getSpecs(): ?array
+    {
+        $makeSlug = $this->make->slug ?? 'toyota';
+        $modelSlug = $this->model->slug ?? 'corolla';
+        $year = (int) $this->year;
+
+        // Buscar especificações REAIS do MySQL
+        $vehicleSpecs = $this->vehicleIntegration->getVehicleSpecs(
+            $makeSlug, 
+            $modelSlug, 
+            $year
+        );
+
+        if (!$vehicleSpecs) {
+            return null;
         }
 
-        // Versões padrão < 2020 (Corolla)
-        if ($modelSlug === 'corolla' && $year < 2020) {
-            return $versions['corolla'][2019];
-        }
-
-        // Hilux >= 2016
-        if ($modelSlug === 'hilux' && $year >= 2016) {
-            return $versions['hilux'][2020];
-        }
-
-        // Fallback genérico
+        // Retornar specs formatadas
         return [
-            ['version' => 'Base', 'engine' => '1.0 Turbo', 'url' => $this->buildUrl('base')],
-            ['version' => 'Plus', 'engine' => '1.0 Turbo', 'url' => $this->buildUrl('plus')],
+            'engine' => [
+                'code' => $vehicleSpecs->engine_code ?? 'N/A',
+                'displacement' => $vehicleSpecs->engineSpecs->displacement ?? null,
+                'cylinders' => $vehicleSpecs->engineSpecs->cylinders ?? null,
+                'valves' => $vehicleSpecs->engineSpecs->valves ?? null,
+                'aspiration' => $vehicleSpecs->engineSpecs->aspiration ?? null,
+            ],
+            'performance' => [
+                'power_hp' => $vehicleSpecs->specs->power_hp ?? null,
+                'power_rpm' => $vehicleSpecs->specs->power_rpm ?? null,
+                'torque_nm' => $vehicleSpecs->specs->torque_nm ?? null,
+                'torque_rpm' => $vehicleSpecs->specs->torque_rpm ?? null,
+            ],
+            'fluids' => [
+                'oil_type' => $vehicleSpecs->fluidSpecs->engine_oil_type ?? null,
+                'oil_capacity' => $vehicleSpecs->fluidSpecs->engine_oil_capacity ?? null,
+                'coolant_capacity' => $vehicleSpecs->fluidSpecs->coolant_capacity ?? null,
+                'brake_fluid_type' => $vehicleSpecs->fluidSpecs->brake_fluid_type ?? null,
+            ],
+            'tires' => [
+                'front_size' => $vehicleSpecs->tireSpecs->front_tire_size ?? null,
+                'rear_size' => $vehicleSpecs->tireSpecs->rear_tire_size ?? null,
+                'pressure_front' => $vehicleSpecs->tireSpecs->recommended_pressure_front ?? null,
+                'pressure_rear' => $vehicleSpecs->tireSpecs->recommended_pressure_rear ?? null,
+            ],
+            'battery' => [
+                'type' => $vehicleSpecs->batterySpecs->type ?? null,
+                'capacity' => $vehicleSpecs->batterySpecs->capacity_ah ?? null,
+            ],
         ];
     }
 
@@ -168,12 +216,47 @@ class GuideYearViewModel
         ];
     }
 
-    private function buildUrl(string $version): string
+    private function buildUrl(string $versionSlug): string
     {
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
 
-        return "/guias/{$category['slug']}/{$make['slug']}/{$model['slug']}/{$this->year}/{$version}";
+        return "/guias/{$category['slug']}/{$make['slug']}/{$model['slug']}/{$this->year}/{$versionSlug}";
+    }
+
+    /**
+     * Traduz tipo de combustível para português
+     */
+    private function translateFuelType(?string $fuelType): string
+    {
+        $translations = [
+            'gasoline' => 'Gasolina',
+            'diesel' => 'Diesel',
+            'ethanol' => 'Etanol',
+            'flex' => 'Flex',
+            'electric' => 'Elétrico',
+            'hybrid' => 'Híbrido',
+            'plugin_hybrid' => 'Híbrido Plug-in',
+            'cng' => 'GNV',
+        ];
+
+        return $translations[$fuelType] ?? 'N/A';
+    }
+
+    /**
+     * Traduz tipo de transmissão para português
+     */
+    private function translateTransmission(?string $transmission): string
+    {
+        $translations = [
+            'manual' => 'Manual',
+            'automatic' => 'Automático',
+            'cvt' => 'CVT',
+            'dct' => 'DCT',
+            'amt' => 'AMT',
+        ];
+
+        return $translations[$transmission] ?? 'N/A';
     }
 }

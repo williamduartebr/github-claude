@@ -50,6 +50,10 @@ class GuideIndexViewModel
                 'slug' => $category->slug,
                 'icon' => $category->icon ?? '📄',
                 'description' => $category->description ?? '',
+                'icon_svg' => $category->icon_svg ?? '',
+                'icon_bg_color' => $category->icon_bg_color ?? '',
+                'icon_text_color' => $category->icon_text_color ?? '',
+                'seo_info' => $category->seo_info ?? '',
                 'url' => route('guide.category', ['category' => $category->slug]),
             ];
         })->toArray();
@@ -100,6 +104,8 @@ class GuideIndexViewModel
             })
             ->map(function($guides) {
                 $first = $guides->first();
+
+                dump( $first);
                 $makeName = $first->make;
                 $modelName = $first->model;
                 

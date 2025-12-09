@@ -3,19 +3,48 @@
 namespace Src\VehicleDataCenter\Presentation\ViewModels;
 
 /**
- * ViewModel para ficha técnica de uma versão específica
+ * ViewModel para ficha técnica de uma versão específica - CORRIGIDO
+ * 
+ * ✅ BUSCA DADOS REAIS DO MYSQL
+ * ✅ USA RELAÇÕES DO ELOQUENT
+ * ✅ FALLBACKS PARA DADOS AUSENTES
  * 
  * Rota: /veiculos/{make}/{model}/{year}/{version}
  * View: vehicles.version
- * Exemplo: /veiculos/toyota/corolla/2003/gli-18
+ * Exemplo: /veiculos/toyota/corolla/2023/gli-20
  */
 class VehicleVersionViewModel
 {
     private $version;
+    private $specs;
+    private $engineSpecs;
+    private $fluidSpecs;
+    private $tireSpecs;
+    private $batterySpecs;
+    private $dimensionsSpecs;
 
     public function __construct($version)
     {
         $this->version = $version;
+        
+        // Eager load all relationships
+        $this->version->load([
+            'model.make',
+            'specs',
+            'engineSpecs',
+            'fluidSpecs',
+            'tireSpecs',
+            'batterySpecs',
+            'dimensionsSpecs'
+        ]);
+
+        // Store specs for easy access
+        $this->specs = $this->version->specs;
+        $this->engineSpecs = $this->version->engineSpecs;
+        $this->fluidSpecs = $this->version->fluidSpecs;
+        $this->tireSpecs = $this->version->tireSpecs;
+        $this->batterySpecs = $this->version->batterySpecs;
+        $this->dimensionsSpecs = $this->version->dimensionsSpecs;
     }
 
     /**
@@ -72,86 +101,277 @@ class VehicleVersionViewModel
 
     /**
      * Retorna quick facts (4 infos rápidas)
+     * ✅ AGORA COM DADOS REAIS DO MYSQL
      */
     public function getQuickFacts(): array
     {
-        // TODO: Buscar dados reais do banco
         return [
-            ['label' => 'Motor', 'value' => $this->version->engine_code ?? '1.8L • 4 cilindros'],
-            ['label' => 'Potência', 'value' => $this->version->power ?? '~130–144 cv'],
-            ['label' => 'Transmissão', 'value' => $this->version->transmission ?? 'Manual / Automática'],
-            ['label' => 'Porta-malas', 'value' => $this->version->trunk_capacity ?? '~470 L'],
+            [
+                'label' => 'Motor',
+                'value' => $this->formatEngine()
+            ],
+            [
+                'label' => 'Potência',
+                'value' => $this->formatPower()
+            ],
+            [
+                'label' => 'Transmissão',
+                'value' => $this->formatTransmission()
+            ],
+            [
+                'label' => 'Porta-malas',
+                'value' => $this->formatTrunk()
+            ],
         ];
     }
 
     /**
      * Retorna ficha técnica principal
+     * ✅ AGORA COM DADOS REAIS DO MYSQL
      */
     public function getMainSpecs(): array
     {
-        // TODO: Buscar dados reais do banco
-        return [
-            ['label' => 'Motor', 'value' => '1.8L 4 cilindros (Flex)'],
-            ['label' => 'Potência', 'value' => '~130 cv (Gasolina) • ~144 cv (Etanol)'],
-            ['label' => 'Torque', 'value' => '~17,3 kgf·m'],
-            ['label' => 'Transmissão', 'value' => 'Manual 5 marchas / Automática'],
-            ['label' => 'Combustível', 'value' => 'Flex'],
-            ['label' => 'Peso', 'value' => '~1200 kg'],
-            ['label' => 'Porta-malas', 'value' => '~470 L'],
-        ];
+        $specs = [];
+
+        // Motor
+        if ($this->engineSpecs) {
+            $displacement = $this->engineSpecs->displacement_cc ?? null;
+            $cylinders = $this->engineSpecs->cylinders ?? null;
+            $fuelType = $this->version->fuel_type ?? 'N/A';
+            
+            $motorText = '';
+            if ($displacement) {
+                $motorText = number_format($displacement / 1000, 1) . 'L';
+            }
+            if ($cylinders) {
+                $motorText .= ($motorText ? ' ' : '') . $cylinders . ' cilindros';
+            }
+            if ($fuelType !== 'N/A') {
+                $motorText .= ($motorText ? ' • ' : '') . ucfirst($fuelType);
+            }
+            
+            if ($motorText) {
+                $specs[] = ['label' => 'Motor', 'value' => $motorText];
+            }
+        }
+
+        // Potência
+        if ($this->specs) {
+            $powerHP = $this->specs->power_hp ?? null;
+            $powerKW = $this->specs->power_kw ?? null;
+            
+            if ($powerHP || $powerKW) {
+                $powerText = '';
+                if ($powerHP) $powerText .= "{$powerHP} cv";
+                if ($powerKW) $powerText .= ($powerText ? ' • ' : '') . "{$powerKW} kW";
+                $specs[] = ['label' => 'Potência', 'value' => $powerText];
+            }
+        }
+
+        // Torque
+        if ($this->specs && $this->specs->torque_nm) {
+            $torque = $this->specs->torque_nm;
+            $torqueKgfm = round($torque / 9.80665, 1);
+            $specs[] = ['label' => 'Torque', 'value' => "{$torque} Nm • {$torqueKgfm} kgf·m"];
+        }
+
+        // Transmissão
+        $transmission = $this->formatTransmission();
+        if ($transmission !== 'N/A') {
+            $specs[] = ['label' => 'Transmissão', 'value' => $transmission];
+        }
+
+        // Combustível
+        $fuelType = $this->version->fuel_type ?? null;
+        if ($fuelType) {
+            $fuelMap = [
+                'gasoline' => 'Gasolina',
+                'ethanol' => 'Etanol',
+                'diesel' => 'Diesel',
+                'flex' => 'Flex (Gasolina/Etanol)',
+                'electric' => 'Elétrico',
+                'hybrid' => 'Híbrido',
+            ];
+            $specs[] = ['label' => 'Combustível', 'value' => $fuelMap[$fuelType] ?? ucfirst($fuelType)];
+        }
+
+        // Peso
+        if ($this->specs && $this->specs->weight_kg) {
+            $specs[] = ['label' => 'Peso', 'value' => $this->specs->weight_kg . ' kg'];
+        }
+
+        // Porta-malas
+        if ($this->specs && $this->specs->trunk_capacity_liters) {
+            $specs[] = ['label' => 'Porta-malas', 'value' => $this->specs->trunk_capacity_liters . ' L'];
+        }
+
+        // Consumo médio
+        if ($this->specs && $this->specs->fuel_consumption_mixed) {
+            $specs[] = ['label' => 'Consumo médio', 'value' => $this->specs->fuel_consumption_mixed . ' km/l'];
+        }
+
+        // Tanque
+        if ($this->specs && $this->specs->fuel_tank_capacity) {
+            $specs[] = ['label' => 'Tanque', 'value' => $this->specs->fuel_tank_capacity . ' L'];
+        }
+
+        // Aceleração 0-100
+        if ($this->specs && $this->specs->acceleration_0_100) {
+            $specs[] = ['label' => 'Aceleração 0-100 km/h', 'value' => $this->specs->acceleration_0_100 . ' s'];
+        }
+
+        // Velocidade máxima
+        if ($this->specs && $this->specs->top_speed_kmh) {
+            $specs[] = ['label' => 'Velocidade máxima', 'value' => $this->specs->top_speed_kmh . ' km/h'];
+        }
+
+        return $specs;
     }
 
     /**
      * Retorna cards laterais (óleo, pneus, tanque)
+     * ✅ AGORA COM DADOS REAIS DO MYSQL
      */
     public function getSideCards(): array
     {
-        // TODO: Buscar dados reais do banco
-        return [
-            [
-                'title' => 'Óleo recomendado',
-                'value' => '5W-30 (API SL/SM+)',
-                'extra' => 'Volume: 4,2 L',
-            ],
-            [
-                'title' => 'Pneus originais',
-                'value' => '195/65 R15',
-                'extra' => 'Equivalente: 205/60 R15',
-            ],
-            [
+        $cards = [];
+
+        // Card 1: Óleo recomendado
+        if ($this->fluidSpecs) {
+            $oilType = $this->fluidSpecs->engine_oil_type ?? null;
+            $oilCapacity = $this->fluidSpecs->engine_oil_capacity ?? null;
+            
+            if ($oilType || $oilCapacity) {
+                $cards[] = [
+                    'title' => 'Óleo recomendado',
+                    'value' => $oilType ?? 'Consulte manual',
+                    'extra' => $oilCapacity ? "Volume: {$oilCapacity} L" : null,
+                ];
+            }
+        }
+
+        // Card 2: Pneus originais
+        if ($this->tireSpecs) {
+            $frontTire = $this->tireSpecs->front_tire_size ?? null;
+            $rearTire = $this->tireSpecs->rear_tire_size ?? null;
+            
+            if ($frontTire) {
+                $cards[] = [
+                    'title' => 'Pneus originais',
+                    'value' => $frontTire,
+                    'extra' => ($rearTire && $rearTire !== $frontTire) ? "Traseiro: {$rearTire}" : null,
+                ];
+            }
+        }
+
+        // Card 3: Tanque
+        if ($this->specs && $this->specs->fuel_tank_capacity) {
+            $cards[] = [
                 'title' => 'Tanque',
-                'value' => '~55 L',
+                'value' => $this->specs->fuel_tank_capacity . ' L',
                 'extra' => null,
-            ],
-        ];
+            ];
+        }
+
+        // Se não tiver dados, retornar array vazio (melhor que dados mockados)
+        return $cards;
     }
 
     /**
      * Retorna fluidos e capacidades
+     * ✅ AGORA COM DADOS REAIS DO MYSQL
      */
     public function getFluids(): array
     {
-        // TODO: Buscar dados reais do banco
-        return [
-            ['emoji' => '💧', 'label' => 'Óleo do motor', 'value' => '5W-30 – 4,2 L'],
-            ['emoji' => '🛑', 'label' => 'Fluído de freio', 'value' => 'DOT 4 – 0,6 L'],
-            ['emoji' => '❄️', 'label' => 'Arrefecimento', 'value' => '6,5 L – G12 / Long Life'],
-            ['emoji' => '⚙️', 'label' => 'Câmbio manual', 'value' => 'GL-4 – ~2,4 L'],
-            ['emoji' => '🔄', 'label' => 'Câmbio automático', 'value' => 'ATF T-IV / WS'],
-            ['emoji' => '🔋', 'label' => 'Bateria', 'value' => '60 Ah'],
-        ];
+        $fluids = [];
+
+        if (!$this->fluidSpecs) {
+            return []; // Sem dados, retorna vazio
+        }
+
+        // Óleo do motor
+        if ($this->fluidSpecs->engine_oil_type || $this->fluidSpecs->engine_oil_capacity) {
+            $oilValue = $this->fluidSpecs->engine_oil_type ?? 'Consulte manual';
+            if ($this->fluidSpecs->engine_oil_capacity) {
+                $oilValue .= " – {$this->fluidSpecs->engine_oil_capacity} L";
+            }
+            $fluids[] = ['emoji' => '💧', 'label' => 'Óleo do motor', 'value' => $oilValue];
+        }
+
+        // Fluido de freio
+        if ($this->fluidSpecs->brake_fluid_type || $this->fluidSpecs->brake_fluid_capacity) {
+            $brakeValue = $this->fluidSpecs->brake_fluid_type ?? 'DOT 3/4';
+            if ($this->fluidSpecs->brake_fluid_capacity) {
+                $brakeValue .= " – {$this->fluidSpecs->brake_fluid_capacity} L";
+            }
+            $fluids[] = ['emoji' => '🛑', 'label' => 'Fluido de freio', 'value' => $brakeValue];
+        }
+
+        // Arrefecimento
+        if ($this->fluidSpecs->coolant_type || $this->fluidSpecs->coolant_capacity) {
+            $coolantValue = $this->fluidSpecs->coolant_type ?? 'Etilenoglicol';
+            if ($this->fluidSpecs->coolant_capacity) {
+                $coolantValue .= " – {$this->fluidSpecs->coolant_capacity} L";
+            }
+            $fluids[] = ['emoji' => '❄️', 'label' => 'Arrefecimento', 'value' => $coolantValue];
+        }
+
+        // Óleo de câmbio
+        if ($this->fluidSpecs->transmission_fluid_type || $this->fluidSpecs->transmission_fluid_capacity) {
+            $transValue = $this->fluidSpecs->transmission_fluid_type ?? 'Consulte manual';
+            if ($this->fluidSpecs->transmission_fluid_capacity) {
+                $transValue .= " – {$this->fluidSpecs->transmission_fluid_capacity} L";
+            }
+            
+            $transmission = $this->version->transmission ?? 'manual';
+            $label = str_contains(strtolower($transmission), 'auto') ? 'Câmbio automático' : 'Câmbio manual';
+            $emoji = str_contains(strtolower($transmission), 'auto') ? '🔄' : '⚙️';
+            
+            $fluids[] = ['emoji' => $emoji, 'label' => $label, 'value' => $transValue];
+        }
+
+        // Direção hidráulica
+        if ($this->fluidSpecs->power_steering_fluid_type || $this->fluidSpecs->power_steering_fluid_capacity) {
+            $psValue = $this->fluidSpecs->power_steering_fluid_type ?? 'ATF';
+            if ($this->fluidSpecs->power_steering_fluid_capacity) {
+                $psValue .= " – {$this->fluidSpecs->power_steering_fluid_capacity} L";
+            }
+            $fluids[] = ['emoji' => '🔧', 'label' => 'Direção hidráulica', 'value' => $psValue];
+        }
+
+        // Bateria
+        if ($this->batterySpecs) {
+            $batteryValue = '';
+            if ($this->batterySpecs->capacity_ah) {
+                $batteryValue = "{$this->batterySpecs->capacity_ah} Ah";
+            }
+            if ($this->batterySpecs->group_size) {
+                $batteryValue .= ($batteryValue ? ' • ' : '') . $this->batterySpecs->group_size;
+            }
+            if ($batteryValue) {
+                $fluids[] = ['emoji' => '🔋', 'label' => 'Bateria', 'value' => $batteryValue];
+            }
+        }
+
+        return $fluids;
     }
 
     /**
      * Retorna resumo de manutenção
+     * ✅ AGORA COM DADOS SEMI-REAIS (baseados em padrões da indústria)
      */
     public function getMaintenanceSummary(): array
     {
-        // TODO: Buscar dados reais do banco
+        // Manutenção básica segue padrões da indústria
+        // Pode ser expandido para buscar dados específicos do fabricante no futuro
+        
         return [
-            ['km' => '10.000', 'items' => 'Óleo, filtro, inspeções.'],
-            ['km' => '20.000', 'items' => 'Óleo, filtros, correias.'],
-            ['km' => '40.000', 'items' => 'Óleo, filtros, velas, pneus.'],
+            ['km' => '10.000', 'items' => 'Óleo, filtro de óleo, inspeções gerais.'],
+            ['km' => '20.000', 'items' => 'Óleo, filtros (ar/óleo/cabine), correias, fluidos.'],
+            ['km' => '40.000', 'items' => 'Óleo, filtros, velas, alinhamento, balanceamento.'],
+            ['km' => '60.000', 'items' => 'Revisão completa, troca de fluidos, inspeção de freios.'],
+            ['km' => '80.000', 'items' => 'Óleo, filtros, bateria, correias, suspensão.'],
+            ['km' => '100.000', 'items' => 'Revisão geral, troca de correia dentada (se aplicável).'],
         ];
     }
 
@@ -165,14 +385,14 @@ class VehicleVersionViewModel
         $year = $this->version->year;
 
         return [
-            ['emoji' => '🛢️', 'name' => 'Óleo Recomendado', 'url' => "/guias/oleo/{$make}/{$model}-{$year}"],
-            ['emoji' => '🔧', 'name' => 'Calibragem', 'url' => "/guias/calibragem/{$make}/{$model}-{$year}"],
-            ['emoji' => '🚗', 'name' => 'Pneus', 'url' => "/guias/pneus/{$make}/{$model}-{$year}"],
-            ['emoji' => '📋', 'name' => 'Revisões', 'url' => "/guias/revisoes/{$make}/{$model}-{$year}"],
-            ['emoji' => '⚠️', 'name' => 'Problemas', 'url' => "/guias/problemas/{$make}/{$model}-{$year}"],
-            ['emoji' => '⛽', 'name' => 'Consumo', 'url' => "/guias/consumo/{$make}/{$model}-{$year}"],
-            ['emoji' => '🔋', 'name' => 'Bateria', 'url' => "/guias/bateria/{$make}/{$model}-{$year}"],
-            ['emoji' => '🔄', 'name' => 'Câmbio', 'url' => "/guias/cambio/{$make}/{$model}-{$year}"],
+            ['emoji' => '🛢️', 'name' => 'Óleo Recomendado', 'url' => "/guias/oleo/{$make}/{$model}/{$year}"],
+            ['emoji' => '🔧', 'name' => 'Calibragem', 'url' => "/guias/calibragem/{$make}/{$model}/{$year}"],
+            ['emoji' => '🚗', 'name' => 'Pneus', 'url' => "/guias/pneus/{$make}/{$model}/{$year}"],
+            ['emoji' => '📋', 'name' => 'Revisões', 'url' => "/guias/revisao/{$make}/{$model}/{$year}"],
+            ['emoji' => '⚠️', 'name' => 'Problemas', 'url' => "/guias/problemas/{$make}/{$model}/{$year}"],
+            ['emoji' => '⛽', 'name' => 'Consumo', 'url' => "/guias/consumo/{$make}/{$model}/{$year}"],
+            ['emoji' => '🔋', 'name' => 'Bateria', 'url' => "/guias/bateria/{$make}/{$model}/{$year}"],
+            ['emoji' => '🔄', 'name' => 'Câmbio', 'url' => "/guias/cambio/{$make}/{$model}/{$year}"],
         ];
     }
 
@@ -211,6 +431,105 @@ class VehicleVersionViewModel
             ['name' => $model->name, 'url' => route('vehicles.model', ['make' => $make->slug, 'model' => $model->slug])],
             ['name' => "{$this->version->name} {$this->version->year}", 'url' => null],
         ];
+    }
+
+    // ================================================================
+    // MÉTODOS PRIVADOS DE FORMATAÇÃO
+    // ================================================================
+
+    /**
+     * Formata informações do motor
+     */
+    private function formatEngine(): string
+    {
+        if (!$this->engineSpecs) {
+            return $this->version->engine_code ?? 'N/A';
+        }
+
+        $parts = [];
+        
+        // Displacement
+        if ($this->engineSpecs->displacement_cc) {
+            $liters = number_format($this->engineSpecs->displacement_cc / 1000, 1);
+            $parts[] = "{$liters}L";
+        }
+        
+        // Cylinders
+        if ($this->engineSpecs->cylinders) {
+            $parts[] = "{$this->engineSpecs->cylinders} cilindros";
+        }
+        
+        // Engine type
+        if ($this->engineSpecs->engine_type) {
+            $types = [
+                'inline' => 'Em linha',
+                'v' => 'V',
+                'boxer' => 'Boxer',
+                'rotary' => 'Rotativo',
+            ];
+            $type = $types[strtolower($this->engineSpecs->engine_type)] ?? $this->engineSpecs->engine_type;
+            if (!in_array($type, $parts)) {
+                $parts[] = $type;
+            }
+        }
+
+        return implode(' • ', $parts) ?: ($this->version->engine_code ?? 'N/A');
+    }
+
+    /**
+     * Formata potência
+     */
+    private function formatPower(): string
+    {
+        if (!$this->specs) {
+            return 'N/A';
+        }
+
+        $parts = [];
+        
+        if ($this->specs->power_hp) {
+            $parts[] = "{$this->specs->power_hp} cv";
+        }
+        
+        if ($this->specs->power_kw) {
+            $parts[] = "{$this->specs->power_kw} kW";
+        }
+
+        return implode(' • ', $parts) ?: 'N/A';
+    }
+
+    /**
+     * Formata transmissão
+     */
+    private function formatTransmission(): string
+    {
+        $transmission = $this->version->transmission ?? null;
+        
+        if (!$transmission) {
+            return 'N/A';
+        }
+
+        $map = [
+            'manual' => 'Manual',
+            'automatic' => 'Automática',
+            'cvt' => 'CVT',
+            'dct' => 'DCT',
+            'amt' => 'Automatizada',
+        ];
+
+        return $map[strtolower($transmission)] ?? ucfirst($transmission);
+    }
+
+    /**
+     * Formata capacidade do porta-malas
+     */
+    private function formatTrunk(): string
+    {
+        if ($this->specs && $this->specs->trunk_capacity_liters) {
+            return $this->specs->trunk_capacity_liters . ' L';
+        }
+
+        return 'N/A';
     }
 
     /**
