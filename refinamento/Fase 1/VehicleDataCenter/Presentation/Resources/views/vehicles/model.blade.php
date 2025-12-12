@@ -77,9 +77,12 @@
             </div>
 
             <div class="flex-shrink-0 mt-6 md:mt-0">
-                <img src="{{ asset('/images/placeholder/corolla-full-hero.jpeg') }}"
+
+            {{ $model['image'] }}
+                <img src="{{ sprintf('%s%s', Config::get('aws.s3.vehicles'), $model['image']) }}"
                     alt="{{ $make['name'] }} {{ $model['name'] }} - imagem ilustrativa"
                     class="rounded-lg shadow max-w-sm">
+
             </div>
         </div>
     </div>
@@ -101,7 +104,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
             @foreach($quickGuides as $guide)
             <a href="{{ $guide['url'] }}"
-                class="block bg-white border border-gray-200 rounded-lg p-4 hover:shadow hover:border-blue-500 transition-all">
+                class="block bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg hover:border-blue-500 transition-all">
                 <h3 class="text-sm font-semibold font-montserrat">{{ $guide['title'] }}</h3>
             </a>
             @endforeach
@@ -116,15 +119,15 @@
         <div class="flex flex-wrap gap-2 text-sm font-roboto">
             @foreach($yearsList as $yearItem)
             <a href="{{ $yearItem['url'] }}"
-                class="px-3 py-1 {{ $yearItem['is_first'] ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' }} rounded-full hover:bg-blue-700 hover:text-white transition-colors">
+                class="px-3 py-1 {{ $yearItem['is_first'] ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' }} rounded-full hover:bg-blue-700 hover:text-white transition-colors ">
                 {{ $yearItem['label'] }}
             </a>
             @endforeach
-            
+
             {{-- Link para ver todos os anos --}}
             @if(count($versionsByYear) > 2)
             <button id="expandAllYearsBtn"
-                    class="px-3 py-1 bg-gray-100 text-gray-700 border border-gray-300 rounded-full hover:bg-gray-200 transition-colors">
+                class="px-3 py-1 bg-gray-100 text-gray-700 border border-gray-300 rounded-full hover:bg-gray-200 transition-colors">
                 Todos os anos ↓
             </button>
             @endif
@@ -135,17 +138,19 @@
     {{-- CATÁLOGO DE TODOS OS ANOS + VERSÕES (PARA REFERÊNCIA) --}}
     <section id="todos-anos" class="space-y-10">
         <h2 class="text-xl font-semibold mb-4 font-montserrat">Todas as gerações e versões</h2>
-        
-        @foreach($versionsByYear as $index => $yearBlock)
-            <div id="{{ $yearBlock['anchor'] }}" 
-                class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 {{ $index >= 2 ? 'hidden opacity-0 transition-all duration-500 ease-in-out' : '' }}"
-                data-year-block
-                data-year-index="{{ $index }}">
-                <h3 class="text-xl font-semibold mb-4 font-montserrat">{{ $yearBlock['title'] }}</h3>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @foreach($yearBlock['versions'] as $version)
-                    <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow transition-all">
+        @foreach($versionsByYear as $index => $yearBlock)
+        <div id="{{ $yearBlock['anchor'] }}"
+            class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 {{ $index >= 2 ? 'hidden opacity-0 transition-all duration-500 ease-in-out' : '' }}"
+            data-year-block data-year-index="{{ $index }}">
+            <h3 class="text-xl font-semibold mb-4 font-montserrat">{{ $yearBlock['title'] }}</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($yearBlock['versions'] as $version)
+                <a href="{{ $version['url'] }}">
+
+                    <div
+                        class="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-lg transition-all">
                         <h4 class="font-semibold font-montserrat">{{ $version['name'] }}</h4>
                         @if(isset($version['engine']) || isset($version['transmission']))
                         <p class="text-xs text-gray-600 mb-2 font-roboto">
@@ -156,22 +161,24 @@
                             {{ $version['transmission'] ?? '' }}
                         </p>
                         @endif
-                        <a href="{{ $version['url'] }}" class="text-blue-600 text-xs hover:underline font-roboto">Ver
-                            detalhes →</a>
+                        <span class="text-blue-600 text-xs font-roboto hover:underline">Ver
+                            detalhes →</span>
                     </div>
-                    @endforeach
-                </div>
+                </a>
+
+                @endforeach
             </div>
+        </div>
         @endforeach
 
         {{-- Botão Mostrar Todos --}}
         @if(count($versionsByYear) > 2)
         <div class="text-center mt-6">
-            <button id="showAllYearsBtn" 
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-md">
+            <button id="showAllYearsBtn"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-lg">
                 <span>Mostrar todos os anos</span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
         </div>
@@ -219,7 +226,7 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     function expandAllYears(scrollToFirst = false) {
         const hiddenBlocks = document.querySelectorAll('[data-year-block].hidden');
         

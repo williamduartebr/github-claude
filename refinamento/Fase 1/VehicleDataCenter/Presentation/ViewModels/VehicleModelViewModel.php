@@ -259,6 +259,6 @@ class VehicleModelViewModel
     private function getModelImage(): string
     {
         // TODO: Implementar lógica de imagem real
-        return "/images/placeholder/{$this->model->slug}-full-hero.jpg";
+        return "/images/placeholder/{$this->model->slug}-full-hero.jpeg";
     }
 }

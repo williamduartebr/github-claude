@@ -136,7 +136,7 @@ class GuideRepository implements GuideRepositoryInterface
     public function updateGuide(string $id, array $data): Guide
     {
         $guide = $this->findById($id);
-        
+
         if (!$guide) {
             throw new \Exception("Guide with ID {$id} not found");
         }
@@ -153,7 +153,7 @@ class GuideRepository implements GuideRepositoryInterface
     public function deleteGuide(string $id): bool
     {
         $guide = $this->findById($id);
-        
+
         if (!$guide) {
             return false;
         }
@@ -226,7 +226,7 @@ class GuideRepository implements GuideRepositoryInterface
 
         // Limite
         $limit = $filters['limit'] ?? 50;
-        
+
         return $query
             ->with(['category', 'guideSeo'])
             ->limit($limit)
@@ -264,17 +264,17 @@ class GuideRepository implements GuideRepositoryInterface
         // 1. Mesma marca e modelo
         // 2. Mesma categoria
         // 3. Anos próximos
-        
+
         return $this->model
             ->where('_id', '!=', $guide->_id)
             ->where(function ($query) use ($guide) {
                 // Prioriza mesma marca/modelo
                 $query->where(function ($q) use ($guide) {
                     $q->where('make_slug', $guide->make_slug)
-                      ->where('model_slug', $guide->model_slug);
+                        ->where('model_slug', $guide->model_slug);
                 })
-                // Ou mesma categoria
-                ->orWhere('guide_category_id', $guide->guide_category_id);
+                    // Ou mesma categoria
+                    ->orWhere('guide_category_id', $guide->guide_category_id);
             })
             ->with(['category', 'guideSeo'])
             ->limit($limit)
@@ -289,6 +289,23 @@ class GuideRepository implements GuideRepositoryInterface
                 $guide->model_slug,
                 $guide->guide_category_id
             ])
+            ->get();
+    }
+
+    /**
+     * Busca guias por marca e modelo
+     *
+     * @param string $makeSlug
+     * @param string $modelSlug
+     * @return Collection
+     */
+    public function findByMakeAndModel(string $makeSlug, string $modelSlug): Collection
+    {
+        return Guide::where('make_slug', $makeSlug)
+            ->where('model_slug', $modelSlug)
+            ->where('is_active', true)
+            ->orderBy('year_start', 'desc')
+            ->orderBy('guide_category_id')
             ->get();
     }
 }

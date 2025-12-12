@@ -68,6 +68,13 @@ interface GuideCategoryRepositoryInterface
     public function deleteCategory(string $id): bool;
 
     /**
+     * ✅ NOVO MÉTODO: Busca categorias ativas
+     * 
+     * @return Collection
+     */
+    public function getActive(): Collection;
+
+    /**
      * Busca categorias por termo
      *
      * @param string $term

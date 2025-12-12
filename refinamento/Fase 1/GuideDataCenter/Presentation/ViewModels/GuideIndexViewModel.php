@@ -118,7 +118,7 @@ class GuideIndexViewModel
                     'count' => $guides->count(),
                     'image' => "/images/placeholder/{$first->model_slug}-hero.jpg",
                     'description' => "Veja todos os guias técnicos do {$makeName} {$modelName}",
-                    'url' => route('guide.byModel', [
+                    'url' => route('guide.make.model', [
                         'make' => $first->make_slug,
                         'model' => $first->model_slug
                     ])

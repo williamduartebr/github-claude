@@ -89,7 +89,7 @@
             </div>
 
             <div class="mt-6 md:mt-0">
-                <img src="{{ $make['logo'] }}" class="w-40 h-auto opacity-90" alt="{{ $make['name'] }}">
+                <img src="{{ sprintf('%s/%s', Config::get('aws.s3.logo'), $make['logo']) }}" class="w-40 h-auto opacity-90" alt="{{ $make['name'] }}">
             </div>
         </div>
     </div>

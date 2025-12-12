@@ -124,6 +124,18 @@ class GuideCategoryRepository implements GuideCategoryRepositoryInterface
     }
 
     /**
+     * ✅ IMPLEMENTAÇÃO: Busca categorias ativas
+     * 
+     * @return Collection
+     */
+    public function getActive(): Collection
+    {
+        return GuideCategory::where('is_active', true)
+            ->orderBy('order', 'asc')
+            ->get();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function updateOrder(array $orderMap): bool

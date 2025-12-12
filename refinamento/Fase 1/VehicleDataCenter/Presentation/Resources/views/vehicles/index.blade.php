@@ -108,7 +108,7 @@
                 {{-- Logo da marca --}}
                 <div class="w-28 md:w-32 h-28 md:h-32 mb-3 flex items-center justify-center">
                     @if($make['logo'])
-                    <img src="{{ asset(sprintf('images/statics/logos/%s', $make['logo'] )) }}" alt="Logo {{ $make['name'] }}"
+                    <img src="{{ sprintf('%s/%s', Config::get('aws.s3.logo'), $make['logo']) }}" alt="Logo {{ $make['name'] }}"
                         class="max-w-full max-h-full object-contain">
                     @else
                     <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">

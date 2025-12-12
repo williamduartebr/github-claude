@@ -149,4 +149,13 @@ interface GuideRepositoryInterface
      * @return Collection
      */
     public function findRelated(Guide $guide, int $limit = 10): Collection;
+
+    /**
+     * Busca guias por marca e modelo
+     *
+     * @param string $makeSlug
+     * @param string $modelSlug
+     * @return Collection
+     */
+    public function findByMakeAndModel(string $makeSlug, string $modelSlug): Collection;
 }

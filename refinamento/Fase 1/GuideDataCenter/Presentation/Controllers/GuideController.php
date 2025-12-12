@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace Src\GuideDataCenter\Presentation\Controllers;
 
 use Illuminate\View\View;
-use Src\GuideDataCenter\Domain\Mongo\Guide;
-use Src\GuideDataCenter\Presentation\ViewModels\GuideYearViewModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Src\GuideDataCenter\Domain\Mongo\Guide;
 use Src\GuideDataCenter\Domain\Services\GuideSeoService;
 use Src\GuideDataCenter\Domain\Services\GuideClusterService;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideListViewModel;
+use Src\GuideDataCenter\Presentation\ViewModels\GuideYearViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideIndexViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideSpecificViewModel;
+use Src\GuideDataCenter\Presentation\ViewModels\GuideMakeModelViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryMakeViewModel;
 use Src\VehicleDataCenter\Domain\Repositories\VehicleMakeRepositoryInterface;
 use Src\VehicleDataCenter\Domain\Repositories\VehicleModelRepositoryInterface;
+use Src\VehicleDataCenter\Domain\Repositories\VehicleVersionRepositoryInterface; // ✅ ADICIONADO
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryMakeModelViewModel;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
@@ -30,6 +32,7 @@ class GuideController extends Controller
         private readonly GuideCategoryRepositoryInterface $categoryRepository,
         private readonly VehicleMakeRepositoryInterface $makeRepository,
         private readonly VehicleModelRepositoryInterface $modelRepository,
+        private readonly VehicleVersionRepositoryInterface $versionRepository, // ✅ ADICIONADO
         private readonly GuideSeoService $seoService,
         private readonly GuideClusterService $clusterService
     ) {}
@@ -41,8 +44,8 @@ class GuideController extends Controller
      */
     public function index(): View
     {
-        $categories = collect([]);
-        $makes = collect([]);
+        $categories = $this->categoryRepository->getActive(); // ✅ CORRIGIDO
+        $makes = $this->makeRepository->getActive();
 
         $viewModel = new GuideIndexViewModel($categories, $makes);
 
@@ -108,6 +111,63 @@ class GuideController extends Controller
         ]);
     }
 
+    /**
+     * Página de todos os guias de um modelo específico
+     * 
+     * Rota: GET /guias/marca/{make}/{model}
+     * View: guide-data-center::guide.make-model
+     * Exemplo: /guias/marca/honda/civic
+     * 
+     * Mostra todos os guias disponíveis para um modelo específico,
+     * agrupados por categoria, com informações do veículo.
+     */
+    public function showMakeModel(string $makeSlug, string $modelSlug): View
+    {
+        // 1. Buscar marca no VehicleDataCenter
+        $make = $this->makeRepository->findBySlug($makeSlug);
+        
+        if (!$make) {
+            abort(404, 'Marca não encontrada');
+        }
+
+        // 2. Buscar modelo no VehicleDataCenter
+        $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
+        
+        if (!$model) {
+            abort(404, 'Modelo não encontrado');
+        }
+
+        // 3. Buscar todas as categorias ativas
+        $categories = $this->categoryRepository->getActive(); // ✅ AGORA FUNCIONA
+
+        // 4. Buscar guias disponíveis para este modelo
+        $guides = $this->guideRepository->findByMakeAndModel($makeSlug, $modelSlug);
+
+        // 5. Buscar versões disponíveis para estatísticas
+        $versions = $this->versionRepository->getByModel($model->id); // ✅ AGORA FUNCIONA
+
+        // 6. Criar ViewModel
+        $viewModel = new GuideMakeModelViewModel(
+            $make,
+            $model,
+            $categories,
+            $guides,
+            $versions
+        );
+
+        return view('guide-data-center::guide.make-model', [
+            'make' => $viewModel->getMake(),
+            'model' => $viewModel->getModel(),
+            'categoriesWithGuides' => $viewModel->getCategoriesWithGuides(),
+            'allCategories' => $viewModel->getAllCategories(),
+            'yearsList' => $viewModel->getYearsList(),
+            'stats' => $viewModel->getStats(),
+            'relatedModels' => $viewModel->getRelatedModels(),
+            'seo' => $viewModel->getSeoData(),
+            'breadcrumbs' => $viewModel->getBreadcrumbs(),
+            'structuredData' => $viewModel->getStructuredData(),
+        ]);
+    }
 
     /**
      * Lista versões disponíveis do ano
@@ -224,7 +284,6 @@ class GuideController extends Controller
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
         ]);
     }
-
 
     /**
      * Exibe guias por categoria, marca e modelo (lista de anos)
