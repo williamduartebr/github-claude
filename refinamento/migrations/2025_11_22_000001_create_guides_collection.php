@@ -8,7 +8,7 @@ use MongoDB\Laravel\Schema\Blueprint;
  * Migration: Create guides collection with indexes (MongoDB)
  * 
  * Usando mongodb/laravel-mongodb v5.4
- * ✅ ATUALIZADO: Adicionados índices para FKs (vehicle_make_id, vehicle_model_id, vehicle_version_id)
+ * ✅ ATUALIZADO: Adicionados índices para FKs e make_logo_url
  */
 return new class extends Migration
 {
@@ -21,10 +21,13 @@ return new class extends Migration
             // Índice único no slug
             $collection->unique('slug');
 
-            // ✅ ADICIONADO - Índices para FKs MySQL
+            // ✅ Índices para FKs MySQL
             $collection->index('vehicle_make_id');
             $collection->index('vehicle_model_id');
             $collection->index('vehicle_version_id');
+            
+            // ✅ NOVO - Índice para logo da marca
+            $collection->index('make_logo_url');
 
             // Índices simples
             $collection->index('guide_category_id');
@@ -37,7 +40,7 @@ return new class extends Migration
             $collection->index('full_title');
             $collection->index('short_title');
 
-            // ✅ ADICIONADO - Índices compostos com FKs
+            // Índices compostos com FKs
             $collection->index(['vehicle_make_id', 'vehicle_model_id']);
             $collection->index(['vehicle_make_id', 'vehicle_model_id', 'vehicle_version_id']);
             $collection->index(['vehicle_make_id', 'guide_category_id']);

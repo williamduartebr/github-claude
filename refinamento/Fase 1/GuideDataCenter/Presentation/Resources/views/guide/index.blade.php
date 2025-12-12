@@ -168,14 +168,9 @@
             <a href="{{ $make['url'] }}" 
                class="block p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="flex flex-col items-center text-center">
-                    {{-- 
-                    ⚠️ TODO: Adicionar logo do banco quando disponível
-                    Padrão: <img src="{{ $make['logo_url'] }}" alt="{{ $make['name'] }}" class="w-12 h-12 mb-2 object-contain">
-                    
-                    Por enquanto, usando placeholder de logo
-                    --}}
-                    <div class="mb-2 w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                        <span class="text-xs font-bold text-gray-400">{{ strtoupper(substr($make['name'], 0, 2)) }}</span>
+                    <div class="mb-2 w-12 h-12 rounded flex items-center justify-center">
+                          <img src="{{ asset(sprintf('images/statics/logos/%s', $make['make_logo'] )) }}" alt="Logo {{ $make['name'] }}"
+                        class="w-12 h-12 mb-2 object-contain">
                     </div>
                     <h3 class="text-sm font-medium text-gray-800 font-roboto">{{ $make['name'] }}</h3>
                 </div>

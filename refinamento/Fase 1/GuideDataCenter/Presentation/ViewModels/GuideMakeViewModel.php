@@ -66,6 +66,9 @@ class GuideMakeViewModel
                 'icon' => $category->icon ?? '📋',
                 'description' => $category->description ?? null,
                 'guides_count' => $guidesCount,
+                'icon_svg' => $category->icon_svg ?? null,
+                'icon_bg_color' => $category->icon_bg_color ?? null,
+                'icon_text_color' => $category->icon_text_color ?? null,
                 'url' => route('guide.category.make', [
                     'category' => $category->slug,
                     'make' => $makeSlug

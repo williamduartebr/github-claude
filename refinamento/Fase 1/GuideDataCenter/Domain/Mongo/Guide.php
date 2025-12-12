@@ -19,6 +19,7 @@ use MongoDB\Laravel\Eloquent\Model;
  * @property int|null $vehicle_version_id ✅ ADICIONADO
  * @property string $make
  * @property string $make_slug
+ * @property string|null $make_logo_url
  * @property string $model
  * @property string $model_slug
  * @property string|null $version

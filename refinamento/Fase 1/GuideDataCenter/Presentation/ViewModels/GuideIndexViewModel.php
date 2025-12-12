@@ -24,13 +24,13 @@ class GuideIndexViewModel
     {
         $categoryRepo = app(GuideCategoryRepositoryInterface::class);
         $guideRepo = app(GuideRepositoryInterface::class);
-        
+
         // Buscar categorias ativas
         $this->categories = $categoryRepo->getAllActive();
-        
+
         // Buscar marcas únicas (distinct make_slug)
         $this->makes = $this->getUniqueMakes($guideRepo);
-        
+
         // Buscar guias recentes
         $this->recentGuides = $guideRepo->findByFilters([
             'limit' => 12,
@@ -44,7 +44,7 @@ class GuideIndexViewModel
      */
     public function getCategories(): array
     {
-        return $this->categories->map(function($category) {
+        return $this->categories->map(function ($category) {
             return [
                 'name' => $category->name,
                 'slug' => $category->slug,
@@ -64,10 +64,11 @@ class GuideIndexViewModel
      */
     public function getMakes(): array
     {
-        return $this->makes->map(function($make) {
+        return $this->makes->map(function ($make) {
             return [
                 'slug' => $make->slug,
                 'name' => $make->name,
+                'make_logo' => $make->make_logo,
                 'url' => route('guide.make', $make->slug), // URL de busca por marca
             ];
         })->toArray();
@@ -78,7 +79,7 @@ class GuideIndexViewModel
      */
     public function getRecentGuides(): array
     {
-        return $this->recentGuides->map(function($guide) {
+        return $this->recentGuides->map(function ($guide) {
             return [
                 'title' => $guide->payload['title'] ?? $guide->full_title,
                 'slug' => $guide->slug,
@@ -99,16 +100,15 @@ class GuideIndexViewModel
         // Usar a collection original de guias, não o método getRecentGuides()
         // Agrupar guias por make+model e contar
         $modelCounts = $this->recentGuides
-            ->groupBy(function($guide) {
+            ->groupBy(function ($guide) {
                 return $guide->make_slug . '|' . $guide->model_slug;
             })
-            ->map(function($guides) {
+            ->map(function ($guides) {
                 $first = $guides->first();
 
-                dump( $first);
                 $makeName = $first->make;
                 $modelName = $first->model;
-                
+
                 return [
                     'name' => "{$makeName} {$modelName}",
                     'make' => $makeName,
@@ -137,7 +137,7 @@ class GuideIndexViewModel
     public function getStats(): array
     {
         $guideRepo = app(GuideRepositoryInterface::class);
-        
+
         return [
             'total_categories' => $this->categories->count(),
             'total_makes' => $this->makes->count(),
@@ -155,21 +155,22 @@ class GuideIndexViewModel
     {
         // Buscar todos os guias (limitado para performance)
         $guides = $guideRepo->findByFilters(['limit' => 1000]);
-        
+
         // Extrair make_slug únicos
         $uniqueMakes = $guides->pluck('make_slug')->unique()->sort()->values();
-        
+
         // Criar collection de objetos com name e slug
-        return $uniqueMakes->map(function($makeSlug) {
+        return $uniqueMakes->map(function ($makeSlug) {
             // Buscar o primeiro guia desta marca para pegar o nome completo
             $guide = app(GuideRepositoryInterface::class)->findByFilters([
                 'make_slug' => $makeSlug,
                 'limit' => 1
             ])->first();
-            
+
             return (object) [
                 'slug' => $makeSlug,
                 'name' => $guide ? $guide->make : ucfirst($makeSlug),
+                'make_logo' => $guide->make_logo_url,
             ];
         });
     }

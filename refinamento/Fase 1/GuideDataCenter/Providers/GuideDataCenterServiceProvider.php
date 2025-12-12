@@ -2,28 +2,30 @@
 
 namespace Src\GuideDataCenter\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 
 // Repositories Contracts
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideClusterRepositoryInterface;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideSeoRepositoryInterface;
+use Src\GuideDataCenter\Domain\Mongo\Guide;
+use Src\GuideDataCenter\Observers\GuideObserver;
+use Src\GuideDataCenter\Domain\Services\GuideSeoService;
+use Src\GuideDataCenter\Domain\Services\GuideImportService;
 
 
 // Repositories Implementations
+use Src\GuideDataCenter\Domain\Services\GuideClusterService;
+use Src\GuideDataCenter\Domain\Services\GuideCreationService;
+use Src\GuideDataCenter\Domain\Services\GuideValidatorService;
 use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideRepository;
-use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideCategoryRepository;
-use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideClusterRepository;
-use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideSeoRepository;
 
 // Services
-use Src\GuideDataCenter\Domain\Services\GuideCreationService;
-use Src\GuideDataCenter\Domain\Services\GuideClusterService;
-use Src\GuideDataCenter\Domain\Services\GuideSeoService;
-use Src\GuideDataCenter\Domain\Services\GuideImportService;
-use Src\GuideDataCenter\Domain\Services\GuideValidatorService;
+use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideSeoRepository;
+use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideClusterRepository;
+use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideCategoryRepository;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideSeoRepositoryInterface;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideClusterRepositoryInterface;
+use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
 
 /**
  * GuideDataCenter Service Provider
@@ -59,6 +61,8 @@ class GuideDataCenterServiceProvider extends ServiceProvider
         $this->loadRoutes();
         $this->loadViews();
         $this->publishResources();
+
+        Guide::observe(GuideObserver::class);
     }
 
     /**
