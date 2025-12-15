@@ -98,8 +98,8 @@
     </div>
 </section>
 
-{{-- BANNER RESPONSIVO (MOCK GOOGLE ADS) --}}
-<div class="container mx-auto px-4 my-6">
+{{-- BANNER --}}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
@@ -154,7 +154,7 @@
     </section>
 
     {{-- TODOS OS MODELOS → TABELA --}}
-    <section id="todos-os-modelos" class="mb-16">
+    <section id="todos-os-modelos" class="mb-6">
         <h2 class="text-xl font-semibold mb-4 font-montserrat">Todos os modelos {{ $make['name'] }}</h2>
 
         <p class="text-sm text-gray-600 mb-4 font-roboto">

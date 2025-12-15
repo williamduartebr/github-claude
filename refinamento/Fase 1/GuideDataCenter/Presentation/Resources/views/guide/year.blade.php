@@ -79,17 +79,17 @@
 </section>
 
 {{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-10">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
 </div>
 
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
     {{-- LISTA DE VERSÕES DISPONÍVEIS --}}
     @if(count($availableVersions) > 0)
-    <section class="mb-16">
+    <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4 font-montserrat">
             Versões disponíveis – {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
         </h2>
@@ -147,15 +147,15 @@
     </section>
     @endif
 
-    {{-- BANNER RESPONSIVO (MOCK) --}}
-    <div class="my-6">
+     {{-- BANNER RESPONSIVO (MOCK) --}}
+    <div class="mb-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
     </div>
 
     {{-- LINKS PARA OUTRAS CATEGORIAS --}}
-    <section class="bg-white border border-gray-200 rounded-lg p-6 mb-16">
+    <section class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 class="text-xl font-semibold mb-4 font-montserrat">
             Outras categorias – {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
         </h2>

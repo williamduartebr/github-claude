@@ -20,7 +20,7 @@
 
 @section('structured_data')
 <script type="application/ld+json">
-{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+    {!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
 </script>
 @endsection
 
@@ -37,16 +37,15 @@
                         <span itemprop="name">{{ $crumb['name'] }}</span>
                     </a>
                     <meta itemprop="position" content="{{ $index + 1 }}" />
-                    @if($index < count($breadcrumbs) - 1)
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    @if($index < count($breadcrumbs) - 1) <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3 mx-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
-                    @endif
-                    @else
-                    <span itemprop="name" class="text-gray-700">{{ $crumb['name'] }}</span>
-                    <meta itemprop="position" content="{{ $index + 1 }}" />
-                    @endif
+                        @endif
+                        @else
+                        <span itemprop="name" class="text-gray-700">{{ $crumb['name'] }}</span>
+                        <meta itemprop="position" content="{{ $index + 1 }}" />
+                        @endif
                 </li>
                 @endforeach
             </ol>
@@ -61,7 +60,7 @@
     style="background-image: linear-gradient(90deg, rgba(0,0,0,0.05), rgba(0,0,0,0.02));">
     <div class="container mx-auto px-4 py-12">
         <div class="md:flex md:items-center md:justify-between gap-8">
-            
+
             {{-- INFORMAÇÕES PRINCIPAIS --}}
             <div class="max-w-3xl">
                 {{-- TÍTULO PRINCIPAL --}}
@@ -76,23 +75,32 @@
 
                 {{-- BADGE ANO --}}
                 <div class="flex items-center gap-3 mb-6">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         {{ $stats['years_range'] }}
                     </span>
 
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         {{ $stats['total_guides'] }} guias
                     </span>
 
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800 font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
                         {{ $model['category'] }}
                     </span>
@@ -105,11 +113,13 @@
                         <div class="text-xs text-gray-600 font-roboto">Guias técnicos</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['categories_with_guides'] }}</div>
+                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{
+                            $stats['categories_with_guides'] }}</div>
                         <div class="text-xs text-gray-600 font-roboto">Categorias</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['total_versions'] }}</div>
+                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['total_versions'] }}
+                        </div>
                         <div class="text-xs text-gray-600 font-roboto">Versões</div>
                     </div>
                 </div>
@@ -123,20 +133,21 @@
     </div>
 </section>
 
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
+{{-- BANNER --}}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 my-12">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
 </div>
 
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-10">
 
     {{-- CATEGORIAS DE GUIAS DISPONÍVEIS --}}
     <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-semibold font-montserrat">Guias Disponíveis por Categoria</h2>
-            <span class="text-sm text-gray-500 font-roboto">{{ $stats['categories_with_guides'] }} de {{ $stats['total_categories'] }} categorias</span>
+            <span class="text-sm text-gray-500 font-roboto">{{ $stats['categories_with_guides'] }} de {{
+                $stats['total_categories'] }} categorias</span>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -147,12 +158,8 @@
                 <div class="flex flex-col items-center text-center">
                     {{-- ÍCONE DA CATEGORIA --}}
                     <div class="p-3 rounded-full {{ $category['icon_bg_color'] }} mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                             class="w-8 h-8 {{ $category['icon_text_color'] }}" 
-                             fill="none" 
-                             viewBox="0 0 24 24" 
-                             stroke="currentColor" 
-                             aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 {{ $category['icon_text_color'] }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             {!! $category['icon_svg'] !!}
                         </svg>
                     </div>
@@ -163,12 +170,14 @@
                     {{-- CONTADOR DE GUIAS --}}
                     @if($category['has_guides'])
                     <div class="flex items-center gap-1 text-xs text-blue-600 font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <span>{{ $category['guides_count'] }}</span>
                     </div>
-                    
+
                     @if($category['latest_year'])
                     <div class="text-xs text-gray-500 mt-1">Até {{ $category['latest_year'] }}</div>
                     @endif
@@ -217,8 +226,10 @@
             <a href="{{ $make['url'] }}"
                 class="flex items-center gap-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow">
                 <div class="p-2 rounded-full bg-blue-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
                 <div>
@@ -231,8 +242,10 @@
             <a href="{{ route('vehicles.model', ['make' => $make['slug'], 'model' => $model['slug']]) }}"
                 class="flex items-center gap-3 p-4 bg-white rounded-lg hover:shadow-md transition-shadow">
                 <div class="p-2 rounded-full bg-green-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                     </svg>
                 </div>
                 <div>
@@ -263,7 +276,7 @@
 </div>
 
 {{-- BANNER FINAL --}}
-<div class="container mx-auto px-4 mb-8">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mb-16">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>

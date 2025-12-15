@@ -127,7 +127,7 @@
     </header>
 
     {{-- BANNER RESPONSIVO (MOCK) --}}
-    <section class="container mx-auto mb-8">
+    <section class="container mx-auto mb-10">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
@@ -201,7 +201,7 @@
     </section>
 
     {{-- BANNER RESPONSIVO (MOCK) --}}
-    <section class="container mx-auto mb-8">
+    <section class="container mx-auto mb-6">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>

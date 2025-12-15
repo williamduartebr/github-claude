@@ -88,8 +88,8 @@
     </div>
 </section>
 
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
+{{-- BANNER --}}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
@@ -194,14 +194,14 @@
     </section>
 
     {{-- BANNER RESPONSIVO (MOCK) --}}
-    <div class="my-6">
+    <div class="my-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
     </div>
 
     {{-- GUIAS COMPLETOS DO MODELO --}}
-    <section id="guias-completos" class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-12">
+    <section id="guias-completos" class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
         <h2 class="text-xl font-bold mb-4 font-montserrat">
             Guias completos do {{ $make['name'] }} {{ $model['name'] }}
         </h2>

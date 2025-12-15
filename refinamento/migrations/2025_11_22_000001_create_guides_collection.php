@@ -46,6 +46,10 @@ return new class extends Migration
             $collection->index(['vehicle_make_id', 'guide_category_id']);
             $collection->index(['vehicle_model_id', 'guide_category_id']);
 
+            // Índices para content_blocks
+            $collection->index('content_blocks.type');
+            $collection->index('content_blocks.order');
+
             // Índices compostos
             $collection->index(['make_slug', 'model_slug']);
             $collection->index(['make_slug', 'model_slug', 'year_start']);

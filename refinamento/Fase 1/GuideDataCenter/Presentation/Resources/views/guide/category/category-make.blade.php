@@ -39,7 +39,7 @@
                     </a>
                     <meta itemprop="position" content="{{ $index + 1 }}" />
                     @if(!$loop->last)
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -81,7 +81,7 @@
 </section>
 
 {{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
@@ -136,8 +136,8 @@
     </section>
     @endif
 
-    {{-- BANNER RESPONSIVO (MOCK) --}}
-    <div class="my-6">
+    {{-- BANNER --}}
+    <div class="my-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
@@ -180,7 +180,7 @@
     </section>
 
     {{-- LINKS PARA OUTRAS CATEGORIAS DA MARCA --}}
-    <section class="bg-white border border-gray-200 rounded-lg p-6 mb-16">
+    <section class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 class="text-xl font-semibold mb-4 font-montserrat">
             Guias complementares da {{ $make['name'] }}
         </h2>
@@ -195,13 +195,6 @@
         </div>
     </section>
 
-</div>
-
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
-    <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
-        <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
-    </div>
 </div>
 
 @endsection

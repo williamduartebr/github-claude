@@ -66,8 +66,8 @@
                     Guias {{ $make['name'] }}
                 </h1>
                 <p class="text-sm text-gray-600 font-roboto">
-                    Especificações técnicas completas para veículos {{ $make['name'] }}. 
-                    Selecione uma categoria para acessar guias detalhados de óleo, calibragem, pneus, 
+                    Especificações técnicas completas para veículos {{ $make['name'] }}.
+                    Selecione uma categoria para acessar guias detalhados de óleo, calibragem, pneus,
                     consumo e muito mais. Informações baseadas em manuais oficiais dos fabricantes.
                 </p>
 
@@ -82,21 +82,23 @@
                         <div class="text-xs text-gray-600 font-roboto">Modelos</div>
                     </div>
                     <div>
-                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['total_categories'] }}</div>
+                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['total_categories'] }}
+                        </div>
                         <div class="text-xs text-gray-600 font-roboto">Categorias</div>
                     </div>
                 </div>
             </div>
 
             <div class="mt-6 md:mt-0">
-                <img src="{{ sprintf('%s/%s', Config::get('aws.s3.logo'), $make['logo']) }}" class="w-40 h-auto opacity-90" alt="{{ $make['name'] }}">
+                <img src="{{ sprintf('%s/%s', Config::get('aws.s3.logo'), $make['logo']) }}"
+                    class="w-40 h-auto opacity-90" alt="{{ $make['name'] }}">
             </div>
         </div>
     </div>
 </section>
 
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
+{{-- BANNER --}}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-12">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
@@ -117,15 +119,15 @@
                 class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg hover:border-blue-500 transition-all">
                 <div class="flex items-center gap-3">
                     <div class="p-3 rounded-full {{ $category['icon_bg_color'] ?? 'bg-blue-50' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                             class="w-8 h-8 {{ $category['icon_text_color'] ?? 'text-blue-600' }}" 
-                             fill="none" 
-                             viewBox="0 0 24 24" 
-                             stroke="currentColor" 
-                             aria-hidden="true">
-                            {!! $category['icon_svg'] ?? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />' !!}
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="w-8 h-8 {{ $category['icon_text_color'] ?? 'text-blue-600' }}" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            {!! $category['icon_svg'] ?? '
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            ' !!}
                         </svg>
-                    </div>   
+                    </div>
                     <div class="flex-1">
                         <div class="font-semibold text-sm font-montserrat">{{ $category['name'] }}</div>
                         <div class="text-xs text-gray-500 font-roboto">{{ $category['guides_count'] }} guias</div>
@@ -178,8 +180,7 @@
                         <td class="px-4 py-3 font-medium">{{ $model['name'] }}</td>
                         <td class="px-4 py-3 text-center text-gray-600">{{ $model['guides_count'] }}</td>
                         <td class="px-4 py-3 text-right">
-                            <a href="{{ $model['url'] }}"
-                                class="text-blue-600 hover:underline text-xs font-semibold">
+                            <a href="{{ $model['url'] }}" class="text-blue-600 hover:underline text-xs font-semibold">
                                 Ver guias →
                             </a>
                         </td>
@@ -199,12 +200,12 @@
         <h2 class="text-lg font-semibold mb-3 font-montserrat">Sobre os Guias {{ $make['name'] }}</h2>
         <div class="text-sm text-gray-700 font-roboto space-y-2">
             <p>
-                Encontre especificações técnicas completas para veículos {{ $make['name'] }}. 
-                Nossos guias cobrem informações essenciais como tipo de óleo recomendado, 
+                Encontre especificações técnicas completas para veículos {{ $make['name'] }}.
+                Nossos guias cobrem informações essenciais como tipo de óleo recomendado,
                 calibragem de pneus, consumo médio e muito mais.
             </p>
             <p>
-                Todos os dados são baseados em manuais oficiais e especificações dos fabricantes, 
+                Todos os dados são baseados em manuais oficiais e especificações dos fabricantes,
                 garantindo informações precisas para manutenção e uso correto do seu veículo.
             </p>
         </div>

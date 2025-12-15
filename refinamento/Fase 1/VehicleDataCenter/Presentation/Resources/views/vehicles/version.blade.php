@@ -118,7 +118,7 @@
 </section>
 
 {{-- DISCLAIMER CRÍTICO --}}
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg shadow-sm">
         <div class="flex items-start">
             <div class="flex-shrink-0">
@@ -139,8 +139,8 @@
     </div>
 </div>
 
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
+{{-- BANNER --}}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-10">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
@@ -184,7 +184,7 @@
     </section>
 
     {{-- BANNER RESPONSIVO (MOCK) --}}
-    <div class="my-6">
+    <div class="my-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
@@ -225,7 +225,7 @@
     </section>
 
     {{-- BANNER RESPONSIVO (MOCK) --}}
-    <div class="my-6">
+    <div class="my-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
@@ -247,7 +247,7 @@
     </section>
 
     {{-- BANNER RESPONSIVO (MOCK) --}}
-    <div class="my-6">
+    <div class="my-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
         </div>
