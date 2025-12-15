@@ -221,21 +221,6 @@
         </div>
     </section>
     @endif
-
-    {{-- NOTA TÉCNICA --}}
-    <section class="mb-6 text-xs text-gray-500 font-roboto">
-        <p>Obs: esta página é a raiz da categoria {{ $category['name'] }}. As páginas dos guias são geradas por marca e
-            modelo
-            (ex.: <code>/guias/{{ $category['slug'] }}/toyota/corolla-2003</code>).</p>
-    </section>
-
-</div>
-
-{{-- BANNER RESPONSIVO (MOCK) --}}
-<div class="container mx-auto px-4 my-6">
-    <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
-        <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
-    </div>
 </div>
 
 @endsection

@@ -1,24 +1,34 @@
+{{--
+Template: guide.specific.blade.php
+
+Sistema de blocos modulares para guias de veículos.
+Suporta 13 categorias com blocos reutilizáveis.
+
+@author Claude Sonnet 4.5
+@version 2.0 - Sistema de blocos
+--}}
+
 @extends('guide-data-center::layouts.app')
 
-@section('title', $seo['title'])
-@section('meta_description', $seo['description'])
+@section('title', $seo['title'] ?? '')
+@section('meta_description', $seo['description'] ?? '')
 
 {{-- SEO: Canonical e Open Graph --}}
 @push('head')
-<link rel="canonical" href="{{ $seo['canonical'] }}" />
-<link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] }}" />
+<link rel="canonical" href="{{ $seo['canonical'] ?? '' }}" />
+<link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] ?? '' }}" />
 
-<meta property="og:type" content="{{ $seo['og_type'] }}" />
-<meta property="og:title" content="{{ $seo['title'] }}" />
-<meta property="og:description" content="{{ $seo['description'] }}" />
-<meta property="og:image" content="{{ $seo['og_image'] }}" />
-<meta property="og:url" content="{{ $seo['canonical'] }}" />
+<meta property="og:type" content="{{ $seo['og_type'] ?? 'article' }}" />
+<meta property="og:title" content="{{ $seo['title'] ?? '' }}" />
+<meta property="og:description" content="{{ $seo['description'] ?? '' }}" />
+<meta property="og:image" content="{{ $seo['og_image'] ?? '' }}" />
+<meta property="og:url" content="{{ $seo['canonical'] ?? '' }}" />
 <meta property="og:site_name" content="Mercado Veículos" />
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $seo['title'] }}">
-<meta name="twitter:description" content="{{ $seo['description'] }}">
-<meta name="twitter:image" content="{{ $seo['og_image'] }}">
+<meta name="twitter:title" content="{{ $seo['title'] ?? '' }}">
+<meta name="twitter:description" content="{{ $seo['description'] ?? '' }}">
+<meta name="twitter:image" content="{{ $seo['og_image'] ?? '' }}">
 @endpush
 
 @section('content')
@@ -31,16 +41,14 @@
         <nav class="text-xs md:text-sm font-roboto" aria-label="Breadcrumb">
             <ol class="list-none p-0 inline-flex" itemscope itemtype="https://schema.org/BreadcrumbList">
                 @foreach($breadcrumbs as $index => $crumb)
-                <li class="flex items-center" itemprop="itemListElement" itemscope
-                    itemtype="https://schema.org/ListItem">
+                <li class="flex items-center" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                     @if($crumb['url'])
                     <a href="{{ $crumb['url'] }}" class="text-blue-600 hover:underline" itemprop="item">
                         <span itemprop="name">{{ $crumb['name'] }}</span>
                     </a>
                     <meta itemprop="position" content="{{ $index + 1 }}" />
                     @if(!$loop->last)
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                     @endif
@@ -57,201 +65,84 @@
 @endsection
 @endif
 
-{{-- HERO + INTRO --}}
-<section class="bg-white border-b border-gray-200">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3 font-montserrat">
-            {{ $guide['title'] }}
-        </h1>
+{{-- ============================================
+    SISTEMA DE BLOCOS DINÂMICOS
+============================================ --}}
 
-        <p class="text-sm md:text-base text-gray-600 max-w-2xl font-roboto mb-4">
-            {{ $guide['description'] }}
-        </p>
+@if(!empty($guide['content_blocks']) && is_array($guide['content_blocks']))
 
-        {{-- BADGES DE QUALIDADE --}}
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-            @foreach($badges as $badge)
+    @foreach($guide['content_blocks'] as $block)
+        @if(!empty($block['type']))
             @php
-            $colors = [
-            'green' => 'bg-green-100 text-green-800 border-green-200',
-            'blue' => 'bg-blue-100 text-blue-800 border-blue-200',
-            ];
-            $colorClass = $colors[$badge['color']] ?? 'bg-gray-100 text-gray-800 border-gray-200';
+                $componentPath = "guide-data-center::blocks.{$block['type']}";
             @endphp
-            <div
-                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border border-gray-200 {{ $colorClass }}">
-                {{ $badge['text'] }}
-            </div>
-            @endforeach
+            
+            {{-- Renderizar bloco se componente existir --}}
+            @if(view()->exists($componentPath))
+                @include($componentPath, ['block' => $block])
+            @else
+                {{-- Fallback para desenvolvimento --}}
+                <div class="container mx-auto px-4 py-4">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded p-4">
+                        <p class="text-sm text-yellow-800">
+                            ⚠️ Bloco não encontrado: <strong>{{ $block['type'] }}</strong>
+                        </p>
+                    </div>
+                </div>
+            @endif
+        @endif
+    @endforeach
+@else
+    {{-- FALLBACK: Conteúdo hardcoded antigo (temporário) --}}
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <p class="text-blue-800">
+                📝 <strong>Sistema de blocos não configurado para este guia.</strong>
+            </p>
+            <p class="text-sm text-blue-600 mt-2">
+                Configure o campo <code>content_blocks</code> no MongoDB para habilitar o novo sistema.
+            </p>
         </div>
     </div>
-</section>
-
-{{-- DISCLAIMER IMPORTANTE --}}
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg shadow-sm">
-        <div class="flex">
-            <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                        clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div class="ml-3">
-                <p class="text-sm font-semibold text-yellow-800">
-                    {{ $disclaimer }}
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+@endif
 
 {{-- BANNER --}}
-<div class="container mx-auto px-4 my-6">
+<div class="container mx-auto px-4 mt-2 mb-10">
     <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
         <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
     </div>
 </div>
 
-{{-- BLOCO PRINCIPAL --}}
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-    {{-- ÓLEO RECOMENDADO --}}
-    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-8">
-        <h2 class="text-xl font-bold mb-4 font-montserrat">Óleo oficial recomendado</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-roboto">
-            @foreach($officialSpecs as $spec)
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <p class="font-medium">{{ $spec['label'] }}</p>
-                <p class="text-xs text-gray-600 mt-1">{{ $spec['value'] }}</p>
-            </div>
-            @endforeach
-        </div>
-    </section>
-
-    {{-- ÓLEO COMPATÍVEL + ALTERNATIVAS REAIS --}}
-    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-8">
-        <h2 class="text-xl font-bold mb-4 font-montserrat">Óleos compatíveis e equivalentes</h2>
-
-        <ul class="space-y-2 text-sm text-gray-700 font-roboto">
-            @foreach($compatibleOils as $oil)
-            <li class="bg-gray-50 border border-gray-200 p-3 rounded flex items-center">
-                <svg class="h-4 w-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span><strong>{{ $oil['name'] }}</strong> — {{ $oil['spec'] }}</span>
-            </li>
-            @endforeach
-        </ul>
-
-        <div class="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r">
-            <p class="text-xs text-blue-800 font-roboto">
-                💡 Todos os óleos acima atendem ou superam a especificação mínima exigida para o {{ $make['name'] }} {{
-                $model['name'] }} {{ $year }}.
-            </p>
-        </div>
-    </section>
-
-    {{-- CONDIÇÕES ESPECIAIS --}}
-    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-8">
-        <h2 class="text-xl font-bold mb-4 font-montserrat">Intervalos de troca (uso real)</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-roboto">
-            @foreach($changeIntervals as $interval)
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <p class="font-medium">{{ $interval['label'] }}</p>
-                <p class="text-xs text-gray-600 mt-1">{{ $interval['value'] }}</p>
-            </div>
-            @endforeach
-        </div>
-
-        <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r">
-            <p class="text-xs text-yellow-800 font-roboto">
-                ⚠️ <strong>{{ $severeUseNote }}</strong>
-            </p>
-        </div>
-    </section>
-
-    {{-- BANNER --}}
-    <div class="my-6">
-        <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
-            <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>
-        </div>
-    </div>
-
-    {{-- GUIAS RELACIONADOS OFICIAIS --}}
-    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-12">
-        <h2 class="text-xl font-bold mb-4 font-montserrat">
-            Guias relacionados – {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
-        </h2>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-sm font-roboto">
-            @foreach($relatedGuides as $related)
-            <a href="{{ $related['url'] }}"
-                class="block bg-gray-50 border border-gray-200 p-3 rounded hover:shadow hover:border-blue-500 transition-all text-center">
-                <span class="text-2xl mb-1 block">{{ $related['icon'] }}</span>
-                {{ $related['name'] }}
-            </a>
-            @endforeach
-        </div>
-    </section>
-
-    {{-- SUPER CLUSTER OTIMIZADO --}}
-    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-12">
-        <h2 class="text-xl font-bold mb-4 font-montserrat">
-            Conteúdos essenciais do {{ $make['name'] }} {{ $model['name'] }} {{ $year }}
-        </h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm font-roboto">
-            @foreach($essentialCluster as $item)
-            <a href="{{ $item['url'] }}"
-                class="block bg-gray-50 border border-gray-200 rounded p-4 hover:shadow-sm hover:border-blue-500 transition-all">
-                {{ $item['icon'] }} <strong>{{ $item['title'] }}</strong>
-            </a>
-            @endforeach
-        </div>
-    </section>
-
-
-
-</div>
-
 {{-- CRÉDITOS EQUIPE EDITORIAL --}}
+@if(!empty($editorialInfo))
 <section class="container mx-auto px-4 sm:px-6 lg:px-8 mb-16">
     <div class="bg-blue-50 rounded-lg p-6 border border-gray-200 shadow-sm">
         <div class="flex items-center mb-4">
             <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mr-3 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                 </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 font-montserrat">{{ $editorialInfo['title'] }}</h3>
+            <h3 class="text-lg font-semibold text-gray-900 font-montserrat">{{ $editorialInfo['title'] ?? 'Equipe Editorial' }}</h3>
         </div>
 
         <div class="text-gray-700 space-y-2 pl-3 ml-10 border-l-2 border-blue-900">
-            <p class="text-sm leading-relaxed font-roboto">{{ $editorialInfo['description'] }}</p>
-            <p class="text-sm leading-relaxed font-roboto">{{ $editorialInfo['methodology'] }}</p>
+            <p class="text-sm leading-relaxed font-roboto">{{ $editorialInfo['description'] ?? '' }}</p>
+            <p class="text-sm leading-relaxed font-roboto">{{ $editorialInfo['methodology'] ?? '' }}</p>
         </div>
 
+        @if(!empty($editorialInfo['link_url']))
         <div class="flex items-center justify-end mt-5 pt-4 border-t border-gray-200">
-            <a href="{{ $editorialInfo['link_url'] }}"
-                class="text-blue-900 text-sm hover:text-blue-700 hover:underline flex items-center font-medium">
-                {{ $editorialInfo['link_text'] }}
+            <a href="{{ $editorialInfo['link_url'] }}" class="text-blue-900 text-sm hover:text-blue-700 hover:underline flex items-center font-medium">
+                {{ $editorialInfo['link_text'] ?? 'Saiba mais' }}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                        clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
             </a>
         </div>
+        @endif
     </div>
 </section>
+@endif
 
 @endsection

@@ -30,8 +30,8 @@ class GuideCategoryMakeModelViewModel
     public function getCategory(): array
     {
         return [
-            'name' => $this->category->name ?? 'Óleo',
-            'slug' => $this->category->slug ?? 'oleo',
+            'name' => $this->category->name ?? null,
+            'slug' => $this->category->slug ?? null,
             'icon' => $this->category->icon ?? '🛢️',
         ];
     }
@@ -39,8 +39,8 @@ class GuideCategoryMakeModelViewModel
     public function getMake(): array
     {
         return [
-            'name' => $this->make->name ?? 'Toyota',
-            'slug' => $this->make->slug ?? 'toyota',
+            'name' => $this->make->name ?? null,
+            'slug' => $this->make->slug ?? null,
             'logo' => "/images/makes/{$this->make->slug}.svg",
         ];
     }
@@ -48,8 +48,8 @@ class GuideCategoryMakeModelViewModel
     public function getModel(): array
     {
         return [
-            'name' => $this->model->name ?? 'Corolla',
-            'slug' => $this->model->slug ?? 'corolla',
+            'name' => $this->model->name ?? null,
+            'slug' => $this->model->slug ?? null,
         ];
     }
 

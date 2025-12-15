@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Src\GuideDataCenter\Presentation\ViewModels;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Src\GuideDataCenter\Domain\Mongo\Guide;
 use Src\VehicleDataCenter\Domain\Eloquent\VehicleVersion;
@@ -11,9 +12,9 @@ use Src\VehicleDataCenter\Domain\Eloquent\VehicleVersion;
 /**
  * ViewModel para página de guia específico
  * Rota: /guias/{category}/{make}/{model}/{year}/{version}
- * Exemplo: /guias/fluidos/toyota/corolla/2023/gli
+ * Exemplo: /guias/oleo/toyota/corolla/2025/gli
  * 
- * ✅ REFINADO V3: Cluster completo com versões, consumo, problemas, motores
+ * ✅ CORRIGIDO: Adiciona content_blocks e remove mocks
  */
 class GuideSpecificViewModel
 {
@@ -34,6 +35,9 @@ class GuideSpecificViewModel
         $this->version = $version ?? 'base';
     }
 
+    /**
+     * ✅ CORRIGIDO: Agora retorna content_blocks!
+     */
     public function getGuide(): array
     {
         if (!$this->guide) {
@@ -42,14 +46,18 @@ class GuideSpecificViewModel
                 'title' => $this->generateTitle(),
                 'description' => $this->generateDescription(),
                 'content' => null,
+                'content_blocks' => [], // ✅ Vazio se não tem guia
+                'payload' => [],
             ];
         }
+
 
         return [
             'id' => $this->guide->_id ?? null,
             'title' => $this->guide->title ?? $this->generateTitle(),
             'description' => $this->guide->description ?? $this->generateDescription(),
             'content' => $this->guide->payload['content'] ?? null,
+            'content_blocks' => $this->guide->content_blocks ?? [], // ✅ ADICIONADO!
             'payload' => $this->guide->payload ?? [],
         ];
     }
@@ -89,7 +97,7 @@ class GuideSpecificViewModel
     }
 
     /**
-     * ✅ REFINADO: Busca guias relacionados REAIS (outras categorias, mesmo veículo)
+     * Busca guias relacionados REAIS (outras categorias, mesmo veículo)
      */
     public function getRelatedGuides(): array
     {
@@ -130,16 +138,16 @@ class GuideSpecificViewModel
     }
 
     /**
-     * ✅ REFINADO V3: Cluster essencial COMPLETO
+     * Cluster essencial COMPLETO
      * 
      * Tipos de conteúdo:
-     * 1. 🚗 Fichas técnicas por versão (GLi 1.8, XEi 2.0)
+     * 1. 🚗 Fichas técnicas por versão
      * 2. 📘 Ficha técnica geral do modelo
      * 3. ⛽ Consumo real por motor
      * 4. ⚠️ Problemas comuns por geração
      * 5. 💧 Fluidos e capacidades
      * 6. 🔧 Motores alternativos
-     * 7. 🔄 Óleo/guias de anos próximos
+     * 7. 🔄 Guias de anos próximos
      */
     public function getEssentialCluster(): array
     {
@@ -150,9 +158,7 @@ class GuideSpecificViewModel
 
         $cluster = [];
 
-        // ===================================================================
-        // 1. 📘 FICHA TÉCNICA GERAL (sempre primeiro)
-        // ===================================================================
+        // 1. 📘 FICHA TÉCNICA GERAL
         $cluster[] = [
             'icon' => '📘',
             'title' => "Ficha Técnica do {$this->model->name} {$year}",
@@ -165,16 +171,14 @@ class GuideSpecificViewModel
             'priority' => 1,
         ];
 
-        // ===================================================================
-        // 2. 🚗 FICHAS TÉCNICAS POR VERSÃO (GLi, XEi, etc)
-        // ===================================================================
+        // 2. 🚗 FICHAS TÉCNICAS POR VERSÃO
         $versions = VehicleVersion::whereHas('model', function($q) use ($makeSlug, $modelSlug) {
             $q->where('slug', $modelSlug)
               ->whereHas('make', fn($q2) => $q2->where('slug', $makeSlug));
         })
         ->where('year', $year)
         ->orderBy('name')
-        ->limit(3) // Top 3 versões
+        ->limit(3)
         ->get();
 
         foreach ($versions as $version) {
@@ -185,16 +189,14 @@ class GuideSpecificViewModel
                     'make' => $makeSlug,
                     'model' => $modelSlug,
                     'year' => $year,
-                    'version' => $version->slug ?? str_slug($version->name)
+                    'version' => $version->slug ?? Str::slug($version->name)
                 ]),
                 'type' => 'vehicle_version',
                 'priority' => 2,
             ];
         }
 
-        // ===================================================================
-        // 3. ⛽ CONSUMO REAL POR MOTOR
-        // ===================================================================
+        // 3. ⛽ CONSUMO REAL
         $guideModel = app(Guide::class);
         
         $consumoGuides = $guideModel::where('make_slug', $makeSlug)
@@ -205,7 +207,6 @@ class GuideSpecificViewModel
             ->get();
 
         foreach ($consumoGuides as $consumo) {
-            // Extrair motor do payload ou title
             $motor = $consumo->payload['motor'] ?? $consumo->motor ?? 'Motor';
             
             $cluster[] = [
@@ -222,25 +223,22 @@ class GuideSpecificViewModel
             ];
         }
 
-        // ===================================================================
-        // 4. ⚠️ PROBLEMAS COMUNS POR GERAÇÃO
-        // ===================================================================
+        // 4. ⚠️ PROBLEMAS COMUNS
         $problemasGuides = $guideModel::where('make_slug', $makeSlug)
             ->where('model_slug', $modelSlug)
-            ->where('category_slug', 'problemas')
+            ->where('category_slug', 'problemas-comuns')
             ->where('year_start', '<=', $year)
             ->where('year_end', '>=', $year)
             ->get();
 
         foreach ($problemasGuides as $problema) {
-            // Extrair range de anos
             $yearRange = "{$problema->year_start}–{$problema->year_end}";
             
             $cluster[] = [
                 'icon' => '⚠️',
                 'title' => "Problemas comuns (Geração {$yearRange})",
                 'url' => route('guide.year', [
-                    'category' => 'problemas',
+                    'category' => 'problemas-comuns',
                     'make' => $makeSlug,
                     'model' => $modelSlug,
                     'year' => $year
@@ -250,9 +248,7 @@ class GuideSpecificViewModel
             ];
         }
 
-        // ===================================================================
-        // 5. 💧 FLUIDOS E CAPACIDADES
-        // ===================================================================
+        // 5. 💧 FLUIDOS
         $fluidosGuides = $guideModel::where('make_slug', $makeSlug)
             ->where('model_slug', $modelSlug)
             ->where('category_slug', 'fluidos')
@@ -275,9 +271,7 @@ class GuideSpecificViewModel
             ];
         }
 
-        // ===================================================================
         // 6. 🔧 MOTORES ALTERNATIVOS
-        // ===================================================================
         $motorsAlternativos = VehicleVersion::whereHas('model', function($q) use ($makeSlug, $modelSlug) {
             $q->where('slug', $modelSlug)
               ->whereHas('make', fn($q2) => $q2->where('slug', $makeSlug));
@@ -287,7 +281,7 @@ class GuideSpecificViewModel
         ->get()
         ->pluck('engine_code')
         ->unique()
-        ->take(2); // Top 2 motores alternativos
+        ->take(2);
 
         foreach ($motorsAlternativos as $motor) {
             if (!$motor) continue;
@@ -305,9 +299,7 @@ class GuideSpecificViewModel
             ];
         }
 
-        // ===================================================================
-        // 7. 🔄 GUIAS DE ANOS PRÓXIMOS (±2 anos)
-        // ===================================================================
+        // 7. 🔄 GUIAS DE ANOS PRÓXIMOS
         $nearYears = $guideModel::where('category_slug', $categorySlug)
             ->where('make_slug', $makeSlug)
             ->where('model_slug', $modelSlug)
@@ -335,66 +327,12 @@ class GuideSpecificViewModel
             ];
         }
 
-        // ===================================================================
         // ORDENAR POR PRIORIDADE
-        // ===================================================================
         usort($cluster, function($a, $b) {
             return $a['priority'] <=> $b['priority'];
         });
 
         return $cluster;
-    }
-
-    /**
-     * ⚠️ MOCK TEMPORÁRIO - Será substituído por dados reais do payload
-     * Especificações oficiais do óleo recomendado
-     */
-    public function getOfficialSpecs(): array
-    {
-        // TODO: Buscar do $this->guide->payload['oil_specs'] quando seeder criar
-        return [
-            ['label' => 'Viscosidade', 'value' => '5W-30'],
-            ['label' => 'Especificação', 'value' => 'API SN / ILSAC GF-5'],
-            ['label' => 'Capacidade', 'value' => '4.2 litros (com filtro)'],
-        ];
-    }
-
-    /**
-     * ⚠️ MOCK TEMPORÁRIO - Será substituído por dados reais do payload
-     * Óleos compatíveis e equivalentes
-     */
-    public function getCompatibleOils(): array
-    {
-        // TODO: Buscar do $this->guide->payload['compatible_oils'] quando seeder criar
-        return [
-            ['name' => 'Mobil 1 5W-30', 'spec' => 'Sintético - API SN Plus'],
-            ['name' => 'Castrol Edge 5W-30', 'spec' => 'Sintético - API SN Plus'],
-            ['name' => 'Shell Helix Ultra 5W-30', 'spec' => 'Sintético - API SN'],
-            ['name' => 'Petronas Syntium 5W-30', 'spec' => 'Sintético - API SN'],
-        ];
-    }
-
-    /**
-     * ⚠️ MOCK TEMPORÁRIO - Será substituído por dados reais do payload
-     * Intervalos de troca de óleo
-     */
-    public function getChangeIntervals(): array
-    {
-        // TODO: Buscar do $this->guide->payload['change_intervals'] quando seeder criar
-        return [
-            ['label' => 'Uso normal', 'value' => '10.000 km ou 12 meses'],
-            ['label' => 'Uso severo', 'value' => '5.000 km ou 6 meses'],
-        ];
-    }
-
-    /**
-     * ⚠️ MOCK TEMPORÁRIO - Será substituído por dados reais do payload
-     * Nota sobre uso severo
-     */
-    public function getSevereUseNote(): string
-    {
-        // TODO: Buscar do $this->guide->payload['severe_use_note'] quando seeder criar
-        return 'Uso severo: trajetos curtos frequentes, trânsito intenso, reboque, áreas empoeiradas.';
     }
 
     public function getBadges(): array
@@ -423,9 +361,6 @@ class GuideSpecificViewModel
         ];
     }
 
-    /**
-     * ✅ CORRIGIDO V2: Adiciona og_type e og_image ao SEO
-     */
     public function getSeoData(): array
     {
         $category = $this->getCategory();
@@ -443,7 +378,6 @@ class GuideSpecificViewModel
                 'year' => $this->year,
                 'version' => $this->version
             ]),
-            // ✅ ADICIONADOS V2
             'og_type' => 'article',
             'og_image' => asset("images/vehicles/{$make['slug']}/{$model['slug']}-{$this->year}.jpg"),
         ];
@@ -487,14 +421,16 @@ class GuideSpecificViewModel
             'oleo' => '🛢️',
             'calibragem' => '🎯',
             'pneus' => '🛞',
-            'problemas' => '⚠️',
+            'problemas-comuns' => '⚠️',
             'revisao' => '🔧',
             'consumo' => '⛽',
             'bateria' => '🔋',
             'cambio' => '⚙️',
             'arrefecimento' => '❄️',
             'fluidos' => '💧',
-            'motores' => '🏎️',
+            'suspensao' => '🏎️',
+            'recalls' => '🔔',
+            'comparacoes' => '⚖️',
         ];
 
         return $icons[$slug] ?? '📋';

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\GuideDataCenter\Domain\Mongo;
 
 use MongoDB\Laravel\Eloquent\Model;
+use Src\GuideDataCenter\Domain\Traits\BlockRenderer;
 
 /**
  * Model Guide - Representa um guia completo de veículo
@@ -40,6 +41,9 @@ use MongoDB\Laravel\Eloquent\Model;
  */
 class Guide extends Model
 {
+
+    use BlockRenderer;
+
     protected $connection = 'mongodb';
 
     protected $table = 'guides';
@@ -64,6 +68,10 @@ class Guide extends Model
         'year_end' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+    ];
+
+    protected $attributes = [
+        'content_blocks' => [],
     ];
 
     // ====================================================================

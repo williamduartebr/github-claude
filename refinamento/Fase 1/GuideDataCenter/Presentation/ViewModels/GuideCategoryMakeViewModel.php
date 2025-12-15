@@ -29,8 +29,8 @@ class GuideCategoryMakeViewModel
     {
         return [
             'id' => $this->category->_id ?? null,
-            'name' => $this->category->name ?? 'Óleo',
-            'slug' => $this->category->slug ?? 'oleo',
+            'name' => $this->category->name ?? null,
+            'slug' => $this->category->slug ?? null,
             'icon' => $this->category->icon ?? '🛢️',
         ];
     }
@@ -39,8 +39,8 @@ class GuideCategoryMakeViewModel
     {
         return [
             'id' => $this->make->id ?? null,
-            'name' => $this->make->name ?? 'Toyota',
-            'slug' => $this->make->slug ?? 'toyota',
+            'name' => $this->make->name ?? null,
+            'slug' => $this->make->slug ?? null,
             'logo' => "/images/makes/{$this->make->slug}.svg",
         ];
     }

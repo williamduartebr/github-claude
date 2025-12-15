@@ -40,24 +40,24 @@ class GuideYearViewModel
     public function getCategory(): array
     {
         return [
-            'name' => $this->category->name ?? 'Óleo',
-            'slug' => $this->category->slug ?? 'oleo',
+            'name' => $this->category->name ?? null,
+            'slug' => $this->category->slug ?? null,
         ];
     }
 
     public function getMake(): array
     {
         return [
-            'name' => $this->make->name ?? 'Toyota',
-            'slug' => $this->make->slug ?? 'toyota',
+            'name' => $this->make->name ?? null,
+            'slug' => $this->make->slug ?? null,
         ];
     }
 
     public function getModel(): array
     {
         return [
-            'name' => $this->model->name ?? 'Corolla',
-            'slug' => $this->model->slug ?? 'corolla',
+            'name' => $this->model->name ?? null,
+            'slug' => $this->model->slug ?? null,
         ];
     }
 
@@ -74,8 +74,8 @@ class GuideYearViewModel
      */
     public function getVersions(): array
     {
-        $modelSlug = $this->model->slug ?? 'corolla';
-        $makeSlug = $this->make->slug ?? 'toyota';
+        $modelSlug = $this->model->slug ?? null;
+        $makeSlug = $this->make->slug ?? null;
         $year = (int) $this->year;
 
         // Buscar versões REAIS do MySQL
@@ -113,8 +113,8 @@ class GuideYearViewModel
      */
     public function getSpecs(): ?array
     {
-        $makeSlug = $this->make->slug ?? 'toyota';
-        $modelSlug = $this->model->slug ?? 'corolla';
+        $makeSlug = $this->make->slug ?? null;
+        $modelSlug = $this->model->slug ?? null;
         $year = (int) $this->year;
 
         // Buscar especificações REAIS do MySQL

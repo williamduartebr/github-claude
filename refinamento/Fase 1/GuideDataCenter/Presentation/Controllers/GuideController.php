@@ -20,7 +20,7 @@ use Src\GuideDataCenter\Presentation\ViewModels\GuideMakeModelViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryMakeViewModel;
 use Src\VehicleDataCenter\Domain\Repositories\VehicleMakeRepositoryInterface;
 use Src\VehicleDataCenter\Domain\Repositories\VehicleModelRepositoryInterface;
-use Src\VehicleDataCenter\Domain\Repositories\VehicleVersionRepositoryInterface; // ✅ ADICIONADO
+use Src\VehicleDataCenter\Domain\Repositories\VehicleVersionRepositoryInterface;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryMakeModelViewModel;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
@@ -32,7 +32,7 @@ class GuideController extends Controller
         private readonly GuideCategoryRepositoryInterface $categoryRepository,
         private readonly VehicleMakeRepositoryInterface $makeRepository,
         private readonly VehicleModelRepositoryInterface $modelRepository,
-        private readonly VehicleVersionRepositoryInterface $versionRepository, // ✅ ADICIONADO
+        private readonly VehicleVersionRepositoryInterface $versionRepository,
         private readonly GuideSeoService $seoService,
         private readonly GuideClusterService $clusterService
     ) {}
@@ -44,7 +44,7 @@ class GuideController extends Controller
      */
     public function index(): View
     {
-        $categories = $this->categoryRepository->getActive(); // ✅ CORRIGIDO
+        $categories = $this->categoryRepository->getActive();
         $makes = $this->makeRepository->getActive();
 
         $viewModel = new GuideIndexViewModel($categories, $makes);
@@ -79,7 +79,6 @@ class GuideController extends Controller
             abort(404, 'Marca não encontrada');
         }
 
-        // ✅ BUSCA GUIAS REAIS DO MONGODB
         $guideModel = app(Guide::class);
         $guides = $guideModel::where('category_slug', $categorySlug)
             ->where('make_slug', $makeSlug)
@@ -117,36 +116,23 @@ class GuideController extends Controller
      * Rota: GET /guias/marca/{make}/{model}
      * View: guide-data-center::guide.make-model
      * Exemplo: /guias/marca/honda/civic
-     * 
-     * Mostra todos os guias disponíveis para um modelo específico,
-     * agrupados por categoria, com informações do veículo.
      */
     public function showMakeModel(string $makeSlug, string $modelSlug): View
     {
-        // 1. Buscar marca no VehicleDataCenter
         $make = $this->makeRepository->findBySlug($makeSlug);
-        
         if (!$make) {
             abort(404, 'Marca não encontrada');
         }
 
-        // 2. Buscar modelo no VehicleDataCenter
         $model = $this->modelRepository->findBySlug($makeSlug, $modelSlug);
-        
         if (!$model) {
             abort(404, 'Modelo não encontrado');
         }
 
-        // 3. Buscar todas as categorias ativas
-        $categories = $this->categoryRepository->getActive(); // ✅ AGORA FUNCIONA
-
-        // 4. Buscar guias disponíveis para este modelo
+        $categories = $this->categoryRepository->getActive();
         $guides = $this->guideRepository->findByMakeAndModel($makeSlug, $modelSlug);
+        $versions = $this->versionRepository->getByModel($model->id);
 
-        // 5. Buscar versões disponíveis para estatísticas
-        $versions = $this->versionRepository->getByModel($model->id); // ✅ AGORA FUNCIONA
-
-        // 6. Criar ViewModel
         $viewModel = new GuideMakeModelViewModel(
             $make,
             $model,
@@ -215,7 +201,7 @@ class GuideController extends Controller
     }
 
     /**
-     * Exibe guia completo de uma versão específica
+     * ✅ CORRIGIDO: Exibe guia completo de uma versão específica
      * 
      * Rota: GET /guias/{category}/{make}/{model}/{year}/{version}
      * View: guide-data-center::guide.specific
@@ -244,17 +230,26 @@ class GuideController extends Controller
             abort(404, 'Modelo não encontrado');
         }
 
-        // TODO: Buscar guia real do banco
-        $guide = null;
+        // ✅ Buscar guia REAL do MongoDB
+        $guideModel = app(Guide::class);
+        // $guide = $guideModel::where('url', '/guias/fluidos/honda/civic/2024/exl')
+        //     ->first();
 
-        // ⭐ IMPORTANTE: Passar $versionSlug para o ViewModel
+             $guide = $guideModel::where('category_slug', $categorySlug)
+            ->where('make_slug', $makeSlug)
+            ->where('model_slug', $modelSlug)
+            ->where('version_slug', $versionSlug)
+            ->where('year_start', '<=', (int)$year)
+            // ->where('year_end', '>=', (int)$year)
+            ->first();
+
         $viewModel = new GuideSpecificViewModel(
             $guide,
             $category,
             $make,
             $model,
             (int)$year,
-            $versionSlug  // ← Passa a versão
+            $versionSlug
         );
 
         if ($request->wantsJson()) {
@@ -264,19 +259,16 @@ class GuideController extends Controller
             ]);
         }
 
+        // ✅ CORRIGIDO: Removidas chamadas aos métodos MOCK
         return view('guide-data-center::guide.specific', [
             'guide' => $viewModel->getGuide(),
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
             'model' => $viewModel->getModel(),
             'year' => $viewModel->getYear(),
-            'version' => $viewModel->getVersion(),  // ← Adicionar versão na view
+            'version' => $viewModel->getVersion(),
             'badges' => $viewModel->getBadges(),
             'disclaimer' => $viewModel->getDisclaimer(),
-            'officialSpecs' => $viewModel->getOfficialSpecs(),
-            'compatibleOils' => $viewModel->getCompatibleOils(),
-            'changeIntervals' => $viewModel->getChangeIntervals(),
-            'severeUseNote' => $viewModel->getSevereUseNote(),
             'relatedGuides' => $viewModel->getRelatedGuides(),
             'essentialCluster' => $viewModel->getEssentialCluster(),
             'editorialInfo' => $viewModel->getEditorialInfo(),
@@ -314,7 +306,6 @@ class GuideController extends Controller
             abort(404, 'Modelo não encontrado');
         }
 
-        // ✅ BUSCA GUIAS REAIS DO MONGODB
         $guideModel = app(Guide::class);
         $guides = $guideModel::where('category_slug', $categorySlug)
             ->where('make_slug', $makeSlug)

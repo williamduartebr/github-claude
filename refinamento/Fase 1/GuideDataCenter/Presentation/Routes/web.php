@@ -51,7 +51,7 @@ Route::prefix('guias')
             ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+']);
 
         // ⭐ NOVO - Categoria + Marca + Modelo + Ano (lista versões)
-        Route::get('{category}/{make}/{model}/{year}', [GuideController::class, 'showYear'])
+        Route::get('{category}/{make}/{model}/{year?}', [GuideController::class, 'showYear'])
             ->name('guide.year')
             ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]{4}']);
 
