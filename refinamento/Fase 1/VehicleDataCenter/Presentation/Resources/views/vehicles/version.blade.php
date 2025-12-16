@@ -130,7 +130,7 @@
             </div>
             <div class="ml-3">
                 <p class="text-sm text-yellow-800 font-medium">
-                    <strong>⚠️ Importante:</strong> As informações técnicas são baseadas em especificações oficiais da
+                    <strong>Importante:</strong> As informações técnicas são baseadas em especificações oficiais da
                     fabricante e servem para fins informativos. Consulte sempre o manual do proprietário do seu veículo
                     e um profissional qualificado antes de realizar qualquer manutenção ou modificação.
                 </p>

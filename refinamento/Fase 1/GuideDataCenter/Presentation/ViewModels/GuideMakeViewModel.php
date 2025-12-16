@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Src\GuideDataCenter\Presentation\ViewModels;
 
 use Illuminate\Support\Collection;
@@ -9,10 +11,10 @@ use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
  * ViewModel para página de marca (todos os guias de uma marca)
  * 
  * Rota: /guias/marca/{make}
- * View: make.index
+ * View: guide-data-center::guide.make
  * Exemplo: /guias/marca/toyota
  * 
- * ✅ REFINADO - Sprint 4
+ * ✅ CORRIGIDO - Links apontam para /guias/marca/{make}/{model}
  */
 class GuideMakeViewModel
 {
@@ -81,7 +83,8 @@ class GuideMakeViewModel
     }
 
     /**
-     * Retorna modelos populares da marca (top 8)
+     * ✅ CORRIGIDO: Retorna modelos populares da marca (top 8)
+     * Agora usa a rota correta: /guias/marca/{make}/{model}
      */
     public function getPopularModels(): array
     {
@@ -107,8 +110,8 @@ class GuideMakeViewModel
                 'slug' => $model['slug'],
                 'guides_count' => $model['count'],
                 'categories_count' => $model['categories'],
-                'url' => route('guide.category.make.model', [
-                    'category' => 'oleo', // Categoria padrão para link
+                // ✅ CORRIGIDO: Rota sem categoria
+                'url' => route('guide.make.model', [
                     'make' => $makeSlug,
                     'model' => $model['slug']
                 ]),
@@ -117,7 +120,8 @@ class GuideMakeViewModel
     }
 
     /**
-     * Retorna todos os modelos ordenados alfabeticamente
+     * ✅ CORRIGIDO: Retorna todos os modelos ordenados alfabeticamente
+     * Agora usa a rota correta: /guias/marca/{make}/{model}
      */
     public function getAllModels(): array
     {
@@ -139,8 +143,8 @@ class GuideMakeViewModel
                 'name' => $model['name'],
                 'slug' => $model['slug'],
                 'guides_count' => $model['guides_count'],
-                'url' => route('guide.category.make.model', [
-                    'category' => 'oleo',
+                // ✅ CORRIGIDO: Rota sem categoria
+                'url' => route('guide.make.model', [
                     'make' => $makeSlug,
                     'model' => $model['slug']
                 ]),
@@ -149,24 +153,27 @@ class GuideMakeViewModel
     }
 
     /**
-     * Retorna estatísticas da marca
+     * Retorna estatísticas
      */
     public function getStats(): array
     {
+        $totalModels = $this->guides->pluck('model_slug')->unique()->count();
+        $totalCategories = $this->guides->pluck('category_slug')->unique()->count();
+
         return [
             'total_guides' => $this->guides->count(),
-            'total_categories' => $this->categories->count(),
-            'total_models' => $this->guides->pluck('model_slug')->unique()->count(),
+            'total_models' => $totalModels,
+            'total_categories' => $totalCategories,
         ];
     }
 
     /**
-     * Retorna dados SEO
+     * Retorna dados de SEO
      */
     public function getSeoData(): array
     {
         $make = $this->getMake();
-        
+
         return [
             'title' => "Guias {$make['name']} – Especificações por Modelo e Categoria | Mercado Veículos",
             'description' => "Encontre guias completos de {$make['name']}: óleo, calibragem, pneus, consumo e mais. Especificações técnicas por modelo e ano.",
@@ -181,9 +188,9 @@ class GuideMakeViewModel
     public function getBreadcrumbs(): array
     {
         $make = $this->getMake();
-        
+
         return [
-            ['name' => 'Início', 'url' => route('home')],
+            ['name' => 'Início', 'url' => url('/')],
             ['name' => 'Guias', 'url' => route('guide.index')],
             ['name' => $make['name'], 'url' => null],
         ];
