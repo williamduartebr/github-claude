@@ -152,14 +152,7 @@
     <section class="mb-8">
         <h2 class="text-lg font-semibold mb-3 font-montserrat">Guias populares</h2>
 
-        {{-- PAGINAÇÃO (MOCK) --}}
-        <div class="flex items-center justify-center gap-2 mt-8 mb-4 font-roboto">
-            <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">«</button>
-            <button class="px-3 py-1 bg-blue-600 text-white rounded text-sm">1</button>
-            <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">2</button>
-            <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">3</button>
-            <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">»</button>
-        </div>
+        @include('guide-data-center::components.pagination', ['pagination' => $pagination])
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             @foreach($popularGuides as $guide)

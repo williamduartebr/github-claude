@@ -183,50 +183,63 @@ class GuideRepository implements GuideRepositoryInterface
     }
 
     /**
+     * ✅ CORRIGIDO: Busca por filtros flexíveis
+     * 
      * {@inheritDoc}
      */
     public function findByFilters(array $filters): Collection
     {
         $query = $this->model->query();
 
-        // Filtro por marca
+        // ✅ Filtro por marca (slug)
         if (isset($filters['make_slug'])) {
-            $query->byMake($filters['make_slug']);
+            $query->where('make_slug', $filters['make_slug']);
         }
 
-        // Filtro por modelo
+        // ✅ Filtro por modelo (slug)
         if (isset($filters['model_slug'])) {
-            $query->byModel($filters['model_slug']);
+            $query->where('model_slug', $filters['model_slug']);
         }
 
-        // Filtro por categoria
-        if (isset($filters['category_id'])) {
-            $query->byCategory($filters['category_id']);
+        // ✅ CORRIGIDO: Filtro por categoria (aceita SLUG ou ID)
+        if (isset($filters['category_slug'])) {
+            $query->where('category_slug', $filters['category_slug']);
+        } elseif (isset($filters['category_id'])) {
+            $query->where('guide_category_id', $filters['category_id']);
         }
 
-        // Filtro por ano
+        // ✅ Filtro por ano
         if (isset($filters['year'])) {
-            $query->byYear($filters['year']);
+            $query->where(function ($q) use ($filters) {
+                $q->where('year_start', '<=', $filters['year'])
+                  ->where('year_end', '>=', $filters['year']);
+            });
         }
 
-        // Filtro por template
+        // ✅ Filtro por template
         if (isset($filters['template'])) {
-            $query->byTemplate($filters['template']);
+            $query->where('template', $filters['template']);
         }
 
-        // Filtro por termo de busca
+        // ✅ Filtro por termo de busca
         if (isset($filters['search'])) {
-            $query->search($filters['search']);
+            $searchTerm = $filters['search'];
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('make', 'like', "%{$searchTerm}%")
+                  ->orWhere('model', 'like', "%{$searchTerm}%")
+                  ->orWhere('version', 'like', "%{$searchTerm}%")
+                  ->orWhere('full_title', 'like', "%{$searchTerm}%");
+            });
         }
 
-        // Ordenação
+        // ✅ Ordenação
         $orderBy = $filters['order_by'] ?? 'created_at';
         $orderDirection = $filters['order_direction'] ?? 'desc';
         $query->orderBy($orderBy, $orderDirection);
 
-        // Limite
+        // ✅ Limite
         $limit = $filters['limit'] ?? 50;
-
+        
         return $query
             ->with(['category', 'guideSeo'])
             ->limit($limit)

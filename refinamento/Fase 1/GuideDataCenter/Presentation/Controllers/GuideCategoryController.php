@@ -8,9 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Src\GuideDataCenter\Domain\Mongo\Guide;
+use Src\VehicleDataCenter\Domain\Eloquent\VehicleMake;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
-use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryPageViewModel;
 
 class GuideCategoryController extends Controller
@@ -20,11 +21,6 @@ class GuideCategoryController extends Controller
         private readonly GuideRepositoryInterface $guideRepository
     ) {}
 
-    /**
-     * Lista todas as categorias disponíveis
-     * 
-     * Rota: GET /guias/categorias
-     */
     public function all(Request $request): View|JsonResponse
     {
         $categories = $this->categoryRepository->getActive();
@@ -47,31 +43,59 @@ class GuideCategoryController extends Controller
         ]);
     }
 
-    /**
-     * Exibe página de uma categoria específica
-     * 
-     * Rota: GET /guias/{category}
-     * View: guide-data-center::category.index
-     * Exemplos: /guias/oleo, /guias/calibragem
-     */
     public function index(Request $request, string $categorySlug): View|JsonResponse
     {
-        // Busca a categoria pelo slug
         $category = $this->categoryRepository->findBySlug($categorySlug);
 
         if (!$category) {
             abort(404, 'Categoria não encontrada');
         }
 
-        // Busca guias desta categoria
-        // TODO: Implementar busca real quando houver dados
-        $guides = collect([]); // Placeholder
-        $makes = collect([]); // Placeholder
+        $currentPage = max(1, (int) $request->get('page', 1));
+        $perPage = 6;
+        $offset = ($currentPage - 1) * $perPage;
 
-        // Instancia o ViewModel
-        $viewModel = new GuideCategoryPageViewModel($category, $guides, $makes);
+        $allGuides = Guide::where('category_slug', $categorySlug)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        // Se requisição JSON
+        $totalGuides = $allGuides->count();
+        $totalPages = max(1, (int) ceil($totalGuides / $perPage));
+
+        if ($currentPage > $totalPages && $totalGuides > 0) {
+            abort(404, 'Página não encontrada');
+        }
+
+        $guides = $allGuides->slice($offset, $perPage)->values();
+
+        $makeIds = $allGuides->pluck('vehicle_make_id')
+            ->unique()
+            ->filter()
+            ->values();
+
+        $makes = collect([]);
+        if ($makeIds->isNotEmpty()) {
+            $makes = VehicleMake::whereIn('id', $makeIds->toArray())
+                ->orderBy('name', 'asc')
+                ->get();
+        }
+
+        if ($makes->isEmpty()) {
+            $makes = VehicleMake::where('is_active', true)
+                ->orderBy('name', 'asc')
+                ->limit(20)
+                ->get();
+        }
+
+        $viewModel = new GuideCategoryPageViewModel(
+            $category, 
+            $guides, 
+            $makes,
+            $currentPage,
+            $totalPages,
+            $totalGuides
+        );
+
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
@@ -79,11 +103,11 @@ class GuideCategoryController extends Controller
                     'category' => $viewModel->getCategory(),
                     'popular_guides' => $viewModel->getPopularGuides(),
                     'makes' => $viewModel->getMakes(),
+                    'pagination' => $viewModel->getPagination(),
                 ]
             ]);
         }
 
-        // Retorna view com dados preparados
         return view('guide-data-center::guide.category.index', [
             'category' => $viewModel->getCategory(),
             'relatedCategories' => $viewModel->getRelatedCategories(),
@@ -94,6 +118,7 @@ class GuideCategoryController extends Controller
             'faqs' => $viewModel->getFaqs(),
             'seo' => $viewModel->getSeoData(),
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
+            'pagination' => $viewModel->getPagination(),
         ]);
     }
 }
