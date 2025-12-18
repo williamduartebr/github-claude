@@ -240,7 +240,7 @@ class GuideController extends Controller
             ->where('model_slug', $modelSlug)
             ->where('version_slug', $versionSlug)
             ->where('year_start', '<=', (int)$year)
-            // ->where('year_end', '>=', (int)$year)
+            ->where('year_end', '>=', (int)$year)
             ->first();
 
         $viewModel = new GuideSpecificViewModel(

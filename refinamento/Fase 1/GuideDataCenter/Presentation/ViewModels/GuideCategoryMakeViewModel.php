@@ -60,9 +60,9 @@ class GuideCategoryMakeViewModel
 
         return $this->guides
             ->groupBy('model_slug')
-            ->map(function($modelGuides) use ($categorySlug, $makeSlug) {
+            ->map(function ($modelGuides) use ($categorySlug, $makeSlug) {
                 $first = $modelGuides->first();
-                
+
                 return [
                     'name' => $first->model,
                     'slug' => $first->model_slug,
@@ -84,7 +84,7 @@ class GuideCategoryMakeViewModel
 
     /**
      * Retorna lista completa de modelos
-     * BUSCA DADOS REAIS DO MONGODB
+     * ✅ CORRIGIDO: Usa segment do MongoDB (vem do VehicleModel.category)
      */
     public function getAllModels(): array
     {
@@ -97,17 +97,19 @@ class GuideCategoryMakeViewModel
 
         return $this->guides
             ->groupBy('model_slug')
-            ->map(function($modelGuides) use ($categorySlug, $makeSlug) {
+            ->map(function ($modelGuides) use ($categorySlug, $makeSlug) {
                 $first = $modelGuides->first();
                 $years = $modelGuides->pluck('year_start')->filter()->unique()->sort();
-                
+
                 return [
                     'name' => $first->model,
                     'slug' => $first->model_slug,
+                    'segment' => $this->formatSegment($first->segment),
                     'guides_count' => $modelGuides->count(),
-                    'year_range' => $years->isEmpty() 
-                        ? '-' 
+                    'year_range' => $years->isEmpty()
+                        ? '-'
                         : $years->min() . '-' . $years->max(),
+                    'years' => $this->formatYears($years),
                     'url' => route('guide.category.make.model', [
                         'category' => $categorySlug,
                         'make' => $makeSlug,
@@ -121,6 +123,27 @@ class GuideCategoryMakeViewModel
     }
 
     /**
+     * Formata anos
+     */
+    private function formatYears($years): string
+    {
+        if ($years->isEmpty()) return '-';
+        $min = $years->min();
+        $max = $years->max();
+        return $min === $max ? (string)$min : "{$min}-{$max}";
+    }
+
+    private function formatSegment(?string $segment): string
+    {
+        if (!$segment) return 'N/A';
+
+        return match (strtolower($segment)) {
+            'suv' => 'SUV',
+            default => ucfirst($segment),
+        };
+    }
+
+    /**
      * Retorna categorias complementares
      */
     public function getComplementaryCategories(): array
@@ -129,14 +152,14 @@ class GuideCategoryMakeViewModel
         $makeSlug = $this->make->slug;
 
         $guideModel = app(Guide::class);
-        
+
         return $guideModel::where('make_slug', $makeSlug)
             ->where('category_slug', '!=', $currentSlug)
             ->get()
             ->groupBy('category_slug')
-            ->map(function($guides, $catSlug) use ($makeSlug, $currentSlug) {
+            ->map(function ($guides, $catSlug) use ($makeSlug, $currentSlug) {
                 $first = $guides->first();
-                
+
                 return [
                     'name' => $first->category ?? ucfirst($catSlug),
                     'slug' => $catSlug ?: $currentSlug,
@@ -157,7 +180,7 @@ class GuideCategoryMakeViewModel
     {
         $category = $this->getCategory();
         $make = $this->getMake();
-        
+
         return [
             'title' => "{$category['name']} {$make['name']} – Guias por modelo e ano | Mercado Veículos",
             'description' => "Guias completos de {$category['name']} para veículos {$make['name']}: especificações, recomendações por modelo e ano.",
@@ -173,7 +196,7 @@ class GuideCategoryMakeViewModel
     {
         $category = $this->getCategory();
         $make = $this->getMake();
-        
+
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => route('guide.index')],
@@ -209,5 +232,24 @@ class GuideCategoryMakeViewModel
         ];
 
         return $icons[$categorySlug] ?? '📋';
+    }
+
+    /**
+     * Retorna o segmento do modelo
+     */
+    private function getSegmentByModel(string $modelSlug): string
+    {
+        $segments = [
+            'hb20' => 'Hatch',
+            'creta' => 'SUV',
+            'tucson' => 'SUV',
+            'civic' => 'Sedan',
+            'hr-v' => 'SUV',
+            'corolla' => 'Sedan',
+            'hilux' => 'Picape',
+            'gol' => 'Hatch',
+        ];
+
+        return $segments[$modelSlug] ?? 'N/A';
     }
 }
