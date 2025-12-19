@@ -40,6 +40,9 @@ Renderiza guia completo com includes organizados
 {{-- CONTEÚDO DO GUIA --}}
 @include('guide-data-center::guide.specific.partials.content')
 
+{{-- CTA --}}
+@include('guide-data-center::guide.specific.partials.cta')
+
 {{-- GUIAS RELACIONADOS (Original ViewModel) --}}
 @include('guide-data-center::guide.specific.partials.related-guides')
 
