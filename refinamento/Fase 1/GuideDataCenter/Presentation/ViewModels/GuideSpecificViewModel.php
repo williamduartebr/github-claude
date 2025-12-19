@@ -14,7 +14,7 @@ use Src\VehicleDataCenter\Domain\Eloquent\VehicleVersion;
  * Rota: /guias/{category}/{make}/{model}/{year}/{version}
  * Exemplo: /guias/oleo/toyota/corolla/2025/gli
  * 
- * ✅ CORRIGIDO: Adiciona content_blocks e remove mocks
+ * ✅ ATUALIZADO: Adiciona suporte ao campo 'intro'
  */
 class GuideSpecificViewModel
 {
@@ -36,7 +36,7 @@ class GuideSpecificViewModel
     }
 
     /**
-     * ✅ CORRIGIDO: Agora retorna content_blocks!
+     * ✅ ATUALIZADO: Agora retorna content_blocks e intro!
      */
     public function getGuide(): array
     {
@@ -45,8 +45,9 @@ class GuideSpecificViewModel
                 'id' => null,
                 'title' => $this->generateTitle(),
                 'description' => $this->generateDescription(),
+                'intro' => null, // ✅ ADICIONADO
                 'content' => null,
-                'content_blocks' => [], // ✅ Vazio se não tem guia
+                'content_blocks' => [],
                 'payload' => [],
             ];
         }
@@ -56,8 +57,9 @@ class GuideSpecificViewModel
             'id' => $this->guide->_id ?? null,
             'title' => $this->guide->title ?? $this->generateTitle(),
             'description' => $this->guide->description ?? $this->generateDescription(),
+            'intro' => $this->guide->intro ?? null, // ✅ ADICIONADO
             'content' => $this->guide->payload['content'] ?? null,
-            'content_blocks' => $this->guide->content_blocks ?? [], // ✅ ADICIONADO!
+            'content_blocks' => $this->guide->content_blocks ?? [],
             'payload' => $this->guide->payload ?? [],
         ];
     }
@@ -338,9 +340,9 @@ class GuideSpecificViewModel
     public function getBadges(): array
     {
         return [
-            ['icon' => '🔧', 'text' => 'Informação Oficial', 'color' => 'green'],
-            ['icon' => '✓', 'text' => 'Revisado', 'color' => 'blue'],
-            ['icon' => '📅', 'text' => date('Y'), 'color' => 'blue'],
+            ['icon' => '🔧', 'text' => 'Informação Oficial', 'class' => 'bg-green-100 text-green-800'],
+            ['icon' => '✓', 'text' => 'Revisado', 'class' => 'bg-blue-100 text-blue-800'],
+            ['icon' => '📅', 'text' => date('Y'), 'class' => 'bg-blue-100 text-blue-800'],
         ];
     }
 
@@ -361,26 +363,92 @@ class GuideSpecificViewModel
         ];
     }
 
+    /**
+     * ✅ MÉTODO CORRIGIDO - Retorna dados SEO otimizados
+     * 
+     * Retorna array com:
+     * - title: Title curto (<60 chars) para Google
+     * - description: Meta description otimizada
+     * - h1: H1 completo para a página
+     * - canonical: URL canônica
+     * - og_image: Imagem para Open Graph
+     * - og_type: Tipo de conteúdo (article)
+     */
     public function getSeoData(): array
     {
-        $category = $this->getCategory();
-        $make = $this->getMake();
-        $model = $this->getModel();
-        $version = strtoupper($this->version);
+        // Se não tem guia, retorna SEO básico
+        if (!$this->guide) {
+            return $this->getBasicSeoData();
+        }
+
+        // ✅ Se tem guia, usa os dados do MongoDB (já vem do seeder otimizado)
+        $seoData = $this->guide->seo ?? [];
 
         return [
-            'title' => "{$category['name']} {$make['name']} {$model['name']} {$this->year} {$version} | Mercado Veículos",
-            'description' => "Guia completo: {$category['name']} para {$make['name']} {$model['name']} {$this->year} {$version}. Especificações, recomendações e intervalos.",
-            'canonical' => route('guide.version', [
-                'category' => $category['slug'],
-                'make' => $make['slug'],
-                'model' => $model['slug'],
-                'year' => $this->year,
-                'version' => $this->version
-            ]),
+            // Title curto para Google (<60 chars)
+            'title' => $seoData['title'] ?? $this->guide->title ?? 'Mercado Veículos',
+            
+            // Meta description otimizada (150-160 chars)
+            'description' => $seoData['meta_description'] ?? $this->guide->description ?? '',
+            
+            // H1 completo e natural (para usar no hero)
+            'h1' => $seoData['h1'] ?? $this->guide->title ?? '',
+            
+            // URLs e imagens
+            'canonical' => $seoData['canonical_url'] ?? url()->current(),
+            'og_image' => $seoData['og_image'] ?? asset('images/default-guide.jpg'),
             'og_type' => 'article',
-            'og_image' => asset("images/vehicles/{$make['slug']}/{$model['slug']}-{$this->year}.jpg"),
+            
+            // Keywords (opcional)
+            'keywords' => $this->getKeywords($seoData),
+            
+            // Timestamps (opcional, para Rich Snippets)
+            'published_time' => $this->guide->created_at?->toIso8601String(),
+            'modified_time' => $this->guide->updated_at?->toIso8601String(),
         ];
+    }
+
+    /**
+     * Retorna SEO básico quando não há guia
+     */
+    private function getBasicSeoData(): array
+    {
+        $categoryName = $this->category->name ?? 'Guia';
+        $makeName = $this->make->name ?? '';
+        $modelName = $this->model->name ?? '';
+        $year = $this->version->year ?? '';
+        $versionName = $this->version->name ?? '';
+
+        return [
+            // Title curto para Google (<60 chars)
+            'title' => "{$categoryName} {$makeName} {$modelName} {$year} | Mercado Veículos",
+            
+            // Description
+            'description' => "Guia de {$categoryName} para {$makeName} {$modelName} {$year}. Informações técnicas e especificações.",
+            
+            // H1 completo
+            'h1' => "{$categoryName} para {$makeName} {$modelName} {$year} {$versionName}",
+            
+            // URLs
+            'canonical' => url()->current(),
+            'og_image' => asset("images/vehicles/{$makeName}-{$modelName}-{$year}.jpg"),
+            'og_type' => 'article',
+            
+            // Keywords
+            'keywords' => "{$categoryName}, {$makeName}, {$modelName}, {$year}",
+        ];
+    }
+
+    /**
+     * Extrai keywords do array SEO
+     */
+    private function getKeywords(array $seoData): string
+    {
+        if (isset($seoData['secondary_keywords']) && is_array($seoData['secondary_keywords'])) {
+            return implode(', ', $seoData['secondary_keywords']);
+        }
+        
+        return '';
     }
 
     public function getBreadcrumbs(): array

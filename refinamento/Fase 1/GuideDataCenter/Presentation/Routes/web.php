@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use Src\GuideDataCenter\Presentation\Controllers\GuideMakeController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideCategoryController;
-use Src\GuideDataCenter\Presentation\Controllers\GuideClusterController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideSearchController;
 
 Route::prefix('guias')

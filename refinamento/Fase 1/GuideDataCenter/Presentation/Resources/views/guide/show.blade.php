@@ -2,7 +2,7 @@
 View: Guide Show
 Exibe um guia completo com SEO, conteúdo e clusters relacionados
 --}}
-@extends('guide-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 
 @section('title', $guide->seo?->title ?? $guide->title)

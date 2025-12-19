@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -78,7 +78,7 @@
 
             <div class="flex-shrink-0 mt-6 md:mt-0">
 
-            {{ $model['image'] }}
+                {{ $model['image'] }}
                 <img src="{{ sprintf('%s%s', Config::get('aws.s3.vehicles'), $model['image']) }}"
                     alt="{{ $make['name'] }} {{ $model['name'] }} - imagem ilustrativa"
                     class="rounded-lg shadow max-w-sm">

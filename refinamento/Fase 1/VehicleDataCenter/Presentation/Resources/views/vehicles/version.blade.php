@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -107,10 +107,11 @@
             <div class="md:w-72 mt-6 md:mt-0">
 
                 {{ $version['image']}}
-          
-                <img src="{{ sprintf('%s%s', Config::get('aws.s3.vehicles'), '/images/vehicles/chevrolet/onix/2025/gli-20-cvt/hero.jpeg') }}" alt="{{ $version['full_name'] }}" class="w-full rounded shadow">
 
-             
+                <img src="{{ sprintf('%s%s', Config::get('aws.s3.vehicles'), '/images/vehicles/chevrolet/onix/2025/gli-20-cvt/hero.jpeg') }}"
+                    alt="{{ $version['full_name'] }}" class="w-full rounded shadow">
+
+
                 <p class="text-xs text-gray-500 mt-2 font-roboto">Imagem ilustrativa</p>
             </div>
         </div>

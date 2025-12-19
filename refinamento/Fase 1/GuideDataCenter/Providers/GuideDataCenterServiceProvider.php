@@ -2,29 +2,22 @@
 
 namespace Src\GuideDataCenter\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 // Repositories Contracts
 use Src\GuideDataCenter\Domain\Mongo\Guide;
 use Src\GuideDataCenter\Observers\GuideObserver;
-use Src\GuideDataCenter\Domain\Services\GuideSeoService;
 use Src\GuideDataCenter\Domain\Services\GuideImportService;
 
 
 // Repositories Implementations
-use Src\GuideDataCenter\Domain\Services\GuideClusterService;
 use Src\GuideDataCenter\Domain\Services\GuideCreationService;
 use Src\GuideDataCenter\Domain\Services\GuideValidatorService;
 use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideRepository;
 
 // Services
-use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideSeoRepository;
-use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideClusterRepository;
 use Src\GuideDataCenter\Domain\Repositories\Mongo\GuideCategoryRepository;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideSeoRepositoryInterface;
-use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideClusterRepositoryInterface;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
 
 /**
@@ -53,7 +46,7 @@ class GuideDataCenterServiceProvider extends ServiceProvider
         );
     }
 
-     /**
+    /**
      * Bootstrap services.
      */
     public function boot(): void
@@ -82,17 +75,6 @@ class GuideDataCenterServiceProvider extends ServiceProvider
             GuideCategoryRepository::class
         );
 
-        // Guide Cluster Repository
-        $this->app->bind(
-            GuideClusterRepositoryInterface::class,
-            GuideClusterRepository::class
-        );
-
-        // Guide SEO Repository
-        $this->app->bind(
-            GuideSeoRepositoryInterface::class,
-            GuideSeoRepository::class
-        );
     }
 
     /**
@@ -105,29 +87,12 @@ class GuideDataCenterServiceProvider extends ServiceProvider
             return new GuideValidatorService();
         });
 
-        // Guide SEO Service
-        $this->app->singleton(GuideSeoService::class, function ($app) {
-            return new GuideSeoService(
-                $app->make(GuideSeoRepositoryInterface::class)
-            );
-        });
-
-        // Guide Cluster Service
-        $this->app->singleton(GuideClusterService::class, function ($app) {
-            return new GuideClusterService(
-                $app->make(GuideClusterRepositoryInterface::class),
-                $app->make(GuideRepositoryInterface::class)
-            );
-        });
-
         // Guide Creation Service
         $this->app->singleton(GuideCreationService::class, function ($app) {
             return new GuideCreationService(
                 $app->make(GuideRepositoryInterface::class),
                 $app->make(GuideCategoryRepositoryInterface::class),
                 $app->make(GuideValidatorService::class),
-                $app->make(GuideSeoService::class),
-                $app->make(GuideClusterService::class)
             );
         });
 
@@ -139,9 +104,20 @@ class GuideDataCenterServiceProvider extends ServiceProvider
                 $app->make(GuideValidatorService::class)
             );
         });
+
+        // Guide Relationship Service
+        $this->app->singleton(
+            \Src\GuideDataCenter\Domain\Services\GuideRelationshipService::class,
+            function ($app) {
+                return new \Src\GuideDataCenter\Domain\Services\GuideRelationshipService(
+                    $app->make(\Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface::class),
+                    $app->make(\Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface::class)
+                );
+            }
+        );
     }
 
-        /**
+    /**
      * Publica recursos do módulo
      */
     protected function publishResources(): void
@@ -149,7 +125,7 @@ class GuideDataCenterServiceProvider extends ServiceProvider
         // // Carrega migrations
         // $this->loadMigrationsFrom(__DIR__ . '/../Migrations/mongo');
 
-                // Load views
+        // Load views
         $this->loadViewsFrom(__DIR__ . '/../Presentation/Resources/views', 'guide-data-center');
 
         // Publica configurações
@@ -176,19 +152,15 @@ class GuideDataCenterServiceProvider extends ServiceProvider
             // Repositories
             GuideRepositoryInterface::class,
             GuideCategoryRepositoryInterface::class,
-            GuideClusterRepositoryInterface::class,
-            GuideSeoRepositoryInterface::class,
 
             // Services
             GuideCreationService::class,
-            GuideClusterService::class,
-            GuideSeoService::class,
             GuideImportService::class,
             GuideValidatorService::class,
         ];
     }
 
-      /**
+    /**
      * Carrega as rotas do módulo
      */
     protected function loadRoutes(): void

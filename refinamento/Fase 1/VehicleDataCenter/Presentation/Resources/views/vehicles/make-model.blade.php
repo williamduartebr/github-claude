@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -23,7 +23,7 @@
 {{-- Schema.org --}}
 @if(isset($structuredData))
 <script type="application/ld+json">
-{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    {!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
 </script>
 @endif
 @endpush
@@ -81,7 +81,8 @@
                         <div class="text-xs text-gray-600 font-roboto">Guias disponíveis</div>
                     </div>
                     <div>
-                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['categories_count'] }}</div>
+                        <div class="text-2xl font-bold text-blue-600 font-montserrat">{{ $stats['categories_count'] }}
+                        </div>
                         <div class="text-xs text-gray-600 font-roboto">Categorias</div>
                     </div>
                     <div>
@@ -124,9 +125,8 @@
                 class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg hover:border-blue-500 transition-all">
                 <div class="flex items-center gap-3">
                     <div class="p-3 rounded-full {{ $category['icon_bg_color'] }}">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="w-8 h-8 {{ $category['icon_text_color'] }}" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 {{ $category['icon_text_color'] }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             {!! $category['icon_svg'] !!}
                         </svg>
                     </div>

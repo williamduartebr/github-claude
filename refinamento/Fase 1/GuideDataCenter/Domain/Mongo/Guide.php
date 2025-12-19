@@ -86,22 +86,6 @@ class Guide extends Model
         return $this->belongsTo(GuideCategory::class, 'guide_category_id', '_id');
     }
 
-    /**
-     * Relacionamento com SEO
-     */
-    public function guideSeo()
-    {
-        return $this->hasOne(GuideSeo::class, 'guide_id', '_id');
-    }
-
-    /**
-     * Relacionamento com clusters
-     */
-    public function clusters()
-    {
-        return $this->hasMany(GuideCluster::class, 'guide_id', '_id');
-    }
-
     // ====================================================================
     // SCOPES
     // ====================================================================

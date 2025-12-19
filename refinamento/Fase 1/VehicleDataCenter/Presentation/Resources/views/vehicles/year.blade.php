@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -66,7 +66,9 @@
                 </h1>
 
                 <p class="text-sm text-gray-600 leading-relaxed mb-4 font-roboto">
-                    Conheça as {{ $stats['versions_count'] }} {{ $stats['versions_count'] === 1 ? 'versão disponível' : 'versões disponíveis' }} do {{ $make['name'] }} {{ $model['name'] }} {{ $year }}: fichas técnicas completas, especificações, motores, consumo e guias de manutenção.
+                    Conheça as {{ $stats['versions_count'] }} {{ $stats['versions_count'] === 1 ? 'versão disponível' :
+                    'versões disponíveis' }} do {{ $make['name'] }} {{ $model['name'] }} {{ $year }}: fichas técnicas
+                    completas, especificações, motores, consumo e guias de manutenção.
                 </p>
 
                 {{-- Estatísticas Rápidas --}}
@@ -75,7 +77,7 @@
                         <span class="font-semibold text-blue-900">{{ $stats['versions_count'] }}</span>
                         <span class="text-blue-700">{{ $stats['versions_count'] === 1 ? 'versão' : 'versões' }}</span>
                     </div>
-                    
+
                     @if(isset($stats['fuel_types']))
                     <div class="bg-green-50 border border-green-200 rounded px-3 py-2 text-sm">
                         <span class="text-green-700">{{ implode(', ', $stats['fuel_types']) }}</span>
@@ -85,12 +87,12 @@
 
                 {{-- Ações --}}
                 <div class="flex flex-wrap gap-3">
-                    <a href="#versoes" 
-                       class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 font-roboto">
+                    <a href="#versoes"
+                        class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 font-roboto">
                         Ver versões
                     </a>
                     <a href="{{ route('vehicles.model', ['make' => $make['slug'], 'model' => $model['slug']]) }}"
-                       class="px-4 py-2 border border-gray-300 text-sm rounded hover:bg-gray-100 font-roboto">
+                        class="px-4 py-2 border border-gray-300 text-sm rounded hover:bg-gray-100 font-roboto">
                         ← Outros anos
                     </a>
                 </div>
@@ -98,13 +100,13 @@
 
             {{-- Thumbnail do Veículo --}}
             <div class="flex-shrink-0 mt-6 md:mt-0">
-                {{-- 
+                {{--
                 ⚠️ TODO: Adicionar imagem real do banco quando disponível
                 Padrão: <img src="{{ $yearImage }}" alt="...">
                 --}}
                 <img src="{{ asset('/images/placeholder/corolla-full-hero.jpeg') }}"
-                     alt="{{ $make['name'] }} {{ $model['name'] }} {{ $year }}"
-                     class="rounded-lg shadow-md max-w-xs w-full">
+                    alt="{{ $make['name'] }} {{ $model['name'] }} {{ $year }}"
+                    class="rounded-lg shadow-md max-w-xs w-full">
                 <p class="text-xs text-gray-500 mt-2 text-center font-roboto">Imagem ilustrativa</p>
             </div>
         </div>
@@ -144,18 +146,18 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($versions as $version)
-            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-blue-500 hover:shadow-md transition-all">
+            <div
+                class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-blue-500 hover:shadow-md transition-all">
                 <a href="{{ $version['url'] }}" class="block">
                     {{-- Thumbnail da Versão --}}
                     <div class="relative h-40 bg-gray-100">
-                        {{-- 
+                        {{--
                         ⚠️ TODO: Adicionar imagem real do banco quando disponível
                         Padrão: <img src="{{ $version['image'] }}" alt="...">
                         --}}
                         <img src="{{ asset('/images/placeholder/corolla-full-hero.jpeg') }}"
-                             alt="{{ $version['name'] }}"
-                             class="w-full h-full object-cover">
-                        
+                            alt="{{ $version['name'] }}" class="w-full h-full object-cover">
+
                         {{-- Badge de Combustível --}}
                         @if(isset($version['fuel']))
                         <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
@@ -167,17 +169,17 @@
                     {{-- Informações da Versão --}}
                     <div class="p-4">
                         <h3 class="font-semibold text-lg mb-1 font-montserrat">{{ $version['name'] }}</h3>
-                        
+
                         {{-- Especificações Breves --}}
                         <div class="text-xs text-gray-600 space-y-1 mb-3 font-roboto">
                             @if(isset($version['engine']))
                             <p>⚙️ {{ $version['engine'] }}</p>
                             @endif
-                            
+
                             @if(isset($version['transmission']))
                             <p>🔄 {{ $version['transmission'] }}</p>
                             @endif
-                            
+
                             @if(isset($version['power']))
                             <p>⚡ {{ $version['power'] }}</p>
                             @endif

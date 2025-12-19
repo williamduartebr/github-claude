@@ -1,4 +1,4 @@
-@extends('guide-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -147,7 +147,7 @@
     </section>
     @endif
 
-     {{-- BANNER RESPONSIVO (MOCK) --}}
+    {{-- BANNER RESPONSIVO (MOCK) --}}
     <div class="mb-12">
         <div class="w-full bg-gray-300 rounded-lg flex items-center justify-center" style="min-height: 280px;">
             <span class="text-gray-700 text-sm font-roboto">Banner - Mock Ad</span>

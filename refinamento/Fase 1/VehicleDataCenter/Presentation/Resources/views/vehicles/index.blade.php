@@ -1,4 +1,4 @@
-@extends('vehicle-data-center::layouts.app')
+@extends('shared::layouts.app')
 
 @section('title', $seo['title'])
 @section('meta_description', $seo['description'])
@@ -108,8 +108,8 @@
                 {{-- Logo da marca --}}
                 <div class="w-28 md:w-32 h-28 md:h-32 mb-3 flex items-center justify-center">
                     @if($make['logo'])
-                    <img src="{{ sprintf('%s/%s', Config::get('aws.s3.logo'), $make['logo']) }}" alt="Logo {{ $make['name'] }}"
-                        class="max-w-full max-h-full object-contain">
+                    <img src="{{ sprintf('%s/%s', Config::get('aws.s3.logo'), $make['logo']) }}"
+                        alt="Logo {{ $make['name'] }}" class="max-w-full max-h-full object-contain">
                     @else
                     <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                         <span class="text-blue-600 font-bold text-xl font-montserrat">

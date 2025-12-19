@@ -13,8 +13,6 @@ use Illuminate\Support\Str;
  * Serviço responsável pela criação completa de guias com:
  * - Validação de payload
  * - Normalização de slugs
- * - Criação de SEO inicial
- * - Criação de cluster básico
  */
 class GuideCreationService
 {
@@ -34,30 +32,16 @@ class GuideCreationService
     protected $validator;
 
     /**
-     * @var GuideSeoService
-     */
-    protected $seoService;
-
-    /**
-     * @var GuideClusterService
-     */
-    protected $clusterService;
-
-    /**
      * Constructor
      */
     public function __construct(
         GuideRepositoryInterface $guideRepository,
         GuideCategoryRepositoryInterface $categoryRepository,
         GuideValidatorService $validator,
-        GuideSeoService $seoService,
-        GuideClusterService $clusterService
     ) {
         $this->guideRepository = $guideRepository;
         $this->categoryRepository = $categoryRepository;
         $this->validator = $validator;
-        $this->seoService = $seoService;
-        $this->clusterService = $clusterService;
     }
 
     /**
@@ -80,12 +64,6 @@ class GuideCreationService
 
         // 4. Cria o guia
         $guide = $this->guideRepository->createGuide($normalizedData);
-
-        // 5. Cria SEO inicial
-        $this->seoService->createInitialSeo($guide);
-
-        // 6. Cria cluster básico
-        $this->clusterService->createBasicCluster($guide);
 
         return $guide->refresh();
     }

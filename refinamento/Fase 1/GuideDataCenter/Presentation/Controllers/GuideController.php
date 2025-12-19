@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Src\GuideDataCenter\Presentation\Controllers;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
+use Torann\LaravelMetaTags\Facades\MetaTag;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Src\GuideDataCenter\Domain\Mongo\Guide;
-use Src\GuideDataCenter\Domain\Services\GuideSeoService;
-use Src\GuideDataCenter\Domain\Services\GuideClusterService;
-use Src\GuideDataCenter\Presentation\ViewModels\GuideViewModel;
-use Src\GuideDataCenter\Presentation\ViewModels\GuideListViewModel;
+use Src\GuideDataCenter\Domain\Services\GuideRelationshipService;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideYearViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideIndexViewModel;
 use Src\GuideDataCenter\Presentation\ViewModels\GuideSpecificViewModel;
@@ -33,8 +32,7 @@ class GuideController extends Controller
         private readonly VehicleMakeRepositoryInterface $makeRepository,
         private readonly VehicleModelRepositoryInterface $modelRepository,
         private readonly VehicleVersionRepositoryInterface $versionRepository,
-        private readonly GuideSeoService $seoService,
-        private readonly GuideClusterService $clusterService
+        private readonly ?GuideRelationshipService $relationshipService = null // ✅ ADICIONADO (OPCIONAL)
     ) {}
 
     /**
@@ -201,7 +199,7 @@ class GuideController extends Controller
     }
 
     /**
-     * ✅ CORRIGIDO: Exibe guia completo de uma versão específica
+     * ✅ MANTIDO 100% ORIGINAL + ADICIONADO RELACIONAMENTOS
      * 
      * Rota: GET /guias/{category}/{make}/{model}/{year}/{version}
      * View: guide-data-center::guide.specific
@@ -230,12 +228,9 @@ class GuideController extends Controller
             abort(404, 'Modelo não encontrado');
         }
 
-        // ✅ Buscar guia REAL do MongoDB
+        // ✅ MANTIDO: Buscar guia REAL do MongoDB
         $guideModel = app(Guide::class);
-        // $guide = $guideModel::where('url', '/guias/fluidos/honda/civic/2024/exl')
-        //     ->first();
-
-             $guide = $guideModel::where('category_slug', $categorySlug)
+        $guide = $guideModel::where('category_slug', $categorySlug)
             ->where('make_slug', $makeSlug)
             ->where('model_slug', $modelSlug)
             ->where('version_slug', $versionSlug)
@@ -259,8 +254,8 @@ class GuideController extends Controller
             ]);
         }
 
-        // ✅ CORRIGIDO: Removidas chamadas aos métodos MOCK
-        return view('guide-data-center::guide.specific', [
+        // ✅ MANTIDO: Todos os dados originais
+        $viewData = [
             'guide' => $viewModel->getGuide(),
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
@@ -274,7 +269,38 @@ class GuideController extends Controller
             'editorialInfo' => $viewModel->getEditorialInfo(),
             'seo' => $viewModel->getSeoData(),
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
-        ]);
+        ];
+
+        // ✅ PEGAR DADOS SEO DO VIEWMODEL
+        $seo = $viewModel->getSeoData();
+
+        // ✅ CONFIGURAR META TAGS USANDO O PACOTE
+        $this->setGuideMetaTags($seo);
+
+        // ✅ ADICIONADO: Relacionamentos extras (SE o service estiver disponível)
+        if ($this->relationshipService && $guide) {
+            try {
+                $viewData['relatedGuidesExtra'] = $this->relationshipService->getRelatedGuides($guide, 8);
+                $viewData['essentialContents'] = $this->relationshipService->getEssentialContents($guide, 8);
+                $viewData['sameCategoryGuides'] = $this->relationshipService->getSameCategoryGuides($guide, 6);
+                $viewData['availableYearsExtra'] = $this->relationshipService->getAvailableYears(
+                    $makeSlug,
+                    $modelSlug,
+                    (string) $category->_id
+                );
+                $viewData['availableVersionsExtra'] = $this->relationshipService->getAvailableVersions(
+                    $makeSlug,
+                    $modelSlug,
+                    (int)$year,
+                    (string) $category->_id
+                );
+            } catch (\Exception $e) {
+                // Silenciosamente falha se relacionamentos não funcionarem
+                Log::warning('GuideRelationships: ' . $e->getMessage());
+            }
+        }
+
+        return view('guide-data-center::guide.specific.index', $viewData);
     }
 
     /**
@@ -328,6 +354,12 @@ class GuideController extends Controller
             ]);
         }
 
+        // ✅ PEGAR DADOS SEO DO VIEWMODEL
+        $seo = $viewModel->getSeoData();
+
+        // ✅ CONFIGURAR META TAGS USANDO O PACOTE
+        $this->setGuideMetaTags($seo);
+
         return view('guide-data-center::guide.category-make-model', [
             'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
@@ -338,5 +370,47 @@ class GuideController extends Controller
             'seo' => $viewModel->getSeoData(),
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
         ]);
+    }
+
+    /**
+     * ✅ NOVO MÉTODO - Configura meta tags usando torann/laravel-meta-tags
+     * 
+     * Este método configura todas as meta tags necessárias para SEO:
+     * - Title (curto, <60 chars)
+     * - Description (otimizada, ~155 chars)
+     * - Canonical URL
+     * - Open Graph (Facebook)
+     * - Twitter Cards
+     */
+    private function setGuideMetaTags(array $seo): void
+    {
+        // Title e Description principais
+        MetaTag::set('title', $seo['title'] ?? 'Mercado Veículos');
+        MetaTag::set('description', $seo['description'] ?? '');
+        MetaTag::set('canonical', $seo['canonical'] ?? url()->current());
+        MetaTag::set('robots', 'index, follow');
+
+        // Open Graph (Facebook/WhatsApp/LinkedIn)
+        MetaTag::set('og:type', $seo['og_type'] ?? 'article');
+        MetaTag::set('og:url', $seo['canonical'] ?? url()->current());
+        MetaTag::set('og:title', $seo['title'] ?? '');
+        MetaTag::set('og:description', $seo['description'] ?? '');
+        MetaTag::set('og:image', $seo['og_image'] ?? asset('images/default-guide.jpg'));
+        MetaTag::set('og:site_name', 'Mercado Veículos');
+
+        // Twitter Cards
+        MetaTag::set('twitter:card', 'summary_large_image');
+        MetaTag::set('twitter:title', $seo['title'] ?? '');
+        MetaTag::set('twitter:description', $seo['description'] ?? '');
+        MetaTag::set('twitter:image', $seo['og_image'] ?? asset('images/default-guide.jpg'));
+
+        // Artigo (opcional, para Rich Snippets)
+        if (isset($seo['published_time'])) {
+            MetaTag::set('article:published_time', $seo['published_time']);
+        }
+
+        if (isset($seo['modified_time'])) {
+            MetaTag::set('article:modified_time', $seo['modified_time']);
+        }
     }
 }

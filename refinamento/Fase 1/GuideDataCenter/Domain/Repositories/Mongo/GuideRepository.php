@@ -33,7 +33,7 @@ class GuideRepository implements GuideRepositoryInterface
     {
         return $this->model
             ->bySlug($slug)
-            ->with(['category', 'guideSeo', 'clusters'])
+            ->with(['category'])
             ->first();
     }
 
@@ -50,7 +50,7 @@ class GuideRepository implements GuideRepositoryInterface
             $query->byYear($year);
         }
 
-        return $query->with(['category', 'guideSeo'])->first();
+        return $query->with(['category'])->first();
     }
 
     /**
@@ -62,7 +62,7 @@ class GuideRepository implements GuideRepositoryInterface
             ->whereHas('category', function ($query) use ($categorySlug) {
                 $query->where('slug', $categorySlug);
             })
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -75,7 +75,7 @@ class GuideRepository implements GuideRepositoryInterface
     {
         return $this->model
             ->byMake($makeSlug)
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderBy('model_slug', 'asc')
             ->orderBy('year_start', 'desc')
@@ -89,7 +89,7 @@ class GuideRepository implements GuideRepositoryInterface
     {
         return $this->model
             ->byModel($modelSlug)
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderBy('make_slug', 'asc')
             ->orderBy('year_start', 'desc')
@@ -103,7 +103,7 @@ class GuideRepository implements GuideRepositoryInterface
     {
         return $this->model
             ->byTemplate($template)
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -116,7 +116,7 @@ class GuideRepository implements GuideRepositoryInterface
     {
         return $this->model
             ->search($term)
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -167,7 +167,7 @@ class GuideRepository implements GuideRepositoryInterface
     public function findById(string $id): ?Guide
     {
         return $this->model
-            ->with(['category', 'guideSeo', 'clusters'])
+            ->with(['category'])
             ->find($id);
     }
 
@@ -177,7 +177,7 @@ class GuideRepository implements GuideRepositoryInterface
     public function paginate(int $perPage = 15)
     {
         return $this->model
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -241,7 +241,7 @@ class GuideRepository implements GuideRepositoryInterface
         $limit = $filters['limit'] ?? 50;
         
         return $query
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->get();
     }
@@ -261,7 +261,7 @@ class GuideRepository implements GuideRepositoryInterface
     {
         return $this->model
             ->byYear($year)
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderBy('make_slug', 'asc')
             ->orderBy('model_slug', 'asc')
@@ -289,7 +289,7 @@ class GuideRepository implements GuideRepositoryInterface
                     // Ou mesma categoria
                     ->orWhere('guide_category_id', $guide->guide_category_id);
             })
-            ->with(['category', 'guideSeo'])
+            ->with(['category'])
             ->limit($limit)
             ->orderByRaw("
                 CASE 
