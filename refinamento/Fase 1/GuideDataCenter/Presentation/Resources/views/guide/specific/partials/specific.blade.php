@@ -7,9 +7,6 @@ Renderiza guia completo com includes organizados
 
 @extends('shared::layouts.app')
 
-@section('title', $seo['title'] ?? '')
-@section('meta_description', $seo['description'] ?? '')
-
 {{-- SEO --}}
 @push('head')
 <link rel="canonical" href="{{ $seo['canonical'] ?? '' }}" />

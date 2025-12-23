@@ -1,28 +1,13 @@
 @extends('shared::layouts.app')
 
-@section('meta_title', $seo['title'])
-@section('meta_description', $seo['description'])
-@section('canonical', $seo['canonical'])
-
-@section('og_tags')
-<meta property="og:type" content="website" />
-<meta property="og:title" content="{{ $seo['title'] }}" />
-<meta property="og:description" content="{{ $seo['description'] }}" />
-<meta property="og:image" content="{{ $seo['og_image'] }}" />
-<meta property="og:url" content="{{ $seo['canonical'] }}" />
-<meta property="og:site_name" content="Mercado Veículos" />
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $seo['title'] }}">
-<meta name="twitter:description" content="{{ $seo['description'] }}">
-<meta name="twitter:image" content="{{ $seo['og_image'] }}">
-@endsection
-
-@section('structured_data')
+{{-- ✅ STRUCTURED DATA (Schema.org) --}}
+@if(!empty($structured_data))
+@push('head')
 <script type="application/ld+json">
-    {!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+{!! json_encode($structured_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
-@endsection
+@endpush
+@endif
 
 @section('breadcrumbs')
 <div class="bg-gray-100 border-b border-gray-200">

@@ -176,6 +176,82 @@ class GuideIndexViewModel
     }
 
     /**
+     * ✅ WEB PAGE SCHEMA (para blade)
+     */
+    public function getWebPageSchema(): array
+    {
+        $seo = $this->getSeoData();
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => 'Guias Automotivos - Especificações Técnicas | Mercado Veículos',
+            'description' => $seo['description'],
+            'url' => route('guide.index'),
+
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => 'Mercado Veículos',
+                'url' => url('/'),
+            ],
+
+            'speakable' => [
+                '@type' => 'SpeakableSpecification',
+                'cssSelector' => ['h1', 'h2'],
+            ],
+
+            'mainEntity' => [
+                '@type' => 'ItemList',
+                'itemListElement' => $this->buildCategoryItemList(),
+            ],
+
+            'breadcrumb' => $this->getBreadcrumbStructuredData(),
+        ];
+    }
+
+    /**
+     * Breadcrumb em formato Schema.org
+     */
+    private function getBreadcrumbStructuredData(): array
+    {
+        return [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Início',
+                    'item' => route('home'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'Guias',
+                    'item' => route('guide.index'),
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Lista de categorias em formato Schema.org
+     */
+    private function buildCategoryItemList(): array
+    {
+        return $this->categories
+            ->map(function ($category, $index) {
+                return [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'name' => $category->name,
+                    'url' => route('guide.category', ['category' => $category->slug]),
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
      * Retorna SEO data
      */
     public function getSeoData(): array

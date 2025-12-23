@@ -7,24 +7,14 @@ Renderiza guia completo com includes organizados
 
 @extends('shared::layouts.app')
 
-@section('title', $seo['title'] ?? '')
-@section('meta_description', $seo['description'] ?? '')
-
-{{-- SEO --}}
+{{-- ✅ STRUCTURED DATA (Schema.org) --}}
+@if(!empty($structured_data))
 @push('head')
-<link rel="canonical" href="{{ $seo['canonical'] ?? '' }}" />
-<link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] ?? '' }}" />
-<meta property="og:type" content="{{ $seo['og_type'] ?? 'article' }}" />
-<meta property="og:title" content="{{ $seo['title'] ?? '' }}" />
-<meta property="og:description" content="{{ $seo['description'] ?? '' }}" />
-<meta property="og:image" content="{{ $seo['og_image'] ?? '' }}" />
-<meta property="og:url" content="{{ $seo['canonical'] ?? '' }}" />
-<meta property="og:site_name" content="Mercado Veículos" />
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $seo['title'] ?? '' }}">
-<meta name="twitter:description" content="{{ $seo['description'] ?? '' }}">
-<meta name="twitter:image" content="{{ $seo['og_image'] ?? '' }}">
+<script type="application.ld+json">
+{!! json_encode($structured_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
 @endpush
+@endif
 
 @section('content')
 
@@ -32,34 +22,8 @@ Renderiza guia completo com includes organizados
 @include('guide-data-center::guide.specific.partials.breadcrumbs')
 
 {{-- HERO / TÍTULO --}}
-@include('guide-data-center::guide.specific.partials.hero')
+@include('guide-data-center::guide.decision.decisao')
 
-{{-- BANNER --}}
-@include('guide-data-center::guide.specific.partials.banner-top')
-
-{{-- CONTEÚDO DO GUIA --}}
-@include('guide-data-center::guide.specific.partials.content')
-
-{{-- CTA --}}
-@include('guide-data-center::guide.specific.partials.cta')
-
-{{-- GUIAS RELACIONADOS (Original ViewModel) --}}
-@include('guide-data-center::guide.specific.partials.related-guides')
-
-{{-- GUIAS RELACIONADOS EXTRAS (Service) --}}
-@include('guide-data-center::guide.specific.partials.related-guides-extra')
-
-{{-- CONTEÚDOS ESSENCIAIS (Original ViewModel) --}}
-@include('guide-data-center::guide.specific.partials.essential-cluster')
-
-{{-- CONTEÚDOS ESSENCIAIS EXTRAS (Service) --}}
-@include('guide-data-center::guide.specific.partials.essential-contents')
-
-{{-- ANOS DISPONÍVEIS (Service) --}}
-@include('guide-data-center::guide.specific.partials.available-years')
-
-{{-- VERSÕES DISPONÍVEIS (Service) --}}
-@include('guide-data-center::guide.specific.partials.available-versions')
 
 {{-- BANNER --}}
 @include('guide-data-center::guide.specific.partials.banner-button')

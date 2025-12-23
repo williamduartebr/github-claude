@@ -1,8 +1,5 @@
 @extends('shared::layouts.app')
 
-@section('title', $seo['title'])
-@section('meta_description', $seo['description'])
-
 {{-- SEO: Canonical --}}
 @push('head')
 <link rel="canonical" href="{{ $seo['canonical'] }}" />

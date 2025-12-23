@@ -109,7 +109,7 @@ class GuideSpecificViewModel
         $year = $this->year;
 
         $guideModel = app(Guide::class);
-        
+
         $otherGuides = $guideModel::where('make_slug', $makeSlug)
             ->where('model_slug', $modelSlug)
             ->where('year_start', '<=', $year)
@@ -117,9 +117,9 @@ class GuideSpecificViewModel
             ->where('category_slug', '!=', $currentCategorySlug)
             ->get()
             ->groupBy('category_slug')
-            ->map(function($guides, $catSlug) use ($makeSlug, $modelSlug, $year) {
+            ->map(function ($guides, $catSlug) use ($makeSlug, $modelSlug, $year) {
                 $first = $guides->first();
-                
+
                 return [
                     'name' => $first->category ?? ucfirst($catSlug),
                     'slug' => $catSlug,
@@ -174,14 +174,14 @@ class GuideSpecificViewModel
         ];
 
         // 2. 🚗 FICHAS TÉCNICAS POR VERSÃO
-        $versions = VehicleVersion::whereHas('model', function($q) use ($makeSlug, $modelSlug) {
+        $versions = VehicleVersion::whereHas('model', function ($q) use ($makeSlug, $modelSlug) {
             $q->where('slug', $modelSlug)
-              ->whereHas('make', fn($q2) => $q2->where('slug', $makeSlug));
+                ->whereHas('make', fn($q2) => $q2->where('slug', $makeSlug));
         })
-        ->where('year', $year)
-        ->orderBy('name')
-        ->limit(3)
-        ->get();
+            ->where('year', $year)
+            ->orderBy('name')
+            ->limit(3)
+            ->get();
 
         foreach ($versions as $version) {
             $cluster[] = [
@@ -200,7 +200,7 @@ class GuideSpecificViewModel
 
         // 3. ⛽ CONSUMO REAL
         $guideModel = app(Guide::class);
-        
+
         $consumoGuides = $guideModel::where('make_slug', $makeSlug)
             ->where('model_slug', $modelSlug)
             ->where('category_slug', 'consumo')
@@ -210,7 +210,7 @@ class GuideSpecificViewModel
 
         foreach ($consumoGuides as $consumo) {
             $motor = $consumo->payload['motor'] ?? $consumo->motor ?? 'Motor';
-            
+
             $cluster[] = [
                 'icon' => '⛽',
                 'title' => "Consumo Real — {$motor}",
@@ -235,7 +235,7 @@ class GuideSpecificViewModel
 
         foreach ($problemasGuides as $problema) {
             $yearRange = "{$problema->year_start}–{$problema->year_end}";
-            
+
             $cluster[] = [
                 'icon' => '⚠️',
                 'title' => "Problemas comuns (Geração {$yearRange})",
@@ -274,20 +274,20 @@ class GuideSpecificViewModel
         }
 
         // 6. 🔧 MOTORES ALTERNATIVOS
-        $motorsAlternativos = VehicleVersion::whereHas('model', function($q) use ($makeSlug, $modelSlug) {
+        $motorsAlternativos = VehicleVersion::whereHas('model', function ($q) use ($makeSlug, $modelSlug) {
             $q->where('slug', $modelSlug)
-              ->whereHas('make', fn($q2) => $q2->where('slug', $makeSlug));
+                ->whereHas('make', fn($q2) => $q2->where('slug', $makeSlug));
         })
-        ->where('year', $year)
-        ->whereNotNull('engine_code')
-        ->get()
-        ->pluck('engine_code')
-        ->unique()
-        ->take(2);
+            ->where('year', $year)
+            ->whereNotNull('engine_code')
+            ->get()
+            ->pluck('engine_code')
+            ->unique()
+            ->take(2);
 
         foreach ($motorsAlternativos as $motor) {
             if (!$motor) continue;
-            
+
             $cluster[] = [
                 'icon' => '🔧',
                 'title' => "Motor alternativo — {$motor}",
@@ -330,7 +330,7 @@ class GuideSpecificViewModel
         }
 
         // ORDENAR POR PRIORIDADE
-        usort($cluster, function($a, $b) {
+        usort($cluster, function ($a, $b) {
             return $a['priority'] <=> $b['priority'];
         });
 
@@ -387,21 +387,21 @@ class GuideSpecificViewModel
         return [
             // Title curto para Google (<60 chars)
             'title' => $seoData['title'] ?? $this->guide->title ?? 'Mercado Veículos',
-            
+
             // Meta description otimizada (150-160 chars)
             'description' => $seoData['meta_description'] ?? $this->guide->description ?? '',
-            
+
             // H1 completo e natural (para usar no hero)
             'h1' => $seoData['h1'] ?? $this->guide->title ?? '',
-            
+
             // URLs e imagens
             'canonical' => $seoData['canonical_url'] ?? url()->current(),
             'og_image' => $seoData['og_image'] ?? asset('images/default-guide.jpg'),
             'og_type' => 'article',
-            
+
             // Keywords (opcional)
             'keywords' => $this->getKeywords($seoData),
-            
+
             // Timestamps (opcional, para Rich Snippets)
             'published_time' => $this->guide->created_at?->toIso8601String(),
             'modified_time' => $this->guide->updated_at?->toIso8601String(),
@@ -422,18 +422,18 @@ class GuideSpecificViewModel
         return [
             // Title curto para Google (<60 chars)
             'title' => "{$categoryName} {$makeName} {$modelName} {$year} | Mercado Veículos",
-            
+
             // Description
             'description' => "Guia de {$categoryName} para {$makeName} {$modelName} {$year}. Informações técnicas e especificações.",
-            
+
             // H1 completo
             'h1' => "{$categoryName} para {$makeName} {$modelName} {$year} {$versionName}",
-            
+
             // URLs
             'canonical' => url()->current(),
             'og_image' => asset("images/vehicles/{$makeName}-{$modelName}-{$year}.jpg"),
             'og_type' => 'article',
-            
+
             // Keywords
             'keywords' => "{$categoryName}, {$makeName}, {$modelName}, {$year}",
         ];
@@ -447,7 +447,7 @@ class GuideSpecificViewModel
         if (isset($seoData['secondary_keywords']) && is_array($seoData['secondary_keywords'])) {
             return implode(', ', $seoData['secondary_keywords']);
         }
-        
+
         return '';
     }
 
@@ -502,5 +502,129 @@ class GuideSpecificViewModel
         ];
 
         return $icons[$slug] ?? '📋';
+    }
+
+    /**
+     * Retorna dados estruturados (Schema.org) para o guia
+     * 
+     * @return array
+     */
+    public function getStructuredData(): array
+    {
+        if (!$this->guide) {
+            return [];
+        }
+
+        $seoData = $this->getSeoData();
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'TechnicalArticle',
+            'headline' => $seoData['h1'] ?? $this->guide['title'] ?? '',
+            'description' => $seoData['meta_description'] ?? '',
+            'image' => $seoData['og']['image'] ?? '',
+
+            // Autor
+            'author' => [
+                '@type' => 'Organization',
+                'name' => 'Mercado Veículos',
+                'url' => 'https://mercadoveiculos.com.br'
+            ],
+
+            // Publicador
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'Mercado Veículos',
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => 'https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos.png',
+                    'width' => 600,
+                    'height' => 60
+                ]
+            ],
+
+            // Datas
+            'datePublished' => $this->guide['created_at'] ?? now()->toISOString(),
+            'dateModified' => $this->guide['updated_at'] ?? now()->toISOString(),
+
+            // URL principal
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id' => $seoData['canonical_url'] ?? ''
+            ],
+
+            // Sobre o que é o artigo (o veículo)
+            'about' => [
+                '@type' => 'Car',
+                'name' => "{$this->make['name']} {$this->model['name']}",
+                'brand' => [
+                    '@type' => 'Brand',
+                    'name' => $this->make['name']
+                ],
+                'model' => $this->model['name'],
+                'productionDate' => (string) $this->year,
+            ],
+
+            // Informações específicas do guia
+            'articleBody' => $this->getArticleBody(),
+            'keywords' => $seoData['keywords'] ?? '',
+
+            // Breadcrumbs
+            'breadcrumb' => $this->getBreadcrumbStructuredData(),
+        ];
+    }
+
+    /**
+     * Retorna corpo do artigo para structured data
+     * 
+     * @return string
+     */
+    private function getArticleBody(): string
+    {
+        if (!$this->guide || !isset($this->guide['payload'])) {
+            return '';
+        }
+
+        $payload = $this->guide['payload'];
+
+        // Concatenar principais campos do payload
+        $parts = [];
+
+        if (isset($payload['introducao'])) {
+            $parts[] = $payload['introducao'];
+        }
+
+        if (isset($payload['especificacoes'])) {
+            $parts[] = is_array($payload['especificacoes'])
+                ? implode(', ', $payload['especificacoes'])
+                : $payload['especificacoes'];
+        }
+
+        return implode('. ', $parts);
+    }
+
+    /**
+     * Retorna breadcrumb em formato estruturado
+     * 
+     * @return array
+     */
+    private function getBreadcrumbStructuredData(): array
+    {
+        $breadcrumbs = $this->getBreadcrumbs();
+
+        $itemList = [];
+        foreach ($breadcrumbs as $index => $crumb) {
+            $itemList[] = [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => $crumb['name'],
+                'item' => $crumb['url'] ?? ''
+            ];
+        }
+
+        return [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $itemList
+        ];
     }
 }

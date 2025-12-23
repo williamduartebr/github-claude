@@ -1,25 +1,15 @@
 @extends('shared::layouts.app')
 
-@section('title', $seo['title'])
-@section('meta_description', $seo['description'])
-
-{{-- SEO: Canonical e Open Graph --}}
+{{-- ✅ STRUCTURED DATA (Schema.org) --}}
+@if(!empty($structured_data))
 @push('head')
-<link rel="canonical" href="{{ $seo['canonical'] }}" />
-<link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] }}" />
+<script type="application/ld+json">
+{!! json_encode($structured_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush
+@endif
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content="{{ $seo['title'] }}" />
-<meta property="og:description" content="{{ $seo['description'] }}" />
-<meta property="og:image" content="{{ $seo['og_image'] }}" />
-<meta property="og:url" content="{{ $seo['canonical'] }}" />
-<meta property="og:site_name" content="Mercado Veículos" />
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $seo['title'] }}">
-<meta name="twitter:description" content="{{ $seo['description'] }}">
-<meta name="twitter:image" content="{{ $seo['og_image'] }}">
-
+@push('styles')
 <style>
     .chip {
         padding: .375rem .75rem;
@@ -29,7 +19,14 @@
 </style>
 @endpush
 
-@section('content')
+{{-- ✅ STRUCTURED DATA --}}
+@if(!empty($structured_data))
+@push('head')
+<script type="application/ld+json">
+{!! json_encode($structured_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush
+@endif
 
 {{-- BREADCRUMBS --}}
 @if(isset($breadcrumbs))
@@ -65,13 +62,16 @@
 @endsection
 @endif
 
+@section('content')
+
 {{-- HERO --}}
 <section class="bg-white border-b border-gray-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="md:flex md:items-center md:justify-between gap-6">
             <div class="max-w-2xl">
+                {{-- ✅ CORRIGIDO: Usa $seo['h1'] ao invés de $category['name'] --}}
                 <h1 class="text-3xl font-bold text-gray-900 mb-3 font-montserrat">
-                    Guia de {{ $category['name'] }}
+                    {{ $seo['h1'] }}
                 </h1>
                 <p class="text-sm text-gray-600 font-roboto">
                     {{ $category['description'] }}
@@ -79,9 +79,10 @@
 
                 {{-- CHIPS DE CATEGORIAS RELACIONADAS --}}
                 <div class="mt-4 flex gap-3 flex-wrap font-roboto">
+                    {{-- ✅ CORRIGIDO: Usa nome completo --}}
                     <a href="{{ route('guide.category', ['category' => $category['slug']]) }}"
                         class="chip bg-blue-600 text-white">
-                        Categoria: {{ $category['name'] }}
+                        {{ $seo['h1'] }}
                     </a>
                     @foreach($relatedCategories as $related)
                     <a href="{{ route('guide.category', ['category' => $related['slug']]) }}"
@@ -93,7 +94,7 @@
             </div>
 
             <div class="mt-6 md:mt-0">
-                <img src="{{ $heroImage }}" alt="{{ $category['name'] }}" class="w-64 rounded shadow">
+                <img src="{{ $heroImage }}" alt="{{ $seo['h1'] }}" class="w-64 rounded shadow">
             </div>
         </div>
     </div>
@@ -168,8 +169,8 @@
 
     {{-- MARCAS - GUIAS POR MARCA --}}
     <section class="mb-8 bg-white border border-gray-200 rounded-lg p-6">
-        <h2 class="text-lg font-semibold mb-3 font-montserrat">Marcas – guias de {{ strtolower($category['name']) }}
-        </h2>
+        {{-- ✅ CORRIGIDO: Usa nome completo --}}
+        <h2 class="text-lg font-semibold mb-3 font-montserrat">Marcas — {{ $seo['h1'] }}</h2>
         <p class="text-sm text-gray-600 mb-4 font-roboto">
             Escolha uma marca para ver a lista de modelos suportados e guias detalhados.
         </p>
@@ -185,7 +186,8 @@
     </section>
 
     {{-- CONTEÚDO EVERGREEN --}}
-    @if($evergreenContent)
+    {{-- ✅ CORRIGIDO: Só exibe se tiver texto --}}
+    @if($evergreenContent && !empty($evergreenContent['text']))
     <section class="mb-8">
         <div class="bg-white border border-gray-200 rounded-lg p-6 text-sm text-gray-700 font-roboto">
             <h2 class="text-lg font-semibold mb-3 font-montserrat">{{ $evergreenContent['title'] }}</h2>
@@ -200,8 +202,9 @@
     {{-- FAQ --}}
     @if(count($faqs) > 0)
     <section class="mb-10 bg-white border border-gray-200 rounded-lg p-6">
+        {{-- ✅ CORRIGIDO: Usa nome completo --}}
         <h2 class="text-lg font-semibold mb-3 font-montserrat">
-            Perguntas frequentes ({{ $category['name'] }})
+            Perguntas frequentes — {{ $seo['h1'] }}
         </h2>
 
         <div class="space-y-3 text-sm font-roboto">

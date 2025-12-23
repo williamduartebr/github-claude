@@ -13,7 +13,7 @@ use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideRepositoryInterface;
  * View: guide.category.index
  * Exemplo: /guias/oleo, /guias/oleo?page=2
  * 
- * ✅ ATUALIZADO - Com paginação real
+ * ✅ CORRIGIDO - SEO baseado em seeders reais
  */
 class GuideCategoryPageViewModel
 {
@@ -56,12 +56,16 @@ class GuideCategoryPageViewModel
             'name' => $this->category->name ?? 'Categoria',
             'slug' => $this->category->slug ?? 'categoria',
             'description' => $this->category->description ?? '',
+            'long_description' => $this->category->long_description ?? '',
             'icon' => $this->category->icon ?? '📋',
+            'icon_svg' => $this->category->icon_svg ?? '',
+            'icon_bg_color' => $this->category->icon_bg_color ?? 'bg-blue-100',
+            'icon_text_color' => $this->category->icon_text_color ?? 'text-blue-600',
         ];
     }
 
     /**
-     * ✅ NOVO: Retorna dados de paginação formatados
+     * ✅ Retorna dados de paginação formatados
      */
     public function getPagination(): array
     {
@@ -88,8 +92,7 @@ class GuideCategoryPageViewModel
     }
 
     /**
-     * Gera números de páginas para exibir (máximo 5 páginas visíveis)
-     * Exemplo: 1 [2] 3 4 5 ... 10
+     * Gera números de páginas para exibir
      */
     private function generatePageNumbers(): array
     {
@@ -98,7 +101,6 @@ class GuideCategoryPageViewModel
         $total = $this->totalPages;
 
         if ($total <= 7) {
-            // Se tem 7 ou menos páginas, mostra todas
             for ($i = 1; $i <= $total; $i++) {
                 $pages[] = [
                     'number' => $i,
@@ -107,17 +109,14 @@ class GuideCategoryPageViewModel
                 ];
             }
         } else {
-            // Lógica mais complexa para muitas páginas
-            // Sempre mostra: primeira, última, e 5 ao redor da atual
-
-            // Adiciona primeira página
+            // Primeira página
             $pages[] = [
                 'number' => 1,
                 'url' => route('guide.category', ['category' => $this->category->slug]) . '?page=1',
                 'is_current' => 1 === $current,
             ];
 
-            // Adiciona "..." se necessário
+            // "..." se necessário
             if ($current > 3) {
                 $pages[] = ['number' => '...', 'url' => null, 'is_current' => false];
             }
@@ -134,12 +133,12 @@ class GuideCategoryPageViewModel
                 ];
             }
 
-            // Adiciona "..." se necessário
+            // "..." se necessário
             if ($current < $total - 2) {
                 $pages[] = ['number' => '...', 'url' => null, 'is_current' => false];
             }
 
-            // Adiciona última página
+            // Última página
             if ($total > 1) {
                 $pages[] = [
                     'number' => $total,
@@ -242,9 +241,7 @@ class GuideCategoryPageViewModel
     }
 
     /**
-     * ✅ REFINADO: Retorna conteúdo evergreen REAL
-     * 
-     * Busca informações da categoria ou usa texto padrão
+     * ✅ CORRIGIDO: Conteúdo evergreen usando long_description
      */
     public function getEvergreenContent(): array
     {
@@ -252,9 +249,9 @@ class GuideCategoryPageViewModel
 
         return [
             'title' => "Sobre {$categoryData['name']}",
-            'text' => $this->category->long_description ??
-                $this->category->description ??
-                "Encontre informações detalhadas sobre {$categoryData['name']} para diversos modelos de veículos.",
+            'text' => $categoryData['long_description'] 
+                ?? $categoryData['description'] 
+                ?? "Encontre informações detalhadas sobre {$categoryData['name']} para diversos modelos de veículos.",
         ];
     }
 
@@ -282,33 +279,94 @@ class GuideCategoryPageViewModel
     }
 
     /**
-     * ✅ REFINADO: Dados SEO REAIS da categoria
+     * ✅ CORRIGIDO: SEO usando campos reais das seeders
      */
     public function getSeoData(): array
     {
         $category = $this->getCategory();
         $slug = $category['slug'];
 
-        // Se categoria tem meta tags próprias, usar
+        // ✅ Priorizar meta_title e meta_description da categoria
         if (!empty($this->category->meta_title)) {
             return [
                 'title' => $this->category->meta_title,
+                'h1' => $category['name'], // Nome completo: "Óleos Recomendados"
                 'description' => $this->category->meta_description ?? $category['description'],
-                'canonical' => route('guide.category', ['category' => $slug]),
+                'keywords' => $this->buildKeywords(),
+                'canonical' => $this->buildCanonicalUrl(),
+                'robots' => 'index,follow',
+                
+                // Open Graph
+                'og_title' => $this->category->meta_title,
+                'og_description' => $this->category->meta_description ?? $category['description'],
                 'og_image' => $this->getHeroImage(),
+                'og_url' => $this->buildCanonicalUrl(),
+                'og_type' => 'website',
+                'og_site_name' => 'Mercado Veículos',
+                'og_locale' => 'pt_BR',
+                
+                // Twitter Cards
+                'twitter_card' => 'summary_large_image',
+                'twitter_title' => $this->category->meta_title,
+                'twitter_description' => $this->category->meta_description ?? $category['description'],
+                'twitter_image' => $this->getHeroImage(),
             ];
         }
 
-        // Fallback: gerar meta tags baseadas no nome da categoria
+        // Fallback: gerar meta tags baseadas no nome
         return [
             'title' => "{$category['name']} por Marca e Modelo | Mercado Veículos",
+            'h1' => $category['name'],
             'description' => $category['description'] ?? "Guia completo de {$category['name']} por marca e modelo de veículo.",
-            'canonical' => route('guide.category', ['category' => $slug]),
+            'keywords' => $this->buildKeywords(),
+            'canonical' => $this->buildCanonicalUrl(),
+            'robots' => 'index,follow',
+            
+            // Open Graph
+            'og_title' => "{$category['name']} por Marca e Modelo",
+            'og_description' => $category['description'] ?? "Guia completo de {$category['name']}.",
             'og_image' => $this->getHeroImage(),
+            'og_url' => $this->buildCanonicalUrl(),
+            'og_type' => 'website',
+            'og_site_name' => 'Mercado Veículos',
+            'og_locale' => 'pt_BR',
+            
+            // Twitter Cards
+            'twitter_card' => 'summary_large_image',
+            'twitter_title' => "{$category['name']} por Marca e Modelo",
+            'twitter_description' => $category['description'] ?? "Guia completo de {$category['name']}.",
+            'twitter_image' => $this->getHeroImage(),
         ];
     }
 
-      /**
+    /**
+     * Constrói keywords
+     */
+    private function buildKeywords(): string
+    {
+        $category = $this->getCategory();
+        
+        $keywords = [
+            $category['name'],
+            "guia {$category['name']}",
+            "{$category['name']} veículos",
+            "{$category['name']} carros",
+        ];
+
+        return implode(', ', $keywords);
+    }
+
+    /**
+     * Constrói canonical URL
+     */
+    private function buildCanonicalUrl(): string
+    {
+        return route('guide.category', [
+            'category' => $this->category->slug ?? '',
+        ]);
+    }
+
+    /**
      * Retorna breadcrumbs
      */
     public function getBreadcrumbs(): array
@@ -318,9 +376,91 @@ class GuideCategoryPageViewModel
         return [
             ['name' => 'Início', 'url' => route('home')],
             ['name' => 'Guias', 'url' => route('guide.index')],
-            ['name' => $this->category->name ?? 'Categoria', 'url' => null],
+            ['name' => $category['name'], 'url' => null], // Nome completo!
         ];
     }
 
+    /**
+     * ✅ NOVO: Structured Data (Schema.org)
+     */
+    public function getStructuredData(): array
+    {
+        $seo = $this->getSeoData();
+        $category = $this->getCategory();
+        $pagination = $this->getPagination();
 
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'CollectionPage',
+            
+            'name' => $seo['h1'],
+            'description' => $seo['description'],
+            'url' => $seo['canonical'],
+            
+            'breadcrumb' => $this->getBreadcrumbStructuredData(),
+            
+            'mainEntity' => [
+                '@type' => 'ItemList',
+                'numberOfItems' => $pagination['total_guides'],
+                'itemListElement' => $this->buildItemListStructuredData(),
+            ],
+            
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'Mercado Veículos',
+                'url' => 'https://mercadoveiculos.com.br',
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => 'https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos.png',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Breadcrumb em formato Schema.org
+     */
+    private function getBreadcrumbStructuredData(): array
+    {
+        $breadcrumbs = $this->getBreadcrumbs();
+        
+        $itemList = [];
+        foreach ($breadcrumbs as $index => $crumb) {
+            if (!is_array($crumb)) {
+                continue;
+            }
+            
+            $name = $crumb['name'] ?? '';
+            $url = $crumb['url'] ?? '';
+            
+            $itemList[] = [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => $name,
+                'item' => $url,
+            ];
+        }
+        
+        return [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $itemList,
+        ];
+    }
+
+    /**
+     * Lista de guias em formato Schema.org
+     */
+    private function buildItemListStructuredData(): array
+    {
+        return collect($this->getPopularGuides())
+            ->map(function ($guide, $index) {
+                return [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'name' => $guide['title'],
+                    'url' => $guide['url'],
+                ];
+            })
+            ->toArray();
+    }
 }

@@ -3,69 +3,127 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Src\GuideDataCenter\Presentation\Controllers\GuideIndexController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideMakeController;
-use Src\GuideDataCenter\Presentation\Controllers\GuideController;
+use Src\GuideDataCenter\Presentation\Controllers\GuideMakeModelController;
+use Src\GuideDataCenter\Presentation\Controllers\GuideYearController;
+use Src\GuideDataCenter\Presentation\Controllers\GuideSpecificController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideCategoryController;
+use Src\GuideDataCenter\Presentation\Controllers\GuideCategoryMakeController;
+use Src\GuideDataCenter\Presentation\Controllers\GuideCategoryMakeModelController;
 use Src\GuideDataCenter\Presentation\Controllers\GuideSearchController;
+
+/**
+ * ✅ ROTAS REFATORADAS - GuideDataCenter
+ * 
+ * Cada controller agora tem UMA única responsabilidade (SRP)
+ * Usando invokable controllers (__invoke) para simplificar
+ */
 
 Route::prefix('guias')
     ->middleware(['web'])
+    ->name('guide.')
     ->group(function () {
 
-        // Busca
-        Route::get('busca/search', [GuideSearchController::class, 'search'])->name('guide.search');
-        Route::get('busca/autocomplete', [GuideSearchController::class, 'autocomplete'])->name('guide.autocomplete');
-        Route::get('busca/advanced', [GuideSearchController::class, 'advanced'])->name('guide.search.advanced');
+        // ============================================================
+        // BUSCA
+        // ============================================================
+        Route::get('busca/search', [GuideSearchController::class, 'search'])
+            ->name('search');
 
-        // Categorias
-        Route::get('categorias', [GuideCategoryController::class, 'all'])->name('guide.categories');
-        Route::get('{category}', [GuideCategoryController::class, 'index'])->name('guide.category');
+        Route::get('busca/autocomplete', [GuideSearchController::class, 'autocomplete'])
+            ->name('autocomplete');
 
-        // Index
-        Route::get('/', [GuideController::class, 'index'])->name('guide.index');
+        Route::get('busca/advanced', [GuideSearchController::class, 'advanced'])
+            ->name('search.advanced');
 
+        // ============================================================
+        // PÁGINA INICIAL
+        // ============================================================
+        Route::get('/', GuideIndexController::class)
+            ->name('index');
+
+        // ============================================================
+        // CATEGORIAS
+        // ============================================================        
+        Route::get('{category}', GuideCategoryController::class)
+            ->name('category')
+            ->where('category', '[a-z0-9\-]+');
+
+        // ============================================================
+        // MARCA
+        // ============================================================
         // GET /guias/marca/{make}
         // Exemplo: /guias/marca/toyota
-        Route::get('marca/{make}', [GuideMakeController::class, 'index'])
-            ->name('guide.make')
+        Route::get('marca/{make}', GuideMakeController::class)
+            ->name('make')
             ->where('make', '[a-z0-9\-]+');
 
-        // NOVA ROTA: Marca + Modelo
-        Route::get('/marca/{make}/{model}', [GuideController::class, 'showMakeModel'])
-            ->name('guide.make.model');
+        // ============================================================
+        // MARCA + MODELO (todas categorias)
+        // ============================================================
+        // GET /guias/marca/{make}/{model}
+        // Exemplo: /guias/marca/toyota/corolla
+        Route::get('marca/{make}/{model}', GuideMakeModelController::class)
+            ->name('make.model')
+            ->where(['make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+']);
 
-        // Categoria + Marca
-        Route::get('{category}/{make}', [GuideController::class, 'categoryMake'])
-            ->name('guide.category.make')
+        // ============================================================
+        // CATEGORIA + MARCA
+        // ============================================================
+        // GET /guias/{category}/{make}
+        // Exemplo: /guias/oleo/toyota
+        Route::get('{category}/{make}', GuideCategoryMakeController::class)
+            ->name('category.make')
             ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+']);
 
-        // Categoria + Marca
-        Route::get('{category}/{make}', [GuideController::class, 'categoryMake'])
-            ->name('guide.category.make')
-            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+']);
+        // ============================================================
+        // CATEGORIA + MARCA + MODELO (lista anos)
+        // ============================================================
+        // GET /guias/{category}/{make}/{model}
+        // Exemplo: /guias/oleo/toyota/corolla
+        Route::get('{category}/{make}/{model}', GuideCategoryMakeModelController::class)
+            ->name('category.make.model')
+            ->where([
+                'category' => '[a-z0-9\-]+',
+                'make' => '[a-z0-9\-]+',
+                'model' => '[a-z0-9\-]+'
+            ]);
 
-        // Categoria + Marca + Modelo (lista anos)
-        Route::get('{category}/{make}/{model}', [GuideController::class, 'categoryMakeModel'])
-            ->name('guide.category.make.model')
-            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+']);
+        // ============================================================
+        // CATEGORIA + MARCA + MODELO + ANO (lista versões)
+        // ============================================================
+        // GET /guias/{category}/{make}/{model}/{year}
+        // Exemplo: /guias/oleo/toyota/corolla/2025
+        Route::get('{category}/{make}/{model}/{year}', GuideYearController::class)
+            ->name('year')
+            ->where([
+                'category' => '[a-z0-9\-]+',
+                'make' => '[a-z0-9\-]+',
+                'model' => '[a-z0-9\-]+',
+                'year' => '[0-9]{4}'
+            ]);
 
-        // ⭐ NOVO - Categoria + Marca + Modelo + Ano (lista versões)
-        Route::get('{category}/{make}/{model}/{year?}', [GuideController::class, 'showYear'])
-            ->name('guide.year')
-            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]{4}']);
+        // ============================================================
+        // CATEGORIA + MARCA + MODELO + ANO + VERSÃO (guia completo)
+        // ============================================================
+        // GET /guias/{category}/{make}/{model}/{year}/{version}
+        // Exemplo: /guias/oleo/toyota/corolla/2025/gli
+        Route::get('{category}/{make}/{model}/{year}/{version}', GuideSpecificController::class)
+            ->name('version')
+            ->where([
+                'category' => '[a-z0-9\-]+',
+                'make' => '[a-z0-9\-]+',
+                'model' => '[a-z0-9\-]+',
+                'year' => '[0-9]{4}',
+                'version' => '[a-z0-9\-]+'
+            ]);
 
-        // ⭐ NOVO - Categoria + Marca + Modelo + Ano + Versão (guia completo)
-        Route::get('{category}/{make}/{model}/{year}/{version}', [GuideController::class, 'showVersion'])
-            ->name('guide.version')
-            ->where(['category' => '[a-z0-9\-]+', 'make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]{4}', 'version' => '[a-z0-9\-]+']);
-
-        // Por modelo
-        Route::get('{make}/{model}/{year?}', [GuideController::class, 'byModel'])
-            ->name('guide.byModel')
-            ->where(['make' => '[a-z0-9\-]+', 'model' => '[a-z0-9\-]+', 'year' => '[0-9]+']);
-
-        // Slug genérico (última rota)
-        Route::get('{slug}', [GuideController::class, 'show'])
-            ->name('guide.show')
-            ->where('slug', '[a-z0-9\-]+');
+        // ============================================================
+        // SLUG GENÉRICO (última rota - catch-all)
+        // ============================================================
+        // Esta rota deve ficar por último
+        // Route::get('{slug}', [GuideController::class, 'show'])
+        //     ->name('show')
+        //     ->where('slug', '[a-z0-9\-]+');
     });

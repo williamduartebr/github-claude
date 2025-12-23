@@ -66,6 +66,7 @@ class GuideCategory extends Model
      */
     protected $casts = [
         'name' => 'string',
+        'singular_name' => 'string',
         'slug' => 'string',
         'description' => 'string',
         'icon' => 'string',

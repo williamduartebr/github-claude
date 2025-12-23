@@ -1,87 +1,13 @@
 @extends('shared::layouts.app')
 
-@section('title', $seo['title'])
-@section('meta_description', $seo['description'])
-
-{{-- SEO: Canonical e Open Graph --}}
+{{-- ✅ STRUCTURED DATA (Schema.org) --}}
+@if(!empty($structured_data))
 @push('head')
-<link rel="canonical" href="{{ $seo['canonical'] }}" />
-<link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] }}" />
-
-<meta property="og:type" content="website" />
-<meta property="og:title" content="{{ $seo['title'] }}" />
-<meta property="og:description" content="{{ $seo['description'] }}" />
-<meta property="og:image" content="{{ $seo['og_image'] }}" />
-<meta property="og:url" content="{{ $seo['canonical'] }}" />
-<meta property="og:site_name" content="Mercado Veículos" />
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $seo['title'] }}">
-<meta name="twitter:description" content="{{ $seo['description'] }}">
-<meta name="twitter:image" content="{{ $seo['og_image'] }}">
-
-@php
-// Construir lista de categorias para o Schema
-$categoryItems = [];
-$position = 1;
-
-foreach($categories as $category) {
-$categoryItems[] = [
-'@type' => 'ListItem',
-'position' => $position,
-'name' => $category['name'],
-'url' => $category['url']
-];
-$position++;
-}
-
-$webPageSchema = [
-'@context' => 'https://schema.org',
-'@type' => 'WebPage',
-'name' => 'Guias Automotivos - Especificações Técnicas | Mercado Veículos',
-'description' => 'Guias técnicos completos para todos os veículos: óleo, pneus, calibragem, revisões, consumo, problemas
-comuns e muito mais.',
-'url' => route('guide.index'),
-'isPartOf' => [
-'@type' => 'WebSite',
-'name' => 'Mercado Veículos',
-'url' => 'https://mercadoveiculos.com'
-],
-'speakable' => [
-'@type' => 'SpeakableSpecification',
-'cssSelector' => ['h1', 'h2']
-],
-'mainEntity' => [
-'@type' => 'ItemList',
-'itemListElement' => $categoryItems
-],
-'breadcrumb' => [
-'@type' => 'BreadcrumbList',
-'itemListElement' => [
-[
-'@type' => 'ListItem',
-'position' => 1,
-'name' => 'Início',
-'item' => url('/')
-],
-[
-'@type' => 'ListItem',
-'position' => 2,
-'name' => 'Guias',
-'item' => route('guide.index')
-]
-]
-]
-];
-@endphp
-
-<!-- Structured Data - WebPage -->
 <script type="application/ld+json">
-    {!! json_encode($webPageSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+{!! json_encode($structured_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endpush
-
-
+@endif
 
 {{-- BREADCRUMBS --}}
 @if(isset($breadcrumbs))

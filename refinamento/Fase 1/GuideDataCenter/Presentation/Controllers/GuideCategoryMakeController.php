@@ -11,61 +11,65 @@ use Illuminate\Routing\Controller;
 use Src\GuideDataCenter\Domain\Mongo\Guide;
 use Src\GuideDataCenter\Presentation\Traits\HasGuideMetaTags;
 use Src\VehicleDataCenter\Domain\Repositories\VehicleMakeRepositoryInterface;
-use Src\GuideDataCenter\Presentation\ViewModels\GuideMakeViewModel;
+use Src\GuideDataCenter\Presentation\ViewModels\GuideCategoryMakeViewModel;
 use Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface;
 
 /**
- * GuideMakeController
+ * GuideCategoryMakeController
  * 
- * Responsabilidade: Listar todos os modelos de uma marca
- * Rota: GET /guias/marca/{make}
- * Exemplo: /guias/marca/toyota
+ * Responsabilidade: Listar modelos disponíveis para categoria + marca
+ * Rota: GET /guias/{category}/{make}
+ * Exemplo: /guias/oleo/toyota
  * 
  * Princípios SOLID:
- * - SRP: Apenas gerencia listagem de modelos da marca
+ * - SRP: Apenas gerencia listagem de modelos
  * - DIP: Depende de abstrações (interfaces)
  * - OCP: Aberto para extensão via trait
  * 
  * @package Src\GuideDataCenter\Presentation\Controllers
  */
-class GuideMakeController extends Controller
+class GuideCategoryMakeController extends Controller
 {
     use HasGuideMetaTags;
 
     public function __construct(
-        private readonly VehicleMakeRepositoryInterface $makeRepository,
-        private readonly GuideCategoryRepositoryInterface $categoryRepository
+        private readonly GuideCategoryRepositoryInterface $categoryRepository,
+        private readonly VehicleMakeRepositoryInterface $makeRepository
     ) {}
 
     /**
-     * Exibe todos os modelos de uma marca
+     * Exibe modelos disponíveis para categoria + marca
      * 
-     * Rota: GET /guias/marca/{make}
-     * View: guide-data-center::guide.make
-     * Exemplo: /guias/marca/toyota
+     * Rota: GET /guias/{category}/{make}
+     * View: guide-data-center::guide.category.category-make
+     * Exemplo: /guias/oleo/toyota
      * 
      * @param Request $request
+     * @param string $categorySlug
      * @param string $makeSlug
      * @return View|JsonResponse
      */
     public function __invoke(
         Request $request,
+        string $categorySlug,
         string $makeSlug
     ): View|JsonResponse {
-        // Validar entidade
+        // Validar entidades
+        $category = $this->categoryRepository->findBySlug($categorySlug);
+        if (!$category) {
+            abort(404, 'Categoria não encontrada');
+        }
+
         $make = $this->makeRepository->findBySlug($makeSlug);
         if (!$make) {
             abort(404, 'Marca não encontrada');
         }
 
-        // Buscar todas as categorias
-        $categories = $this->categoryRepository->getActive();
-
-        // Buscar guias no MongoDB (todos os modelos)
-        $guides = $this->findGuides($makeSlug);
+        // Buscar guias no MongoDB
+        $guides = $this->findGuides($categorySlug, $makeSlug);
 
         // Instanciar ViewModel
-        $viewModel = new GuideMakeViewModel($make, $guides, $categories);
+        $viewModel = new GuideCategoryMakeViewModel($category, $make, $guides);
 
         // Resposta JSON (API)
         if ($request->wantsJson()) {
@@ -77,45 +81,49 @@ class GuideMakeController extends Controller
 
         // Dados para view
         $viewData = [
+            'category' => $viewModel->getCategory(),
             'make' => $viewModel->getMake(),
-            'categories' => $viewModel->getCategories(),
             'popularModels' => $viewModel->getPopularModels(),
             'allModels' => $viewModel->getAllModels(),
+            'complementaryCategories' => $viewModel->getComplementaryCategories(),
             'stats' => $viewModel->getStats(),
             'seo' => $viewModel->getSeoData(),
             'breadcrumbs' => $viewModel->getBreadcrumbs(),
             'structured_data' => $viewModel->getStructuredData(),
         ];
 
-        return view('guide-data-center::guide.make.index', $viewData);
+        return view('guide-data-center::guide.category.category-make', $viewData);
     }
 
     /**
      * Busca guias no MongoDB
      * 
+     * @param string $categorySlug
      * @param string $makeSlug
      * @return \Illuminate\Support\Collection
      */
-    private function findGuides(string $makeSlug)
+    private function findGuides(string $categorySlug, string $makeSlug)
     {
         $guideModel = app(Guide::class);
 
-        return $guideModel::where('make_slug', $makeSlug)->get();
+        return $guideModel::where('category_slug', $categorySlug)
+            ->where('make_slug', $makeSlug)
+            ->get();
     }
 
     /**
      * Retorna resposta JSON
      * 
-     * @param GuideMakeViewModel $viewModel
+     * @param GuideCategoryMakeViewModel $viewModel
      * @return JsonResponse
      */
-    private function jsonResponse(GuideMakeViewModel $viewModel): JsonResponse
+    private function jsonResponse(GuideCategoryMakeViewModel $viewModel): JsonResponse
     {
         return response()->json([
             'success' => true,
             'data' => [
+                'category' => $viewModel->getCategory(),
                 'make' => $viewModel->getMake(),
-                'categories' => $viewModel->getCategories(),
                 'popular_models' => $viewModel->getPopularModels(),
                 'all_models' => $viewModel->getAllModels(),
                 'stats' => $viewModel->getStats(),

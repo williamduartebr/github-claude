@@ -4,202 +4,226 @@ declare(strict_types=1);
 
 namespace Src\GuideDataCenter\Presentation\ViewModels;
 
-use Src\GuideDataCenter\Domain\Services\GuideVehicleIntegrationService;
-use Src\VehicleDataCenter\Domain\Repositories\VehicleVersionRepositoryInterface;
+use Illuminate\Support\Collection;
+use Src\GuideDataCenter\Domain\Mongo\Guide;
+use Src\VehicleDataCenter\Domain\Eloquent\VehicleMake;
+use Src\VehicleDataCenter\Domain\Eloquent\VehicleModel;
+use Src\GuideDataCenter\Domain\Mongo\GuideCategory;
 
 /**
- * ViewModel para página de ano (lista versões)
+ * GuideYearViewModel
  * 
- * Rota: /guias/{category}/{make}/{model}/{year}
- * View: guide-data-center::guide.year
- * Exemplo: /guias/oleo/toyota/corolla/2025
+ * Responsabilidade: Preparar dados para listagem de versões de um ano específico
+ * Rota: GET /guias/{category}/{make}/{model}/{year}
+ * Exemplo: /guias/oleo/toyota/corolla/2024
  * 
- * ✅ REFINADO V2: Remove TODOS os mocks, usa dados reais do MySQL
+ * ✅ VERSÃO CORRIGIDA - Chaves de SEO padronizadas
+ * 
+ * @package Src\GuideDataCenter\Presentation\ViewModels
  */
 class GuideYearViewModel
 {
-    private $category;
-    private $make;
-    private $model;
+    private ?GuideCategory $category;
+    private ?VehicleMake $make;
+    private ?VehicleModel $model;
     private string $year;
-    private GuideVehicleIntegrationService $vehicleIntegration;
-    private VehicleVersionRepositoryInterface $versionRepository;
+    private Collection $versions;
+    private Collection $complementaryCategories;
 
-    public function __construct($category, $make, $model, string $year)
-    {
+    public function __construct(
+        ?GuideCategory $category,
+        ?VehicleMake $make,
+        ?VehicleModel $model,
+        string $year
+    ) {
         $this->category = $category;
         $this->make = $make;
         $this->model = $model;
         $this->year = $year;
         
-        // Injetar serviços de integração
-        $this->vehicleIntegration = app(GuideVehicleIntegrationService::class);
-        $this->versionRepository = app(VehicleVersionRepositoryInterface::class);
+        // Buscar versões disponíveis para este ano
+        $this->versions = $this->loadAvailableVersions();
+        
+        // Buscar categorias complementares
+        $this->complementaryCategories = $this->loadComplementaryCategories();
     }
 
+    // ============================================================
+    // GETTERS PÚBLICOS
+    // ============================================================
+
+    /**
+     * Retorna dados da categoria
+     */
     public function getCategory(): array
     {
+        if (!$this->category) {
+            return [
+                'id' => '',
+                'name' => 'Categoria',
+                'slug' => '',
+                'description' => '',
+            ];
+        }
+
         return [
-            'name' => $this->category->name ?? null,
-            'slug' => $this->category->slug ?? null,
+            'id' => (string) $this->category->_id,
+            'name' => $this->category->name,
+            'slug' => $this->category->slug,
+            'description' => $this->category->description ?? '',
+            'icon' => $this->category->icon ?? '',
         ];
     }
 
+    /**
+     * Retorna dados da marca
+     */
     public function getMake(): array
     {
+        if (!$this->make) {
+            return [
+                'id' => 0,
+                'name' => 'Marca',
+                'slug' => '',
+            ];
+        }
+
         return [
-            'name' => $this->make->name ?? null,
-            'slug' => $this->make->slug ?? null,
+            'id' => $this->make->id,
+            'name' => $this->make->name,
+            'slug' => $this->make->slug,
+            'logo' => $this->make->logo_url ?? '',
         ];
     }
 
+    /**
+     * Retorna dados do modelo
+     */
     public function getModel(): array
     {
+        if (!$this->model) {
+            return [
+                'id' => 0,
+                'name' => 'Modelo',
+                'slug' => '',
+            ];
+        }
+
         return [
-            'name' => $this->model->name ?? null,
-            'slug' => $this->model->slug ?? null,
+            'id' => $this->model->id,
+            'name' => $this->model->name,
+            'slug' => $this->model->slug,
+            'full_name' => "{$this->make->name} {$this->model->name}",
         ];
     }
 
+    /**
+     * Retorna ano
+     */
     public function getYear(): string
     {
         return $this->year;
     }
 
     /**
-     * ✅ REFINADO: Retorna versões disponíveis REAIS do MySQL para este ano
-     * Remove array mockado hardcoded
-     * 
-     * @return array
+     * Retorna versões disponíveis formatadas
      */
     public function getVersions(): array
     {
-        $modelSlug = $this->model->slug ?? null;
-        $makeSlug = $this->make->slug ?? null;
-        $year = (int) $this->year;
-
-        // Buscar versões REAIS do MySQL
-        $versions = $this->versionRepository->getByYear($year);
-        
-        // Filtrar apenas versões deste modelo específico
-        $filteredVersions = $versions->filter(function($version) use ($makeSlug, $modelSlug) {
-            return $version->model->slug === $modelSlug 
-                && $version->model->make->slug === $makeSlug;
-        });
-
-        // Se não houver versões, retornar array vazio
-        if ($filteredVersions->isEmpty()) {
-            return [];
-        }
-
-        // Mapear para formato esperado pela view
-        return $filteredVersions->map(function($version) {
+        return $this->versions->map(function ($guide) {
             return [
-                'id' => $version->id,
-                'version' => $version->name,
-                'engine' => $version->engine_code ?? 'Motor não especificado',
-                'fuel' => $this->translateFuelType($version->fuel_type),
-                'transmission' => $this->translateTransmission($version->transmission),
-                'url' => $this->buildUrl($version->slug),
+                'slug' => $guide->version_slug ?? '',
+                'version' => strtoupper($guide->version ?? ''), // ✅ CHAVE 'version' para view
+                'name' => $guide->version ?? '',
+                'full_name' => $this->buildVersionFullName($guide),
+                'motor' => $guide->motor ?? '',
+                'engine' => $guide->motor ?? '', // ✅ CHAVE 'engine' para view
+                'fuel' => $guide->fuel ?? '',
+                'transmission' => $guide->transmission ?? '',
+                'url' => $this->buildVersionUrl($guide),
+                'has_guide' => true,
             ];
-        })->values()->toArray();
+        })->toArray();
     }
 
     /**
-     * ✅ NOVO: Retorna especificações técnicas do veículo para este ano
-     * Usa GuideVehicleIntegrationService::getVehicleSpecs()
-     * 
-     * @return array|null
+     * Retorna categorias complementares
      */
-    public function getSpecs(): ?array
-    {
-        $makeSlug = $this->make->slug ?? null;
-        $modelSlug = $this->model->slug ?? null;
-        $year = (int) $this->year;
-
-        // Buscar especificações REAIS do MySQL
-        $vehicleSpecs = $this->vehicleIntegration->getVehicleSpecs(
-            $makeSlug, 
-            $modelSlug, 
-            $year
-        );
-
-        if (!$vehicleSpecs) {
-            return null;
-        }
-
-        // Retornar specs formatadas
-        return [
-            'engine' => [
-                'code' => $vehicleSpecs->engine_code ?? 'N/A',
-                'displacement' => $vehicleSpecs->engineSpecs->displacement ?? null,
-                'cylinders' => $vehicleSpecs->engineSpecs->cylinders ?? null,
-                'valves' => $vehicleSpecs->engineSpecs->valves ?? null,
-                'aspiration' => $vehicleSpecs->engineSpecs->aspiration ?? null,
-            ],
-            'performance' => [
-                'power_hp' => $vehicleSpecs->specs->power_hp ?? null,
-                'power_rpm' => $vehicleSpecs->specs->power_rpm ?? null,
-                'torque_nm' => $vehicleSpecs->specs->torque_nm ?? null,
-                'torque_rpm' => $vehicleSpecs->specs->torque_rpm ?? null,
-            ],
-            'fluids' => [
-                'oil_type' => $vehicleSpecs->fluidSpecs->engine_oil_type ?? null,
-                'oil_capacity' => $vehicleSpecs->fluidSpecs->engine_oil_capacity ?? null,
-                'coolant_capacity' => $vehicleSpecs->fluidSpecs->coolant_capacity ?? null,
-                'brake_fluid_type' => $vehicleSpecs->fluidSpecs->brake_fluid_type ?? null,
-            ],
-            'tires' => [
-                'front_size' => $vehicleSpecs->tireSpecs->front_tire_size ?? null,
-                'rear_size' => $vehicleSpecs->tireSpecs->rear_tire_size ?? null,
-                'pressure_front' => $vehicleSpecs->tireSpecs->recommended_pressure_front ?? null,
-                'pressure_rear' => $vehicleSpecs->tireSpecs->recommended_pressure_rear ?? null,
-            ],
-            'battery' => [
-                'type' => $vehicleSpecs->batterySpecs->type ?? null,
-                'capacity' => $vehicleSpecs->batterySpecs->capacity_ah ?? null,
-            ],
-        ];
-    }
-
-    public function getStats(): array
-    {
-        $versions = $this->getVersions();
-
-        return [
-            'total_versions' => count($versions),
-        ];
-    }
-
     public function getComplementaryCategories(): array
     {
-        $all = [
-            ['name' => 'Calibragem', 'slug' => 'calibragem'],
-            ['name' => 'Pneus', 'slug' => 'pneus'],
-            ['name' => 'Bateria', 'slug' => 'bateria'],
-            ['name' => 'Correia', 'slug' => 'correia'],
-            ['name' => 'Fluidos', 'slug' => 'fluidos'],
-            ['name' => 'Revisão', 'slug' => 'revisao'],
-        ];
-
-        $currentSlug = $this->category->slug ?? 'oleo';
-        return array_filter($all, fn($cat) => $cat['slug'] !== $currentSlug);
+        $currentCategoryId = $this->category ? (string) $this->category->_id : '';
+        
+        return $this->complementaryCategories
+            ->filter(fn($cat) => (string) $cat->_id !== $currentCategoryId)
+            ->map(function ($category) {
+                return [
+                    'name' => $category->name,
+                    'slug' => $category->slug,
+                    'icon' => $category->icon ?? '',
+                    'url' => route('guide.year', [
+                        'category' => $category->slug,
+                        'make' => $this->make->slug ?? '',
+                        'model' => $this->model->slug ?? '',
+                        'year' => $this->year,
+                    ]),
+                ];
+            })
+            ->values()
+            ->toArray();
     }
 
+    /**
+     * Retorna estatísticas
+     */
+    public function getStats(): array
+    {
+        return [
+            'total_versions' => $this->versions->count(),
+            'year' => $this->year,
+            'category' => $this->category->name ?? '',
+            'vehicle' => $this->getModel()['full_name'] ?? '',
+        ];
+    }
+
+    /**
+     * ✅ DADOS DE SEO OTIMIZADOS (CHAVES PADRONIZADAS)
+     */
     public function getSeoData(): array
     {
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
+        $year = $this->year;
 
         return [
-            'title' => "{$category['name']} {$make['name']} {$model['name']} {$this->year} – Todas as versões",
-            'description' => "Guias de {$category['name']} para {$make['name']} {$model['name']} {$this->year}. Escolha a versão do seu veículo.",
-            'canonical' => "/guias/{$category['slug']}/{$make['slug']}/{$model['slug']}/{$this->year}",
-            'og_image' => "/images/og/{$model['slug']}-{$this->year}.jpg",
+            // ✅ CHAVES PADRONIZADAS PARA AS VIEWS
+            'title' => "{$category['name']} {$make['name']} {$model['name']} {$year} | Mercado Veículos",
+            'h1' => "{$category['name']} para {$make['name']} {$model['name']} {$year}",
+            'description' => $this->buildMetaDescription(), // ✅ 'description' não 'meta_description'
+            'keywords' => $this->buildKeywords(),
+            'canonical' => $this->buildCanonicalUrl(), // ✅ 'canonical' não 'canonical_url'
+            'robots' => 'index,follow',
+            
+            // ✅ Open Graph (chaves diretas)
+            'og_title' => "{$category['name']} {$make['name']} {$model['name']} {$year}",
+            'og_description' => $this->buildMetaDescription(),
+            'og_image' => $this->buildOgImage(),
+            'og_url' => $this->buildCanonicalUrl(),
+            'og_type' => 'website',
+            'og_site_name' => 'Mercado Veículos',
+            'og_locale' => 'pt_BR',
+            
+            // ✅ Twitter Cards (chaves diretas)
+            'twitter_card' => 'summary_large_image',
+            'twitter_title' => "{$category['name']} {$make['name']} {$model['name']} {$year}",
+            'twitter_description' => $this->buildMetaDescription(),
+            'twitter_image' => $this->buildOgImage(),
         ];
     }
 
+    /**
+     * ✅ BREADCRUMBS
+     */
     public function getBreadcrumbs(): array
     {
         $category = $this->getCategory();
@@ -207,56 +231,260 @@ class GuideYearViewModel
         $model = $this->getModel();
 
         return [
-            ['name' => 'Início', 'url' => route('home')],
-            ['name' => 'Guias', 'url' => route('guide.index')],
-            ['name' => $category['name'], 'url' => route('guide.category', $category['slug'])],
-            ['name' => $make['name'], 'url' => route('guide.category.make', ['category' => $category['slug'], 'make' => $make['slug']])],
-            ['name' => $model['name'], 'url' => route('guide.category.make.model', ['category' => $category['slug'], 'make' => $make['slug'], 'model' => $model['slug']])],
-            ['name' => $this->year, 'url' => null],
+            [
+                'name' => 'Início',
+                'url' => route('home'),
+            ],
+            [
+                'name' => 'Guias',
+                'url' => route('guide.index'),
+            ],
+            [
+                'name' => $category['name'],
+                'url' => route('guide.category', ['category' => $category['slug']]),
+            ],
+            [
+                'name' => $make['name'],
+                'url' => route('guide.category.make', [
+                    'category' => $category['slug'],
+                    'make' => $make['slug'],
+                ]),
+            ],
+            [
+                'name' => $model['name'],
+                'url' => route('guide.category.make.model', [
+                    'category' => $category['slug'],
+                    'make' => $make['slug'],
+                    'model' => $model['slug'],
+                ]),
+            ],
+            [
+                'name' => $this->year,
+                'url' => null, // Página atual
+            ],
         ];
     }
 
-    private function buildUrl(string $versionSlug): string
+    /**
+     * ✅ STRUCTURED DATA (Schema.org)
+     */
+    public function getStructuredData(): array
+    {
+        $seo = $this->getSeoData();
+        $category = $this->getCategory();
+        $make = $this->getMake();
+        $model = $this->getModel();
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'CollectionPage',
+            
+            'name' => $seo['h1'],
+            'description' => $seo['description'], // ✅ CORRIGIDO
+            'url' => $seo['canonical'], // ✅ CORRIGIDO
+            
+            'about' => [
+                '@type' => 'Car',
+                'name' => "{$make['name']} {$model['name']} {$this->year}",
+                'brand' => [
+                    '@type' => 'Brand',
+                    'name' => $make['name'],
+                ],
+                'model' => $model['name'],
+                'productionDate' => $this->year,
+            ],
+            
+            'breadcrumb' => $this->getBreadcrumbStructuredData(),
+            
+            'mainEntity' => [
+                '@type' => 'ItemList',
+                'numberOfItems' => $this->versions->count(),
+                'itemListElement' => $this->buildItemListStructuredData(),
+            ],
+            
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'Mercado Veículos',
+                'url' => 'https://mercadoveiculos.com.br',
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => 'https://mercadoveiculos.s3.amazonaws.com/statics/logos/logo-mercadoveiculos.png',
+                ],
+            ],
+        ];
+    }
+
+    // ============================================================
+    // MÉTODOS PRIVADOS
+    // ============================================================
+
+    /**
+     * Carrega versões disponíveis do MongoDB
+     */
+    private function loadAvailableVersions(): Collection
+    {
+        if (!$this->category || !$this->make || !$this->model) {
+            return collect();
+        }
+
+        $guideModel = app(Guide::class);
+        
+        return $guideModel::where('category_slug', $this->category->slug)
+            ->where('make_slug', $this->make->slug)
+            ->where('model_slug', $this->model->slug)
+            ->where('year_start', '<=', (int) $this->year)
+            ->where('year_end', '>=', (int) $this->year)
+            ->get();
+    }
+
+    /**
+     * Carrega categorias complementares
+     */
+    private function loadComplementaryCategories(): Collection
+    {
+        $categoryRepo = app(\Src\GuideDataCenter\Domain\Repositories\Contracts\GuideCategoryRepositoryInterface::class);
+        return $categoryRepo->getActive();
+    }
+
+    /**
+     * Constrói nome completo da versão
+     */
+    private function buildVersionFullName($guide): string
+    {
+        $parts = [];
+        
+        if (isset($guide->version)) {
+            $parts[] = strtoupper($guide->version);
+        }
+        
+        if (isset($guide->motor)) {
+            $parts[] = $guide->motor;
+        }
+        
+        if (isset($guide->fuel)) {
+            $parts[] = $guide->fuel;
+        }
+        
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Constrói URL da versão
+     */
+    private function buildVersionUrl($guide): string
+    {
+        return route('guide.version', [
+            'category' => $this->category->slug ?? '',
+            'make' => $this->make->slug ?? '',
+            'model' => $this->model->slug ?? '',
+            'year' => $this->year,
+            'version' => $guide->version_slug ?? $guide->slug ?? '',
+        ]);
+    }
+
+    /**
+     * Constrói meta description
+     */
+    private function buildMetaDescription(): string
+    {
+        $category = $this->getCategory();
+        $make = $this->getMake();
+        $model = $this->getModel();
+        $versionsCount = $this->versions->count();
+
+        return "Escolha a versão do {$make['name']} {$model['name']} {$this->year} "
+            . "para ver o guia completo de {$category['name']}. "
+            . "{$versionsCount} versões disponíveis com especificações técnicas detalhadas.";
+    }
+
+    /**
+     * Constrói keywords
+     */
+    private function buildKeywords(): string
     {
         $category = $this->getCategory();
         $make = $this->getMake();
         $model = $this->getModel();
 
-        return "/guias/{$category['slug']}/{$make['slug']}/{$model['slug']}/{$this->year}/{$versionSlug}";
+        $keywords = [
+            "{$category['name']} {$make['name']} {$model['name']} {$this->year}",
+            "{$make['name']} {$model['name']} {$this->year} versões",
+            "{$make['name']} {$model['name']} {$this->year} especificações",
+            "guia {$category['name']} {$this->year}",
+        ];
+
+        return implode(', ', $keywords);
     }
 
     /**
-     * Traduz tipo de combustível para português
+     * Constrói canonical URL
      */
-    private function translateFuelType(?string $fuelType): string
+    private function buildCanonicalUrl(): string
     {
-        $translations = [
-            'gasoline' => 'Gasolina',
-            'diesel' => 'Diesel',
-            'ethanol' => 'Etanol',
-            'flex' => 'Flex',
-            'electric' => 'Elétrico',
-            'hybrid' => 'Híbrido',
-            'plugin_hybrid' => 'Híbrido Plug-in',
-            'cng' => 'GNV',
-        ];
-
-        return $translations[$fuelType] ?? 'N/A';
+        return route('guide.year', [
+            'category' => $this->category->slug ?? '',
+            'make' => $this->make->slug ?? '',
+            'model' => $this->model->slug ?? '',
+            'year' => $this->year,
+        ]);
     }
 
     /**
-     * Traduz tipo de transmissão para português
+     * Constrói OG Image
      */
-    private function translateTransmission(?string $transmission): string
+    private function buildOgImage(): string
     {
-        $translations = [
-            'manual' => 'Manual',
-            'automatic' => 'Automático',
-            'cvt' => 'CVT',
-            'dct' => 'DCT',
-            'amt' => 'AMT',
-        ];
+        $make = $this->make->slug ?? 'default';
+        $model = $this->model->slug ?? 'default';
+        
+        // TODO: Implementar geração dinâmica de imagens
+        return asset("images/og/{$make}-{$model}-{$this->year}.jpg");
+    }
 
-        return $translations[$transmission] ?? 'N/A';
+    /**
+     * Breadcrumb em formato Schema.org
+     */
+    private function getBreadcrumbStructuredData(): array
+    {
+        $breadcrumbs = $this->getBreadcrumbs();
+        
+        $itemList = [];
+        foreach ($breadcrumbs as $index => $crumb) {
+            if (!is_array($crumb)) {
+                continue;
+            }
+            
+            $name = $crumb['name'] ?? '';
+            $url = $crumb['url'] ?? '';
+            
+            $itemList[] = [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => $name,
+                'item' => $url,
+            ];
+        }
+        
+        return [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $itemList,
+        ];
+    }
+
+    /**
+     * Lista de versões em formato Schema.org
+     */
+    private function buildItemListStructuredData(): array
+    {
+        return collect($this->getVersions())
+            ->map(function ($version, $index) {
+                return [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'name' => $version['full_name'],
+                    'url' => $version['url'],
+                ];
+            })
+            ->toArray();
     }
 }

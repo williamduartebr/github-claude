@@ -7,24 +7,15 @@ Renderiza guia completo com includes organizados
 
 @extends('shared::layouts.app')
 
-@section('title', $seo['title'] ?? '')
-@section('meta_description', $seo['description'] ?? '')
 
-{{-- SEO --}}
+{{-- ✅ STRUCTURED DATA (Schema.org) --}}
+@if(!empty($structured_data))
 @push('head')
-<link rel="canonical" href="{{ $seo['canonical'] ?? '' }}" />
-<link rel="alternate" hreflang="pt-BR" href="{{ $seo['canonical'] ?? '' }}" />
-<meta property="og:type" content="{{ $seo['og_type'] ?? 'article' }}" />
-<meta property="og:title" content="{{ $seo['title'] ?? '' }}" />
-<meta property="og:description" content="{{ $seo['description'] ?? '' }}" />
-<meta property="og:image" content="{{ $seo['og_image'] ?? '' }}" />
-<meta property="og:url" content="{{ $seo['canonical'] ?? '' }}" />
-<meta property="og:site_name" content="Mercado Veículos" />
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $seo['title'] ?? '' }}">
-<meta name="twitter:description" content="{{ $seo['description'] ?? '' }}">
-<meta name="twitter:image" content="{{ $seo['og_image'] ?? '' }}">
+<script type="application/ld+json">
+{!! json_encode($structured_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
 @endpush
+@endif
 
 @section('content')
 
